@@ -80,7 +80,7 @@ TEST(SumOperator, Parallel) {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.parallel()
+					.parallel(4)
 					.sum< int >();
 
     EXPECT_EQ(expectedResult, currentResult);

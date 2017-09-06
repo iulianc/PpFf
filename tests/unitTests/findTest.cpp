@@ -2,6 +2,11 @@
 #include <string>
 #include "../../src/pp/Pipe.hpp"
 
+struct Employee {
+	int id;
+	std::string name;
+	int salary;
+};
 
 bool FuncFind(int in){
 	if(in % 2 == 0){
@@ -47,7 +52,7 @@ TEST(FindOperator, FindOddElementsUsingLambdaFunction) {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.find< int, findF >(([&](int in){if(in % 2 != 0) return true; return false;}))
+					.find< int, findF >(([](int in)->bool {if(in % 2 != 0) return true; return false;}))
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -56,12 +61,6 @@ TEST(FindOperator, FindOddElementsUsingLambdaFunction) {
 }
 
 TEST(FindOperator, FilterEmployeeWithSalaryBiggerThanHundred) {
-	struct Employee {
-		int id;
-		std::string name;
-		int salary;
-	};
-
 	std::vector< Employee > elems(10);
 	std::vector< std::string > expectedResult(3);
 	expectedResult = {"Employee3","Employee6","Employee9"};
@@ -81,8 +80,8 @@ TEST(FindOperator, FilterEmployeeWithSalaryBiggerThanHundred) {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.find< Employee, retrieveEmployeeWithSalaryBiggerThanHundred >(([&](Employee e){if(e.salary > 100) return true; return false;}))
-					.map< Employee, std::string, retrieveNameEmployee >(([&](Employee e){return e.name;}))
+					.find< Employee, retrieveEmployeeWithSalaryBiggerThanHundred >(([](Employee e)->bool {if(e.salary > 100) return true; return false;}))
+					.map< Employee, std::string, retrieveNameEmployee >(([](Employee e)->std::string {return e.name;}))
 					.collect< std::string, std::vector >();
 
 

@@ -2,7 +2,12 @@
 #include <string>
 #include "../../src/pp/Pipe.hpp"
 
-
+struct Employee {
+	int id;
+	std::string name;
+	int salary;
+	std::string toString(){return name;};
+};
 
 TEST(PeekOperator, PrintElementsCollection) {
 	std::vector< int > elems(10);
@@ -19,7 +24,7 @@ TEST(PeekOperator, PrintElementsCollection) {
 	std::cout << "Elements of collection: ";
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.peek< int, printElemetsCollection >(([&](int in){std::cout << in << "; ";}))
+					.peek< int, printElemetsCollection >(([](int in) {std::cout << in << "; ";}))
 					.collect< int, std::vector >();
 	std::cout << "\n";
 
@@ -29,13 +34,6 @@ TEST(PeekOperator, PrintElementsCollection) {
 }
 
 TEST(PeekOperator, PrintPropertyObject) {
-	struct Employee {
-		int id;
-		std::string name;
-		int salary;
-		std::string toString(){return name;};
-	};
-
 	std::vector< Employee > elems(10);
 	std::vector< std::string > expectedResult(10);
 	expectedResult = {"Employee0","Employee1","Employee2","Employee3","Employee4","Employee5","Employee6","Employee7","Employee8","Employee9"};
@@ -54,7 +52,7 @@ TEST(PeekOperator, PrintPropertyObject) {
 	std::cout << "Employees name: ";
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.peek< Employee, printNameEmployee >(([&](Employee e){std::cout << e.name << "; ";}))
+					.peek< Employee, printNameEmployee >(([](Employee e) {std::cout << e.name << "; ";}))
 					.collect< Employee, std::vector >();
 	std::cout << "\n";
 

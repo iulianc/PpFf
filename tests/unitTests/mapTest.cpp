@@ -2,6 +2,11 @@
 #include <string>
 #include "../../src/pp/Pipe.hpp"
 
+struct Employee {
+	int age;
+	std::string name;
+};
+
 int FuncMap(int in){
 	return in * 3;
 };
@@ -51,11 +56,6 @@ TEST(MapOperator, UpdateElementsCollectionUsingLambdaFunction) {
 }
 
 TEST(MapOperator, RetriveObjectPropertyValue) {
-	struct Employee {
-		int age;
-		std::string name;
-	};
-
 	std::vector< Employee > elems(10);
 	std::vector< std::string > expectedResult(10);
 	expectedResult = {"Employee0","Employee1","Employee2","Employee3","Employee4","Employee5","Employee6","Employee7","Employee8","Employee9"};
@@ -72,7 +72,7 @@ TEST(MapOperator, RetriveObjectPropertyValue) {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.map< Employee, std::string, retrieveNameEmployee >(([&](Employee e){return e.name;}))
+					.map< Employee, std::string, retrieveNameEmployee >(([](Employee e)->std::string {return e.name;}))
 					.collect< std::string, std::vector >();
 					
 	for(unsigned int i = 0; i < expectedResult.size(); i++){

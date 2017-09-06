@@ -130,7 +130,7 @@ using namespace ff;
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage((new Count< ACCUM >(collectors.getContainer().at(0))));
+					worker_pipe->add_stage((new Count< ACCUM >(collectors.getContainer().at(i))));
 				}
 
 				pipe.add_stage(farm->getFarm());

@@ -19,7 +19,7 @@ TEST(CollectOperator, ReturnCollectionTypeVector) {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.map< int, int, mapF >(([&](int in){return in * 3;}))
+					.map< int, int, mapF >(([](int in)->int {return in * 3;}))
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -42,7 +42,7 @@ TEST(CollectOperator, ReturnCollectionTypeDeque) {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.map< int, int, mapF >(([&](int in){return in * 2;}))
+					.map< int, int, mapF >(([](int in)->int {return in * 2;}))
 					.collect< int, std::deque >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -65,7 +65,7 @@ TEST(CollectOperator, ReturnCollectionTypeList) {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.map< int, int, mapF >(([&](int in){return in + 1;}))
+					.map< int, int, mapF >(([](int in)->int {return in + 1;}))
 					.collect< int, std::list >();
 
 	std::list<int>::iterator currentIterator = currentResult.begin();
@@ -91,7 +91,7 @@ TEST(CollectOperator, CollectElementsParallel) {
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
 					.parallel(4)
-					.map< int, int, mapF >(([&](int in){return in * 3;}))
+					.map< int, int, mapF >(([](int in)->int {return in * 3;}))
 					.collect< int, std::vector >();
 
 	std::sort(currentResult.begin(), currentResult.end());

@@ -1,6 +1,11 @@
 #include "gtest/gtest.h"
 #include "../../src/pp/Pipe.hpp"
 
+struct Employee {
+	int age;
+	std::string name;
+};
+
 TEST(CountOperator, CollectionOfIntegers) {
 	std::vector< int > elems(10);
 	unsigned int expectedResult = 10;
@@ -18,11 +23,6 @@ TEST(CountOperator, CollectionOfIntegers) {
 }
 
 TEST(CountOperator, CollectionOfObjects) {
-	struct Employee {
-		int age;
-		std::string name;
-	};
-
 	std::vector< Employee > elems(15);
 	unsigned int expectedResult = 15;
 	unsigned int currentResult = 0;
@@ -44,21 +44,16 @@ TEST(CountOperator, CollectionOfObjects) {
 
 
 TEST(CountOperator, CollectionTypeDeque) {
-	struct Employee {
-		int age;
-		std::string name;
-	};
-
-	std::deque< Employee > elems(25);
+	std::deque< Employee > elems;
 	unsigned int expectedResult = 25;
 	unsigned int currentResult = 0;
 
-	for(unsigned int i = 0; i < elems.size(); i++){
+	for(unsigned int i = 0; i < 25; i++){
 		Employee employee;
 		employee.age = i + 1;
 		employee.name = "Employee" + i;
 
-		elems[i] = employee;
+		elems.push_back(employee);
 	};
 
 	pp::Pipe pipe;
@@ -69,11 +64,6 @@ TEST(CountOperator, CollectionTypeDeque) {
 }
 
 TEST(CountOperator, Parallel) {
-	struct Employee {
-		int age;
-		std::string name;
-	};
-
 	std::vector< Employee > elems(15);
 	unsigned int expectedResult = 15;
 	unsigned int currentResult = 0;
