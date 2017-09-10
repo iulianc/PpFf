@@ -1,12 +1,8 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 #include <string>
+#include <vector>
 #include "../../src/pp/Pipe.hpp"
-
-struct Employee {
-	int id;
-	std::string name;
-	int salary;
-};
+#include "Employee.hpp"
 
 bool FuncFind(int in){
 	if(in % 2 == 0){
@@ -16,7 +12,8 @@ bool FuncFind(int in){
 	return false;
 };
 
-TEST(FindOperator, FindEvenElementsUsingFunction) {
+
+TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
 	std::vector< int > elems(10);
 	std::vector< int > expectedResult(10);
 	expectedResult = {0,2,4,6,8};
@@ -34,11 +31,11 @@ TEST(FindOperator, FindEvenElementsUsingFunction) {
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
-		EXPECT_EQ(expectedResult[i], currentResult[i]);
+		REQUIRE(expectedResult[i] == currentResult[i]);
 	};
 }
 
-TEST(FindOperator, FindOddElementsUsingLambdaFunction) {
+TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
 	std::vector< int > elems(10);
 	std::vector< int > expectedResult(10);
 	expectedResult = {1,3,5,7,9};
@@ -56,23 +53,25 @@ TEST(FindOperator, FindOddElementsUsingLambdaFunction) {
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
-		EXPECT_EQ(expectedResult[i], currentResult[i]);
+		REQUIRE(expectedResult[i] == currentResult[i]);
 	};
 }
 
-TEST(FindOperator, FilterEmployeeWithSalaryBiggerThanHundred) {
-	std::vector< Employee > elems(10);
+
+TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
+	std::vector< Employee > elems;
 	std::vector< std::string > expectedResult(3);
 	expectedResult = {"Employee3","Employee6","Employee9"};
 	std::vector< std::string > currentResult;
-	std::vector< Employee > temp;
+	unsigned int noEmployees = 10;
 
-	for(unsigned int i = 0; i < elems.size(); i++){
+	for(unsigned int i = 0; i < noEmployees; i++){
 		Employee employee;
-		employee.id = i + 1;
+		employee.age = i * 10;
 		employee.salary = i%3 == 0 ? i * 100 : i * 10;
 		employee.name = "Employee" + std::to_string(i);
-		elems[i] = employee;
+
+		elems.push_back(employee);
 	};
 
 	typedef bool (*retrieveEmployeeWithSalaryBiggerThanHundred)(Employee);
@@ -84,9 +83,8 @@ TEST(FindOperator, FilterEmployeeWithSalaryBiggerThanHundred) {
 					.map< Employee, std::string, retrieveNameEmployee >(([](Employee e)->std::string {return e.name;}))
 					.collect< std::string, std::vector >();
 
-
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
-		EXPECT_EQ(expectedResult[i], currentResult[i]);
+		REQUIRE(expectedResult[i] == currentResult[i]);
 	};
 }
 

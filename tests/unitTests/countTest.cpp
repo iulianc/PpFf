@@ -1,12 +1,8 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 #include "../../src/pp/Pipe.hpp"
+#include "Employee.hpp"
 
-struct Employee {
-	int age;
-	std::string name;
-};
-
-TEST(CountOperator, CollectionOfIntegers) {
+TEST_CASE("CollectionOfIntegers", "CountOperator") {
 	std::vector< int > elems(10);
 	unsigned int expectedResult = 10;
 	unsigned int currentResult = 0;
@@ -19,39 +15,20 @@ TEST(CountOperator, CollectionOfIntegers) {
 	currentResult = pipe.source<int>(elems.begin(), elems.end())
 					.count();
 
-    EXPECT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
 
-TEST(CountOperator, CollectionOfObjects) {
-	std::vector< Employee > elems(15);
+
+TEST_CASE("CollectionOfObjects", "CountOperator") {
+	std::vector< Employee > elems;
 	unsigned int expectedResult = 15;
 	unsigned int currentResult = 0;
 
-	for(unsigned int i = 0; i < elems.size(); i++){
+	for(unsigned int i = 0; i < expectedResult; i++){
 		Employee employee;
 		employee.age = i + 1;
-		employee.name = "Employee" + i;
-
-		elems[i] = employee;
-	};
-
-	pp::Pipe pipe;
-	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.count();
-
-    EXPECT_EQ(expectedResult, currentResult);
-}
-
-
-TEST(CountOperator, CollectionTypeDeque) {
-	std::deque< Employee > elems;
-	unsigned int expectedResult = 25;
-	unsigned int currentResult = 0;
-
-	for(unsigned int i = 0; i < 25; i++){
-		Employee employee;
-		employee.age = i + 1;
-		employee.name = "Employee" + i;
+		employee.name = "Employee" + std::to_string(i);
+		employee.salary = 25000;
 
 		elems.push_back(employee);
 	};
@@ -60,10 +37,33 @@ TEST(CountOperator, CollectionTypeDeque) {
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
 					.count();
 
-    EXPECT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
 
-TEST(CountOperator, Parallel) {
+
+TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
+	std::deque< Employee > elems;
+	unsigned int expectedResult = 25;
+	unsigned int currentResult = 0;
+
+	for(unsigned int i = 0; i < 25; i++){
+		Employee employee;
+		employee.age = i + 1;
+		employee.name = "Employee" + i;
+		employee.salary = 130000;
+
+		elems.push_back(employee);
+	};
+
+	pp::Pipe pipe;
+	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
+					.count();
+
+	REQUIRE(expectedResult == currentResult);
+}
+
+
+TEST_CASE("CountParallel", "CountOperator") {
 	std::vector< Employee > elems(15);
 	unsigned int expectedResult = 15;
 	unsigned int currentResult = 0;
@@ -72,6 +72,7 @@ TEST(CountOperator, Parallel) {
 		Employee employee;
 		employee.age = i + 1;
 		employee.name = "Employee" + i;
+		employee.salary = 45000;
 
 		elems[i] = employee;
 	};
@@ -81,5 +82,6 @@ TEST(CountOperator, Parallel) {
 					.parallel(4)
 					.count();
 
-    EXPECT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
+

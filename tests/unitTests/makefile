@@ -5,12 +5,12 @@ EXE 		:= testAll
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
-ROOT_PIPE 	:= $(HOME)/RepositoryFastFlow/PpFf/src/pp
-# Specify the google tests lib path
+ROOT_PIPE 	:= $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
+# Specify the header file tests path
 #ROOT_GTEST	:= $(HOME)/RepositoryFastFlow/PpFf/tests/googleTestLib/gtest
 #ROOT_GTEST	:= /opt/gtest/lib
-ROOT_GTEST	:= $(HOME)/RepositoryFastFlow/PpFf/tests/googleTestLib
-ROOT_GTEST_LIB	:= $(HOME)/RepositoryFastFlow/PpFf/tests/googleTestLib/gtest
+ROOT_GTEST	:= $(HOME)/RepositoryFastFlow/PpFf_Catch/tests/googleTestLib
+ROOT_GTEST_LIB	:= $(HOME)/RepositoryFastFlow/PpFf_Catch/tests/googleTestLib/gtest
 
 
 SRC_GTEST := $(wildcard $(ROOT_GTEST_LIB)/*.cc)
@@ -18,7 +18,7 @@ SRC_GTEST := $(wildcard $(ROOT_GTEST_LIB)/*.cc)
 
 
 # Get the corresponding object file list
-OBJ 		:= $(ROOT_TESTS:.cpp=.o) $(SRC_GTEST:.cc=.o)
+OBJ 		:= $(ROOT_TESTS:.cpp=.o) #$(SRC_GTEST:.cc=.o)
 # From the object file list, get the dependency file list to handle automatic
 DEP 		:= $(OBJ:.o=.d)
 

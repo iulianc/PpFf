@@ -1,15 +1,9 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 #include <string>
 #include "../../src/pp/Pipe.hpp"
+#include "Employee.hpp"
 
-struct Employee {
-	int id;
-	std::string name;
-	int salary;
-	std::string toString(){return name;};
-};
-
-TEST(PeekOperator, PrintElementsCollection) {
+TEST_CASE("PrintElementsCollection", "PeekOperator") {
 	std::vector< int > elems(10);
 	std::vector< int > expectedResult(10);
 	expectedResult = {0,1,2,3,4,5,6,7,8,9};
@@ -29,19 +23,21 @@ TEST(PeekOperator, PrintElementsCollection) {
 	std::cout << "\n";
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
-		EXPECT_EQ(expectedResult[i], currentResult[i]);
+		REQUIRE(expectedResult[i] == currentResult[i]);
 	};
 }
 
-TEST(PeekOperator, PrintPropertyObject) {
+
+TEST_CASE("PrintPropertyObject", "PeekOperator") {
 	std::vector< Employee > elems(10);
 	std::vector< std::string > expectedResult(10);
 	expectedResult = {"Employee0","Employee1","Employee2","Employee3","Employee4","Employee5","Employee6","Employee7","Employee8","Employee9"};
 	std::vector< Employee > currentResult;
 
+
 	for(unsigned int i = 0; i < elems.size(); i++){
 		Employee employee;
-		employee.id = i + 1;
+		employee.age = i * 10;
 		employee.salary = i%3 == 0 ? i * 100 : i * 10;
 		employee.name = "Employee" + std::to_string(i);
 		elems[i] = employee;
@@ -57,6 +53,7 @@ TEST(PeekOperator, PrintPropertyObject) {
 	std::cout << "\n";
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
-		EXPECT_EQ(expectedResult[i], currentResult[i].name);
+		REQUIRE(expectedResult[i] == currentResult[i].name);
 	};
+
 }

@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 #include "../../src/pp/Pipe.hpp"
 
-TEST(SumOperator, CollectionOfPositiveIntegers) {
+TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
 	std::vector< int > elems(10);
 	int expectedResult = 45;
 	int currentResult = 0;
@@ -14,10 +14,10 @@ TEST(SumOperator, CollectionOfPositiveIntegers) {
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
 					.sum< int >();
 
-    EXPECT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
 
-TEST(SumOperator, CollectionOfNegativeIntegers) {
+TEST_CASE("CollectionOfNegativeIntegers", "SumOperator") {
 	std::vector< int > elems(10);
 	int expectedResult = -45;
 	int currentResult = 0;
@@ -30,10 +30,10 @@ TEST(SumOperator, CollectionOfNegativeIntegers) {
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
 					.sum< int >();
 
-    EXPECT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
 
-TEST(SumOperator, CollectionOfFloatElements) {
+TEST_CASE("CollectionOfFloatElements", "SumOperator") {
 	std::vector< float > elems(10);
 	float expectedResult = 4.5;
 	float currentResult = 0.0;
@@ -48,10 +48,11 @@ TEST(SumOperator, CollectionOfFloatElements) {
 	currentResult = pipe.source< float >(elems.begin(), elems.end())
 					.sum< float >();
 
-	EXPECT_FLOAT_EQ(expectedResult, currentResult);
+	//EXPECT_FLOAT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == Approx(currentResult));
 }
 
-TEST(SumOperator, CollectionOfDoubleElements) {
+TEST_CASE("CollectionOfDoubleElements", "SumOperator") {
 	std::vector< double > elems(10);
 	double expectedResult = 4.5;
 	double currentResult = 0.0;
@@ -66,10 +67,11 @@ TEST(SumOperator, CollectionOfDoubleElements) {
 	currentResult = pipe.source< double >(elems.begin(), elems.end())
 					.sum< double >();
 
-	ASSERT_DOUBLE_EQ(expectedResult, currentResult);
+	//ASSERT_DOUBLE_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
 
-TEST(SumOperator, Parallel) {
+TEST_CASE("SumParallel", "SumOperator") {
 	std::vector< int > elems(10);
 	int expectedResult = 45;
 	int currentResult = 0;
@@ -83,10 +85,10 @@ TEST(SumOperator, Parallel) {
 					.parallel(4)
 					.sum< int >();
 
-    EXPECT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
 
-TEST(SumOperator, CollectionTypeDeque) {
+TEST_CASE("SumOnCollectionTypeDeque", "SumOperator") {
 	std::deque< int > elems(10);
 	int expectedResult = 55;
 	int currentResult = 0;
@@ -100,5 +102,5 @@ TEST(SumOperator, CollectionTypeDeque) {
 					.parallel()
 					.sum< int >();
 
-    EXPECT_EQ(expectedResult, currentResult);
+	REQUIRE(expectedResult == currentResult);
 }
