@@ -14,7 +14,6 @@ class Collectors {
 public:
 	Collectors(): collector_type(UNDEFINED){
 		is_collection = false;
-		//container = new Container< T >();
 	};
 
 	C& getContainer(){
@@ -34,7 +33,7 @@ public:
 		T result;
 
 		for(unsigned int i = 0; i < container.size(); i++){
-			reduce(*(container.at(i)), result, ([&](T &in, T &out){out = out + in;}));
+			reduce(*(container.at(i)), result, ([](T &in, T &out){out = out + in;}));
 		}
 
 		return result;
