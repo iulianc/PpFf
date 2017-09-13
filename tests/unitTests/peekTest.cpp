@@ -2,6 +2,7 @@
 #include <string>
 #include "../../src/pp/Pipe.hpp"
 #include "Employee.hpp"
+#include "utility.hpp"
 
 TEST_CASE("PrintElementsCollection", "PeekOperator") {
 	std::vector< int > elems(10);
@@ -39,7 +40,7 @@ TEST_CASE("PrintPropertyObject", "PeekOperator") {
 		Employee employee;
 		employee.age = i * 10;
 		employee.salary = i%3 == 0 ? i * 100 : i * 10;
-		employee.name = "Employee" + std::to_string(i);
+		employee.name = "Employee" + ConvertNumberToString(i);
 		elems[i] = employee;
 	};
 
@@ -53,7 +54,7 @@ TEST_CASE("PrintPropertyObject", "PeekOperator") {
 	std::cout << "\n";
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
-		REQUIRE(expectedResult[i] == currentResult[i].name);
+		REQUIRE(expectedResult[i] == ((Employee)currentResult[i]).name);
 	};
 
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include "../../src/pp/Pipe.hpp"
 #include "Employee.hpp"
+#include "utility.hpp"
 
 int FuncMap(int in){
 	return in * 3;
@@ -45,7 +46,7 @@ TEST_CASE("UpdateElementsCollectionUsingLambdaFunction", "MapOperator") {
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.map< int, int, mapF >(([&](int in){return in * 3;}))
+					.map< int, int, mapF >(([](int in){return in * 3;}))
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -64,7 +65,7 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
 	for(unsigned int i = 0; i < noEmployees; i++){
 		Employee employee;
 		employee.age = i;
-		employee.name = "Employee" + std::to_string(i);
+		employee.name = "Employee" + ConvertNumberToString(i);
 		employee.salary = 12000;
 		elems.push_back(employee);
 	};

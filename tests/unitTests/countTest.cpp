@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "../../src/pp/Pipe.hpp"
 #include "Employee.hpp"
+#include "utility.hpp"
 
 TEST_CASE("CollectionOfIntegers", "CountOperator") {
 	std::vector< int > elems(10);
@@ -27,7 +28,7 @@ TEST_CASE("CollectionOfObjects", "CountOperator") {
 	for(unsigned int i = 0; i < expectedResult; i++){
 		Employee employee;
 		employee.age = i + 1;
-		employee.name = "Employee" + std::to_string(i);
+		employee.name = "Employee" + ConvertNumberToString(i);
 		employee.salary = 25000;
 
 		elems.push_back(employee);

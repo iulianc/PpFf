@@ -3,6 +3,7 @@
 #include <vector>
 #include "../../src/pp/Pipe.hpp"
 #include "Employee.hpp"
+#include "utility.hpp"
 
 bool FuncFind(int in){
 	if(in % 2 == 0){
@@ -69,7 +70,7 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
 		Employee employee;
 		employee.age = i * 10;
 		employee.salary = i%3 == 0 ? i * 100 : i * 10;
-		employee.name = "Employee" + std::to_string(i);
+		employee.name = "Employee" + ConvertNumberToString(i);
 
 		elems.push_back(employee);
 	};
