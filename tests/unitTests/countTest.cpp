@@ -50,7 +50,7 @@ TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
 	for(unsigned int i = 0; i < 25; i++){
 		Employee employee;
 		employee.age = i + 1;
-		employee.name = "Employee" + i;
+		employee.name = "Employee" + ConvertNumberToString(i);
 		employee.salary = 130000;
 
 		elems.push_back(employee);
@@ -72,7 +72,7 @@ TEST_CASE("CountParallel", "CountOperator") {
 	for(unsigned int i = 0; i < elems.size(); i++){
 		Employee employee;
 		employee.age = i + 1;
-		employee.name = "Employee" + i;
+		employee.name = "Employee" + ConvertNumberToString(i);
 		employee.salary = 45000;
 
 		elems[i] = employee;
