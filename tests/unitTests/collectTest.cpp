@@ -3,6 +3,8 @@
 #include <string>
 #include "../../src/pp/Pipe.hpp"
 #include <list>
+#include "Employee.hpp"
+#include "utility.hpp"
 
 TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
 	std::vector< int > elems(10);
@@ -21,7 +23,7 @@ TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
 					.map< int, int, mapF >(([](int in)->int {return in * 3;}))
 					.collect< int, std::vector >();
 
-	for(unsigned int i = 0; i < expectedResult.size(); i++){
+	for(unsigned int i = 0; i < currentResult.size(); i++){
 		REQUIRE(expectedResult[i] == currentResult[i]);
 	};
 }
@@ -97,4 +99,33 @@ TEST_CASE("CollectElementsParallel", "CollectOperator") {
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
 		REQUIRE(expectedResult[i] == currentResult[i]);
 	};
+}
+
+TEST_CASE("CollectObjects", "CollectOperator") {
+	std::vector< Employee > elems;
+	std::list< Employee > expectedResult;
+	std::list< Employee > currentResult;
+	unsigned int noEmployees = 15;
+
+	for(unsigned int i = 0; i < noEmployees; i++){
+		Employee employee;
+		employee.age = i + 1;
+		employee.name = "Employee" + ConvertNumberToString(i);
+		employee.salary = 25000;
+
+		elems.push_back(employee);
+		expectedResult.push_back(employee);
+	};
+
+	pp::Pipe pipe;
+	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
+					.collect< Employee, std::list >();
+
+	std::list< Employee >::iterator currentIterator = currentResult.begin();
+	for (std::list< Employee >::iterator expectedIterator = expectedResult.begin(); expectedIterator != expectedResult.end(); expectedIterator++){
+		Employee expectedElem = *expectedIterator;
+		Employee currentElem = *currentIterator;
+		REQUIRE(expectedElem.name == currentElem.name);
+		currentIterator++;
+	}
 }

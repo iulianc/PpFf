@@ -5,6 +5,8 @@
 #include "operators/Map.hpp"
 #include "operators/Peek.hpp"
 #include "operators/Collector.hpp"
+#include "operators/Flat.hpp"
+#include "operators/Reduce.hpp"
 #include "utilities/Farm.hpp"
 
 using namespace ff;
@@ -19,7 +21,6 @@ using namespace ff;
 
 			return _farm;
 		}
-
 
 	public:
 		StageManager(ff_pipeline &pipe, int &no_workers):pipe(pipe), no_workers(no_workers){
@@ -42,6 +43,20 @@ using namespace ff;
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
 					worker_pipe->add_stage(new Map< In, Out, TaskFunc >(taskf));
+				}
+			}
+		}
+
+		template < typename TContainer, typename Out >
+		void flat(){
+			if(!isParallel()){
+				pipe.add_stage(new Flat< TContainer, Out >);
+			} else {
+				utilities::Farm *farm = InstantiateFarm();
+
+				for(int i = 0; i < no_workers; i++){
+					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
+					worker_pipe->add_stage(new Flat< TContainer, Out >);
 				}
 			}
 		}
@@ -97,6 +112,11 @@ using namespace ff;
 
 				pipe.add_stage(farm->getFarm());
 			}
+		}
+
+		template < typename In, typename TaskFunc >
+		void reduce(In &identity, TaskFunc const& taskf){
+			pipe.add_stage(new Reduce< In, TaskFunc >(identity, taskf));
 		}
 
 		template < typename T, typename C >

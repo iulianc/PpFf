@@ -4,6 +4,7 @@
 #include <ff/farm.hpp>
 #include "operators/Find.hpp"
 #include "utilities/Collectors.hpp"
+#include "utilities/NullType.hpp"
 #include "operators/Count.hpp"
 
 #include "operators/Sum.hpp"
@@ -32,14 +33,25 @@ namespace pp{
 		template < typename In, typename Out, typename TaskFunc >
 		Pipe& map(TaskFunc taskf){
 			stageManager->map< In, Out, TaskFunc >(taskf);
-			//this->add_stage(new Map< In, Out, TaskFunc >(taskf));
 			return *this;
 		}
+
+	    template< typename In, typename Out, typename FuncOutContainer, typename TaskFunc >
+	    Pipe& flatMap(TaskFunc taskFunc){
+	    	stageManager->map< In, FuncOutContainer, TaskFunc >(taskFunc);
+	    	stageManager->flat< FuncOutContainer, Out >();
+	    	return *this;
+	    };
+
+	    template< typename InContainer, typename Out, typename FuncOutContainer = InContainer, typename TaskFunc = NULL_TYPE >
+	    Pipe& flatMap(){
+	    	stageManager->flat< FuncOutContainer, Out >();
+	    	return *this;
+	    };
 
 		template < typename T, typename TaskFunc >
 		Pipe& find(TaskFunc const& taskf){
 			stageManager->find< T, TaskFunc >(taskf);
-			//this->add_stage(new Find< In, TaskFunc >(taskf));
 			return *this;
 		}
 
@@ -50,11 +62,11 @@ namespace pp{
 		}
 
 		template <typename T,
-		          template <typename ELEM,
-		                    class ALLOC = std::allocator<ELEM> >
-		                    class CONT >
-		CONT<T> collect() {
-			typedef Container< T, CONT > CONTAINER;
+		          template < typename ELEM,
+		                    class ALLOC = std::allocator< ELEM > >
+		                    class TContainer >
+		TContainer< T > collect() {
+			typedef Container< T, TContainer > CONTAINER;
 			Collectors< T, CONTAINER > collectors;
 			stageManager->collect< T, CONTAINER >(collectors);
 			this->run();
@@ -80,6 +92,29 @@ namespace pp{
 			return accum.value();
 		}
 
+		template < typename In, typename Out = In, typename BinaryOperator, typename TaskFunc = NULL_TYPE >
+		Out reduce(Out identity, BinaryOperator biOp){
+			stageManager->reduce< Out, BinaryOperator >(identity, biOp);
+			this->run();
+			return identity;
+		}
+
+		template < typename In, typename Out = In, typename BinaryOperator, typename TaskFunc = NULL_TYPE >
+		Out reduce(BinaryOperator biOp){
+			Out out;
+			stageManager->reduce< Out, BinaryOperator >(out, biOp);
+			this->run();
+			return out;
+		}
+
+		template < typename In, typename Out, typename BinaryOperator, typename TaskFunc >
+		Out reduce(Out identity, BinaryOperator biOp, TaskFunc taskf){
+			stageManager->map< In, Out, TaskFunc >(taskf);
+			stageManager->reduce< Out, BinaryOperator >(identity, biOp);
+			this->run();
+			return identity;
+		}
+
 		unsigned int count(){
 			typedef Accumulator< unsigned int > ACCUM;
 			Collectors< ACCUM > collectors;
@@ -98,7 +133,7 @@ namespace pp{
 		}
 
 		ff_pipeline pipe;
-		ff_pipeline pipep;
+		//ff_pipeline pipep;
 		int no_workers;
 		StageManager* stageManager;
 	};

@@ -41,6 +41,27 @@ TEST_CASE("CollectionOfObjects", "CountOperator") {
 	REQUIRE(expectedResult == currentResult);
 }
 
+TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
+	std::vector< Employee* > elems;
+	unsigned int expectedResult = 15;
+	unsigned int currentResult = 0;
+
+	for(unsigned int i = 0; i < expectedResult; i++){
+		Employee *employee = new Employee();
+		employee->age = i + 1;
+		employee->name = "Employee" + ConvertNumberToString(i);
+		employee->salary = 25000;
+
+		elems.push_back(employee);
+	};
+
+	pp::Pipe pipe;
+	currentResult = pipe.source< Employee* >(elems.begin(), elems.end())
+					.count();
+
+	REQUIRE(expectedResult == currentResult);
+}
+
 
 TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
 	std::deque< Employee > elems;

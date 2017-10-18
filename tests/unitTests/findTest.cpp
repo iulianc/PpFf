@@ -75,12 +75,12 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
 		elems.push_back(employee);
 	};
 
-	typedef bool (*retrieveEmployeeWithSalaryBiggerThanHundred)(Employee);
+	typedef bool (*retrieveEmployeesWithSalaryBiggerThanHundred)(Employee);
 	typedef std::string (*retrieveNameEmployee)(Employee);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.find< Employee, retrieveEmployeeWithSalaryBiggerThanHundred >(([](Employee e)->bool {if(e.salary > 100) return true; return false;}))
+					.find< Employee, retrieveEmployeesWithSalaryBiggerThanHundred >(([](Employee e)->bool {if(e.salary > 100) return true; return false;}))
 					.map< Employee, std::string, retrieveNameEmployee >(([](Employee e)->std::string {return e.name;}))
 					.collect< std::string, std::vector >();
 
