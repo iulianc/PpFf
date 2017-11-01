@@ -52,8 +52,8 @@ void Container<T,CONT>::push (T const& elem){
     elems.push_back(elem);
 }
 
-template<typename T, template <typename,typename> class CONT>
-void Container<T,CONT>::pop ()
+template< typename T, template < typename,typename > class CONT >
+void Container< T,CONT >::pop ()
 {
     if (elems.empty()) {
         throw std::out_of_range("Container<>::pop(): empty Container");
@@ -61,7 +61,7 @@ void Container<T,CONT>::pop ()
     elems.pop_back();
 }
 
-template <typename T, template <typename,typename> class CONT>
+template < typename T, template < typename,typename > class CONT >
 T Container<T,CONT>::top () const
 {
     if (elems.empty()) {
@@ -70,22 +70,22 @@ T Container<T,CONT>::top () const
     return elems.back();
 }
 
-template <typename T, template <typename,typename> class CONT>
+template <typename T, template < typename,typename > class CONT>
 CONT< T, std::allocator< T > > Container< T, CONT >::value ()
 {
     return elems;
 }
 
-template <typename T, template <typename,typename> class CONT>
- template <typename T2, template <typename,typename> class CONT2>
-Container<T,CONT>&
-Container<T,CONT>::operator= (Container<T2,CONT2> const& op2)
+template < typename T, template < typename,typename > class CONT >
+ template < typename T2, template < typename,typename > class CONT2 >
+Container< T,CONT >&
+Container< T,CONT >::operator= (Container< T2,CONT2 > const& op2)
 {
     if ((void*)this == (void*)&op2) {
         return *this;
     }
 
-    Container<T2,CONT2> tmp(op2);
+    Container< T2,CONT2 > tmp(op2);
 
     elems.clear();
     while (!tmp.empty()) {

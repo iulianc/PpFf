@@ -9,7 +9,8 @@
 enum CollectorType {UNDEFINED, AS_SUM, AS_COUNT, TO_VECTOR, TO_ARRAY};
 
 
-template <typename T, class C = Container< T, std::vector > >
+//template <typename T, class C = Container< T, std::vector > >
+template <typename T, typename V = T, class C = Container< T, std::vector > >
 class Collectors {
 public:
 	Collectors(): collector_type(UNDEFINED){

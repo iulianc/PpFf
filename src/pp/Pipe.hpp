@@ -36,16 +36,16 @@ namespace pp{
 			return *this;
 		}
 
-	    template< typename In, typename Out, typename FuncOutContainer, typename TaskFunc >
+	    template< typename In, typename Out, typename ContainerFuncOut, typename TaskFunc >
 	    Pipe& flatMap(TaskFunc taskFunc){
-	    	stageManager->map< In, FuncOutContainer, TaskFunc >(taskFunc);
-	    	stageManager->flat< FuncOutContainer, Out >();
+	    	stageManager->map< In, ContainerFuncOut, TaskFunc >(taskFunc);
+	    	stageManager->flat< ContainerFuncOut, Out >();
 	    	return *this;
 	    };
 
-	    template< typename InContainer, typename Out, typename FuncOutContainer = InContainer, typename TaskFunc = NULL_TYPE >
+	    template< typename InContainer, typename Out, typename ContainerFuncOut = InContainer, typename TaskFunc = NULL_TYPE >
 	    Pipe& flatMap(){
-	    	stageManager->flat< FuncOutContainer, Out >();
+	    	stageManager->flat< ContainerFuncOut, Out >();
 	    	return *this;
 	    };
 
@@ -67,7 +67,7 @@ namespace pp{
 		                    class TContainer >
 		TContainer< T > collect() {
 			typedef Container< T, TContainer > CONTAINER;
-			Collectors< T, CONTAINER > collectors;
+			Collectors< T, T, CONTAINER > collectors;
 			stageManager->collect< T, CONTAINER >(collectors);
 			this->run();
 			CONTAINER container = collectors.template value();
@@ -113,6 +113,38 @@ namespace pp{
 			stageManager->reduce< Out, BinaryOperator >(identity, biOp);
 			this->run();
 			return identity;
+		}
+
+		template < typename In, typename K = In, typename V = In, typename TaskFunc = NULL_TYPE, typename BinaryOperator = NULL_TYPE >
+		std::map < K, std::vector< V > > groupByKey(){
+			typedef std::map < K, std::vector< V > > CONTAINER;
+			Collectors< K, V, CONTAINER > collectors;
+			stageManager->groupByKey< In, K, V, NULL_TYPE, NULL_TYPE >(collectors);
+			this->run();
+			return collectors.template value();
+		}
+
+		template < typename In, typename K = In, typename V = In, typename TaskFunc, typename BinaryOperator = NULL_TYPE >
+		std::map < K, std::vector< V > > groupByKey(TaskFunc taskFunc){
+			typedef std::map < K, std::vector< V > > CONTAINER;
+			Collectors< K, V, CONTAINER > collectors;
+			stageManager->groupByKey< In, K, V, TaskFunc, BinaryOperator >(collectors, taskFunc);
+			this->run();
+			return collectors.template value();
+		}
+
+		template < typename In, typename K = In, typename V = In, typename TaskFunc, typename BinaryOperator >
+		std::map < K, V > groupByKey(TaskFunc taskFunc, V identity, BinaryOperator binaryOperator){
+			typedef std::map < K, V > CONTAINER;
+			Collectors< K, V, CONTAINER > collectors;
+			stageManager->groupByKey< In, K, V, TaskFunc, BinaryOperator >(collectors, taskFunc, identity, binaryOperator);
+			this->run();
+			return collectors.template value();
+		}
+
+		template < typename In, typename K = In, typename TaskFunc = NULL_TYPE, typename BinaryOperator = NULL_TYPE >
+		void groupBy(){
+			this->run();
 		}
 
 		unsigned int count(){

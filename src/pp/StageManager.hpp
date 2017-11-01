@@ -7,6 +7,7 @@
 #include "operators/Collector.hpp"
 #include "operators/Flat.hpp"
 #include "operators/Reduce.hpp"
+#include "operators/GroupByKey.hpp"
 #include "utilities/Farm.hpp"
 
 using namespace ff;
@@ -119,8 +120,23 @@ using namespace ff;
 			pipe.add_stage(new Reduce< In, TaskFunc >(identity, taskf));
 		}
 
+		template < typename In, typename K, typename V, typename TaskFunc, typename BinaryOperator >
+		void groupByKey(Collectors< K, V, std::map < K, std::vector< V > > > &collectors){
+			pipe.add_stage(new GroupByKey< In, K, V, NULL_TYPE, NULL_TYPE >(collectors.getContainer()));
+		}
+
+		template < typename In, typename K, typename V, typename TaskFunc, typename BinaryOperator >
+		void groupByKey(Collectors< K, V, std::map < K , std::vector< V > > > &collectors, TaskFunc taskFunc){
+			pipe.add_stage(new GroupByKey< In, K, V, TaskFunc, NULL_TYPE >(collectors.getContainer(), taskFunc));
+		}
+
+		template < typename In, typename K, typename V, typename TaskFunc, typename BinaryOperator >
+		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, TaskFunc taskFunc, V identity, BinaryOperator binaryOperator){
+			pipe.add_stage(new GroupByKey< In, K, V, TaskFunc, BinaryOperator >(collectors.getContainer(), taskFunc, identity, binaryOperator));
+		}
+
 		template < typename T, typename C >
-		void collect(Collectors< T, C > &collectors){
+		void collect(Collectors< T, T, C > &collectors){
 
 			if(!isParallel()){
 				pipe.add_stage((new Collector< T, C >(collectors.getContainer())));

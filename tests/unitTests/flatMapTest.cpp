@@ -15,7 +15,7 @@ LANGUAGES GetLanguages(Employee employee){
 	return employee.languages;
 }
 
-TEST_CASE( "FlatCollectionTypeVector", "MapOperator" ) {
+TEST_CASE( "FlatCollectionTypeVector", "FlatMapOperator" ) {
 	std::vector< int > elems_collection1(3);
 	std::vector< int > elems_collection2(3);
 	std::vector< int > elems_collection3(3);
@@ -48,7 +48,7 @@ TEST_CASE( "FlatCollectionTypeVector", "MapOperator" ) {
 	};
 }
 
-TEST_CASE( "FlatCollectionTypeDeque", "MapOperator" ) {
+TEST_CASE( "FlatCollectionTypeDeque", "FlatMapOperator" ) {
 	std::deque< int > elems_collection1(3);
 	std::deque< int > elems_collection2(3);
 	std::deque< int > elems_collection3(3);
@@ -77,7 +77,7 @@ TEST_CASE( "FlatCollectionTypeDeque", "MapOperator" ) {
 	};
 }
 
-TEST_CASE( "FlatCollectionParallel", "MapOperator" ) {
+TEST_CASE( "FlatCollectionParallel", "FlatMapOperator" ) {
 	std::vector< int > elems_collection1(3);
 	std::vector< int > elems_collection2(3);
 	std::vector< int > elems_collection3(3);
@@ -108,7 +108,7 @@ TEST_CASE( "FlatCollectionParallel", "MapOperator" ) {
 	};
 }
 
-TEST_CASE( "FlatCollectionApplyingFunction", "MapOperator" ) {
+TEST_CASE( "FlatCollectionApplyingFunction", "FlatMapOperator" ) {
 	std::vector< Employee > employees(3);
 	std::vector< std::string > expectedResult(10);
 
@@ -141,7 +141,7 @@ TEST_CASE( "FlatCollectionApplyingFunction", "MapOperator" ) {
 	};
 }
 
-TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "MapOperator" ) {
+TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
 	std::vector< Employee > employees(3);
 	std::vector< std::string > expectedResult(10);
 
