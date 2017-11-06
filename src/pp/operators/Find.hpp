@@ -1,16 +1,17 @@
 
 #include <ff/node.hpp>
+#include <functional>
 
 using namespace ff;
 
-template < typename T, typename TaskFunc >
-class Find: public ff_node_t<T> {
+template < typename T >
+class Find: public ff_node_t< T > {
 public:
-	Find(TaskFunc const& taskf): taskf(taskf){};
+	Find(std::function< bool(T) > const& taskFunc): taskFunc(taskFunc){};
 	~Find(){};
 
 	T* svc(T* task) {
-		if(!taskf(*task)){
+		if(!taskFunc(*task)){
 			return (T*)GO_ON;
 		}else{
 			//std::cout << "Find Stage - Finded item: " << (*task).toString() << "\n";
@@ -20,5 +21,5 @@ public:
 
 
 private:
-	TaskFunc const taskf;
+	std::function< bool(T) > const taskFunc;
 };

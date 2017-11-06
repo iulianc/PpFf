@@ -1,19 +1,20 @@
 
 #include <ff/node.hpp>
+#include <functional>
 
 using namespace ff;
 
-template < typename T, typename TaskFunc >
+template < typename T >
 class Peek: public ff_node_t<T> {
 public:
-	Peek(TaskFunc const& taskf): taskf(taskf){};
+	Peek(std::function< void(T) > const& taskFunc): taskFunc(taskFunc){};
 	~Peek(){}
 
 	T* svc(T* task) {
-		taskf(*task);
+		taskFunc(*task);
 		return task;
 	}
 
 private:
-	TaskFunc const taskf;
+	std::function< void(T) > const taskFunc;
 };

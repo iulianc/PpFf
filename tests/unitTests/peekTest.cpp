@@ -14,12 +14,12 @@ TEST_CASE("PrintElementsCollection", "PeekOperator") {
 		elems[i] = i;
 	};
 
-	typedef void (*printElemetsCollection)(int);
+	//typedef void (*printElemetsCollection)(int);
 
 	std::cout << "Elements of collection: ";
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.peek< int, printElemetsCollection >(([](int in) {std::cout << in << "; ";}))
+					.peek< int >(([](int in) {std::cout << in << "; ";}))
 					.collect< int, std::vector >();
 	std::cout << "\n";
 
@@ -44,12 +44,12 @@ TEST_CASE("PrintPropertyObject", "PeekOperator") {
 		elems[i] = employee;
 	};
 
-	typedef void (*printNameEmployee)(Employee);
+	//typedef void (*printNameEmployee)(Employee);
 
-	std::cout << "Employees name: ";
+	std::cout << "Name of Employees: ";
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.peek< Employee, printNameEmployee >(([](Employee e) {std::cout << e.name << "; ";}))
+					.peek< Employee >(([](Employee e) {std::cout << e.name << "; ";}))
 					.collect< Employee, std::vector >();
 	std::cout << "\n";
 

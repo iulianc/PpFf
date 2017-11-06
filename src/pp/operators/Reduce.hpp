@@ -1,22 +1,23 @@
 
 #include <ff/node.hpp>
+#include <functional>
 
 using namespace ff;
 
-template < typename In, typename TaskFunc >
+template < typename T >
 class Reduce: public ff_node {
 public:
-	Reduce(In &identity, TaskFunc const& taskf): identity(identity), taskf(taskf){};
+	Reduce(T &identity, std::function< T(T, T) > const& biOp): identity(identity), biOp(biOp){};
 	~Reduce(){};
 
 	void* svc(void* task) {
-//		In* in = new In();
-//		*in = *(In*)task;
-		identity = taskf(identity, *(In*)task);
+//		T* in = new T();
+//		*in = *(T*)task;
+		identity = biOp(identity, *(T*)task);
 		return GO_ON;
 	}
 
 private:
-	In &identity;
-	TaskFunc const taskf;
+	T &identity;
+	std::function< T(T, T) > const biOp;
 };

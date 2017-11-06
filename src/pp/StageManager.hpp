@@ -9,6 +9,7 @@
 #include "operators/Reduce.hpp"
 #include "operators/GroupByKey.hpp"
 #include "utilities/Farm.hpp"
+#include <functional>
 
 using namespace ff;
 
@@ -30,20 +31,19 @@ using namespace ff;
 
 		template < typename T, typename Iterator >
 		void source(Iterator begin, Iterator end){
-			std::cout<<"Source"<<"\n";
 			pipe.add_stage(new Source< T, Iterator >(begin, end));
 		}
 
-		template < typename In, typename Out, typename TaskFunc >
-		void map(TaskFunc const& taskf){
+		template < typename In, typename Out >
+		void map(std::function< Out(In) > const& taskFunc){
 			if(!isParallel()){
-				pipe.add_stage(new Map< In, Out, TaskFunc >(taskf));
+				pipe.add_stage(new Map< In, Out >(taskFunc));
 			} else {
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new Map< In, Out, TaskFunc >(taskf));
+					worker_pipe->add_stage(new Map< In, Out >(taskFunc));
 				}
 			}
 		}
@@ -62,30 +62,30 @@ using namespace ff;
 			}
 		}
 
-		template < typename T, typename TaskFunc >
-		void find(TaskFunc const& taskf){
+		template < typename In >
+		void find(std::function< bool(In) > const& taskFunc){
 			if(!isParallel()){
-				pipe.add_stage(new Find< T, TaskFunc >(taskf));
+				pipe.add_stage(new Find< In >(taskFunc));
 			} else{
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new Find< T, TaskFunc >(taskf));
+					worker_pipe->add_stage(new Find< In >(taskFunc));
 				}
 			}
 		}
 
-		template < typename T, typename TaskFunc >
-		void peek(TaskFunc const& taskf){
+		template < typename In >
+		void peek(std::function< void(In) > const& taskFunc){
 			if(!isParallel()){
-				pipe.add_stage(new Peek< T, TaskFunc >(taskf));
+				pipe.add_stage(new Peek< In >(taskFunc));
 			} else{
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new Peek< T, TaskFunc >(taskf));
+					worker_pipe->add_stage(new Peek< In >(taskFunc));
 				}
 			}
 		}
@@ -115,24 +115,29 @@ using namespace ff;
 			}
 		}
 
-		template < typename In, typename TaskFunc >
-		void reduce(In &identity, TaskFunc const& taskf){
-			pipe.add_stage(new Reduce< In, TaskFunc >(identity, taskf));
+		template < typename T >
+		void reduce(T &identity, std::function< T(T, T) > const& biOp){
+			pipe.add_stage(new Reduce< T >(identity, biOp));
 		}
 
-		template < typename In, typename K, typename V, typename TaskFunc, typename BinaryOperator >
+		template < typename In, typename K, typename V >
 		void groupByKey(Collectors< K, V, std::map < K, std::vector< V > > > &collectors){
-			pipe.add_stage(new GroupByKey< In, K, V, NULL_TYPE, NULL_TYPE >(collectors.getContainer()));
+			pipe.add_stage(new GroupByKey< In, K, V, false, false >(collectors.getContainer()));
 		}
 
-		template < typename In, typename K, typename V, typename TaskFunc, typename BinaryOperator >
-		void groupByKey(Collectors< K, V, std::map < K , std::vector< V > > > &collectors, TaskFunc taskFunc){
-			pipe.add_stage(new GroupByKey< In, K, V, TaskFunc, NULL_TYPE >(collectors.getContainer(), taskFunc));
+		template < typename In, typename K, typename V >
+		void groupByKey(Collectors< K, V, std::map < K , std::vector< V > > > &collectors, std::function< K(In) > const& taskFunc){
+			pipe.add_stage(new GroupByKey< In, K, V, true, false >(collectors.getContainer(), taskFunc));
 		}
 
-		template < typename In, typename K, typename V, typename TaskFunc, typename BinaryOperator >
-		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, TaskFunc taskFunc, V identity, BinaryOperator binaryOperator){
-			pipe.add_stage(new GroupByKey< In, K, V, TaskFunc, BinaryOperator >(collectors.getContainer(), taskFunc, identity, binaryOperator));
+		template < typename In, typename K, typename V >
+		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, std::function< K(In) > taskFunc, V identity, std::function< V(V, In) > const& binaryOperator){
+			pipe.add_stage(new GroupByKey< In, K, V, true, true >(collectors.getContainer(), taskFunc, identity, binaryOperator));
+		}
+
+		template < typename In, typename K, typename V >
+		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, V identity, std::function< V(V, In) > const& binaryOperator){
+			pipe.add_stage(new GroupByKey< In, K, V, false, true >(collectors.getContainer(), identity, binaryOperator));
 		}
 
 		template < typename T, typename C >

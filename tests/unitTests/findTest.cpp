@@ -24,11 +24,11 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
 		elems[i] = i;
 	};
 
-	typedef bool (*findF)(int);
+	//typedef bool (*findF)(int);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.find< int, findF >(FuncFind)
+					.find< int >(FuncFind)
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -46,11 +46,11 @@ TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
 		elems[i] = i;
 	};
 
-	typedef bool (*findF)(int);
+	//typedef bool (*findF)(int);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.find< int, findF >(([](int in)->bool {if(in % 2 != 0) return true; return false;}))
+					.find< int >(([](int in)->bool {if(in % 2 != 0) return true; return false;}))
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -75,13 +75,13 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
 		elems.push_back(employee);
 	};
 
-	typedef bool (*retrieveEmployeesWithSalaryBiggerThanHundred)(Employee);
-	typedef std::string (*retrieveNameEmployee)(Employee);
+	//typedef bool (*retrieveEmployeesWithSalaryBiggerThanHundred)(Employee);
+	//typedef std::string (*retrieveNameEmployee)(Employee);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.find< Employee, retrieveEmployeesWithSalaryBiggerThanHundred >(([](Employee e)->bool {if(e.salary > 100) return true; return false;}))
-					.map< Employee, std::string, retrieveNameEmployee >(([](Employee e)->std::string {return e.name;}))
+					.find< Employee >(([](Employee e)->bool {if(e.salary > 100) return true; return false;}))
+					.map< Employee, std::string >(([](Employee e)->std::string {return e.name;}))
 					.collect< std::string, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){

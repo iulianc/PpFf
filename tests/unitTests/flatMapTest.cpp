@@ -125,11 +125,11 @@ TEST_CASE( "FlatCollectionApplyingFunction", "FlatMapOperator" ) {
 	employees[1].languages = {"Chinese", "Arabic", "French"};
 	employees[2].languages = {"Spanish", "Portuguese"};
 
-	typedef LANGUAGES (*mapF)(Employee);
+	//typedef LANGUAGES (*mapF)(Employee);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(employees.begin(), employees.end())
-					.flatMap< Employee, std::string, LANGUAGES, mapF >(GetLanguages)
+					.flatMap< Employee, std::string, LANGUAGES >(GetLanguages)
 					.collect< std::string, std::vector >();
 
 //	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -159,12 +159,12 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
 	employees[2].languages = {"Spanish", "Portuguese"};
 
 
-	typedef LANGUAGES (*mapF)(Employee);
+	//typedef LANGUAGES (*mapF)(Employee);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(employees.begin(), employees.end())
 					.parallel(4)
-					.flatMap< Employee, std::string, LANGUAGES, mapF >(([](Employee empl){ return empl.languages;}))
+					.flatMap< Employee, std::string, LANGUAGES >(([](Employee empl){ return empl.languages;}))
 					.collect< std::string, std::vector >();
 
 

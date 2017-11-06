@@ -1,20 +1,24 @@
 
 #include <ff/node.hpp>
+#include <functional>
 
 using namespace ff;
 
-template < typename In, typename Out, typename TaskFunc >
+template < typename In, typename Out >
 class Map: public ff_node {
 public:
-	Map(TaskFunc const& taskf): taskf(taskf){};
+	Map(std::function< Out(In) > const& taskFunc): taskFunc(taskFunc){};
 	~Map(){};
 
 	void* svc(void* task) {
-		return new Out(taskf(*(In*)task));
+//		Out *out = new Out;
+//		*out = taskf(*(In*)task);
+		return new Out(taskFunc(*(In*)task));
+		//return out;
 	}
 
 private:
-	TaskFunc const taskf;
+	std::function< Out(In) > taskFunc;
 };
 
 

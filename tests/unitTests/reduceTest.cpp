@@ -17,11 +17,11 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
 		elems[i] = i;
 	};
 
-	typedef int (*reduceF)(int, int);
+	//typedef int (*reduceF)(int, int);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.reduce< int, int, reduceF >(0, FuncReduce);
+					.reduce< int, int >(0, FuncReduce);
 
 	REQUIRE(expectedResult == currentResult);
 }
@@ -46,15 +46,14 @@ TEST_CASE( "AgerEmployee", "ReduceOperator" ) {
 		elemployees[i] = employee;
 	};
 
-	typedef Employee (*reduceF)(Employee, Employee);
+	//typedef Employee (*reduceF)(Employee, Employee);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elemployees.begin(), elemployees.end())
-					.reduce< Employee, Employee, reduceF >(([](Employee e1, Employee e2)->Employee {return e1.age > e2.age ? e1 : e2;}));
+					.reduce< Employee, Employee >(([](Employee e1, Employee e2)->Employee {return e1.age > e2.age ? e1 : e2;}));
 
 	REQUIRE(expectedResult == currentResult.name);
 }
-
 
 
 
@@ -71,12 +70,13 @@ TEST_CASE( "TotalSalaryEmployees", "ReduceOperator" ) {
 		elemployees[i] = employee;
 	};
 
-	typedef int (*reduceF)(int, int);
-	typedef int (*mapF)(Employee);
+//	typedef int (*reduceF)(int, int);
+//	typedef int (*mapF)(Employee);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elemployees.begin(), elemployees.end())
-					.reduce< Employee, int, reduceF, mapF >(0, ([](int totalSalary, int salary)->int {return totalSalary += salary;}), ([](Employee e)->int {return e.salary;}));
+					.reduce< Employee, int >(0, ([](Employee e)->int {return e.salary;}), ([](int totalSalary, int salary)->int {return totalSalary += salary;}));
 
 	REQUIRE(expectedResult == currentResult);
 }
+

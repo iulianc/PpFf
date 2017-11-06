@@ -4,7 +4,6 @@
 using namespace ff;
 
 
-
 	/*
 	 * Passing iterator to constructor
 	 * https://stackoverflow.com/questions/28020465/passing-iterators-to-class-functions

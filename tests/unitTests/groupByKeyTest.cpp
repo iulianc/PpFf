@@ -78,11 +78,11 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
 	expectedResult = {{22, {employees[0], employees[1], employees[2]}}, {18, {employees[3], employees[4]}}, {55, {employees[5], employees[6]}}, {33, {employees[7], employees[8]}}, {44, {employees[9]}}};
 
 
-	typedef int (*myFunc)(Employee);
+	//typedef int (*myFunc)(Employee);
 
 	pp::Pipe pipe;
 	result = pipe.source< Employee >(employees.begin(), employees.end())
-					.groupByKey< Employee, int, Employee, myFunc >(([](Employee e)->int {return e.age;}));
+					.groupByKey< Employee, int, Employee >(([](Employee e)->int {return e.age;}));
 
 
 	std::map< int, std::vector< Employee > >::iterator it = expectedResult.begin();
@@ -131,12 +131,12 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
 
 	expectedResult = {{22, 3}, {18, 2}, {55, 3}, {33, 1}, {44, 1}};
 
-	typedef int (*myFunc)(Employee);
-	typedef int (*biOp)(int, Employee);
+//	typedef int (*myFunc)(Employee);
+//	typedef int (*biOp)(int, Employee);
 
 	pp::Pipe pipe;
 	result = pipe.source< Employee >(employees.begin(), employees.end())
-				.groupByKey< Employee, int, int, myFunc, biOp >(([](Employee e)->int {return e.age;}), 0, ([](int count, Employee e)->int {return count+1;}));
+				.groupByKey< Employee, int, int >(([](Employee e)->int {return e.age;}), 0, ([](int count, Employee e)->int {return count+1;}));
 
 
 	std::map< int, int >::iterator it = expectedResult.begin();

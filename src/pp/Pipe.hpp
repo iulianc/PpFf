@@ -6,6 +6,7 @@
 #include "utilities/Collectors.hpp"
 #include "utilities/NullType.hpp"
 #include "operators/Count.hpp"
+#include <functional>
 
 #include "operators/Sum.hpp"
 #include "StageManager.hpp"
@@ -30,34 +31,34 @@ namespace pp{
 			return *this;
 		}
 
-		template < typename In, typename Out, typename TaskFunc >
-		Pipe& map(TaskFunc taskf){
-			stageManager->map< In, Out, TaskFunc >(taskf);
+		template < typename In, typename Out >
+		Pipe& map(std::function< Out(In) > const& taskFunc){
+			stageManager->map< In, Out >(taskFunc);
 			return *this;
 		}
 
-	    template< typename In, typename Out, typename ContainerFuncOut, typename TaskFunc >
-	    Pipe& flatMap(TaskFunc taskFunc){
-	    	stageManager->map< In, ContainerFuncOut, TaskFunc >(taskFunc);
+	    template< typename In, typename Out, typename ContainerFuncOut >
+	    Pipe& flatMap(std::function< ContainerFuncOut(In) > const& taskFunc){
+	    	stageManager->map< In, ContainerFuncOut >(taskFunc);
 	    	stageManager->flat< ContainerFuncOut, Out >();
 	    	return *this;
 	    };
 
-	    template< typename InContainer, typename Out, typename ContainerFuncOut = InContainer, typename TaskFunc = NULL_TYPE >
+	    template< typename InContainer, typename Out, typename ContainerFuncOut = InContainer >
 	    Pipe& flatMap(){
 	    	stageManager->flat< ContainerFuncOut, Out >();
 	    	return *this;
 	    };
 
-		template < typename T, typename TaskFunc >
-		Pipe& find(TaskFunc const& taskf){
-			stageManager->find< T, TaskFunc >(taskf);
+		template < typename In >
+		Pipe& find(std::function< bool(In) > const& taskFunc){
+			stageManager->find< In >(taskFunc);
 			return *this;
 		}
 
-		template < typename T, typename TaskFunc >
-		Pipe& peek(TaskFunc const& taskf){
-			stageManager->peek< T, TaskFunc >(taskf);
+		template < typename In >
+		Pipe& peek(std::function< void(In) > const& taskFunc){
+			stageManager->peek< In >(taskFunc);
 			return *this;
 		}
 
@@ -92,59 +93,67 @@ namespace pp{
 			return accum.value();
 		}
 
-		template < typename In, typename Out = In, typename BinaryOperator, typename TaskFunc = NULL_TYPE >
-		Out reduce(Out identity, BinaryOperator biOp){
-			stageManager->reduce< Out, BinaryOperator >(identity, biOp);
+		template < typename In, typename Out = In >
+		Out reduce(std::function< Out(Out, Out) > const& biOp){
+			Out result;
+			//result->age = 0;
+			stageManager->reduce< Out >(result, biOp);
 			this->run();
-			return identity;
+			return result;
 		}
 
-		template < typename In, typename Out = In, typename BinaryOperator, typename TaskFunc = NULL_TYPE >
-		Out reduce(BinaryOperator biOp){
-			Out out;
-			stageManager->reduce< Out, BinaryOperator >(out, biOp);
+		template < typename In, typename Out = In >
+		Out reduce(Out identity, std::function< Out(Out, Out) > const& biOp){
+			Out result = identity;
+			stageManager->reduce< Out >(result, biOp);
 			this->run();
-			return out;
+			return result;
 		}
 
-		template < typename In, typename Out, typename BinaryOperator, typename TaskFunc >
-		Out reduce(Out identity, BinaryOperator biOp, TaskFunc taskf){
-			stageManager->map< In, Out, TaskFunc >(taskf);
-			stageManager->reduce< Out, BinaryOperator >(identity, biOp);
+		//
+		template < typename In, typename Out >
+		Out reduce(Out identity, std::function< Out(In) > const& taskFunc, std::function< Out(Out, Out) > const& biOp){
+			Out result = identity;
+			stageManager->map< In, Out >(taskFunc);
+			stageManager->reduce< Out >(result, biOp);
 			this->run();
-			return identity;
+			return result;
 		}
 
-		template < typename In, typename K = In, typename V = In, typename TaskFunc = NULL_TYPE, typename BinaryOperator = NULL_TYPE >
+		template < typename In, typename K = In, typename V = In >
 		std::map < K, std::vector< V > > groupByKey(){
 			typedef std::map < K, std::vector< V > > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
-			stageManager->groupByKey< In, K, V, NULL_TYPE, NULL_TYPE >(collectors);
+			stageManager->groupByKey< In, K, V >(collectors);
 			this->run();
 			return collectors.template value();
 		}
 
-		template < typename In, typename K = In, typename V = In, typename TaskFunc, typename BinaryOperator = NULL_TYPE >
-		std::map < K, std::vector< V > > groupByKey(TaskFunc taskFunc){
+		template < typename In, typename K = In, typename V = In >
+		std::map < K, std::vector< V > > groupByKey(std::function< K(In) > const& taskFunc){
 			typedef std::map < K, std::vector< V > > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
-			stageManager->groupByKey< In, K, V, TaskFunc, BinaryOperator >(collectors, taskFunc);
+			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
 			this->run();
 			return collectors.template value();
 		}
 
-		template < typename In, typename K = In, typename V = In, typename TaskFunc, typename BinaryOperator >
-		std::map < K, V > groupByKey(TaskFunc taskFunc, V identity, BinaryOperator binaryOperator){
+		template < typename In, typename K = In, typename V = In >
+		std::map < K, V > groupByKey(std::function< K(In) > taskFunc, V identity, std::function< V(V, In) > const& binaryOperator){
 			typedef std::map < K, V > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
-			stageManager->groupByKey< In, K, V, TaskFunc, BinaryOperator >(collectors, taskFunc, identity, binaryOperator);
+			stageManager->groupByKey< In, K, V >(collectors, taskFunc, identity, binaryOperator);
 			this->run();
 			return collectors.template value();
 		}
 
-		template < typename In, typename K = In, typename TaskFunc = NULL_TYPE, typename BinaryOperator = NULL_TYPE >
-		void groupBy(){
+		template < typename In, typename K = In, typename V = In >
+		std::map < K, V > groupByKey(V identity, std::function< V(V, In) > const& binaryOperator){
+			typedef std::map < K, V > CONTAINER;
+			Collectors< K, V, CONTAINER > collectors;
+			stageManager->groupByKey< In, K, V >(collectors, identity, binaryOperator);
 			this->run();
+			return collectors.template value();
 		}
 
 		unsigned int count(){

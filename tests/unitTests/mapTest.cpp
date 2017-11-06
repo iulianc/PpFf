@@ -19,11 +19,11 @@ TEST_CASE( "UpdateElementsCollectionUsingFunction", "MapOperator" ) {
 		elems[i] = i;
 	};
 
-	typedef int (*mapF)(int);
+	//typedef int (*mapF)(int);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.map< int, int, mapF >(FuncMap)
+					.map< int, int >(FuncMap)
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -42,11 +42,11 @@ TEST_CASE("UpdateElementsCollectionUsingLambdaFunction", "MapOperator") {
 		elems[i] = i;
 	};
 
-	typedef int (*mapF)(int);
+	//typedef int (*mapF)(int);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
-					.map< int, int, mapF >(([](int in){return in * 3;}))
+					.map< int, int >(([](int in){return in * 3;}))
 					.collect< int, std::vector >();
 
 	for(unsigned int i = 0; i < expectedResult.size(); i++){
@@ -70,11 +70,11 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
 		elems.push_back(employee);
 	};
 
-	typedef std::string (*retrieveNameEmployee)(Employee);
+	//typedef std::string (*retrieveNameEmployee)(Employee);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< Employee >(elems.begin(), elems.end())
-					.map< Employee, std::string, retrieveNameEmployee >(([](Employee e)->std::string {return e.name;}))
+					.map< Employee, std::string >(([](Employee e)->std::string {return e.name;}))
 					.collect< std::string, std::vector >();
 
 	for(unsigned int i = 0; i < currentResult.size(); i++){
@@ -94,12 +94,12 @@ TEST_CASE("UpdateElementsCollectionParallel", "MapOperator") {
 		elems[i] = i;
 	};
 
-	typedef int (*mapF)(int);
+	//typedef int (*mapF)(int);
 
 	pp::Pipe pipe;
 	currentResult = pipe.source< int >(elems.begin(), elems.end())
 					.parallel(4)
-					.map< int, int, mapF >(FuncMap)
+					.map< int, int >(FuncMap)
 					.collect< int, std::vector >();
 
 	std::sort(currentResult.begin(), currentResult.end());
