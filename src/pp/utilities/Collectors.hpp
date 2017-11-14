@@ -4,6 +4,7 @@
 
 #include "Container.hpp"
 #include <utility>
+#include <functional>
 
 
 enum CollectorType {UNDEFINED, AS_SUM, AS_COUNT, TO_VECTOR, TO_ARRAY};
@@ -34,7 +35,7 @@ public:
 		T result;
 
 		for(unsigned int i = 0; i < container.size(); i++){
-			reduce(*(container.at(i)), result, ([](T &in, T &out){out = out + in;}));
+			reduce(container.at(i), result, ([](T in, T &out){out = out + in;}));
 		}
 
 		return result;
@@ -48,10 +49,16 @@ private:
 
 	CollectorType collector_type;
 
-	typedef void (*FuncTask)(T&, T&);
-	void reduce(T &in, T &out, FuncTask funcTask){
-		funcTask(in, out);
+//	typedef void (*FuncTask)(T, T&);
+//	void reduce(T in, T &out, FuncTask funcTask){
+//		funcTask(in, out);
+//	}
+
+	void reduce(T in, T &out, std::function< void(T, T&) > const& taskFunc){
+		taskFunc(in, out);
 	}
+
+
 };
 
 

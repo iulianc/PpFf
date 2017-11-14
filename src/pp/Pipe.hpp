@@ -91,6 +91,15 @@ namespace pp{
 			this->run();
 			ACCUM accum = collectors.template value< ACCUM >();
 			return accum.value();
+
+//			typedef Accumulator< T > ACCUM;
+//			T *identity = new T;
+//			ACCUM init;
+//			ACCUM result;
+//			//result = this->reduce< T, T >(init, [](T sum, T elem)->T {return sum += elem;});
+//			result = this->reduce< ACCUM, ACCUM >(init, ([](T sum, T elem)->T {return sum += elem;}));
+//			this->run();
+//			return result;
 		}
 
 		template < typename In, typename Out = In >

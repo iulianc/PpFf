@@ -12,6 +12,8 @@ public:
 
 	T* svc(T* task) {
 		if(!taskFunc(*task)){
+
+			//delete(task);
 			return (T*)GO_ON;
 		}else{
 			//std::cout << "Find Stage - Finded item: " << (*task).toString() << "\n";

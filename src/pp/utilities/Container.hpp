@@ -19,7 +19,7 @@ class Container {
     void pop();
     T top() const;
     unsigned size();
-    T* at(unsigned int);
+    T at(unsigned int);
     void setWorkers(int);
     CONT< T, std::allocator<T> > value();
     bool empty() const {
@@ -31,6 +31,14 @@ class Container {
                       typename = std::allocator<ELEM2>
                      >class CONT2>
     Container<T,CONT>& operator= (Container<T2,CONT2> const&);
+
+	void operator=(const Container< T, CONT > &cont){
+		elems = cont;
+	}
+
+    T& operator[] (unsigned int x) {
+        return elems[x];
+    }
 };
 
 template <typename T, template <typename,typename> class CONT>
@@ -39,12 +47,12 @@ unsigned int Container<T,CONT>::size(){
 }
 
 template <typename T, template <typename,typename> class CONT>
-T* Container<T,CONT>::at(unsigned int i) {
+T Container<T,CONT>::at(unsigned int i) {
     if (i >= elems.size()) {
         throw std::out_of_range("error:Container<>::at()");
     }
 
-	return &elems.at(i);
+	return elems.at(i);
 }
 
 template <typename T, template <typename,typename> class CONT>

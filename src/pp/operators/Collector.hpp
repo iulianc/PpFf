@@ -13,6 +13,7 @@ public:
 
 //		std::cout<<"Container Stage - Container items: ";
 //		container.print();
+		//delete(task);
 		return (T*)GO_ON;
 	}
 

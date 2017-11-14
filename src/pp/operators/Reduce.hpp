@@ -14,6 +14,7 @@ public:
 //		T* in = new T();
 //		*in = *(T*)task;
 		identity = biOp(identity, *(T*)task);
+
 		return GO_ON;
 	}
 

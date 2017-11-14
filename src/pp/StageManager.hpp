@@ -33,7 +33,7 @@ using namespace ff;
 		void source(Iterator begin, Iterator end){
 			pipe.add_stage(new Source< T, Iterator >(begin, end));
 		}
-
+		
 		template < typename In, typename Out >
 		void map(std::function< Out(In) > const& taskFunc){
 			if(!isParallel()){
@@ -95,20 +95,23 @@ using namespace ff;
 
 			collectors.collect(AS_SUM);
 
+			typedef Container< ACCUM, std::vector > CONTAINER;
+			CONTAINER &container = collectors.getContainer();
+
 			for(int i = 0; i < no_workers; i++){
 				ACCUM accum;
-				collectors.getContainer().push(accum);
+				container.push(accum);
 			}
 
 
 			if(!isParallel()){
-				pipe.add_stage((new Sum< T >(collectors.getContainer().at(0))));
+				pipe.add_stage((new Sum< T >(container[0])));
 			}else{
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage((new Sum< T >(collectors.getContainer().at(i))));
+					worker_pipe->add_stage((new Sum< T >(container[i])));
 				}
 
 				pipe.add_stage(farm->getFarm());
@@ -158,20 +161,22 @@ using namespace ff;
 
 			collectors.collect(AS_COUNT);
 
+			typedef Container< ACCUM, std::vector > CONTAINER;
+			CONTAINER &container = collectors.getContainer();
+
 			for(int i = 0; i < no_workers; i++){
 				ACCUM accum;
-				collectors.getContainer().push(accum);
+				container.push(accum);
 			}
 
-
 			if(!isParallel()){
-				pipe.add_stage((new Count< ACCUM >(collectors.getContainer().at(0))));
+				pipe.add_stage((new Count< ACCUM >(container[0])));
 			}else{
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage((new Count< ACCUM >(collectors.getContainer().at(i))));
+					worker_pipe->add_stage((new Count< ACCUM >(container[i])));
 				}
 
 				pipe.add_stage(farm->getFarm());
