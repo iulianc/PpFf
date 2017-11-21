@@ -2,6 +2,7 @@
 #include <ff/pipeline.hpp>
 #include "utilities/Collectors.hpp"
 #include "operators/Source.hpp"
+#include "operators/SourceFromFile.hpp"
 #include "operators/Map.hpp"
 #include "operators/Peek.hpp"
 #include "operators/Collector.hpp"
@@ -33,7 +34,14 @@ using namespace ff;
 		void source(Iterator begin, Iterator end){
 			pipe.add_stage(new Source< T, Iterator >(begin, end));
 		}
-		
+
+		template < template < typename ELEM,
+		                    class ALLOC = std::allocator< ELEM > >
+		                    class TContainer >
+		void sourceFromFile(const std::string& path, const std::string& delimiter){
+			pipe.add_stage(new SourceFromFile< TContainer >(path, delimiter));
+		}
+
 		template < typename In, typename Out >
 		void map(std::function< Out(In) > const& taskFunc){
 			if(!isParallel()){
