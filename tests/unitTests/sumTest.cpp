@@ -15,7 +15,7 @@ TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
         .source<int>(elems.begin(), elems.end())
         .sum<int>();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
 TEST_CASE("CollectionOfNegativeIntegers", "SumOperator") {
@@ -32,11 +32,11 @@ TEST_CASE("CollectionOfNegativeIntegers", "SumOperator") {
         .source<int>(elems.begin(), elems.end())
         .sum<int>();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
 TEST_CASE("CollectionOfFloatElements", "SumOperator") {
-    int n = 1000;
+    int n = 2000;
     std::vector<float> elems(n);
     float expectedResult = 0.1 * n * (n - 1) / 2.0;
 
@@ -51,12 +51,11 @@ TEST_CASE("CollectionOfFloatElements", "SumOperator") {
         .source<float>(elems.begin(), elems.end())
         .sum<float>();
 
-    //EXPECT_FLOAT_EQ(expectedResult, currentResult);
-    REQUIRE(expectedResult == Approx(currentResult));
+    REQUIRE(currentResult == Approx(expectedResult));
 }
 
 TEST_CASE("CollectionOfDoubleElements", "SumOperator") {
-    int n = 1000;
+    int n = 10000;
     std::vector<double> elems(n);
     double expectedResult = 0.1 * n * (n - 1) / 2.0;
 
@@ -71,8 +70,7 @@ TEST_CASE("CollectionOfDoubleElements", "SumOperator") {
         .source<double>(elems.begin(), elems.end())
         .sum<double>();
 
-    //ASSERT_DOUBLE_EQ(expectedResult, currentResult);
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == Approx(expectedResult));
 }
 
 TEST_CASE("SumParallel", "SumOperator") {
@@ -90,7 +88,7 @@ TEST_CASE("SumParallel", "SumOperator") {
         .parallel(4)
         .sum<int>();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
 TEST_CASE("SumOnCollectionTypeDeque", "SumOperator") {
@@ -108,5 +106,5 @@ TEST_CASE("SumOnCollectionTypeDeque", "SumOperator") {
         .parallel()
         .sum<int>();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
