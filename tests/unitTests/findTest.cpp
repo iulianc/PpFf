@@ -14,7 +14,6 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
     std::vector<int> elems(10);
     std::vector<int> expectedResult(10);
     expectedResult = {0, 2, 4, 6, 8};
-    std::vector<int> currentResult;
 
     for(unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
@@ -23,7 +22,7 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
     //typedef bool (*findF)(int);
 
     pp::Pipe pipe;
-    currentResult = pipe
+    std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .find<int>(FuncFind)
         .collect<int, std::vector>();
@@ -35,7 +34,6 @@ TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
     std::vector<int> elems(10);
     std::vector<int> expectedResult(10);
     expectedResult = {1, 3, 5, 7, 9};
-    std::vector<int> currentResult;
 
     for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
@@ -44,7 +42,7 @@ TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
     //typedef bool (*findF)(int);
 
     pp::Pipe pipe;
-    currentResult = pipe
+    std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .find<int>( [](int in) ->bool { return in % 2 != 0; } )
         .collect<int, std::vector>();
@@ -57,7 +55,6 @@ TEST_CASE("FindOddElementsUsingLambdaFunction with large number of elements", "F
     int n = 100000;
     std::vector<int> elems(n);
     std::vector<int> expectedResult(n/2);
-    std::vector<int> currentResult;
 
     for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
@@ -69,7 +66,7 @@ TEST_CASE("FindOddElementsUsingLambdaFunction with large number of elements", "F
     //typedef bool (*findF)(int);
 
     pp::Pipe pipe;
-    currentResult = pipe
+    std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(3)
         .find<int>( [](int in) ->bool { return in % 2 != 0; } )
@@ -84,7 +81,6 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
     std::vector<Employee> elems;
     std::vector<std::string> expectedResult(3);
     expectedResult = {"Employee3","Employee6","Employee9"};
-    std::vector<std::string> currentResult;
     unsigned int noEmployees = 10;
 
     for (unsigned int i = 0; i < noEmployees; i++) {
@@ -100,7 +96,7 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
     //typedef std::string (*retrieveNameEmployee)(Employee);
 
     pp::Pipe pipe;
-    currentResult = pipe
+    std::vector<std::string> currentResult = pipe
         .source<Employee>(elems.begin(), elems.end())
         .find<Employee>( [](Employee e) ->bool { return e.salary > 100; } )
         .map<Employee, std::string>( [](Employee e) ->std::string { return e.name; } )
