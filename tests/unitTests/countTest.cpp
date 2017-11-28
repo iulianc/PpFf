@@ -18,7 +18,7 @@ TEST_CASE("CollectionOfIntegers", "CountOperator") {
         .parallel(4)
         .count();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
 
@@ -41,7 +41,7 @@ TEST_CASE("CollectionOfObjects", "CountOperator") {
         .source<Employee>(elems.begin(), elems.end())
         .count();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
 TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
@@ -62,7 +62,7 @@ TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
         .source<Employee*>(elems.begin(), elems.end())
         .count();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
 
@@ -85,7 +85,7 @@ TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
         .source<Employee>(elems.begin(), elems.end())
         .count();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
 
@@ -109,6 +109,6 @@ TEST_CASE("CountParallel", "CountOperator") {
         .parallel(4)
         .count();
 
-    REQUIRE(expectedResult == currentResult);
+    REQUIRE(currentResult == expectedResult);
 }
 
