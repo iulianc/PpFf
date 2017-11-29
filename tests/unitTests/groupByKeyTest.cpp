@@ -56,7 +56,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorGrandNombreElements", "GroupByKeyOper
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
         VALUE resultValue = result[it->first];
         VALUE expectedResultValue = it->second;
-
+        
         REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
     }
 }
@@ -114,19 +114,18 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
     std::vector<Employee> employees;
     unsigned int noEmployees = 10;
     for (unsigned int i = 0; i < noEmployees; i++) {
-        int age;
-        if (i == 0 || i == 1 || i == 2) {
-            age = 22;
-        } else if ( i == 3 || i == 4 ) {
-            age = 18;
-        } else if ( i == 5 || i == 6 || i == 7 ) {
-            age = 55;
-        } else if ( i == 8 ) {
-            age = 33;
-        } else if ( i == 9 ) {
-            age = 44;
-        }  else {
-            age = 0;
+        int age = 0;
+        switch( i ) {
+        case 0: case 1: case 2:
+            age = 22; break;
+        case 3: case 4:
+            age = 18; break;
+        case 5: case 6: case 7:
+            age = 55; break;
+        case 8:
+            age = 33; break;
+        case 9:
+            age = 44; break;
         }
         Employee employee(age,
                           "Employee" + ConvertNumberToString(i),
