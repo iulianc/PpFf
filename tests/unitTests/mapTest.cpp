@@ -10,10 +10,8 @@ int FuncMap(int in){
 
 
 TEST_CASE( "UpdateElementsCollectionUsingFunction", "MapOperator" ) {
-    std::vector<int> elems(10);
-    std::vector<int> expectedResult(10);
-    elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
+    std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
   
     //typedef int (*mapF)(int);
 
@@ -28,10 +26,8 @@ TEST_CASE( "UpdateElementsCollectionUsingFunction", "MapOperator" ) {
 
 
 TEST_CASE("UpdateElementsCollectionUsingLambdaFunction", "MapOperator") {
-    std::vector<int> elems(10);
-    std::vector<int> expectedResult(10);
-    elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
+    std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
     //typedef int (*mapF)(int);
 
@@ -73,10 +69,8 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
 
 
 TEST_CASE("UpdateElementsCollectionParallel", "MapOperator") {
-    std::vector<int> elems(10);
-    std::vector<int> expectedResult(10);
-    elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
+    std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
     //typedef int (*mapF)(int);
 

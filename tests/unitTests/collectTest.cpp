@@ -7,12 +7,13 @@
 #include "utility.hpp"
 
 TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
-    std::vector<int> elems(10);
-    std::vector<int> expectedResult(10);
-    expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
+    int n = 100;
+    std::vector<int> elems(n);
+    std::vector<int> expectedResult(n);
 
     for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
+        expectedResult[i] = 3 * i;
     };
 
     //typedef int (*mapF)(int);
@@ -20,19 +21,20 @@ TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int in) ->int { return in * 3; } )
+        .map<int, int>( [](int in) ->int { return 3 * in; } )
         .collect<int, std::vector>();
     
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
 
 TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
-    std::vector<int> elems(10);
-    std::deque<int> expectedResult(10);
-    expectedResult = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
+    int n = 100;
+    std::vector<int> elems(n);
+    std::deque<int> expectedResult(n);
 
     for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
+        expectedResult[i] = 2 * i;
     };
 
     //typedef int (*mapF)(int);
@@ -40,7 +42,7 @@ TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
     pp::Pipe pipe;
     std::deque<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int in) ->int { return in * 2; } )
+        .map<int, int>( [](int in) ->int { return 2 * in; } )
         .collect<int, std::deque>();
 
     for (unsigned int i = 0; i < expectedResult.size(); i++) {
@@ -50,12 +52,13 @@ TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
 
 
 TEST_CASE("ReturnCollectionTypeList", "CollectOperator") {
-    std::vector<int> elems(10);
-    std::list<int> expectedResult(10);
-    expectedResult = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int n = 100;
+    std::vector<int> elems(n);
+    std::list<int> expectedResult;
 
     for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
+        expectedResult.push_back( i + 1 );
     };
 
     //typedef int (*mapF)(int);
@@ -90,7 +93,7 @@ TEST_CASE("CollectElementsParallel", "CollectOperator") {
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .map<int, int>( [](int in) ->int { return in * 3; } )
+        .map<int, int>( [](int in) ->int { return 3 * in; } )
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());

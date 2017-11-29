@@ -12,8 +12,7 @@ bool FuncFind(int in){
 
 TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
     std::vector<int> elems(10);
-    std::vector<int> expectedResult(10);
-    expectedResult = {0, 2, 4, 6, 8};
+    std::vector<int> expectedResult = {0, 2, 4, 6, 8};
 
     for(unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
@@ -32,8 +31,7 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
 
 TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
     std::vector<int> elems(10);
-    std::vector<int> expectedResult(10);
-    expectedResult = {1, 3, 5, 7, 9};
+    std::vector<int> expectedResult = {1, 3, 5, 7, 9};
 
     for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
