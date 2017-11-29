@@ -30,6 +30,37 @@ TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
     }
 }
 
+TEST_CASE( "GroupByKeyACollectionTypeVectorGrandNombreElements", "GroupByKeyOperator" ) {
+    typedef std::vector<std::string> VALUE;
+    typedef std::map<std::string, VALUE> CONTAINER;
+    
+    int n = 200;
+    CONTAINER expectedResult;
+    std::vector<std::string> elems;
+    for (int i = 0; i < n; i++) {
+        std::vector<std::string> lesElems;
+        for( int j = 0; j <= i; j++ ) {
+            std::string en = "Employee" + ConvertNumberToString(i) ; 
+            elems.push_back(en);
+            lesElems.push_back(en);
+        }
+        expectedResult["Employee" + ConvertNumberToString(i)] = lesElems;
+    }
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<std::string>(elems.begin(), elems.end())
+        .groupByKey<std::string>();
+    
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        VALUE resultValue = result[it->first];
+        VALUE expectedResultValue = it->second;
+
+        REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
+    }
+}
+
 TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
     typedef std::vector<Employee> VALUE;
     typedef std::map<int, VALUE> CONTAINER;
