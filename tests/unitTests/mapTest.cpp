@@ -48,10 +48,7 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
     expectedResult = {"Employee0","Employee1","Employee2","Employee3","Employee4","Employee5","Employee6","Employee7","Employee8","Employee9"};
 
     for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee;
-        employee.age = i;
-        employee.name = "Employee" + ConvertNumberToString(i);
-        employee.salary = 12000;
+        Employee employee(i, "Employee" + ConvertNumberToString(i), 12000);
         elems.push_back(employee);
     };
 

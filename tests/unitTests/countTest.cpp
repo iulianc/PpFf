@@ -28,11 +28,7 @@ TEST_CASE("CollectionOfObjects", "CountOperator") {
     unsigned int expectedResult = n;
 
     for (unsigned int i = 0; i < n; i++) {
-        Employee employee;
-        employee.age = i + 1;
-        employee.name = "Employee" + ConvertNumberToString(i);
-        employee.salary = 25000;
-
+        Employee employee(i + 1, "Employee" + ConvertNumberToString(i), 25000);
         elems.push_back(employee);
     };
 
@@ -49,11 +45,7 @@ TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
     unsigned int expectedResult = 15;
 
     for (unsigned int i = 0; i < expectedResult; i++) {
-        Employee *employee = new Employee();
-        employee->age = i + 1;
-        employee->name = "Employee" + ConvertNumberToString(i);
-        employee->salary = 25000;
-
+        Employee *employee = new Employee(i + 1, "Employee" + ConvertNumberToString(i), 25000);
         elems.push_back(employee);
     };
 
@@ -72,11 +64,7 @@ TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
     unsigned int expectedResult = n;
 
     for (unsigned int i = 0; i < n; i++) {
-        Employee employee;
-        employee.age = i + 1;
-        employee.name = "Employee" + ConvertNumberToString(i);
-        employee.salary = 130000;
-
+        Employee employee(i + 1, "Employee" + ConvertNumberToString(i), 130000);
         elems.push_back(employee);
     };
 
@@ -95,11 +83,7 @@ TEST_CASE("CountParallel", "CountOperator") {
     unsigned int expectedResult = n;
 
     for (unsigned int i = 0; i < elems.size(); i++) {
-        Employee employee;
-        employee.age = i + 1;
-        employee.name = "Employee" + ConvertNumberToString(i);
-        employee.salary = 45000;
-
+        Employee employee(i + 1, "Employee" + ConvertNumberToString(i), 45000);
         elems[i] = employee;
     };
 

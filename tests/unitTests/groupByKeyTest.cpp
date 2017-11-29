@@ -41,10 +41,9 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
     unsigned int noEmployees = 10;
     VALUE employees;
     for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee;
-        employee.salary = i % 3 == 0 ? i * 100 : i * 10;
-        employee.name = "Employee" + ConvertNumberToString(i);
-        
+        Employee employee(0, 
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10);
         employees.push_back(employee);
     };
 
@@ -90,10 +89,9 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
 
     unsigned int noEmployees = 10;
     for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee;
-        employee.salary = i % 3 == 0 ? i * 100 : i * 10;
-        employee.name = "Employee" + ConvertNumberToString(i);
-
+        Employee employee(0,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10);
         employees.push_back(employee);
     };
 

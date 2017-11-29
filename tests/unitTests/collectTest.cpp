@@ -107,10 +107,7 @@ TEST_CASE("CollectObjects", "CollectOperator") {
     std::list<Employee> expectedResult;
 
     for (unsigned int i = 0; i <noEmployees; i++) {
-        Employee employee;
-        employee.age = i + 1;
-        employee.name = "Employee" + ConvertNumberToString(i);
-        employee.salary = 25000;
+        Employee employee(i + 1, "Employee" + ConvertNumberToString(i), 25000);
 
         elems.push_back(employee);
         expectedResult.push_back(employee);

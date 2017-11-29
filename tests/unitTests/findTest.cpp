@@ -82,11 +82,9 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
     unsigned int noEmployees = 10;
 
     for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee;
-        employee.age = i * 10;
-        employee.salary = i % 3 == 0 ? i * 100 : i * 10;
-        employee.name = "Employee" + ConvertNumberToString(i);
-
+        Employee employee(i * 10,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10);
         elems.push_back(employee);
     };
 

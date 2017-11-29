@@ -102,8 +102,7 @@ TEST_CASE( "FlatCollectionApplyingFunction", "FlatMapOperator" ) {
     expectedResult = {"French", "English", "Chinese", "Arabic", "French", "Spanish", "Portuguese"};
 
     for (unsigned int i = 0; i < employees.size(); i++) {
-        Employee employee;
-        employee.name = "Employee" + ConvertNumberToString(i);
+        Employee employee("Employee" + ConvertNumberToString(i));
         employees[i] = employee;
     };
 
@@ -130,8 +129,7 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
     std::vector<std::string> currentResult;
     
     for (unsigned int i = 0; i < employees.size(); i++) {
-        Employee employee;
-        employee.name = "Employee" + ConvertNumberToString(i);
+        Employee employee("Employee" + ConvertNumberToString(i));
         employees[i] = employee;
     };
     

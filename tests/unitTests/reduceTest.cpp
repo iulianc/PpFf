@@ -35,15 +35,9 @@ TEST_CASE( "AgerEmployee", "ReduceOperator" ) {
     std::string expectedResult = "Employee2";
 
     for (unsigned int i = 0; i < elemployees.size(); i++) {
-        Employee employee;
-        if (i == 2) {
-            employee.age = i + 50;
-        } else {
-            employee.age = i + 20;
-        }
-
-        employee.name = "Employee" + ConvertNumberToString(i);
-        employee.salary = 12000;
+        Employee employee( i == 2 ? i + 50 : i + 20,
+                           "Employee" + ConvertNumberToString(i),
+                           12000 );
         elemployees[i] = employee;
     };
 
@@ -64,10 +58,7 @@ TEST_CASE( "TotalSalaryEmployees", "ReduceOperator" ) {
     int expectedResult = 10900;
 
     for (unsigned int i = 0; i < elemployees.size(); i++) {
-        Employee employee;
-        employee.age = i + 20;
-        employee.name = "Employee" + ConvertNumberToString(i);
-        employee.salary = 1000 + (i * 20);
+        Employee employee( i + 20, "Employee" + ConvertNumberToString(i), 1000 + (i * 20) );
         elemployees[i] = employee;
     };
 
