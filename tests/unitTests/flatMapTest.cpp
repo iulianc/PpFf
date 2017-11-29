@@ -6,8 +6,6 @@
 #include "Employee.hpp"
 #include "utility.hpp"
 
-// A REGARDER (GUY T.)
-
 typedef std::vector<std::string> Languages;
 typedef std::vector<int> Integers;
 
@@ -47,7 +45,7 @@ TEST_CASE( "FlatCollectionTypeDeque", "FlatMapOperator" ) {
 
     for (unsigned int i = 0; i < collection.size(); i++) {
         for (unsigned int j = 0; j < collection[i].size(); j++) {
-            collection[i][j] = i + j*3;
+            collection[i][j] = i + j * 3;
         }
     };
         
@@ -71,7 +69,7 @@ TEST_CASE( "FlatCollectionParallel", "FlatMapOperator" ) {
     std::vector<Integers> collection = {elems_collection1, elems_collection2, elems_collection3};
     for (unsigned int i = 0; i < collection.size(); i++) {
         for (unsigned int j = 0; j < collection[i].size(); j++) {
-            collection[i][j] = i + j*3;
+            collection[i][j] = i + j * 3;
         }
     };
 
@@ -137,4 +135,30 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
     std::sort(currentResult.begin(), currentResult.end());
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
+}
+
+TEST_CASE( "FlatCollectionGrosNombreElements", "FlatMapOperator" ) {
+    int n = 1000;
+
+    std::vector<Employee> employees(n);
+    for (unsigned int i = 0; i < employees.size(); i++) {
+        Employee employee(0, "Employee" + ConvertNumberToString(i), 0, {"French", "English", "Spanish"});
+        employees[i] = employee;
+    };
+    
+    //typedef Languages (*mapF)(Employee);
+    
+    pp::Pipe pipe;
+    std::vector<std::string> currentResult = pipe
+        .source<Employee>(employees.begin(), employees.end())
+        .parallel(4)
+        .flatMap<Employee, std::string, Languages>( [](Employee empl) { return empl.languages;} )
+        .collect<std::string, std::vector>();
+    std::sort(currentResult.begin(), currentResult.end());
+    
+    for (int i = 0; i < n; i++ ) {
+        REQUIRE( currentResult[i] == "English" );
+        REQUIRE( currentResult[n + i] == "French" );
+        REQUIRE( currentResult[2 * n + i] == "Spanish" );
+    }
 }
