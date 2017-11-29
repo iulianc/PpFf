@@ -11,11 +11,10 @@ int FuncReduce(int sum, int in) {
 TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
     int n = 1000;
     std::vector<int> elems(n);
-    int expectedResult = n * (n - 1) / 2;
-
     for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
     };
+    int expectedResult = n * (n - 1) / 2;
 
     //typedef int (*reduceF)(int, int);
 
@@ -28,46 +27,46 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
 }
 
 
-// A REGARDER (GUY T.)!?
 TEST_CASE( "AgerEmployee", "ReduceOperator" ) {
-    int n = 10;
-    std::vector<Employee> elemployees(n);
-    std::string expectedResult = "Employee2";
-
-    for (unsigned int i = 0; i < elemployees.size(); i++) {
+    int n = 100;
+    std::vector<Employee> employees(n);
+    for (unsigned int i = 0; i < employees.size(); i++) {
         Employee employee( i == 2 ? i + 50 : i + 20,
                            "Employee" + ConvertNumberToString(i),
                            12000 );
-        elemployees[i] = employee;
+        employees[i] = employee;
     };
+    employees[78].age = 999;
+    std::string expectedResult = "Employee78";
 
     //typedef Employee (*reduceF)(Employee, Employee);
 
     pp::Pipe pipe;
     Employee currentResult = pipe
-        .source<Employee>(elemployees.begin(), elemployees.end())
+        .source<Employee>(employees.begin(), employees.end())
         .reduce<Employee, Employee>( [](Employee e1, Employee e2) ->Employee { return e1.age > e2.age ? e1 : e2; });
 
     REQUIRE(currentResult.name == expectedResult);
 }
 
 
-// A REGARDER (GUY T.)!?
 TEST_CASE( "TotalSalaryEmployees", "ReduceOperator" ) {
-    std::vector<Employee> elemployees(10);
-    int expectedResult = 10900;
-
-    for (unsigned int i = 0; i < elemployees.size(); i++) {
+    int n = 1000;
+    std::vector<Employee> employees(n);
+    for (unsigned int i = 0; i < employees.size(); i++) {
         Employee employee( i + 20, "Employee" + ConvertNumberToString(i), 1000 + (i * 20) );
-        elemployees[i] = employee;
+        employees[i] = employee;
     };
+
+    int expectedResult = n * 1000 + 20 * n * (n - 1) / 2;
 
     //	typedef int (*reduceF)(int, int);
     //	typedef int (*mapF)(Employee);
 
     pp::Pipe pipe;
     int currentResult = pipe
-        .source<Employee>(elemployees.begin(), elemployees.end())
+        .source<Employee>(employees.begin(), employees.end())
+        .parallel()
         .reduce<Employee, int>( 0, 
                                 [](Employee e) ->int { return e.salary; } , 
                                 [](int totalSalary, int salary) ->int { return totalSalary + salary; } );
