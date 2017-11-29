@@ -5,12 +5,10 @@
 #include "Employee.hpp"
 #include "utility.hpp"
 
-// A REGARDER (GUY T.)
-
 TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
     typedef std::vector<std::string> VALUE;
     typedef std::map<std::string, VALUE> CONTAINER;
-
+    
     std::vector<std::string> strElems = {"Employee3","Employee6", "Employee9", "Employee3", "Employee6", "Employee9", "Employee3", "Employee3"};
 
     CONTAINER expectedResult;
@@ -23,14 +21,12 @@ TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
         .source<std::string>(strElems.begin(), strElems.end())
         .groupByKey<std::string>();
     
+    REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        std::string expectedResultKey = it->first;
+        VALUE resultValue = result[it->first];
         VALUE expectedResultValue = it->second;
-        VALUE resultValue = result[expectedResultKey];
 
-        for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
-            REQUIRE(expectedResultValue[i] == resultValue[i]);
-        }
+        REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
     }
 }
 
@@ -69,14 +65,14 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
         .source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, Employee>( [](Employee e) ->int { return e.age; } );
 
-
+    REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int expectedResultKey = it->first;
+        VALUE resultValue = result[it->first];
         VALUE expectedResultValue = it->second;
-        VALUE resultValue = result[expectedResultKey];
 
+        REQUIRE(resultValue.size() == expectedResultValue.size());
         for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
-            REQUIRE(expectedResultValue[i].name == resultValue[i].name);
+            REQUIRE(resultValue[i].name == expectedResultValue[i].name);
         }
     }
 }
@@ -85,23 +81,29 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
     typedef std::map<int, int> CONTAINER;
 
     std::vector<Employee> employees;
-    CONTAINER expectedResult;
-
     unsigned int noEmployees = 10;
     for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee(0,
+        int age;
+        if (i == 0 || i == 1 || i == 2) {
+            age = 22;
+        } else if ( i == 3 || i == 4 ) {
+            age = 18;
+        } else if ( i == 5 || i == 6 || i == 7 ) {
+            age = 55;
+        } else if ( i == 8 ) {
+            age = 33;
+        } else if ( i == 9 ) {
+            age = 44;
+        }  else {
+            age = 0;
+        }
+        Employee employee(age,
                           "Employee" + ConvertNumberToString(i),
                           i % 3 == 0 ? i * 100 : i * 10);
         employees.push_back(employee);
     };
 
-    employees[0].age = employees[1].age = employees[2].age = 22;
-    employees[3].age = employees[4].age = 18;
-    employees[5].age = employees[6].age = employees[7].age = 55;
-    employees[8].age = 33;
-    employees[9].age = 44;
-
-    expectedResult = {{22, 3}, {18, 2}, {55, 3}, {33, 1}, {44, 1}};
+    CONTAINER expectedResult = {{22, 3}, {18, 2}, {55, 3}, {33, 1}, {44, 1}};
 
     //	typedef int (*myFunc)(Employee);
     //	typedef int (*biOp)(int, Employee);
@@ -111,15 +113,14 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
         .source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, int>( [](Employee e) ->int { return e.age; }, 
                                          0, 
-                                         [](int count, Employee e) ->int { return count+1; } 
+                                         [](int count, Employee e) ->int { return count + 1; } 
                                          );
 
-
+    REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int expectedResultKey = it->first;
+        int resultValue = result[it->first];
         int expectedResultValue = it->second;
-        int resultValue = result[expectedResultKey];
 
-        REQUIRE(expectedResultValue == resultValue);
+        REQUIRE(resultValue == expectedResultValue);
     }
 }
