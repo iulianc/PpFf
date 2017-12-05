@@ -10,10 +10,6 @@ public:
 
 	T* svc(T* task) {
 		container.push(*task);
-
-//		std::cout<<"Container Stage - Container items: ";
-//		container.print();
-		//delete(task);
 		return (T*)GO_ON;
 	}
 

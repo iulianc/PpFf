@@ -17,18 +17,18 @@ public:
         age = 0;
         name = _name;
         salary = 0;
-    };   
+    };
 
     Employee(int _age, std::string _name, int _salary) {
         age = _age;
         name = _name;
         salary = _salary;
-    };   
+    };
 
     Employee(int _age, std::string _name, int _salary, std::vector<std::string> _languages) {
         age = _age;
         name = _name;
         salary = _salary;
         languages = _languages;
-    };   
+    };
 };

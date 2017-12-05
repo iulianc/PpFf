@@ -57,30 +57,7 @@ public:
 	    	this->ff_send_out(&elem);
 	    }
 
+	    //delete (TContainer*)task;
 		return GO_ON;
 	}
 };
-
-
-//template < typename TContainer, typename Out >
-//class Flat< TContainer*, Out, true >: public ff_node {
-//public:
-//	~Flat(){};
-//
-//	void* svc(void* task) {
-//		flatRecursive< TContainer >(*(TContainer*)task);
-//		return (Out*)EOS;
-//	}
-//
-//private:
-//	template < typename Cont >
-//	void flatRecursive(const Cont &cont){
-//		for(typename Cont::const_iterator it = cont.begin(); it != cont.end(); it++ ){
-//			if(is_stl_container< Out >::value){
-//				flatRecursive< Cont >(*it);
-//			}
-//
-//			this->ff_send_out(new Out(*it));
-//		}
-//	}
-//};

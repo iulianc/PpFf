@@ -5,8 +5,8 @@
 #include "Employee.hpp"
 #include "utility.hpp"
 
-bool FuncFind(int in){
-    return in % 2 == 0;
+bool FuncFind(int *in){
+    return *in % 2 == 0;
 };
 
 
@@ -17,8 +17,6 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
     for(unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
     };
-
-    //typedef bool (*findF)(int);
 
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
@@ -37,12 +35,10 @@ TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
         elems[i] = i;
     };
 
-    //typedef bool (*findF)(int);
-
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .find<int>( [](int in) ->bool { return in % 2 != 0; } )
+        .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
         .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -61,13 +57,11 @@ TEST_CASE("FindOddElementsUsingLambdaFunction with large number of elements", "F
         }
     };
 
-    //typedef bool (*findF)(int);
-
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(3)
-        .find<int>( [](int in) ->bool { return in % 2 != 0; } )
+        .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -88,18 +82,14 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
         elems.push_back(employee);
     };
 
-    //typedef bool (*retrieveEmployeesWithSalaryBiggerThanHundred)(Employee);
-    //typedef std::string (*retrieveNameEmployee)(Employee);
-
     pp::Pipe pipe;
     std::vector<std::string> currentResult = pipe
         .source<Employee>(elems.begin(), elems.end())
-        .find<Employee>( [](Employee e) ->bool { return e.salary > 100; } )
-        .map<Employee, std::string>( [](Employee e) ->std::string { return e.name; } )
+        .find<Employee>( [](Employee *e) ->bool { return e->salary > 100; } )
+        .map<Employee, std::string>( [](Employee *e) ->std::string* { return &(e->name); } )
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
-
 
 

@@ -7,14 +7,14 @@ using namespace ff;
 template < typename T >
 class Peek: public ff_node_t<T> {
 public:
-	Peek(std::function< void(T) > const& taskFunc): taskFunc(taskFunc){};
+	Peek(std::function< void(T*) > const& taskFunc): taskFunc(taskFunc){};
 	~Peek(){}
 
 	T* svc(T* task) {
-		taskFunc(*task);
+		taskFunc(task);
 		return task;
 	}
 
 private:
-	std::function< void(T) > const taskFunc;
+	std::function< void(T*) > const &taskFunc;
 };

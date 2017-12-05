@@ -4,8 +4,8 @@
 #include "Employee.hpp"
 #include "utility.hpp"
 
-int FuncReduce(int sum, int in) {
-    return sum + in;
+void FuncReduce(int *sum, int *in) {
+	*sum = *sum + *in;
 };
 
 TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
@@ -16,13 +16,11 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
     };
     int expectedResult = n * (n - 1) / 2;
 
-    //typedef int (*reduceF)(int, int);
-
     pp::Pipe pipe;
     int currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .reduce<int, int>(0, FuncReduce);
-    
+
     REQUIRE(currentResult == expectedResult);
 }
 
@@ -39,12 +37,10 @@ TEST_CASE( "AgerEmployee", "ReduceOperator" ) {
     employees[78].age = 999;
     std::string expectedResult = "Employee78";
 
-    //typedef Employee (*reduceF)(Employee, Employee);
-
     pp::Pipe pipe;
     Employee currentResult = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .reduce<Employee, Employee>( [](Employee e1, Employee e2) ->Employee { return e1.age > e2.age ? e1 : e2; });
+        .reduce<Employee, Employee>( [](Employee *e1, Employee *e2) ->void { if(e1->age < e2->age) *e1 = *e2; });
 
     REQUIRE(currentResult.name == expectedResult);
 }
@@ -60,17 +56,13 @@ TEST_CASE( "TotalSalaryEmployees", "ReduceOperator" ) {
 
     int expectedResult = n * 1000 + 20 * n * (n - 1) / 2;
 
-    //	typedef int (*reduceF)(int, int);
-    //	typedef int (*mapF)(Employee);
-
     pp::Pipe pipe;
     int currentResult = pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel()
-        .reduce<Employee, int>( 0, 
-                                [](Employee e) ->int { return e.salary; } , 
-                                [](int totalSalary, int salary) ->int { return totalSalary + salary; } );
+        .reduce<Employee, int>( 0,
+                                [](Employee *e) ->int* { return new int(e->salary); } ,
+                                [](int *totalSalary, int *salary) ->void { *totalSalary += *salary; } );
 
     REQUIRE(currentResult == expectedResult);
 }
-

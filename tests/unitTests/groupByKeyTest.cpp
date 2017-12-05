@@ -8,7 +8,7 @@
 TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
     typedef std::vector<std::string> VALUE;
     typedef std::map<std::string, VALUE> CONTAINER;
-    
+
     std::vector<std::string> strElems = {"Employee3","Employee6", "Employee9", "Employee3", "Employee6", "Employee9", "Employee3", "Employee3"};
 
     CONTAINER expectedResult;
@@ -20,7 +20,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
     CONTAINER result = pipe
         .source<std::string>(strElems.begin(), strElems.end())
         .groupByKey<std::string>();
-    
+
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
         VALUE resultValue = result[it->first];
@@ -33,14 +33,14 @@ TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
 TEST_CASE( "GroupByKeyACollectionTypeVectorGrandNombreElements", "GroupByKeyOperator" ) {
     typedef std::vector<std::string> VALUE;
     typedef std::map<std::string, VALUE> CONTAINER;
-    
+
     int n = 200;
     CONTAINER expectedResult;
     std::vector<std::string> elems;
     for (int i = 0; i < n; i++) {
         std::vector<std::string> lesElems;
         for( int j = 0; j <= i; j++ ) {
-            std::string en = "Employee" + ConvertNumberToString(i) ; 
+            std::string en = "Employee" + ConvertNumberToString(i) ;
             elems.push_back(en);
             lesElems.push_back(en);
         }
@@ -51,12 +51,12 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorGrandNombreElements", "GroupByKeyOper
     CONTAINER result = pipe
         .source<std::string>(elems.begin(), elems.end())
         .groupByKey<std::string>();
-    
+
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
         VALUE resultValue = result[it->first];
         VALUE expectedResultValue = it->second;
-        
+
         REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
     }
 }
@@ -64,11 +64,11 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorGrandNombreElements", "GroupByKeyOper
 TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
     typedef std::vector<Employee> VALUE;
     typedef std::map<int, VALUE> CONTAINER;
-    
+
     unsigned int noEmployees = 10;
     VALUE employees;
     for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee(0, 
+        Employee employee(0,
                           "Employee" + ConvertNumberToString(i),
                           i % 3 == 0 ? i * 100 : i * 10);
         employees.push_back(employee);
@@ -80,21 +80,18 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
     employees[7].age = employees[8].age = 33;
     employees[9].age = 44;
 
-    CONTAINER expectedResult = 
-        { {22, {employees[0], employees[1], employees[2]}}, 
-          {18, {employees[3], employees[4]}}, 
-          {55, {employees[5], employees[6]}}, 
-          {33, {employees[7], employees[8]}}, 
-          {44, {employees[9]}} 
+    CONTAINER expectedResult =
+        { {22, {employees[0], employees[1], employees[2]}},
+          {18, {employees[3], employees[4]}},
+          {55, {employees[5], employees[6]}},
+          {33, {employees[7], employees[8]}},
+          {44, {employees[9]}}
         };
-
-
-    //typedef int (*myFunc)(Employee);
 
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, Employee>( [](Employee e) ->int { return e.age; } );
+        .groupByKey<Employee, int, Employee>( [](Employee *e) ->int* { return new int(e->age); } );
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
@@ -135,15 +132,12 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
 
     CONTAINER expectedResult = {{22, 3}, {18, 2}, {55, 3}, {33, 1}, {44, 1}};
 
-    //	typedef int (*myFunc)(Employee);
-    //	typedef int (*biOp)(int, Employee);
 
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, int>( [](Employee e) ->int { return e.age; }, 
-                                         0, 
-                                         [](int count, Employee e) ->int { return count + 1; } 
+        .groupByKey<Employee, int, int>( [](Employee *e) ->int* { return new int(e->age); },
+                                         [](int &count, Employee *e) ->void { count = count + 1; }
                                          );
 
     REQUIRE(result.size() == expectedResult.size());
@@ -154,3 +148,5 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
         REQUIRE(resultValue == expectedResultValue);
     }
 }
+
+

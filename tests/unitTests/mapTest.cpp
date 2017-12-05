@@ -4,16 +4,15 @@
 #include "Employee.hpp"
 #include "utility.hpp"
 
-int FuncMap(int in){
-    return in * 3;
+int* FuncMap(int *in){
+    *in = *in * 3;
+    return in;
 };
 
 
 TEST_CASE( "UpdateElementsCollectionUsingFunction", "MapOperator" ) {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
-  
-    //typedef int (*mapF)(int);
 
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
@@ -29,12 +28,10 @@ TEST_CASE("UpdateElementsCollectionUsingLambdaFunction", "MapOperator") {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
-    //typedef int (*mapF)(int);
-
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>(([](int in){ return in * 3; }))
+        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
         .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -52,12 +49,10 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
         elems.push_back(employee);
     };
 
-    //typedef std::string (*retrieveNameEmployee)(Employee);
-
     pp::Pipe pipe;
     std::vector<std::string> currentResult = pipe
         .source<Employee>(elems.begin(), elems.end())
-        .map<Employee, std::string>(([](Employee e)->std::string { return e.name; }))
+        .map<Employee, std::string>(([](Employee *e)->std::string* { return &(e->name); }))
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -68,8 +63,6 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
 TEST_CASE("UpdateElementsCollectionParallel", "MapOperator") {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
-
-    //typedef int (*mapF)(int);
 
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
@@ -88,10 +81,8 @@ TEST_CASE("UpdateElementsCollectionParallel Large number of elements", "MapOpera
     std::vector<int> expectedResult(n);
     for ( int i = 0; i < n; i++ ) {
         elems[i] = i;
-        expectedResult[i] = FuncMap(i);
+        expectedResult[i] = *(FuncMap(new int(i)));
     }
-
-    //typedef int (*mapF)(int);
 
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe

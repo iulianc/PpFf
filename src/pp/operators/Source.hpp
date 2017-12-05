@@ -16,12 +16,9 @@ public:
 	~Source(){}
 
 	T* svc(T* task) {
-		while(begin != end){//
-//			std::cout<<"AddToPipe Stage - Item added: "<<*begin<<"\n";
-
+		while(begin != end){
 			this->ff_send_out(new T(*begin));
 			begin ++;
-//			delete result;
 		}
 
 		return (T*)EOS;
@@ -40,12 +37,8 @@ public:
 
 	T* svc(T* task) {
 		while(begin != end){
-//
-//			std::cout<<"AddToPipe Stage - Item added: "<<(*begin)<<"\n";
-
 			this->ff_send_out(&(*begin));
 			begin ++;
-//			delete result;
 		}
 
 		return (T*)EOS;

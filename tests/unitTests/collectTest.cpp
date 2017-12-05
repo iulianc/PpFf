@@ -16,14 +16,12 @@ TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
         expectedResult[i] = 3 * i;
     };
 
-    //typedef int (*mapF)(int);
-
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int in) ->int { return 3 * in; } )
+        .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
         .collect<int, std::vector>();
-    
+
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
 
@@ -37,12 +35,10 @@ TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
         expectedResult[i] = 2 * i;
     };
 
-    //typedef int (*mapF)(int);
-
     pp::Pipe pipe;
     std::deque<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int in) ->int { return 2 * in; } )
+        .map<int, int>( [](int *in) ->int* { *in = *in * 2; return in; } )
         .collect<int, std::deque>();
 
     for (unsigned int i = 0; i < expectedResult.size(); i++) {
@@ -61,12 +57,10 @@ TEST_CASE("ReturnCollectionTypeList", "CollectOperator") {
         expectedResult.push_back( i + 1 );
     };
 
-    //typedef int (*mapF)(int);
-
     pp::Pipe pipe;
     std::list<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int in) ->int { return in + 1; } )
+        .map<int, int>( [](int *in) ->int* { *in = *in + 1; return in; } )
         .collect<int, std::list>();
 
     std::list<int>::iterator currentIterator = currentResult.begin();
@@ -87,13 +81,11 @@ TEST_CASE("CollectElementsParallel", "CollectOperator") {
         expectedResult[i] = 3 * i;
     };
 
-    //typedef int (*mapF)(int);
-
     pp::Pipe pipe;
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .map<int, int>( [](int in) ->int { return 3 * in; } )
+        .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());

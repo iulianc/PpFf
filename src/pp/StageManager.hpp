@@ -43,7 +43,7 @@ using namespace ff;
 		}
 
 		template < typename In, typename Out >
-		void map(std::function< Out(In) > const& taskFunc){
+		void map(std::function< Out*(In*) > const& taskFunc){
 			if(!isParallel()){
 				pipe.add_stage(new Map< In, Out >(taskFunc));
 			} else {
@@ -71,7 +71,7 @@ using namespace ff;
 		}
 
 		template < typename In >
-		void find(std::function< bool(In) > const& taskFunc){
+		void find(std::function< bool(In*) > const& taskFunc){
 			if(!isParallel()){
 				pipe.add_stage(new Find< In >(taskFunc));
 			} else{
@@ -85,7 +85,7 @@ using namespace ff;
 		}
 
 		template < typename In >
-		void peek(std::function< void(In) > const& taskFunc){
+		void peek(std::function< void(In*) > const& taskFunc){
 			if(!isParallel()){
 				pipe.add_stage(new Peek< In >(taskFunc));
 			} else{
@@ -127,7 +127,7 @@ using namespace ff;
 		}
 
 		template < typename T >
-		void reduce(T &identity, std::function< T(T, T) > const& biOp){
+		void reduce(T *identity, std::function< void(T*, T*) > const& biOp){
 			pipe.add_stage(new Reduce< T >(identity, biOp));
 		}
 
@@ -137,18 +137,18 @@ using namespace ff;
 		}
 
 		template < typename In, typename K, typename V >
-		void groupByKey(Collectors< K, V, std::map < K , std::vector< V > > > &collectors, std::function< K(In) > const& taskFunc){
+		void groupByKey(Collectors< K, V, std::map < K , std::vector< V > > > &collectors, std::function< K*(In*) > const& taskFunc){
 			pipe.add_stage(new GroupByKey< In, K, V, true, false >(collectors.getContainer(), taskFunc));
 		}
 
 		template < typename In, typename K, typename V >
-		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, std::function< K(In) > taskFunc, V identity, std::function< V(V, In) > const& binaryOperator){
-			pipe.add_stage(new GroupByKey< In, K, V, true, true >(collectors.getContainer(), taskFunc, identity, binaryOperator));
+		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
+			pipe.add_stage(new GroupByKey< In, K, V, true, true >(collectors.getContainer(), taskFunc, binaryOperator));
 		}
 
 		template < typename In, typename K, typename V >
-		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, V identity, std::function< V(V, In) > const& binaryOperator){
-			pipe.add_stage(new GroupByKey< In, K, V, false, true >(collectors.getContainer(), identity, binaryOperator));
+		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, std::function< void(V&, In*) > const& binaryOperator){
+			pipe.add_stage(new GroupByKey< In, K, V, false, true >(collectors.getContainer(), binaryOperator));
 		}
 
 		template < typename T, typename C >

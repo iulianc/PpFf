@@ -3,6 +3,7 @@
 #include "Employee.hpp"
 #include "utility.hpp"
 
+
 TEST_CASE("CollectionOfIntegers", "CountOperator") {
     int n = 10000;
     std::vector<int> elems(n);
@@ -23,7 +24,7 @@ TEST_CASE("CollectionOfIntegers", "CountOperator") {
 
 
 TEST_CASE("CollectionOfObjects", "CountOperator") {
-    int n = 15;
+    unsigned int n = 15;
     std::vector<Employee> elems;
     unsigned int expectedResult = n;
 
@@ -59,7 +60,7 @@ TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
 
 
 TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
-    int n = 2500;
+    unsigned int n = 2500;
     std::deque<Employee> elems;
     unsigned int expectedResult = n;
 
@@ -95,4 +96,3 @@ TEST_CASE("CountParallel", "CountOperator") {
 
     REQUIRE(currentResult == expectedResult);
 }
-

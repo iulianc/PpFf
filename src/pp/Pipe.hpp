@@ -40,13 +40,13 @@ namespace pp{
 		}
 
 		template < typename In, typename Out >
-		Pipe& map(std::function< Out(In) > const& taskFunc){
+		Pipe& map(std::function< Out*(In*) > const& taskFunc){
 			stageManager->map< In, Out >(taskFunc);
 			return *this;
 		}
 
 	    template< typename In, typename Out, typename ContainerFuncOut >
-	    Pipe& flatMap(std::function< ContainerFuncOut(In) > const& taskFunc){
+	    Pipe& flatMap(std::function< ContainerFuncOut*(In*) > const& taskFunc){
 	    	stageManager->map< In, ContainerFuncOut >(taskFunc);
 	    	stageManager->flat< ContainerFuncOut, Out >();
 	    	return *this;
@@ -59,13 +59,13 @@ namespace pp{
 	    };
 
 		template < typename In >
-		Pipe& find(std::function< bool(In) > const& taskFunc){
+		Pipe& find(std::function< bool(In*) > const& taskFunc){
 			stageManager->find< In >(taskFunc);
 			return *this;
 		}
 
 		template < typename In >
-		Pipe& peek(std::function< void(In) > const& taskFunc){
+		Pipe& peek(std::function< void(In*) > const& taskFunc){
 			stageManager->peek< In >(taskFunc);
 			return *this;
 		}
@@ -111,30 +111,34 @@ namespace pp{
 		}
 
 		template < typename In, typename Out = In >
-		Out reduce(std::function< Out(Out, Out) > const& biOp){
-			Out result;
+		Out reduce(std::function< void(Out*, Out*) > const& biOp){
+			//TODO delete pointer
+			Out *result = new Out();
 			//result->age = 0;
 			stageManager->reduce< Out >(result, biOp);
 			this->run();
-			return result;
+			return *result;
 		}
 
 		template < typename In, typename Out = In >
-		Out reduce(Out identity, std::function< Out(Out, Out) > const& biOp){
-			Out result = identity;
+		Out reduce(Out identity, std::function< void(Out*, Out*) > const& biOp){
+			//TODO delete pointer
+			Out *result = new Out();
+			*result = identity;
 			stageManager->reduce< Out >(result, biOp);
 			this->run();
-			return result;
+			return *result;
 		}
 
-		//
 		template < typename In, typename Out >
-		Out reduce(Out identity, std::function< Out(In) > const& taskFunc, std::function< Out(Out, Out) > const& biOp){
-			Out result = identity;
+		Out reduce(Out identity, std::function< Out*(In*) > const& taskFunc, std::function< void(Out*, Out*) > const& biOp){
+			//TODO delete pointer
+			Out *result = new Out();
+			*result = identity;
 			stageManager->map< In, Out >(taskFunc);
 			stageManager->reduce< Out >(result, biOp);
 			this->run();
-			return result;
+			return *result;
 		}
 
 		template < typename In, typename K = In, typename V = In >
@@ -147,7 +151,7 @@ namespace pp{
 		}
 
 		template < typename In, typename K = In, typename V = In >
-		std::map < K, std::vector< V > > groupByKey(std::function< K(In) > const& taskFunc){
+		std::map < K, std::vector< V > > groupByKey(std::function< K*(In*) > const& taskFunc){
 			typedef std::map < K, std::vector< V > > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
 			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
@@ -156,19 +160,19 @@ namespace pp{
 		}
 
 		template < typename In, typename K = In, typename V = In >
-		std::map < K, V > groupByKey(std::function< K(In) > taskFunc, V identity, std::function< V(V, In) > const& binaryOperator){
+		std::map < K, V > groupByKey(std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
 			typedef std::map < K, V > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
-			stageManager->groupByKey< In, K, V >(collectors, taskFunc, identity, binaryOperator);
+			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
 			this->run();
 			return collectors.template value();
 		}
 
 		template < typename In, typename K = In, typename V = In >
-		std::map < K, V > groupByKey(V identity, std::function< V(V, In) > const& binaryOperator){
+		std::map < K, V > groupByKey(std::function< void(V&, In*) > const& binaryOperator){
 			typedef std::map < K, V > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
-			stageManager->groupByKey< In, K, V >(collectors, identity, binaryOperator);
+			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
 			this->run();
 			return collectors.template value();
 		}
