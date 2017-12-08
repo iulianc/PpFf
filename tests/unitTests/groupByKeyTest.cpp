@@ -109,10 +109,11 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
     typedef std::map<int, int> CONTAINER;
 
     std::vector<Employee> employees;
-    unsigned int noEmployees = 10;
+    unsigned int NB = 1000;
+    unsigned int noEmployees = 10 * NB;
     for (unsigned int i = 0; i < noEmployees; i++) {
         int age = 0;
-        switch( i ) {
+        switch( i % 10 ) {
         case 0: case 1: case 2:
             age = 22; break;
         case 3: case 4:
@@ -130,15 +131,16 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
         employees.push_back(employee);
     };
 
-    CONTAINER expectedResult = {{22, 3}, {18, 2}, {55, 3}, {33, 1}, {44, 1}};
+    CONTAINER expectedResult = {{22, 3*NB}, {18, 2*NB}, {55, 3*NB}, {33, 1*NB}, {44, 1*NB}};
 
 
     pp::Pipe pipe;
     CONTAINER result = pipe
-        .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, int>( [](Employee *e) ->int* { return new int(e->age); },
-                                         [](int &count, Employee *e) ->void { count = count + 1; }
-                                         );
+       .source<Employee>(employees.begin(), employees.end())
+       .parallel(4)
+       .groupByKey<Employee, int, int>( [](Employee *e) ->int* { return new int(e->age); },
+                                        [](int &count, Employee *e) ->void { count = count + 1; }
+                                        );
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
