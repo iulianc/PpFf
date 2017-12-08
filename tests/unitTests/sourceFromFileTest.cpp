@@ -7,17 +7,19 @@
 #include "utility.hpp"
 #include <algorithm>
 
+#ifndef TEST_FILE
+#define TEST_FILE "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/lorem.txt"
+#endif
+
 
 TEST_CASE( "GetDataFromFileIntoCollection", "SourceFromFileOperator" ) {
     std::vector<std::string> expectedResult = {"Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit.", "Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit.", "Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit."};
-    //std::string path = "testdata/lorem.txt"; // Chemin relatif, pour que cela fonctionne partout!
-    std::string path = "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/lorem.txt";
-
+    std::string test_file = TEST_FILE;
     typedef std::vector<std::string> vec_type;
 
     pp::Pipe pipe;
     std::vector<std::string> currentResult = pipe
-        .sourceFromFile<std::vector>(path, " ")
+        .sourceFromFile<std::vector>(test_file, " ")
         .flatMap<vec_type, std::string>()
         .collect<std::string, std::vector>();
 
@@ -26,14 +28,13 @@ TEST_CASE( "GetDataFromFileIntoCollection", "SourceFromFileOperator" ) {
 
 TEST_CASE( "GetDataFromFileByComma", "SourceFromFileOperator" ) {
     std::vector<std::string> expectedResult = {"Lorem ipsum dolor sit amet", "consectetur adipiscing elit.", "Lorem ipsum dolor sit amet", "consectetur adipiscing elit.", "Lorem ipsum dolor sit amet", "consectetur adipiscing elit."};
-    //std::string path = "testdata/lorem.txt"; // Chemin relatif, pour que cela fonctionne partout!
-    std::string path = "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/lorem.txt";
+    std::string test_file = TEST_FILE;
 
     typedef std::vector<std::string> vec_type;
 
     pp::Pipe pipe;
     std::vector<std::string> currentResult = pipe
-        .sourceFromFile<std::vector>(path, ", ")
+        .sourceFromFile<std::vector>(test_file, ", ")
         .flatMap<vec_type, std::string>()
         .collect<std::string, std::vector>();
 
@@ -52,14 +53,12 @@ TEST_CASE( "CountWords", "SourceFromFileOperator" ) {
         {"sit", 3}
     };
 
-    //std::string path = "testdata/lorem.txt";
-    std::string path = "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/lorem.txt";
-
+    std::string test_file = TEST_FILE;
     typedef std::vector<std::string> vec_type;
 
     pp::Pipe pipe;
     std::map<std::string, int> currentResult = pipe
-        .sourceFromFile<std::vector>(path, " ")
+        .sourceFromFile<std::vector>(test_file, " ")
         .flatMap<vec_type, std::string>()
         .map<std::string, std::string>( [](std::string *data) ->std::string*
             {
