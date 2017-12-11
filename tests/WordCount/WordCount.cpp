@@ -19,6 +19,20 @@ std::string NumberToString (T Number) {
     return ss.str();
 }
 
+std::vector<std::string> splitIntoWords(std::string line, std::string delimiter) {
+    std::vector<std::string> words;
+    size_t start = 0;
+    size_t end = 0;
+    do { 
+        end = line.find(delimiter, start);
+        size_t len = end - start;
+        words.push_back( line.substr(start, len) );
+        start += len + delimiter.length();
+    } while (end != std::string::npos);
+    
+    return words;
+}
+
 int main(int argc, char *argv[]) {
     uint32_t nbIterations = 5;
     std::string inputFile = "testdata/78792Words.txt";
@@ -36,28 +50,14 @@ int main(int argc, char *argv[]) {
         std::cout << outputFile << std::endl;
     }
 
-    std::vector<std::string> words;
-    std::ifstream file(inputFile);
-    std::string line;
-    while (std::getline(file, line)) {
-        size_t start = 0;
-        size_t end = 0;
-        do { 
-            std::string delimiter = " ";
-            end = line.find(delimiter, start);
-            size_t len = end - start;
-            words.emplace_back( line.substr(start, len) );
-            start += len + delimiter.length();
-        } while (end != std::string::npos);
-    }
+    auto begin = std::chrono::high_resolution_clock::now();
 
     std::map<std::string, int> currentResult;
-    auto begin = std::chrono::high_resolution_clock::now();
-    
     for (uint32_t i = 0; i < nbIterations; ++i) {
         pp::Pipe pipe;
         currentResult = pipe
-            .source<std::string>(words.begin(), words.end())
+            .sourceFromFile<std::vector>(inputFile, " ")
+            .flatMap<std::vector<std::string>,std::string>()
             .map<std::string, std::string>( [](std::string* data) {
                     std::string* result = new std::string;
                     for (auto& it: *data){
