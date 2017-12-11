@@ -22,7 +22,7 @@ std::string numberToString (T number) {
     return ss.str();
 }
 
-std::vector<std::string> splitIntoWords(std::string line, std::string delimiter) {
+std::vector<std::string> splitInWords(std::string line, std::string delimiter) {
     std::vector<std::string> words;
     size_t start = 0, end = 0;
     do { 
@@ -51,13 +51,23 @@ int main(int argc, char *argv[]) {
         std::cout << outputFile << std::endl;
     }
 
+
+    std::vector<std::vector<std::string>> wordsFromLines;
+    std::ifstream file(inputFile);
+    std::string line;
+    while (std::getline(file, line)) {
+        wordsFromLines.push_back( splitInWords(line, " ") );
+    }
+
+    
     auto begin = std::chrono::high_resolution_clock::now();
 
     std::map<std::string, int> currentResult;
     for (uint32_t i = 0; i < nbIterations; ++i) {
         pp::Pipe pipe;
         currentResult = pipe
-            .source<std::vector>(inputFile, " ")
+            .source<std::vector<std::string>>(wordsFromLines.begin(), wordsFromLines.end())
+            .flatMap<std::vector<std::string>, std::string>()
             .map<std::string, std::string>( [](std::string* data) {
                     std::string* result = new std::string;
                     for (auto& it: *data){
