@@ -1,4 +1,5 @@
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,8 +14,14 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 
 /**
@@ -23,101 +30,101 @@ import java.io.IOException;
  */
 public class WordCount {
 
-    /**
-     * @param args the command line arguments
-
-     */
     public static void main(String[] args) throws IOException {
     
-	Map<String, Integer> wordCount = null;
-	String inputFile = "";
-	String outputFile = "";
+		Map<String, Integer> wordCount = null;
+		List<Map.Entry<String,Integer>> wordsCount = null;
+		String inputFile = "";
+		String outputFile = "";
 
-	inputFile = "/home/iuly/RepositoryFastFlow/PpFf_Catch/tests/WordCount/testdata/lorem.txt";
-	int iterations = 5;
 
-	if(args.length > 1)
-	{
-		iterations = Integer.parseInt(args[0]);
-		inputFile = args[1];
+		int iterations = 5;
 
-		if(args.length > 2)
+		if(args.length > 1)
 		{
-			outputFile = args[2];
+			iterations = Integer.parseInt(args[0]);
+			inputFile = args[1];
+
+			if(args.length > 2)
+			{
+				outputFile = args[2];
+			}
 		}
-	}
 	
         
-        //System.out.println(inputFile);
-
+        ArrayList<ArrayList<String>> container = new ArrayList<ArrayList<String>>();
+        ArrayList<String> innerContainer = new ArrayList<String>(); 
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] words = line.split("\\s");
+                for (String word : words) {
+                    innerContainer.add(word);
+                }
+            }
+        }
+        
+        container.add(innerContainer);
+        
         //benchmark 
         long startTime = System.nanoTime();
         
-	
-	for(int i = 0; i < iterations; ++i){
-		// Methode1
-		Path path = Paths.get(inputFile);
+        for(int i = 0; i < iterations; ++i){
 
-		wordCount = Files.lines(path).flatMap(line -> Arrays.stream(line.trim().split(" ")))
-		        .parallel()
-		        .map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
-		        .filter(word -> word.length() > 0)
-		        .map(word -> new SimpleEntry<>(word, 1))
-		        .collect(toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2));
+            wordsCount = container.stream()
+                    .parallel()
+                    .flatMap(line->line.stream())
+                    .map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
+                    .filter(word -> word.length() > 0)
+                    .map(word -> new SimpleEntry<>(word, 1))
+                    .collect(toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2))
+                    .entrySet()
+                    .stream()
+                    .sorted( Comparator.comparing(Map.Entry::getKey) )
+                    .collect( Collectors.toList() );  
 
-
-//        //Methode2
-//        Path path = Paths.get(inputFile);
-//        Map<String, Long> wordCount = Files.lines(path)
-//                //.parallel()
-//                .flatMap(line -> Arrays.stream(line.trim().split(" ")))
-//                .map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
-//                .filter(word -> word.length() > 0)
-//                .map(word -> new SimpleEntry<>(word, 1))
-//                .collect(groupingBy(SimpleEntry::getKey, counting()));
+ /*           
+            //Methode2
+            wordsCount = container.stream()
+                    .parallel()
+                    .flatMap(line->line.stream())
+                    .map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
+                    .filter(word -> word.length() > 0)
+                    .collect(Collectors.toMap(s -> s, s -> 1, Integer::sum))  
+                    .entrySet()
+                    .stream()
+                    .sorted( Comparator.comparing(Map.Entry::getKey) )
+                    .collect( Collectors.toList() );  
+*/	                              
+        }
         
+        long difference = System.nanoTime() - startTime;
+        long duration = difference / iterations;
+        System.out.println(duration + "ns");
+
+        double microseconds = (double)duration / 1000;
+		  double milliseconds = (double)duration / 1000000;
+        System.out.println("Total execution time in microseconds: " + microseconds); 
+		System.out.println("Total execution time in milliseconds: " + milliseconds); 			             
         
-//        //Methode3 Faster
-//        Path path = Paths.get(inputFile);
-//        Map<String, Integer> wordCount = Files.lines(path)
-//                .parallel()
-//                .flatMap(line -> Arrays.stream(line.trim().split(" ")))
-//                .map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
-//                .filter(word -> word.length() > 0)
-//                .collect(Collectors.toMap(s -> s, s -> 1, Integer::sum));   
-	}        
+/*        
+        wordsCount.forEach( x -> 
+                 System.out.println( "\"" + x.getKey() + "\" => " + x.getValue() ) );   
+*/   
 
-     
-
-        
-    long difference = System.nanoTime() - startTime;
-	long duration = difference / iterations;
-	System.out.println(duration + "ns");
-
-	double seconds = (double)duration / 1000000000;
-	System.out.println("Total execution time in seconds: " + seconds);
-	
-	wordCount.forEach((k, v) -> System.out.println(String.format("%s ==>> %d", k, v))); 
-	
-	if(outputFile != "")
-	{
-		//WordCount wordCount = new WordCount();
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
-			for (Map.Entry<String, Integer> entry : wordCount.entrySet())
-			{
-			    bw.write(String.format("%s ==>> %d\n", entry.getKey(), entry.getValue()));
-			}
-		} catch (IOException e) {
-			//e.printStackTrace();
-		}		
-	}       
-    }
-
-	static void writeToFile(BufferedWriter bw, String content) throws IOException
-	{
-		bw.write(content);
+		if(outputFile != "")
+		{
+			try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+				for (Map.Entry<String, Integer> entry : wordsCount)
+				{
+					bw.write(String.format("%s => %d\n", entry.getKey(), entry.getValue()));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}		
+		}
 	}
-    
 }
 
 

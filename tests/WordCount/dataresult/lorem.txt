@@ -1,8 +1,0 @@
-<adipiscing 3>
-<amet 3>
-<consectetur 3>
-<dolor 3>
-<elit 3>
-<ipsum 3>
-<lorem 3>
-<sit 3>
