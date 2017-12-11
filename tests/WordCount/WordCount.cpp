@@ -10,19 +10,21 @@
 #include <ratio>
 #include <string>
 
-typedef std::vector<std::string> vec_type;
+#define DEFAULT_NB_ITERATIONS 5
+
+#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
+//#define DEFAULT_INPUT_FILE "/home/iuly/RepositoryFastFlow/PpFf_Catch/tests/WordCount/testdata/loremipsum.txt"
 
 template <typename T>
-std::string NumberToString (T Number) {
+std::string numberToString (T number) {
     std::ostringstream ss;
-    ss << Number;
+    ss << number;
     return ss.str();
 }
 
 std::vector<std::string> splitIntoWords(std::string line, std::string delimiter) {
     std::vector<std::string> words;
-    size_t start = 0;
-    size_t end = 0;
+    size_t start = 0, end = 0;
     do { 
         end = line.find(delimiter, start);
         size_t len = end - start;
@@ -34,9 +36,8 @@ std::vector<std::string> splitIntoWords(std::string line, std::string delimiter)
 }
 
 int main(int argc, char *argv[]) {
-    uint32_t nbIterations = 5;
-    std::string inputFile = "testdata/78792Words.txt";
-    //inputFile = "/home/iuly/RepositoryFastFlow/PpFf_Catch/tests/WordCount/testdata/loremipsum.txt";
+    uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
+    std::string inputFile = DEFAULT_INPUT_FILE;
     std::string outputFile;
 
     if (argc > 2) {
@@ -56,8 +57,7 @@ int main(int argc, char *argv[]) {
     for (uint32_t i = 0; i < nbIterations; ++i) {
         pp::Pipe pipe;
         currentResult = pipe
-            .sourceFromFile<std::vector>(inputFile, " ")
-            .flatMap<std::vector<std::string>,std::string>()
+            .source<std::vector>(inputFile, " ")
             .map<std::string, std::string>( [](std::string* data) {
                     std::string* result = new std::string;
                     for (auto& it: *data){
@@ -96,9 +96,9 @@ int main(int argc, char *argv[]) {
     for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
         std::string currentResultKey = it->first;
         int currentResultValue = it->second;
-        std::cout << currentResultKey << " => " << NumberToString(currentResultValue) << std::endl;
+        std::cout << currentResultKey << " => " << numberToString(currentResultValue) << std::endl;
         if (!outputFile.empty()) {
-            fs << currentResultKey << " => " << NumberToString(currentResultValue) << "\n";
+            fs << currentResultKey << " => " << numberToString(currentResultValue) << "\n";
         }
     }
         
