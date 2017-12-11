@@ -29,14 +29,26 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
+default: test
+
+compile: clean $(EXE)
+
+test: $(EXE)
+	./WordCount > obtenus.txt
+	diff obtenus.txt attendus.txt
+
 all		: $(EXE)
+	./WordCount
+
 
 $(EXE)		: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $^ $(LDLIBS) -o $@
 
-clean		: rm -f $(EXE) $(OBJ) $(DEP)
-cleanall	: clean
-		  \rm -f *.o *~
+clean		: 
+	\rm -f $(EXE) $(OBJ) $(DEP)
+cleanall	: 
+	clean
+	\rm -f *.o *~
 
 # Include the dependency
 -include $(DEP)
