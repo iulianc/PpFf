@@ -39,6 +39,14 @@ namespace pp{
 			return *this;
 		}
 
+		template < template < typename ELEM,
+		                    class ALLOC = std::allocator< ELEM > >
+		                    class TContainer >
+		Pipe& linesFromFile(const std::string& path, const std::string& delimiter = " "){
+			stageManager->linesFromFile< TContainer >(path, delimiter);
+			return *this;
+		}
+
 		template < typename In, typename Out >
 		Pipe& map(std::function< Out*(In*) > const& taskFunc){
 			stageManager->map< In, Out >(taskFunc);
