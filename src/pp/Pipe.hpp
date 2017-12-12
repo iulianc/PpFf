@@ -39,11 +39,8 @@ namespace pp{
 			return *this;
 		}
 
-		template < template < typename ELEM,
-		                    class ALLOC = std::allocator< ELEM > >
-		                    class TContainer >
 		Pipe& linesFromFile(const std::string& path){
-			stageManager->linesFromFile< TContainer >(path);
+			stageManager->linesFromFile(path);
 			return *this;
 		}
 

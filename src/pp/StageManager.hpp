@@ -43,11 +43,8 @@ using namespace ff;
                     pipe.add_stage(new SourceFromFile< TContainer >(path, delimiter));
 		}
             
-		template < template < typename ELEM,
-		                    class ALLOC = std::allocator< ELEM > >
-		                    class TContainer >
 		void linesFromFile(const std::string& path){
-                    pipe.add_stage(new LinesFromFile< TContainer >(path));
+                    pipe.add_stage(new LinesFromFile(path));
 		}
             
 		template < typename In, typename Out >

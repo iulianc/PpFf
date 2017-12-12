@@ -13,14 +13,18 @@
 
 
 TEST_CASE( "GetDataFromFileIntoCollectionUsingLines", "LinesFromFileOperator" ) {
-    std::vector<std::string> expectedResult = {"Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit.", "Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit.", "Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit."};
+    std::vector<std::string> expectedResult = {
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    };
+    
     std::string test_file = TEST_FILE;
     typedef std::vector<std::string> vec_type;
 
     pp::Pipe pipe;
     std::vector<std::string> currentResult = pipe
-        .linesFromFile<std::vector>(test_file)
-        .flatMap<vec_type, std::string>()
+        .linesFromFile(test_file)
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );

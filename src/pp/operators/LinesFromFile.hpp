@@ -6,41 +6,26 @@
 
 using namespace ff;
 
-template < template < typename ELEM,
-                    class ALLOC = std::allocator< ELEM > >
-                    class TContainer >
 class LinesFromFile: public ff_node{
 public:
-	LinesFromFile(const std::string& path): path(path) {
-		container = new TContainer< std::string >();
-	}
-	~LinesFromFile(){
-		delete container;
-		container = NULL;
-	}
+    LinesFromFile(const std::string& path) {
+        file.open(path, std::ifstream::in);
+    }
 
-	void* svc(void* task) {
-		std::ifstream file(path);
-		std::string line;
+    ~LinesFromFile() {
+    }
 
-		while (std::getline(file, line)){
-		    size_t start = 0;
-		    size_t end = 0;
-		    size_t len = 0;
-
-		    do{ end = line.find(" ",start);
-		        len = end - start;
-		        container->emplace_back( line.substr(start, len) );
-		        start += len + 1;
-		    }while ( end != std::string::npos );
-		}
-
-		this->ff_send_out(container);
-
-		return EOS;
-	}
+    void* svc(void* task) {
+        std::string line;
+        if (std::getline(file, line)) {
+            std::cout << line << std::endl;
+            //this->ff_send_out((void*) line);
+            return GO_ON;
+        } else {
+            return EOS;
+        }
+    }
 
 private:
-	const std::string& path;
-	TContainer< std::string > *container;
+    std::ifstream file;
 };
