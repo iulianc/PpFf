@@ -19,7 +19,7 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLines", "LinesFromFileOperator" ) 
 
     pp::Pipe pipe;
     std::vector<std::string> currentResult = pipe
-        .linesFromFile<std::vector>(test_file, " ")
+        .linesFromFile<std::vector>(test_file)
         .flatMap<vec_type, std::string>()
         .collect<std::string, std::vector>();
 

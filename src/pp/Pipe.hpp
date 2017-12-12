@@ -42,8 +42,8 @@ namespace pp{
 		template < template < typename ELEM,
 		                    class ALLOC = std::allocator< ELEM > >
 		                    class TContainer >
-		Pipe& linesFromFile(const std::string& path, const std::string& delimiter = " "){
-			stageManager->linesFromFile< TContainer >(path, delimiter);
+		Pipe& linesFromFile(const std::string& path){
+			stageManager->linesFromFile< TContainer >(path);
 			return *this;
 		}
 

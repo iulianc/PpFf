@@ -11,7 +11,7 @@ template < template < typename ELEM,
                     class TContainer >
 class LinesFromFile: public ff_node{
 public:
-	LinesFromFile(const std::string& path, const std::string& delimiter): path(path), delimiter(delimiter){
+	LinesFromFile(const std::string& path): path(path) {
 		container = new TContainer< std::string >();
 	}
 	~LinesFromFile(){
@@ -28,10 +28,10 @@ public:
 		    size_t end = 0;
 		    size_t len = 0;
 
-		    do{ end = line.find(delimiter,start);
+		    do{ end = line.find(" ",start);
 		        len = end - start;
 		        container->emplace_back( line.substr(start, len) );
-		        start += len + delimiter.length();
+		        start += len + 1;
 		    }while ( end != std::string::npos );
 		}
 
@@ -42,6 +42,5 @@ public:
 
 private:
 	const std::string& path;
-	const std::string& delimiter;
 	TContainer< std::string > *container;
 };
