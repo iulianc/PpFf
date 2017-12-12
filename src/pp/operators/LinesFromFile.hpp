@@ -6,26 +6,23 @@
 
 using namespace ff;
 
-class LinesFromFile: public ff_node{
+class LinesFromFile: public ff_node {
 public:
-    LinesFromFile(const std::string& path) {
-        file.open(path, std::ifstream::in);
+    LinesFromFile(const std::string& path) : path(path) {
     }
 
     ~LinesFromFile() {
     }
 
     void* svc(void* task) {
+        std::ifstream file(path);
         std::string line;
-        if (std::getline(file, line)) {
-            std::cout << line << std::endl;
-            //this->ff_send_out((void*) line);
-            return GO_ON;
-        } else {
-            return EOS;
+        while (std::getline(file, line)) {
+            this->ff_send_out( new std::string(line) );
         }
+        return EOS;
     }
 
 private:
-    std::ifstream file;
+    const std::string& path;
 };
