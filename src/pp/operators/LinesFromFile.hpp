@@ -16,8 +16,8 @@ public:
 
     void* svc(void* task) {
         std::ifstream file(path);
-        std::string line;
-        while (std::getline(file, line)) {
+
+        for  (std::string line; std::getline(file, line); ) {
             this->ff_send_out( new std::string(line) );
         }
         return EOS;
