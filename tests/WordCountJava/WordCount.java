@@ -43,7 +43,8 @@ public class WordCount {
         outputFile = args[2];
       }
     }
-	
+
+/*	
     ArrayList<ArrayList<String>> container = new ArrayList<ArrayList<String>>();
     ArrayList<String> innerContainer = new ArrayList<String>(); 
 
@@ -57,16 +58,17 @@ public class WordCount {
         }
       }
     container.add(innerContainer);
+*/
         
+	Path path = Paths.get(inputFile);
+	
     //benchmark 
     long startTime = System.nanoTime();
         
     List<Map.Entry<String,Integer>> wordsCount = null;
     for (int i = 0; i < nbIterations; ++i) {
-      wordsCount = container
-        .stream()
+      wordsCount = Files.lines(path).flatMap(line -> Arrays.stream(line.trim().split(" ")))
         .parallel()
-        .flatMap( line -> line.stream() )
         .map( word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim() )
         .filter( word -> word.length() > 0 )
         .map( word -> new SimpleEntry<>(word, 1) )
@@ -78,16 +80,15 @@ public class WordCount {
       
       /*           
       //Methode2
-      wordsCount = container.stream()
+      wordsCount = Files.lines(path).flatMap(line -> Arrays.stream(line.trim().split(" ")))
       .parallel()
-      .flatMap(line->line.stream())
       .map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
       .filter(word -> word.length() > 0)
       .collect(Collectors.toMap(s -> s, s -> 1, Integer::sum))  
       .entrySet()
       .stream()
       .sorted( Comparator.comparing(Map.Entry::getKey) )
-      .collect( Collectors.toList() );  
+      .collect( Collectors.toList() );   
       */	                              
     }
         
