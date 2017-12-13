@@ -37,12 +37,14 @@ compile: clean $(EXE)
 run: run_api run_java
 
 run_api: compile
-	./WordCount > obtenus.txt
-	diff obtenus.txt attendus.txt
+	@echo "*** Execution C++ *** "
+	@./WordCount > obtenus-CPP.txt
+	@diff obtenus-CPP.txt attendus.txt
 
 run_java: compile
-	java -cp . WordCount > obtenus-java.txt
-	diff obtenus-java.txt attendus.txt
+	@echo "*** Execution Java ***"
+	@java -cp . WordCount > obtenus-java.txt
+	@diff obtenus-java.txt attendus.txt
 
 all		: $(EXE)
 	./WordCount

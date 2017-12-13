@@ -9,6 +9,7 @@
 #include <ctime>
 #include <ratio>
 #include <string>
+#include <ctype.h>
 
 #define DEFAULT_NB_ITERATIONS 5
 
@@ -57,16 +58,7 @@ int main(int argc, char *argv[]) {
             .linesFromFile(inputFile)
             .flatMap<std::string, std::string, Words>(splitInWords)
             .map<std::string, std::string>( [](std::string* data) {
-                    std::string* result = new std::string;
-                    for (auto& it: *data){
-                        // JE NE COMPRENDS PAS CE BOUT DE CODE.
-                        // Ca determine si c'est une lettre (code ASCII) => pas tres clair :(
-                        // Mais cela couvre aussi d'autres caracteres on dirait!?
-                        if ((((int) it) >= 65 && ((int) it) <= 90) || (((int) it) >= 95 && ((int) it) <= 122))
-                            //if (('a' <= it && it <= 'z') || ('A' <= it && 'Z' <= it)) 
-                            result->push_back(it);
-                    }
-                    return result;
+                    return new std::string(std::regex_replace(*data, std::regex("[^a-zA-Z]"), ""));
                 })
             .find<std::string>( [](std::string *data) { return data->length() > 0; } )
             .map<std::string, std::string>( [](std::string *data) {
