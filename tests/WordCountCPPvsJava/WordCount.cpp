@@ -40,13 +40,23 @@ Words* splitInWords(std::string* line) {
     return words;
 }
 
+std::string* toLowercaseLetters(std::string* data) {
+    std::string* result = new std::string(std::regex_replace(*data, std::regex("[^a-zA-Z]"), ""));
+    transform(result->begin(), result->end(), result->begin(), [](unsigned char c){ return std::tolower(c); });
+
+    return result;
+}
+
 int main(int argc, char *argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
     std::string inputFile = DEFAULT_INPUT_FILE;
 
-    if (argc > 2) {
-        nbIterations = atoi(argv[1]);
-        inputFile = argv[2];
+    if (argc >= 2) {
+        inputFile = argv[1];
+    }
+
+    if (argc >= 3) {
+        nbIterations = atoi(argv[2]);
     }
 
     auto begin = std::chrono::high_resolution_clock::now();
@@ -57,15 +67,9 @@ int main(int argc, char *argv[]) {
         currentResult = pipe
             .linesFromFile(inputFile)
             .flatMap<std::string, std::string, Words>(splitInWords)
-            .map<std::string, std::string>( [](std::string* data) {
-                    return new std::string(std::regex_replace(*data, std::regex("[^a-zA-Z]"), ""));
-                })
-            .find<std::string>( [](std::string *data) { return data->length() > 0; } )
-            .map<std::string, std::string>( [](std::string *data) {
-                    transform(data->begin(), data->end(), data->begin(), [](unsigned char c){ return std::tolower(c); });
-                    return data;
-                } )
-            .groupByKey<std::string, std::string, int>( [](int& count, std::string* data) { count = count+1; } );
+            .map<std::string, std::string>(toLowercaseLetters)
+            .find<std::string>( [](std::string* s) { return s->length() > 0; } )
+            .groupByKey<std::string, std::string, int>( [](int& count, std::string* _) { count += 1; } );
 
     }
     auto end = std::chrono::high_resolution_clock::now();

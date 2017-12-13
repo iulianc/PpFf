@@ -35,29 +35,30 @@ public class WordCount {
     int nbIterations = DEFAULT_NB_ITERATIONS;
     String inputFile = DEFAULT_INPUT_FILE;
 
-    if (args.length > 1) {
-      nbIterations = Integer.parseInt(args[0]);
-      inputFile = args[1];
+    if (args.length >= 1) {
+      inputFile = args[0];
     }
 
+    if (args.length >= 2) {
+      nbIterations = Integer.parseInt(args[1]);
+    }
 	
     long startTime = System.nanoTime();
         
     List<Map.Entry<String,Integer>> wordsCount = null;
     for (int i = 0; i < nbIterations; ++i) {
       wordsCount = Files.lines(Paths.get(inputFile))
-        .flatMap(line -> Arrays.stream(line.trim().split(" ")))
         .parallel()
-        .map( word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim() )
+        .flatMap( line -> Arrays.stream(line.trim().split(" ")) )
+        .map( word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase() )
         .filter( word -> word.length() > 0 )
         .map( word -> new SimpleEntry<>(word, 1) )
         .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2) )
-        .entrySet()
-        .stream()
+        .entrySet().stream()
         .sorted( Comparator.comparing(Map.Entry::getKey) )
         .collect( Collectors.toList() );  
     }
-        
+    
     long duration = (System.nanoTime() - startTime) / nbIterations;
     
     double milliseconds = (double) duration / 1000000;

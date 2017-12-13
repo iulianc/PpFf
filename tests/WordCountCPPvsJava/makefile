@@ -1,6 +1,6 @@
 
 # Specify the final target name
-EXE 		:= WordCount
+EXE 		:= WordCount WordCount.class
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -25,26 +25,36 @@ LDLIBS 		:= -lpthread
 
 OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
+TEST_FILE="testdata/78792Words.txt"
+ATTENDUS="attendus-78792.txt"
+
+#TEST_FILE="testdata/loremipsum.txt"
+#ATTENDUS="attendus-loremipsum.txt"
+
+#TEST_FILE="testdata/1505712Words.txt"
+#ATTENDUS="attendus-1505712.txt"
+
+
 # Tell make that these target are not real files
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
-default: run
+default: run_java
 
-compile: clean $(EXE)
+compile: $(EXE)
 	javac WordCount.java
 
-run: run_api run_java
+run: run_cpp run_java
 
-run_api: compile
+run_cpp: compile
 	@echo "*** Execution C++ *** "
-	@./WordCount > obtenus-CPP.txt
-	@diff obtenus-CPP.txt attendus.txt
+	@./WordCount $(TEST_FILE) > obtenus-cpp.txt
+	@diff obtenus-cpp.txt $(ATTENDUS)
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . WordCount > obtenus-java.txt
-	@diff obtenus-java.txt attendus.txt
+	@java -cp . WordCount $(TEST_FILE) > obtenus-java.txt
+	@diff obtenus-java.txt $(ATTENDUS)
 
 all		: $(EXE)
 	./WordCount
