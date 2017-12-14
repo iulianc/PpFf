@@ -13,9 +13,10 @@ public:
     void* svc(void* task) {
         std::ifstream file(path);
 
-        std::string* line;
-        while (std::getline(file, *(line = new std::string))) {
+        std::string* line = new std::string;
+        while (std::getline(file, *line)) {
             ff_send_out(line);
+            line = new std::string;
         }
         return EOS;
     }
