@@ -39,7 +39,7 @@ ATTENDUS="attendus-78792.txt"
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
-default: run_java
+default: run
 
 compile: $(EXE)
 	javac WordCount.java
