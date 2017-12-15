@@ -7,7 +7,8 @@ EXE 		:= WordCount WordCount.class
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
-ROOT_PIPE 	:= $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
+#ROOT_PIPE      := $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
+ROOT_PIPE 	:= $(HOME)/PpFf/src/pp
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
@@ -27,21 +28,21 @@ LDLIBS 		:= -lpthread
 
 OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
-TEST_FILE="testdata/78792Words.txt"
-ATTENDUS="attendus-78792.txt"
+#TEST_FILE="testdata/78792Words.txt"
+#ATTENDUS="attendus-78792.txt"
 
 #TEST_FILE="testdata/loremipsum.txt"
 #ATTENDUS="attendus-loremipsum.txt"
 
-#TEST_FILE="testdata/1505712Words.txt"
-#ATTENDUS="attendus-1505712.txt"
+TEST_FILE="testdata/1505712Words.txt"
+ATTENDUS="attendus-1505712.txt"
 
 
 # Tell make that these target are not real files
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
-default: run_cpp
+default: run
 
 compile: $(EXE)
 	javac WordCount.java
