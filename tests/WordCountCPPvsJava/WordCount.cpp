@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 
     auto begin = std::chrono::high_resolution_clock::now();
 
-    std::map<std::string, int> currentResult;
+    MapType<std::string, int> currentResult;
     for (uint32_t i = 0; i < nbIterations; ++i) {
         pp::Pipe pipe;
         currentResult = pipe

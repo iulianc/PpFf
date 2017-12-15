@@ -2,6 +2,7 @@
 #include <vector>
 #include <ff/pipeline.hpp>
 #include <ff/farm.hpp>
+#include "utilities/MapType.hpp"
 #include "operators/Find.hpp"
 #include "utilities/Collectors.hpp"
 #include "utilities/NullType.hpp"
@@ -147,8 +148,8 @@ namespace pp{
 		}
 
 		template < typename In, typename K = In, typename V = In >
-		std::map < K, std::vector< V > > groupByKey(){
-			typedef std::map < K, std::vector< V > > CONTAINER;
+		MapType < K, std::vector< V > > groupByKey(){
+			typedef MapType < K, std::vector< V > > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
 			stageManager->groupByKey< In, K, V >(collectors);
 			this->run();
@@ -156,8 +157,8 @@ namespace pp{
 		}
 
 		template < typename In, typename K = In, typename V = In >
-		std::map < K, std::vector< V > > groupByKey(std::function< K*(In*) > const& taskFunc){
-			typedef std::map < K, std::vector< V > > CONTAINER;
+		MapType < K, std::vector< V > > groupByKey(std::function< K*(In*) > const& taskFunc){
+			typedef MapType < K, std::vector< V > > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
 			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
 			this->run();
@@ -165,8 +166,8 @@ namespace pp{
 		}
 
 		template < typename In, typename K = In, typename V = In >
-		std::map < K, V > groupByKey(std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
-			typedef std::map < K, V > CONTAINER;
+		MapType < K, V > groupByKey(std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
+			typedef MapType < K, V > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
 			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
 			this->run();
@@ -174,8 +175,8 @@ namespace pp{
 		}
 
 		template < typename In, typename K = In, typename V = In >
-		std::map < K, V > groupByKey(std::function< void(V&, In*) > const& binaryOperator){
-			typedef std::map < K, V > CONTAINER;
+		MapType < K, V > groupByKey(std::function< void(V&, In*) > const& binaryOperator){
+			typedef MapType < K, V > CONTAINER;
 			Collectors< K, V, CONTAINER > collectors;
 			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
 			this->run();

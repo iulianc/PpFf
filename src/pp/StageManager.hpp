@@ -1,5 +1,6 @@
 
 #include <ff/pipeline.hpp>
+#include "utilities/MapType.hpp"
 #include "utilities/Collectors.hpp"
 #include "operators/Source.hpp"
 #include "operators/SourceFromFile.hpp"
@@ -137,22 +138,22 @@ using namespace ff;
 		}
 
 		template < typename In, typename K, typename V >
-		void groupByKey(Collectors< K, V, std::map < K, std::vector< V > > > &collectors){
+		void groupByKey(Collectors< K, V, MapType < K, std::vector< V > > > &collectors){
 			pipe.add_stage(new GroupByKey< In, K, V, false, false >(collectors.getContainer()));
 		}
 
 		template < typename In, typename K, typename V >
-		void groupByKey(Collectors< K, V, std::map < K , std::vector< V > > > &collectors, std::function< K*(In*) > const& taskFunc){
+		void groupByKey(Collectors< K, V, MapType < K , std::vector< V > > > &collectors, std::function< K*(In*) > const& taskFunc){
 			pipe.add_stage(new GroupByKey< In, K, V, true, false >(collectors.getContainer(), taskFunc));
 		}
 
 		template < typename In, typename K, typename V >
-		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
+		void groupByKey(Collectors< K, V, MapType < K , V > > &collectors, std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
 			pipe.add_stage(new GroupByKey< In, K, V, true, true >(collectors.getContainer(), taskFunc, binaryOperator));
 		}
 
 		template < typename In, typename K, typename V >
-		void groupByKey(Collectors< K, V, std::map < K , V > > &collectors, std::function< void(V&, In*) > const& binaryOperator){
+		void groupByKey(Collectors< K, V, MapType < K , V > > &collectors, std::function< void(V&, In*) > const& binaryOperator){
 			pipe.add_stage(new GroupByKey< In, K, V, false, true >(collectors.getContainer(), binaryOperator));
 		}
 

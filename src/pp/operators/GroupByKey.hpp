@@ -1,6 +1,7 @@
 
 #include <ff/node.hpp>
 #include "../utilities/NullType.hpp"
+#include "../utilities/MapType.hpp"
 #include <functional>
 
 template < typename In, typename K, typename V, bool IsTaskFunc, bool IsBinaryOperator >
@@ -10,7 +11,7 @@ class GroupByKey: public ff_node {};
 template < typename In, typename K, typename V >
 class GroupByKey< In, K, V, true, true >: public ff_node {
 public:
-	GroupByKey(std::map < K, V > &container, std::function< K*(In*) > const &taskf, std::function< void(V&, In*) > const& binaryOperator): container(container), taskf(taskf), binaryOperator(binaryOperator){};
+	GroupByKey(MapType < K, V > &container, std::function< K*(In*) > const &taskf, std::function< void(V&, In*) > const& binaryOperator): container(container), taskf(taskf), binaryOperator(binaryOperator){};
 	~GroupByKey(){};
 
 
@@ -22,7 +23,7 @@ public:
 	}
 
 private:
-	typedef std::map< K, V > CONTAINER;
+	typedef MapType< K, V > CONTAINER;
 	CONTAINER &container;
 	std::function< K*(In*) > const &taskf;
 	std::function< void(V&, In*) > const &binaryOperator;
@@ -33,7 +34,7 @@ private:
 template < typename In, typename K, typename V >
 class GroupByKey< In, K, V, false, true >: public ff_node {
 public:
-	GroupByKey(std::map < K, V > &container, std::function< void(V&, In*) > const& binaryOperator): container(container), binaryOperator(binaryOperator){};
+	GroupByKey(MapType < K, V > &container, std::function< void(V&, In*) > const& binaryOperator): container(container), binaryOperator(binaryOperator){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -43,7 +44,7 @@ public:
 	}
 
 private:
-	typedef std::map< K, V > CONTAINER;
+	typedef MapType< K, V > CONTAINER;
 	CONTAINER &container;
 	std::function< void(V&, In*) > const binaryOperator;
 };
@@ -53,7 +54,7 @@ private:
 template < typename In, typename K, typename V >
 class GroupByKey< In, K, V, true, false >: public ff_node {
 public:
-	GroupByKey(std::map < K , std::vector< V > > &container, std::function< K*(In*) > const& taskf): container(container), taskf(taskf){};
+	GroupByKey(MapType < K , std::vector< V > > &container, std::function< K*(In*) > const& taskf): container(container), taskf(taskf){};
 	~GroupByKey(){};
 
 	void* svc(void *task) {
@@ -74,7 +75,7 @@ public:
 
 private:
 	typedef std::vector< V > VALUE;
-	typedef std::map< K, VALUE > CONTAINER;
+	typedef MapType< K, VALUE > CONTAINER;
 	CONTAINER &container;
 	std::function< K*(In*) > const &taskf;
 };
@@ -84,7 +85,7 @@ private:
 template < typename In, typename K, typename V >
 class GroupByKey< In, K, V, false, false >: public ff_node {
 public:
-	GroupByKey(std::map < In , std::vector< In > > &container): container(container){}
+	GroupByKey(MapType < In , std::vector< In > > &container): container(container){}
 	~GroupByKey(){};
 
 	void* svc(void *task) {
@@ -106,6 +107,6 @@ public:
 
 private:
 	typedef std::vector< In > VALUE;
-	typedef std::map< In, VALUE > CONTAINER;
+	typedef MapType< In, VALUE > CONTAINER;
 	CONTAINER &container;
 };

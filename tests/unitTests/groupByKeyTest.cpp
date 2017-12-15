@@ -7,7 +7,7 @@
 
 TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
     typedef std::vector<std::string> VALUE;
-    typedef std::map<std::string, VALUE> CONTAINER;
+    typedef MapType<std::string, VALUE> CONTAINER;
 
     std::vector<std::string> strElems = {"Employee3","Employee6", "Employee9", "Employee3", "Employee6", "Employee9", "Employee3", "Employee3"};
 
@@ -32,7 +32,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
 
 TEST_CASE( "GroupByKeyACollectionTypeVectorGrandNombreElements", "GroupByKeyOperator" ) {
     typedef std::vector<std::string> VALUE;
-    typedef std::map<std::string, VALUE> CONTAINER;
+    typedef MapType<std::string, VALUE> CONTAINER;
 
     int n = 200;
     CONTAINER expectedResult;
@@ -63,7 +63,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorGrandNombreElements", "GroupByKeyOper
 
 TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
     typedef std::vector<Employee> VALUE;
-    typedef std::map<int, VALUE> CONTAINER;
+    typedef MapType<int, VALUE> CONTAINER;
 
     unsigned int noEmployees = 10;
     VALUE employees;
@@ -106,7 +106,7 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
 }
 
 TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
-    typedef std::map<int, int> CONTAINER;
+    typedef MapType<int, int> CONTAINER;
 
     std::vector<Employee> employees;
     unsigned int NB = 1000;

@@ -42,7 +42,7 @@ TEST_CASE( "GetDataFromFileByComma", "SourceFromFileOperator" ) {
 }
 
 TEST_CASE( "CountWords", "SourceFromFileOperator" ) {
-    std::map<std::string, int> expectedResult = {
+    MapType<std::string, int> expectedResult = {
         {"adipiscing", 3},
         {"amet,", 3},
         {"consectetur", 3},
@@ -57,7 +57,7 @@ TEST_CASE( "CountWords", "SourceFromFileOperator" ) {
     typedef std::vector<std::string> vec_type;
 
     pp::Pipe pipe;
-    std::map<std::string, int> currentResult = pipe
+    MapType<std::string, int> currentResult = pipe
         .sourceFromFile<std::vector>(test_file, " ")
         .flatMap<vec_type, std::string>()
         .map<std::string, std::string>( [](std::string *data) ->std::string*
