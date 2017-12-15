@@ -1,3 +1,5 @@
+#MAP_TYPE=-D__ORDERED_MAP__
+NB_TIMES=10
 
 # Specify the final target name
 EXE 		:= WordCount WordCount.class
@@ -13,7 +15,7 @@ OBJ 		:= $(ROOT_TESTS:.cpp=.o)
 DEP 		:= $(OBJ:.o=.d)
 
 # Compiler
-CXX		= g++ -std=c++11
+CXX		= g++ -std=c++11 $(MAP_TYPE)
 # Specify preprocessor flags
 CPPFLAGS 	:= -I./ -I $(ROOT_PIPE)
 # Required flags to enable the automatic dependency generation by the compiler
@@ -39,7 +41,7 @@ ATTENDUS="attendus-78792.txt"
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
-default: run
+default: run_cpp
 
 compile: $(EXE)
 	javac WordCount.java
@@ -48,12 +50,12 @@ run: run_cpp run_java
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
-	@./WordCount $(TEST_FILE) | sort > obtenus-cpp.txt
+	@./WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS)
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . WordCount $(TEST_FILE) | sort > obtenus-java.txt
+	@java -cp . WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS)
 
 all		: $(EXE)
