@@ -55,7 +55,6 @@ public class WordCount {
         .map( word -> new SimpleEntry<>(word, 1) )
         .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2) )
         .entrySet().stream()
-        .sorted( Comparator.comparing(Map.Entry::getKey) )
         .collect( Collectors.toList() );  
     }
     

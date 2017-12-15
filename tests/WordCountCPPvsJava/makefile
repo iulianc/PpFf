@@ -48,12 +48,12 @@ run: run_cpp run_java
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
-	@./WordCount $(TEST_FILE) > obtenus-cpp.txt
+	@./WordCount $(TEST_FILE) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS)
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . WordCount $(TEST_FILE) > obtenus-java.txt
+	@java -cp . WordCount $(TEST_FILE) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS)
 
 all		: $(EXE)
