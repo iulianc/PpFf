@@ -30,11 +30,10 @@ std::string numberToString (T number) {
 
 typedef std::vector<std::string> Words;
 
+struct linesFromFileStage : ff_node {
+    std::string const &path;
 
-struct linesFromFileStage: ff_node {
-	std::string const &path;
-
-	linesFromFileStage(std::string const &path):path(path){}
+    linesFromFileStage(std::string const &path):path(path){}
 
     void* svc(void* task) {
         std::ifstream file(path);
@@ -49,12 +48,12 @@ struct linesFromFileStage: ff_node {
 };
 
 
-struct splitInWordsStage: ff_node {
+struct splitInWordsStage : ff_node {
     std::string delimiter = " ";
-    struct toLowercaseLettersStage: ff_node_t<std::string> {
 
+    struct toLowercaseLettersStage : ff_node_t<std::string> {
         std::string* svc(std::string* task) {
-        	std::string* result = new std::string;
+            std::string* result = new std::string;
 
             for (auto& c: *task) {
                 int ci = (int) c;
@@ -67,6 +66,7 @@ struct splitInWordsStage: ff_node {
             return result;
     	}
     };
+
     void* svc(void* task) {
     	std::string line = *((std::string*)task);
         Words* words = new Words();
@@ -83,20 +83,17 @@ struct splitInWordsStage: ff_node {
 };
 
 
-struct flatStage: ff_node {
-    std::string delimiter = " ";
+struct flatStage : ff_node {
+    void* svc(void* task) {
+        for(auto &elem: *(Words*)task){
+            ff_send_out(&elem);
+        }
 
-	void* svc(void* task) {
-	    for(auto &elem : *(Words*)task){
-	    	ff_send_out(&elem);
-	    }
-
-		return GO_ON;
-	}
+        return GO_ON;
+    }
 };
 
-struct toLowercaseLettersStage: ff_node_t<std::string> {
-
+struct toLowercaseLettersStage : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
     	std::string* result = new std::string;
 
@@ -109,37 +106,35 @@ struct toLowercaseLettersStage: ff_node_t<std::string> {
                   [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
 
         return result;
-	}
+    }
 };
 
-struct filterEmptyWordsStage:ff_node_t<std::string> {
-
-	std::string* svc(std::string* task) {
-		if(task->length() > 0){
-			return task;
-		}
+struct filterEmptyWordsStage : ff_node_t<std::string> {
+    std::string* svc(std::string* task) {
+        if (task->length() > 0) {
+            return task;
+        }
 
         return GO_ON;
     }
 };
 
 
-struct groupByKeyStage:ff_node {
-	typedef std::unordered_map< std::string, int > CONTAINER;
-	CONTAINER &container;
+struct groupByKeyStage : ff_node {
+    typedef std::unordered_map< std::string, int > CONTAINER;
+    CONTAINER &container;
 
-	groupByKeyStage(CONTAINER &container): container(container){}
-
-	void* svc(void* task) {
-		container[*((std::string*)task)] += 1;
-		return GO_ON;
+    groupByKeyStage(CONTAINER &container) : container(container){}
+    
+    void* svc(void* task) {
+        container[*((std::string*)task)] += 1;
+        return GO_ON;
     }
 };
 
 
-struct collectorStage:ff_node_t<std::string> {
-
-	std::string* svc(std::string* task) {
+struct collectorStage : ff_node_t<std::string> {
+    std::string* svc(std::string* task) {
         std::cout << *task << std::endl;
         return GO_ON;
     }
@@ -148,41 +143,39 @@ struct collectorStage:ff_node_t<std::string> {
 
 
 int main(int argc, char *argv[]) {
-	uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
-	std::unordered_map< std::string, int > result;
-	std::string inputFile = DEFAULT_INPUT_FILE;
+    uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
+    std::unordered_map<std::string, int> result;
+    std::string inputFile = DEFAULT_INPUT_FILE;
 
     if (argc >= 2) {
         inputFile = argv[1];
     }
-
     if (argc >= 3) {
         nbIterations = atoi(argv[2]);
     }
 
-	auto begin = std::chrono::high_resolution_clock::now();
+    auto begin = std::chrono::high_resolution_clock::now();
 
-	for (uint32_t i = 0; i < nbIterations; ++i) {
+    for (uint32_t i = 0; i < nbIterations; ++i) {
+        result.clear();
+        linesFromFileStage linesFromFile(inputFile);
+        collectorStage collector;
+        splitInWordsStage splitInWords;
+        flatStage flat;
+        toLowercaseLettersStage toLowercaseLetters;
+        filterEmptyWordsStage filterEmptyWords;
+        groupByKeyStage groupByKey(result);
 
-		linesFromFileStage linesFromFile(inputFile);
-		collectorStage collector;
-		splitInWordsStage splitInWords;
-		flatStage flat;
-		toLowercaseLettersStage toLowercaseLetters;
-		filterEmptyWordsStage filterEmptyWords;
-		groupByKeyStage groupByKey(result);
+        ff_pipeline ffp;
+        ffp.add_stage(&linesFromFile);
+        ffp.add_stage(&splitInWords);
+        ffp.add_stage(&flat);
+        ffp.add_stage(&toLowercaseLetters);
+        ffp.add_stage(&filterEmptyWords);
+        ffp.add_stage(&groupByKey);
 
-		ff_pipeline ffp;
-		ffp.add_stage(&linesFromFile);
-		ffp.add_stage(&splitInWords);
-		ffp.add_stage(&flat);
-		ffp.add_stage(&toLowercaseLetters);
-		ffp.add_stage(&filterEmptyWords);
-		ffp.add_stage(&groupByKey);
-
-
-		if (ffp.run_and_wait_end()<0) error("running pipe");
-	}
+        if (ffp.run_and_wait_end() < 0) error("running pipe");
+    }
 
     auto end = std::chrono::high_resolution_clock::now();
 
@@ -197,8 +190,7 @@ int main(int argc, char *argv[]) {
         std::cout << currentResultKey << " => " << numberToString(currentResultValue) << std::endl;
     }
 
-
-	return 0;
+    return 0;
 }
 
 
