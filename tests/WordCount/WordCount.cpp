@@ -40,30 +40,17 @@ Words* splitInWords(std::string* line) {
     return words;
 }
 
-
-#ifdef __APPLE__
-std::string* toLowercaseLetters(std::string* data) {
-    std::string* result = new std::string(std::regex_replace(*data, std::regex("[^a-zA-Z]"), ""));
-    transform(result->begin(), result->end(), result->begin(), 
-              [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
-
-    return result;
-}
-#else
 std::string* toLowercaseLetters(std::string* data) {
     std::string* result = new std::string;
-    for (auto& c: *data) {
-        int ci = (int) c;
-        if (('A' <= ci && ci <= 'Z') || ('a' <= ci && ci <= 'z'))
+    for (char c: *data) {
+        if ('a' <= c && c <= 'z') {
             result->push_back(c);
+        } else if ('A' <= c && c <= 'Z') {
+            result->push_back(c-('Z'-'z'));
+        }
     }
-    transform(result->begin(), result->end(), result->begin(), 
-              [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
-
     return result;
 }
-#endif
-
 
 int main(int argc, char *argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
