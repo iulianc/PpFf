@@ -14,8 +14,6 @@
 #include <vector>
 #include <type_traits>
 #include <ff/node.hpp>
-#include "../utilities/timers.hpp"
-
 
 using namespace ff;
 
@@ -51,12 +49,6 @@ template < typename TContainer, typename Out >
 class Flat: public ff_node {
 public:
     ~Flat(){};
-
-    int svc_init() {
-        myTimer = startTimer();
-        
-        return 0;
-    }
     
     void* svc(void* task) {
         for(auto &elem : *(TContainer*)task){
@@ -66,14 +58,4 @@ public:
         //delete (TContainer*)task;
         return GO_ON;
     }
-
-    void svc_end() {
-        long duration_ms = stopTimer(myTimer);
-        
-        if (displayTimer())
-            std::cerr << "Flat[" << myTimer << "]: " << duration_ms << " ms" << std::endl;
-    }
-
-private:
-    int myTimer;
 };

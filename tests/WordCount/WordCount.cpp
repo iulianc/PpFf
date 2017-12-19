@@ -52,6 +52,19 @@ std::string* toLowercaseLetters(std::string* data) {
     return result;
 }
 
+std::string* _old_toLowercaseLetters(std::string* data) {
+    std::string* result = new std::string;
+    for (auto& c: *data) {
+        int ci = (int) c;
+        if (('A' <= ci && ci <= 'Z') || ('a' <= ci && ci <= 'z'))
+            result->push_back(c);
+    }
+    transform(result->begin(), result->end(), result->begin(), 
+              [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
+    
+    return result;
+}
+
 int main(int argc, char *argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
     std::string inputFile = DEFAULT_INPUT_FILE;
@@ -68,7 +81,6 @@ int main(int argc, char *argv[]) {
 
     MapType<std::string, int> currentResult;
     for (uint32_t i = 0; i < nbIterations; ++i) {
-        //setDisplayTimer( i % 2 == 0 ); // Juste pour essayer/montrer son utilisation...
         pp::Pipe pipe;
         currentResult = pipe
             .linesFromFile(inputFile)
