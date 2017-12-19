@@ -1,5 +1,5 @@
 #MAP_TYPE=-D__ORDERED_MAP__
-NB_TIMES=2
+NB_TIMES=1
 
 # Specify the final target name
 EXE 		:= WordCount WordCount.class
