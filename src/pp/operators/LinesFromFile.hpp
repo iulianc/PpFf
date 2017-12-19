@@ -31,7 +31,8 @@ public:
     void svc_end() {
         long duration_ms = stopTimer(myTimer);
         
-        std::cerr << "LinesFromFile[" << myTimer << "]: " << duration_ms << " ms" << std::endl;
+        if (displayTimer())
+            std::cerr << "LinesFromFile[" << myTimer << "]: " << duration_ms << " ms" << std::endl;
     }
 
 private:

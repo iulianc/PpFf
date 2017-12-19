@@ -70,7 +70,8 @@ public:
     void svc_end() {
         long duration_ms = stopTimer(myTimer);
         
-        std::cerr << "Flat[" << myTimer << "]: " << duration_ms << " ms" << std::endl;
+        if (displayTimer())
+            std::cerr << "Flat[" << myTimer << "]: " << duration_ms << " ms" << std::endl;
     }
 
 private:

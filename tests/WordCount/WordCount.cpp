@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
 
     MapType<std::string, int> currentResult;
     for (uint32_t i = 0; i < nbIterations; ++i) {
+        //setDisplayTimer( i % 2 == 0 ); // Juste pour essayer/montrer son utilisation...
         pp::Pipe pipe;
         currentResult = pipe
             .linesFromFile(inputFile)
