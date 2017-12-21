@@ -1,4 +1,4 @@
-#.IGNORE:
+.IGNORE:
 
 default:  run
 
