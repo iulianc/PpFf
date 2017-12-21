@@ -1,10 +1,13 @@
 .IGNORE:
 
+default: run_seq
+
+
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class
+EXE 		:= WordCount WordCountSeq WordCount.class
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -36,8 +39,8 @@ ATTENDUS="attendus-1505712.txt"
 #TEST_FILE="testdata/78792Words.txt"
 #ATTENDUS="attendus-78792.txt"
 
-#TEST_FILE="testdata/loremipsum.txt"
-#ATTENDUS="attendus-loremipsum.txt"
+TEST_FILE="testdata/loremipsum.txt"
+ATTENDUS="attendus-loremipsum.txt"
 
 
 
@@ -45,12 +48,9 @@ ATTENDUS="attendus-1505712.txt"
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
-default: run
-
 compile: $(EXE)
-	javac WordCount.java
 
-run: run_cpp  run_java run_sh
+run: run_cpp run_java run_sh
 
 run_sh:
 	@echo "*** Execution wc.sh"
@@ -63,17 +63,24 @@ run_cpp: compile
 	@./WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS)
 
+run_seq: compile
+	@echo "*** Execution seq. *** "
+	@./WordCountSeq $(TEST_FILE) $(NB_TIMES) | sort > obtenus-seq.txt
+	@diff obtenus-seq.txt $(ATTENDUS)
+
 run_java: compile
 	@echo "*** Execution Java ***"
 	@java -cp . WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS)
 
-all		: $(EXE)
-	./WordCount
+WordCount: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
 
+WordCountSeq: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq
 
-$(EXE)		: $(OBJ)
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $^ $(LDLIBS) -o $@
+WordCount.class: WordCount.java
+	javac WordCount.java
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
