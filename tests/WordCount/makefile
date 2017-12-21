@@ -48,7 +48,13 @@ default: run
 compile: $(EXE)
 	javac WordCount.java
 
-run: run_cpp run_java
+run: run_cpp  run_java run_sh
+
+run_sh:
+	@echo "*** Execution wc.sh"
+	@time (cat $(TEST_FILE) | ./wc.sh | sort > obtenus-sh.txt) 2> temps-sh.txt
+	@diff obtenus-sh.txt $(ATTENDUS)
+	@./real-to-ms.rb `cat temps-sh.txt | grep real | sed s/real//`
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
@@ -73,7 +79,7 @@ clean:
 
 cleanall cleanxtra: clean
 	\rm -f *.o *~
-	\rm -f obtenus*txt
+	\rm -f obtenus*txt temps-sh.txt res.txt
 
 # Include the dependency
 -include $(DEP)
