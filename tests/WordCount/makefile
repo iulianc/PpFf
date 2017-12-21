@@ -1,10 +1,20 @@
-.IGNORE:
+#.IGNORE:
 
-default: run_seq
+default:  run
 
+TEST_FILE="testdata/1505712Words.txt"
+ATTENDUS="attendus-1505712.txt"
+
+#TEST_FILE="testdata/78792Words.txt"
+#ATTENDUS="attendus-78792.txt"
+
+#TEST_FILE="testdata/loremipsum.txt"
+#ATTENDUS="attendus-loremipsum.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5
+
+########################################################
 
 # Specify the final target name
 EXE 		:= WordCount WordCountSeq WordCount.class
@@ -33,24 +43,13 @@ LDLIBS 		:= -lpthread
 
 OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
-TEST_FILE="testdata/1505712Words.txt"
-ATTENDUS="attendus-1505712.txt"
-
-#TEST_FILE="testdata/78792Words.txt"
-#ATTENDUS="attendus-78792.txt"
-
-TEST_FILE="testdata/loremipsum.txt"
-ATTENDUS="attendus-loremipsum.txt"
-
-
-
 # Tell make that these target are not real files
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
 compile: $(EXE)
 
-run: run_cpp run_java run_sh
+run: run_cpp run_java run_sh run_seq
 
 run_sh:
 	@echo "*** Execution wc.sh"
@@ -65,8 +64,8 @@ run_cpp: compile
 
 run_seq: compile
 	@echo "*** Execution seq. *** "
-	@./WordCountSeq $(TEST_FILE) $(NB_TIMES) | sort > obtenus-seq.txt
-	@diff obtenus-seq.txt $(ATTENDUS)
+	@@./WordCountSeq $(TEST_FILE) $(NB_TIMES) | sort > obtenus-seq.txt
+	@@diff obtenus-seq.txt $(ATTENDUS)
 
 run_java: compile
 	@echo "*** Execution Java ***"
