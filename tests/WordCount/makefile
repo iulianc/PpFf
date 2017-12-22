@@ -5,8 +5,8 @@ default:  run
 TEST_FILE="testdata/1505712Words.txt"
 ATTENDUS="attendus-1505712.txt"
 
-#TEST_FILE="testdata/78792Words.txt"
-#ATTENDUS="attendus-78792.txt"
+TEST_FILE="testdata/78792Words.txt"
+ATTENDUS="attendus-78792.txt"
 
 #TEST_FILE="testdata/loremipsum.txt"
 #ATTENDUS="attendus-loremipsum.txt"

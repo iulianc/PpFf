@@ -16,13 +16,6 @@
 #define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
 //#define DEFAULT_INPUT_FILE "/home/iuly/RepositoryFastFlow/PpFf_Catch/tests/WordCount/testdata/loremipsum.txt"
 
-template <typename T>
-std::string numberToString (T number) {
-    std::ostringstream ss;
-    ss << number;
-    return ss.str();
-}
-
 typedef std::vector<std::string> Words;
 
 Words* splitInWords(std::string* line) {
@@ -99,7 +92,7 @@ int main(int argc, char *argv[]) {
     for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
         std::string currentResultKey = it->first;
         int currentResultValue = it->second;
-        std::cout << currentResultKey << " => " << numberToString(currentResultValue) << std::endl;
+        std::cout << currentResultKey << " => " << currentResultValue << std::endl;
     }
     
     return 0;
