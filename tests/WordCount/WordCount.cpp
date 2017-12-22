@@ -12,9 +12,7 @@
 #include <ctype.h>
 
 #define DEFAULT_NB_ITERATIONS 5
-
 #define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
-//#define DEFAULT_INPUT_FILE "/home/iuly/RepositoryFastFlow/PpFf_Catch/tests/WordCount/testdata/loremipsum.txt"
 
 typedef std::vector<std::string> Words;
 
@@ -45,17 +43,12 @@ std::string* toLowercaseLetters(std::string* data) {
     return result;
 }
 
-std::string* _old_toLowercaseLetters(std::string* data) {
-    std::string* result = new std::string;
-    for (auto& c: *data) {
-        int ci = (int) c;
-        if (('A' <= ci && ci <= 'Z') || ('a' <= ci && ci <= 'z'))
-            result->push_back(c);
-    }
-    transform(result->begin(), result->end(), result->begin(), 
-              [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
-    
-    return result;
+bool notEmpty(std::string* s) {
+    return s->size() > 0;
+}
+
+void incCount(int& count, std::string* _) { 
+    count += 1; 
 }
 
 int main(int argc, char *argv[]) {
@@ -79,8 +72,8 @@ int main(int argc, char *argv[]) {
             .linesFromFile(inputFile)
             .flatMap<std::string, std::string, Words>(splitInWords)
             .map<std::string, std::string>(toLowercaseLetters)
-            .find<std::string>( [](std::string* s) { return s->length() > 0; } )
-            .groupByKey<std::string, std::string, int>( [](int& count, std::string* _) { count += 1; } );
+            .find<std::string>(notEmpty)
+            .groupByKey<std::string, std::string, int>(incCount);
 
     }
     auto end = std::chrono::high_resolution_clock::now();
