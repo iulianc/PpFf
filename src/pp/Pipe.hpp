@@ -53,14 +53,14 @@ namespace pp{
 
 	    template< typename In, typename Out, typename ContainerFuncOut >
 	    Pipe& flatMap(std::function< ContainerFuncOut*(In*) > const& taskFunc){
-	    	stageManager->map< In, ContainerFuncOut >(taskFunc);
-	    	stageManager->flat< ContainerFuncOut, Out >();
+	    	//stageManager->map< In, ContainerFuncOut >(taskFunc);
+	    	stageManager->flatMap< In, Out, ContainerFuncOut >(taskFunc);
 	    	return *this;
 	    };
 
-	    template< typename InContainer, typename Out, typename ContainerFuncOut = InContainer >
+	    template< typename In, typename Out, typename ContainerFuncOut = In >
 	    Pipe& flatMap(){
-	    	stageManager->flat< ContainerFuncOut, Out >();
+	    	stageManager->flatMap< In, Out, ContainerFuncOut >();
 	    	return *this;
 	    };
 
@@ -82,7 +82,7 @@ namespace pp{
 		                    class TContainer >
 		TContainer< T > collect() {
 			typedef Container< T, TContainer > CONTAINER;
-			Collectors< T, T, CONTAINER > collectors;
+			Collectors< T, CONTAINER > collectors;
 			stageManager->collect< T, CONTAINER >(collectors);
 			this->run();
 			CONTAINER container = collectors.template value();
@@ -100,98 +100,178 @@ namespace pp{
 		template < typename T >
 		T sum(){
 			typedef Accumulator< T > ACCUM;
-			Collectors< ACCUM > collectors;
+			Collectors< ACCUM > collectors(no_workers);
 			stageManager->sum< T >(collectors);
 			this->run();
+			if(isParallel())
+				collectors.reduce([](ACCUM &sum, ACCUM workerResult){sum = sum + workerResult;});
 			ACCUM accum = collectors.template value< ACCUM >();
 			return accum.value();
-
-//			typedef Accumulator< T > ACCUM;
-//			T *identity = new T;
-//			ACCUM init;
-//			ACCUM result;
-//			//result = this->reduce< T, T >(init, [](T sum, T elem)->T {return sum += elem;});
-//			result = this->reduce< ACCUM, ACCUM >(init, ([](T sum, T elem)->T {return sum += elem;}));
-//			this->run();
-//			return result;
 		}
 
 		template < typename In, typename Out = In >
 		Out reduce(std::function< void(Out*, Out*) > const& biOp){
-			//TODO delete pointer
-			Out *result = new Out();
-			//result->age = 0;
-			stageManager->reduce< Out >(result, biOp);
+			Collectors< Out > collectors(no_workers);
+			stageManager->reduce< Out >(collectors, biOp);
 			this->run();
-			return *result;
+			if(isParallel())
+				collectors.reduce(biOp);
+			return collectors.template value< Out >();
+
+//			//TODO delete pointer
+//			Out *result = new Out();
+//			//result->age = 0;
+//			stageManager->reduce< Out >(result, biOp);
+//			this->run();
+//			return *result;
 		}
 
 		template < typename In, typename Out = In >
 		Out reduce(Out identity, std::function< void(Out*, Out*) > const& biOp){
-			//TODO delete pointer
-			Out *result = new Out();
-			*result = identity;
-			stageManager->reduce< Out >(result, biOp);
+			Collectors< Out > collectors(no_workers);
+			stageManager->reduce< Out >(collectors, biOp);
 			this->run();
-			return *result;
+			if(isParallel())
+				collectors.reduce(biOp);
+			biOp(&identity, &collectors.template value< Out >());
+			return identity;
+
+//			//TODO delete pointer
+//			Out *result = new Out();
+//			*result = identity;
+//			stageManager->reduce< Out >(result, biOp);
+//			this->run();
+//			return *result;
 		}
 
 		template < typename In, typename Out >
 		Out reduce(Out identity, std::function< Out*(In*) > const& taskFunc, std::function< void(Out*, Out*) > const& biOp){
-			//TODO delete pointer
-			Out *result = new Out();
-			*result = identity;
+			Collectors< Out > collectors(no_workers);
 			stageManager->map< In, Out >(taskFunc);
-			stageManager->reduce< Out >(result, biOp);
+			stageManager->reduce< Out >(collectors, biOp);
 			this->run();
-			return *result;
+			if(isParallel())
+				collectors.reduce(biOp);
+			biOp(&identity, &collectors.template value< Out >());
+			return identity;
+
+//			//TODO delete pointer
+//			Out *result = new Out();
+//			*result = identity;
+//			stageManager->map< In, Out >(taskFunc);
+//			stageManager->reduce< Out >(result, biOp);
+//			this->run();
+//			return *result;
 		}
 
 		template < typename In, typename K = In, typename V = In >
 		MapType < K, std::vector< V > > groupByKey(){
 			typedef MapType < K, std::vector< V > > CONTAINER;
-			Collectors< K, V, CONTAINER > collectors;
+			Collectors< CONTAINER > collectors(no_workers);
 			stageManager->groupByKey< In, K, V >(collectors);
 			this->run();
-			return collectors.template value();
+			if(isParallel())
+				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
+						{
+							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
+								result[it->first].insert(result[it->first].end(), (it->second).begin(), (it->second).end());
+							}
+						});
+			return collectors.template value< CONTAINER >();
+
+//			typedef MapType < K, std::vector< V > > CONTAINER;
+//			Collectors< K, V, CONTAINER > collectors;
+//			stageManager->groupByKey< In, K, V >(collectors);
+//			this->run();
+//			return collectors.template value();
 		}
 
 		template < typename In, typename K = In, typename V = In >
 		MapType < K, std::vector< V > > groupByKey(std::function< K*(In*) > const& taskFunc){
 			typedef MapType < K, std::vector< V > > CONTAINER;
-			Collectors< K, V, CONTAINER > collectors;
+			Collectors< CONTAINER > collectors(no_workers);
 			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
 			this->run();
-			return collectors.template value();
+			if(isParallel())
+				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
+						{
+							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
+								result[it->first].insert(result[it->first].end(), (it->second).begin(), (it->second).end());
+							}
+						});
+			return collectors.template value< CONTAINER >();
+
+//			typedef MapType < K, std::vector< V > > CONTAINER;
+//			Collectors< K, V, CONTAINER > collectors;
+//			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
+//			this->run();
+//			return collectors.template value();
 		}
 
 		template < typename In, typename K = In, typename V = In >
 		MapType < K, V > groupByKey(std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
 			typedef MapType < K, V > CONTAINER;
-			Collectors< K, V, CONTAINER > collectors;
+			Collectors< CONTAINER > collectors(no_workers);
 			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
 			this->run();
-			return collectors.template value();
+			if(isParallel())
+				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
+						{
+							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
+								result[it->first] += it->second;
+							}
+						});
+			return collectors.template value< CONTAINER >();
+
+//			typedef MapType < K, V > CONTAINER;
+//			Collectors< K, V, CONTAINER > collectors;
+//			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
+//			this->run();
+//			return collectors.template value();
 		}
 
 		template < typename In, typename K = In, typename V = In >
 		MapType < K, V > groupByKey(std::function< void(V&, In*) > const& binaryOperator){
 			typedef MapType < K, V > CONTAINER;
-			Collectors< K, V, CONTAINER > collectors;
+			Collectors< CONTAINER > collectors(no_workers);
 			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
 			this->run();
-			return collectors.template value();
+			if(isParallel())
+				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
+						{
+							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
+								result[it->first] += it->second;
+							}
+						});
+			return collectors.template value< CONTAINER >();
+
+//			typedef MapType < K, V > CONTAINER;
+//			Collectors< K, V, CONTAINER > collectors;
+//			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
+//			this->run();
+//			return collectors.template value();
 		}
 
 		unsigned int count(){
 			typedef Accumulator< unsigned int > ACCUM;
-			Collectors< ACCUM > collectors;
+			Collectors< ACCUM > collectors(no_workers);
 			stageManager->count(collectors);
 
 			//this->add_stage(new Count< Accumulator< unsigned int > >(accum));
 			this->run();
+			if(isParallel())
+				collectors.reduce([](ACCUM &count, ACCUM workerResult){count = count + workerResult;});
 			ACCUM accum = collectors.template value< ACCUM >();
 			return accum.value();
+		}
+
+		void close(){
+			stageManager->close();
+			this->run();
+		}
+
+		const bool isParallel(){
+			return no_workers > 1;
 		}
 
 

@@ -7,7 +7,7 @@ using namespace ff;
 template < typename T >
 class Reduce: public ff_node_t<T> {
 public:
-	Reduce(T *identity, std::function< void(T*, T*) > const& biOp): identity(identity), biOp(biOp){};
+	Reduce(T &identity, std::function< void(T*, T*) > const& biOp): identity(&identity), biOp(biOp){};
 	~Reduce(){};
 
 	T* svc(T* task) {

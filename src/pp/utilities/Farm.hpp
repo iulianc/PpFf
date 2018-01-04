@@ -17,15 +17,14 @@ namespace utilities{
 				_workers.push_back(pipe);
 			}
 
-			std::unique_ptr<ff::ff_node> emitter = std::unique_ptr<ff::ff_node>(nullptr);
-			std::unique_ptr<ff::ff_node> collector = std::unique_ptr<ff::ff_node>(nullptr);
+//			std::unique_ptr<ff::ff_node> emitter = std::unique_ptr<ff::ff_node>(nullptr);
+//			std::unique_ptr<ff::ff_node> collector = std::unique_ptr<ff::ff_node>(nullptr);
 
 
-			_farm = new ff_farm<>(false, DEF_IN_BUFF_ENTRIES, DEF_OUT_BUFF_ENTRIES, false, _workers.size());
+			//_farm = new ff_farm<>(false, DEF_IN_BUFF_ENTRIES, DEF_OUT_BUFF_ENTRIES, false, _workers.size());
 
-			_farm->add_workers(_workers);
-			//_farm->add_collector(collector.get());
-			_farm->add_collector(new Empty());
+			_farm.add_workers(_workers);
+			_farm.add_collector(new Empty());
 		};
 
 		ff_node* getWorker(unsigned int worker_id){
@@ -37,13 +36,13 @@ namespace utilities{
 		}
 
 		ff_farm<>* getFarm(){
-			return _farm;
+			return &_farm;
 		}
 
 
 		private:
 		unsigned int _no_workers;
-		ff_farm<> *_farm;
+		ff_farm<> _farm;
 		std::vector<ff_node*> _workers;
 	};
 }

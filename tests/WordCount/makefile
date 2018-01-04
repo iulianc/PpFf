@@ -1,29 +1,13 @@
-.IGNORE:
-
-default:  run
-
-TEST_FILE="testdata/1505712Words.txt"
-ATTENDUS="attendus-1505712.txt"
-
-#TEST_FILE="testdata/78792Words.txt"
-#ATTENDUS="attendus-78792.txt"
-
-#TEST_FILE="testdata/loremipsum.txt"
-#ATTENDUS="attendus-loremipsum.txt"
-
-#MAP_TYPE=-D__ORDERED_MAP__
-NB_TIMES=5
-
-########################################################
+NB_TIMES=1
 
 # Specify the final target name
-EXE 		:= WordCount WordCountSeq WordCount.class
+EXE 		:= WordCount
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
-#ROOT_PIPE      := $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
-ROOT_PIPE 	:= $(HOME)/PpFf/src/pp
+ROOT_PIPE      := $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
+#ROOT_PIPE 	:= $(HOME)/PpFf/src/pp
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
@@ -43,43 +27,43 @@ LDLIBS 		:= -lpthread
 
 OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
+#TEST_FILE="testdata/78792Words.txt"
+#ATTENDUS="attendus-78792.txt"
+
+#TEST_FILE="testdata/loremipsum.txt"
+#ATTENDUS="attendus-loremipsum.txt"
+
+TEST_FILE="testdata/1505712Words.txt"
+ATTENDUS="attendus-1505712.txt"
+
+
 # Tell make that these target are not real files
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
+default: run
+
 compile: $(EXE)
+	javac WordCount.java
 
-run: run_cpp run_java run_sh run_seq
-
-run_sh:
-	@echo "*** Execution wc.sh"
-	@time (cat $(TEST_FILE) | ./wc.sh | sort > obtenus-sh.txt) 2> temps-sh.txt
-	@diff obtenus-sh.txt $(ATTENDUS)
-	@./real-to-ms.rb `cat temps-sh.txt | grep real | sed s/real//`
+run: run_cpp 	#run_java
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
 	@./WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS)
 
-run_seq: compile
-	@echo "*** Execution seq. *** "
-	@@./WordCountSeq $(TEST_FILE) $(NB_TIMES) | sort > obtenus-seq.txt
-	@@diff obtenus-seq.txt $(ATTENDUS)
-
 run_java: compile
 	@echo "*** Execution Java ***"
 	@java -cp . WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS)
 
-WordCount: $(OBJ)
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
+all		: $(EXE)
+	./WordCount
 
-WordCountSeq: $(OBJ)
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq
 
-WordCount.class: WordCount.java
-	javac WordCount.java
+$(EXE)		: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $^ $(LDLIBS) -o $@
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
@@ -87,8 +71,9 @@ clean:
 
 cleanall cleanxtra: clean
 	\rm -f *.o *~
-	\rm -f obtenus*txt temps-sh.txt res.txt
+	\rm -f obtenus*txt
 
 # Include the dependency
 -include $(DEP)
+
 
