@@ -25,13 +25,13 @@ public:
 		return this->container;
 	}
 
-	void reduce(std::function< void(T&, T&) > const& taskFunc){
-		if(container.size() > 0){
-			for(unsigned int i = 1; i < container.size(); i++){
-		    	taskFunc(container[0], container[i]);
-		    }
-		}
-	}
+//	void reduce(std::function< void(T&, T&) > const& taskFunc){
+//		if(container.size() > 0){
+//			for(unsigned int i = 1; i < container.size(); i++){
+//		    	taskFunc(container[0], container[i]);
+//		    }
+//		}
+//	}
 
 	void reduce(std::function< void(T*, T*) > const& taskFunc){
 		if(container.size() > 0){

@@ -104,7 +104,7 @@ namespace pp{
 			stageManager->sum< T >(collectors);
 			this->run();
 			if(isParallel())
-				collectors.reduce([](ACCUM &sum, ACCUM workerResult){sum = sum + workerResult;});
+				collectors.reduce([](ACCUM *out, ACCUM *in){*out = *out + *in;});
 			ACCUM accum = collectors.template value< ACCUM >();
 			return accum.value();
 		}
@@ -171,12 +171,12 @@ namespace pp{
 			stageManager->groupByKey< In, K, V >(collectors);
 			this->run();
 			if(isParallel())
-				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
-						{
-							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
-								result[it->first].insert(result[it->first].end(), (it->second).begin(), (it->second).end());
-							}
-						});
+				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+					{
+						for (auto it = in->begin(); it != in->end(); it++) {
+							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
+						}
+					});
 			return collectors.template value< CONTAINER >();
 
 //			typedef MapType < K, std::vector< V > > CONTAINER;
@@ -193,12 +193,12 @@ namespace pp{
 			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
 			this->run();
 			if(isParallel())
-				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
-						{
-							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
-								result[it->first].insert(result[it->first].end(), (it->second).begin(), (it->second).end());
-							}
-						});
+				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+					{
+						for (auto it = in->begin(); it != in->end(); it++) {
+							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
+						}
+					});
 			return collectors.template value< CONTAINER >();
 
 //			typedef MapType < K, std::vector< V > > CONTAINER;
@@ -215,12 +215,12 @@ namespace pp{
 			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
 			this->run();
 			if(isParallel())
-				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
-						{
-							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
-								result[it->first] += it->second;
-							}
-						});
+				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+					{
+						for (auto it = in->begin(); it != in->end(); it++) {
+							(*out)[it->first] += it->second;
+						}
+					});
 			return collectors.template value< CONTAINER >();
 
 //			typedef MapType < K, V > CONTAINER;
@@ -237,12 +237,12 @@ namespace pp{
 			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
 			this->run();
 			if(isParallel())
-				collectors.reduce([](CONTAINER &result, CONTAINER &workerResult)
-						{
-							for (auto it = workerResult.begin(); it != workerResult.end(); it++) {
-								result[it->first] += it->second;
-							}
-						});
+				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+					{
+						for (auto it = in->begin(); it != in->end(); it++) {
+							(*out)[it->first] += it->second;
+						}
+					});
 			return collectors.template value< CONTAINER >();
 
 //			typedef MapType < K, V > CONTAINER;
@@ -260,7 +260,7 @@ namespace pp{
 			//this->add_stage(new Count< Accumulator< unsigned int > >(accum));
 			this->run();
 			if(isParallel())
-				collectors.reduce([](ACCUM &count, ACCUM workerResult){count = count + workerResult;});
+				collectors.reduce([](ACCUM *out, ACCUM *in){*out = *out + *in;});
 			ACCUM accum = collectors.template value< ACCUM >();
 			return accum.value();
 		}
