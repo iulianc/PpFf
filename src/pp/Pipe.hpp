@@ -53,14 +53,14 @@ namespace pp{
 
 	    template< typename In, typename Out, typename ContainerFuncOut >
 	    Pipe& flatMap(std::function< ContainerFuncOut*(In*) > const& taskFunc){
-	    	//stageManager->map< In, ContainerFuncOut >(taskFunc);
-	    	stageManager->flatMap< In, Out, ContainerFuncOut >(taskFunc);
+	    	stageManager->map< In, ContainerFuncOut >(taskFunc);
+	    	stageManager->flat< ContainerFuncOut, Out >();
 	    	return *this;
 	    };
 
-	    template< typename In, typename Out, typename ContainerFuncOut = In >
+	    template< typename InContainer, typename Out, typename ContainerFuncOut = InContainer >
 	    Pipe& flatMap(){
-	    	stageManager->flatMap< In, Out, ContainerFuncOut >();
+	    	stageManager->flat< ContainerFuncOut, Out >();
 	    	return *this;
 	    };
 

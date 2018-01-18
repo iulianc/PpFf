@@ -63,30 +63,16 @@ using namespace ff;
 			}
 		}
 
-		template < typename In, typename Out, typename TContainer >
-		void flatMap(std::function< TContainer*(In*) > const& taskFunc){
+		template < typename TContainer, typename Out >
+		void flat(){
 			if(!isParallel()){
-				pipe.add_stage(new FlatMap< In, Out, TContainer, true >(taskFunc));
+				pipe.add_stage(new Flat< TContainer, Out >);
 			} else {
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new FlatMap< In, Out, TContainer, true >(taskFunc));
-				}
-			}
-		}
-
-		template < typename In, typename Out, typename TContainer >
-		void flatMap(){
-			if(!isParallel()){
-				pipe.add_stage(new FlatMap< In, Out, TContainer, false >);
-			} else {
-				utilities::Farm *farm = InstantiateFarm();
-
-				for(int i = 0; i < no_workers; i++){
-					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new FlatMap< In, Out, TContainer, false >);
+					worker_pipe->add_stage(new Flat< TContainer, Out >);
 				}
 			}
 		}
