@@ -64,6 +64,18 @@ namespace pp{
 	    	return *this;
 	    };
 
+	    template< typename In, typename Out, typename ContainerFuncOut >
+	    Pipe& flatMap2end(std::function< ContainerFuncOut*(In*) > const& taskFunc){
+	    	stageManager->flatMap2end< In, Out, ContainerFuncOut >(taskFunc);
+	    	return *this;
+	    };
+
+	    template< typename In, typename Out, typename ContainerFuncOut = In >
+	    Pipe& flatMap2end(){
+	    	stageManager->flatMap2end< In, Out, ContainerFuncOut >();
+	    	return *this;
+	    };
+
 		template < typename In >
 		Pipe& find(std::function< bool(In*) > const& taskFunc){
 			stageManager->find< In >(taskFunc);

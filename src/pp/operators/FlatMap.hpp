@@ -59,3 +59,48 @@ public:
         return GO_ON;
     }
 };
+
+
+template < typename In, typename Out, typename TContainer, bool HasMap >
+class FlatMap2end: public ff_node {};
+
+
+template < typename In, typename Out, typename TContainer >
+class FlatMap2end< In, Out, TContainer, true >: public ff_node {
+public:
+	FlatMap2end(std::function< TContainer*(In*) > const &taskFunc): taskFunc(taskFunc){container = new TContainer;};
+	~FlatMap2end(){delete container;};
+
+	void* svc(void* task) {
+		container =	taskFunc((In*)task);
+
+	    for(auto &elem : *container){
+	    	this->ff_send_out(&elem);
+	    }
+
+	    //delete (TContainer*)task;
+		return GO_ON;
+	}
+
+private:
+	std::function< TContainer*(In*) > const &taskFunc;
+	TContainer *container;
+};
+
+
+template < typename In, typename Out, typename TContainer >
+class FlatMap2end< In, Out, TContainer, false >: public ff_node {
+public:
+	~FlatMap2end(){};
+
+	void* svc(void* task) {
+	    for(auto &elem : *(In*)task){
+	    	this->ff_send_out(&elem);
+	    }
+
+	    //delete (TContainer*)task;
+		return GO_ON;
+	}
+};
+
+

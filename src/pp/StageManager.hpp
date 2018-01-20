@@ -77,6 +77,34 @@ using namespace ff;
 			}
 		}
 
+		template < typename In, typename Out, typename TContainer >
+		void flatMap2end(std::function< TContainer*(In*) > const& taskFunc){
+			if(!isParallel()){
+				pipe.add_stage(new FlatMap2end< In, Out, TContainer, true >(taskFunc));
+			} else {
+				utilities::Farm *farm = InstantiateFarm();
+
+				for(int i = 0; i < no_workers; i++){
+					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
+					worker_pipe->add_stage(new FlatMap2end< In, Out, TContainer, true >(taskFunc));
+				}
+			}
+		}
+
+		template < typename In, typename Out, typename TContainer >
+		void flatMap2end(){
+			if(!isParallel()){
+				pipe.add_stage(new FlatMap2end< In, Out, TContainer, false >);
+			} else {
+				utilities::Farm *farm = InstantiateFarm();
+
+				for(int i = 0; i < no_workers; i++){
+					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
+					worker_pipe->add_stage(new FlatMap2end< In, Out, TContainer, false >);
+				}
+			}
+		}
+
 		template < typename In >
 		void find(std::function< bool(In*) > const& taskFunc){
 			if(!isParallel()){
