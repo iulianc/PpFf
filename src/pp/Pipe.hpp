@@ -2,13 +2,16 @@
 #include <vector>
 #include <ff/pipeline.hpp>
 #include <ff/farm.hpp>
+#include <utilities/Workers.hpp>
 #include "utilities/MapType.hpp"
+#include "utilities/Enumerators.hpp"
 #include "operators/Find.hpp"
 #include "utilities/Collectors.hpp"
+#include "utilities/MapCollectors.hpp"
 #include "utilities/NullType.hpp"
 #include "operators/Count.hpp"
 #include <functional>
-
+#include "aggregates/Aggregate.hpp"
 #include "operators/Sum.hpp"
 #include "StageManager.hpp"
 
@@ -176,93 +179,358 @@ namespace pp{
 //			return *result;
 		}
 
-		template < typename In, typename K = In, typename V = In >
-		MapType < K, std::vector< V > > groupByKey(){
-			typedef MapType < K, std::vector< V > > CONTAINER;
-			Collectors< CONTAINER > collectors(no_workers);
-			stageManager->groupByKey< In, K, V >(collectors);
-			this->run();
-			if(isParallel())
-				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-					{
-						for (auto it = in->begin(); it != in->end(); it++) {
-							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
-						}
-					});
-			return collectors.template value< CONTAINER >();
 
+//
+//		//*****GroupByKey-Deprecated**********************************
+//		template < typename In, typename K = In, typename V = In >
+//		MapType < K, std::vector< V > > groupByKey(){
 //			typedef MapType < K, std::vector< V > > CONTAINER;
-//			Collectors< K, V, CONTAINER > collectors;
+//			Collectors< CONTAINER > collectors(no_workers);
 //			stageManager->groupByKey< In, K, V >(collectors);
 //			this->run();
-//			return collectors.template value();
-		}
-
-		template < typename In, typename K = In, typename V = In >
-		MapType < K, std::vector< V > > groupByKey(std::function< K*(In*) > const& taskFunc){
-			typedef MapType < K, std::vector< V > > CONTAINER;
-			Collectors< CONTAINER > collectors(no_workers);
-			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
-			this->run();
-			if(isParallel())
-				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-					{
-						for (auto it = in->begin(); it != in->end(); it++) {
-							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
-						}
-					});
-			return collectors.template value< CONTAINER >();
-
+//			if(isParallel())
+//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+//					{
+//						for (auto it = in->begin(); it != in->end(); it++) {
+//							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
+//						}
+//					});
+//			return collectors.template value< CONTAINER >();
+//		}
+//
+//		template < typename In, typename K = In, typename V = In >
+//		MapType < K, std::vector< V > > groupByKey(std::function< K*(In*) > const& taskFunc){
 //			typedef MapType < K, std::vector< V > > CONTAINER;
-//			Collectors< K, V, CONTAINER > collectors;
+//			Collectors< CONTAINER > collectors(no_workers);
 //			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
 //			this->run();
-//			return collectors.template value();
-		}
-
-		template < typename In, typename K = In, typename V = In >
-		MapType < K, V > groupByKey(std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
-			typedef MapType < K, V > CONTAINER;
-			Collectors< CONTAINER > collectors(no_workers);
-			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
-			this->run();
-			if(isParallel())
-				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-					{
-						for (auto it = in->begin(); it != in->end(); it++) {
-							(*out)[it->first] += it->second;
-						}
-					});
-			return collectors.template value< CONTAINER >();
-
+//			if(isParallel())
+//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+//					{
+//						for (auto it = in->begin(); it != in->end(); it++) {
+//							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
+//						}
+//					});
+//			return collectors.template value< CONTAINER >();
+//		}
+//
+//		template < typename In, typename K = In, typename V = In >
+//		MapType < K, V > groupByKey(std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
 //			typedef MapType < K, V > CONTAINER;
-//			Collectors< K, V, CONTAINER > collectors;
+//			Collectors< CONTAINER > collectors(no_workers);
 //			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
 //			this->run();
-//			return collectors.template value();
-		}
-
-		template < typename In, typename K = In, typename V = In >
-		MapType < K, V > groupByKey(std::function< void(V&, In*) > const& binaryOperator){
-			typedef MapType < K, V > CONTAINER;
-			Collectors< CONTAINER > collectors(no_workers);
-			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
-			this->run();
-			if(isParallel())
-				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-					{
-						for (auto it = in->begin(); it != in->end(); it++) {
-							(*out)[it->first] += it->second;
-						}
-					});
-			return collectors.template value< CONTAINER >();
-
+//			if(isParallel())
+//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+//					{
+//						for (auto it = in->begin(); it != in->end(); it++) {
+//							(*out)[it->first] += it->second;
+//						}
+//					});
+//			return collectors.template value< CONTAINER >();
+//		}
+//
+//		template < typename In, typename K = In, typename V = In >
+//		MapType < K, V > groupByKey(std::function< void(V&, In*) > const& binaryOperator){
 //			typedef MapType < K, V > CONTAINER;
-//			Collectors< K, V, CONTAINER > collectors;
+//			Collectors< CONTAINER > collectors(no_workers);
 //			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
 //			this->run();
-//			return collectors.template value();
+//			if(isParallel())
+//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
+//					{
+//						for (auto it = in->begin(); it != in->end(); it++) {
+//							(*out)[it->first] += it->second;
+//						}
+//					});
+//			return collectors.template value< CONTAINER >();
+//		}
+//		//**************************************************************
+
+
+		//*****GroupByKey-New Version**********************************
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp < 4) , MapType < K, V > >::type
+		groupByKey(){
+			typedef MapType < K, V > CONTAINER;
+			typedef MapCollectors< K, V, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, In, V > Aggr;
+
+			Workers workers(no_workers);
+			Aggr aggregate;
+
+			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, aggregate);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							V &out = containerOut[it->first];
+							V in = it->second;
+
+							aggregate.reduce(&out, &in);
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			return collectors->container();
 		}
+
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp < 4) , MapType < K, V > >::type
+		groupByKey(std::function< K*(In*) > const& taskFuncOnKey){
+			typedef MapType < K, V > CONTAINER;
+			typedef MapCollectors< K, V, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, In, V > Aggr;
+
+			Workers workers(no_workers);
+			Aggr aggregate;
+
+			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, aggregate);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							V &out = containerOut[it->first];
+							V in = it->second;
+
+							aggregate.reduce(&out, &in);
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			return collectors->container();
+		}
+
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp < 4) , MapType < K, V > >::type
+		groupByKey(std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue){
+			typedef MapType < K, V > CONTAINER;
+			typedef MapCollectors< K, V, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, In, V > Aggr;
+
+			Workers workers(no_workers);
+			Aggr aggregate;
+
+			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue, aggregate);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							V &out = containerOut[it->first];
+							V in = it->second;
+
+							aggregate.reduce(&out, &in);
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			return collectors->container();
+		}
+
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp > 4) , MapType < K, std::vector< V > > >::type
+		groupByKey(){
+			typedef MapType < K, std::vector< V > > CONTAINER;
+			typedef MapCollectors< K, V, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, In, V > Aggr;
+
+			Workers workers(no_workers);
+
+			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							std::vector< V > &out = containerOut[it->first];
+							out.insert(out.end(), (it->second).begin(), (it->second).end());
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			return collectors->container();
+		}
+
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp > 4) , MapType < K, std::vector< V > > >::type
+		groupByKey(std::function< K*(In*) > const& taskFuncOnKey){
+			typedef MapType < K, std::vector< V > > CONTAINER;
+			typedef MapCollectors< K, V, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, In, V > Aggr;
+
+			Workers workers(no_workers);
+
+			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							std::vector< V > &out = containerOut[it->first];
+							out.insert(out.end(), (it->second).begin(), (it->second).end());
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			return collectors->container();
+		}
+
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp > 4) , MapType < K, std::vector< V > > >::type
+		groupByKey(std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue){
+			typedef MapType < K, std::vector< V > > CONTAINER;
+			typedef MapCollectors< K, V, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, In, V > Aggr;
+
+			Workers workers(no_workers);
+
+			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							std::vector< V > &out = containerOut[it->first];
+							out.insert(out.end(), (it->second).begin(), (it->second).end());
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			return collectors->container();
+		}
+
+
+		//Average
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
+		groupByKey(){
+			typedef std::pair < V, int > Out;
+
+			typedef MapType < K, Out > CONTAINER;
+			typedef MapCollectors< K, Out, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, In, Out > Aggr;
+
+			Workers workers(no_workers);
+			Aggr aggregate;
+
+
+			stageManager->groupByKey< In, K, Out, COLLECTORS, Workers, Aggr >(workers, aggregate);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							Out &out = containerOut[it->first];
+							Out in = it->second;
+
+							aggregate.reduce(&out, &in);
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			CONTAINER containerPairValue = collectors->container();
+			Out pairValue;
+			MapType < K, V > result;
+
+			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
+				pairValue = it->second;
+				result[it->first] = pairValue.first / pairValue.second;
+			}
+
+			return result;
+		}
+
+		//Average
+		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
+		groupByKey(std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue){
+			typedef std::pair < V, int > Value;
+
+			typedef MapType < K, Value > CONTAINER;
+			typedef MapCollectors< K, Value, CONTAINER > COLLECTORS;
+
+			typedef Workers < COLLECTORS > Workers;
+			typedef Aggregate< AggrOp, V, Value > Aggr;
+
+			Workers workers(no_workers);
+			Aggr aggregate;
+
+			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue, aggregate);
+			this->run();
+			if(isParallel()){
+				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+					{
+						CONTAINER &containerIn = in->container();
+						CONTAINER &containerOut = out->container();
+
+						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+							Value &out = containerOut[it->first];
+							Value in = it->second;
+
+							aggregate.reduce(&out, &in);
+						}
+					});
+			}
+
+			COLLECTORS *collectors = workers.value();
+			CONTAINER containerPairValue = collectors->container();
+			Value pairValue;
+			MapType < K, V > result;
+
+			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
+				pairValue = it->second;
+				result[it->first] = pairValue.first / pairValue.second;
+			}
+
+			return result;
+		}
+		//*********************************************************
+
 
 		unsigned int count(){
 			typedef Accumulator< unsigned int > ACCUM;

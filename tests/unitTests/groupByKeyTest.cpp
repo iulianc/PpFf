@@ -6,6 +6,7 @@
 #include "utility.hpp"
 #include <algorithm>
 
+
 TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
     typedef std::vector<std::string> VALUE;
     typedef MapType<std::string, VALUE> CONTAINER;
@@ -93,7 +94,8 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, Employee>( [](Employee *e) ->int* { return new int(e->age); } );
+        .groupByKey<Employee, int, Employee>( [](Employee *e) ->int* { return &(e->age); },
+        									  [](Employee *e) ->Employee* { return e; });
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
@@ -140,9 +142,7 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
        .source<Employee>(employees.begin(), employees.end())
-       .groupByKey<Employee, int, int>( [](Employee *e) ->int* { return new int(e->age); },
-                                        [](int &count, Employee *e) ->void { count = count + 1; }
-                                        );
+       .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) ->int* { return &(e->age); } );
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
@@ -295,9 +295,7 @@ TEST_CASE( "GroupByAgeAndCountEmployeesParallel", "GroupByKeyOperator" ) {
     CONTAINER result = pipe
        .source<Employee>(employees.begin(), employees.end())
 	   .parallel(4)
-       .groupByKey<Employee, int, int>( [](Employee *e) ->int* { return new int(e->age); },
-                                        [](int &count, Employee *e) ->void { count = count + 1; }
-                                        );
+	   .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) ->int* { return &(e->age); } );
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
