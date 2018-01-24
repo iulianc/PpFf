@@ -5,7 +5,7 @@ class AggregateOperatorMin{
     public:
 		void compute(T *out, T *in){
 			//std::cout << "Min compute" << std::endl;
-			if(*out > *in)
+			if (*in < *out)
 				*out = *in;
 		}
 

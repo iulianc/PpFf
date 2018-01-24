@@ -5,7 +5,7 @@ class AggregateOperatorSum{
     public:
 		void compute(T *out, T *in){
 			//std::cout << "Sum compute" << std::endl;
-			*out = *out + *in;
+			*out += *in;
 		}
 
 		void reduce(T *out, T *in){
