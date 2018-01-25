@@ -12,7 +12,7 @@
 
 
 template< int I, typename In, typename V, 
-          typename C = AggregateOperatorCount< V >,
+          typename C = AggregateOperatorCount< V, In >,
           typename S = AggregateOperatorSum< V >,
           typename Ma = AggregateOperatorMax< V >,
           typename Mi = AggregateOperatorMin< V >,
@@ -21,12 +21,12 @@ class Aggregate{};
 
 
 template< typename In, typename V, typename C, typename S, typename Ma, typename Mi, typename A >
-class Aggregate< 0, In, V, C, S, Ma, Mi, A >{
+class Aggregate< Aggregates::OperatorCount, In, V, C, S, Ma, Mi, A >{
 public:
     using AggregateOperator = C;
 
     void compute(V *out, In *in){
-        aggregateOperator.compute(out);
+        aggregateOperator.compute(out, in);
     }
 
     void reduce(V *out, V *in){
@@ -39,7 +39,7 @@ private:
 
 
 template< typename In, typename V, typename C, typename S, typename Ma, typename Mi, typename A >
-class Aggregate< 1, In, V, C, S, Ma, Mi, A >{
+class Aggregate< Aggregates::OperatorSum, In, V, C, S, Ma, Mi, A >{
 public:
     using AggregateOperator = S;
 
@@ -57,7 +57,7 @@ private:
 
 
 template< typename In, typename V, typename C, typename S, typename Ma, typename Mi, typename A >
-class Aggregate< 2, In, V, C, S, Ma, Mi, A >{
+class Aggregate< Aggregates::OperatorMax, In, V, C, S, Ma, Mi, A >{
 public:
     using AggregateOperator = Ma;
 
@@ -74,7 +74,7 @@ private:
 };
 
 template< typename In, typename V, typename C, typename S, typename Ma, typename Mi, typename A >
-class Aggregate< 3, In, V, C, S, Ma, Mi, A >{
+class Aggregate< Aggregates::OperatorMin, In, V, C, S, Ma, Mi, A >{
 public:
     using AggregateOperator = Mi;
 
@@ -91,7 +91,7 @@ private:
 };
 
 template< typename In, typename V, typename C, typename S, typename Ma, typename Mi, typename A >
-class Aggregate< 4, In, V, C, S, Ma, Mi, A >{
+class Aggregate< Aggregates::OperatorAvg, In, V, C, S, Ma, Mi, A >{
 public:
     using AggregateOperator = A;
 

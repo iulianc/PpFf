@@ -5,6 +5,7 @@ class AggregateOperatorMax{
     public:
 		void compute(T *out, T *in){
 			//std::cout << "Max compute" << std::endl;
+
 			if (*in > *out)
 				*out = *in;
 		}
@@ -15,4 +16,5 @@ class AggregateOperatorMax{
 		}
 
 	private:
+		T min_val = std::numeric_limits<T>::min();
 };

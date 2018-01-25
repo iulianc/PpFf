@@ -1,9 +1,9 @@
 
 
-template< typename Out >
+template< typename Out, typename In >
 class AggregateOperatorCount{
     public:
-        void compute(Out *out){
+        void compute(Out *out, In *in){
             //std::cout << "Count compute" << std::endl;
             *out += 1;
         }

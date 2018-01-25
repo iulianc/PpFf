@@ -4,6 +4,7 @@ public:
     int age;
     std::string name;
     int salary;
+    std::string job_title;
     std::string toString() { return name; };
     std::vector<std::string> languages;
 
@@ -23,6 +24,13 @@ public:
         age = _age;
         name = _name;
         salary = _salary;
+    };
+
+    Employee(int _age, std::string _name, int _salary, std::string _job_title) {
+        age = _age;
+        name = _name;
+        salary = _salary;
+        job_title = _job_title;
     };
 
     Employee(int _age, std::string _name, int _salary, std::vector<std::string> _languages) {
