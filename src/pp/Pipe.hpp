@@ -439,96 +439,96 @@ namespace pp{
 		}
 
 
-		//Average
-		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
-		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
-		groupByKey(){
-			typedef std::pair < V, int > Out;
-
-			typedef MapType < K, Out > CONTAINER;
-			typedef MapCollectors< K, Out, CONTAINER > COLLECTORS;
-
-			typedef Workers < COLLECTORS > Workers;
-			typedef Aggregate< AggrOp, In, Out > Aggr;
-
-			Workers workers(no_workers);
-			Aggr aggregate;
-
-
-			stageManager->groupByKey< In, K, Out, COLLECTORS, Workers, Aggr >(workers, aggregate);
-			this->run();
-			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
-					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
-
-						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
-							Out &out = containerOut[it->first];
-							Out in = it->second;
-
-							aggregate.reduce(&out, &in);
-						}
-					});
-			}
-
-			COLLECTORS *collectors = workers.value();
-			CONTAINER containerPairValue = collectors->container();
-			Out pairValue;
-			MapType < K, V > result;
-
-			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
-				pairValue = it->second;
-				result[it->first] = pairValue.first / pairValue.second;
-			}
-
-			return result;
-		}
-
-		//Average
-		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
-		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
-		groupByKey(std::function< K*(In*) > const& taskFuncOnKey){
-			typedef std::pair < V, int > Value;
-
-			typedef MapType < K, Value > CONTAINER;
-			typedef MapCollectors< K, Value, CONTAINER > COLLECTORS;
-
-			typedef Workers < COLLECTORS > Workers;
-			typedef Aggregate< AggrOp, V, Value > Aggr;
-
-			Workers workers(no_workers);
-			Aggr aggregate;
-
-			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, aggregate);
-			this->run();
-			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
-					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
-
-						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
-							Value &out = containerOut[it->first];
-							Value in = it->second;
-
-							aggregate.reduce(&out, &in);
-						}
-					});
-			}
-
-			COLLECTORS *collectors = workers.value();
-			CONTAINER containerPairValue = collectors->container();
-			Value pairValue;
-			MapType < K, V > result;
-
-			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
-				pairValue = it->second;
-				result[it->first] = pairValue.first / pairValue.second;
-			}
-
-			return result;
-		}
+//		//Average
+//		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+//		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
+//		groupByKey(){
+//			typedef std::pair < V, int > Out;
+//
+//			typedef MapType < K, Out > CONTAINER;
+//			typedef MapCollectors< K, Out, CONTAINER > COLLECTORS;
+//
+//			typedef Workers < COLLECTORS > Workers;
+//			typedef Aggregate< AggrOp, In, Out > Aggr;
+//
+//			Workers workers(no_workers);
+//			Aggr aggregate;
+//
+//
+//			stageManager->groupByKey< In, K, Out, COLLECTORS, Workers, Aggr >(workers, aggregate);
+//			this->run();
+//			if(isParallel()){
+//				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+//					{
+//						CONTAINER &containerIn = in->container();
+//						CONTAINER &containerOut = out->container();
+//
+//						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+//							Out &out = containerOut[it->first];
+//							Out in = it->second;
+//
+//							aggregate.reduce(&out, &in);
+//						}
+//					});
+//			}
+//
+//			COLLECTORS *collectors = workers.value();
+//			CONTAINER containerPairValue = collectors->container();
+//			Out pairValue;
+//			MapType < K, V > result;
+//
+//			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
+//				pairValue = it->second;
+//				result[it->first] = pairValue.first / pairValue.second;
+//			}
+//
+//			return result;
+//		}
+//
+//		//Average
+//		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
+//		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
+//		groupByKey(std::function< K*(In*) > const& taskFuncOnKey){
+//			typedef std::pair < V, int > Value;
+//
+//			typedef MapType < K, Value > CONTAINER;
+//			typedef MapCollectors< K, Value, CONTAINER > COLLECTORS;
+//
+//			typedef Workers < COLLECTORS > Workers;
+//			typedef Aggregate< AggrOp, V, Value > Aggr;
+//
+//			Workers workers(no_workers);
+//			Aggr aggregate;
+//
+//			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, aggregate);
+//			this->run();
+//			if(isParallel()){
+//				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+//					{
+//						CONTAINER &containerIn = in->container();
+//						CONTAINER &containerOut = out->container();
+//
+//						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
+//							Value &out = containerOut[it->first];
+//							Value in = it->second;
+//
+//							aggregate.reduce(&out, &in);
+//						}
+//					});
+//			}
+//
+//			COLLECTORS *collectors = workers.value();
+//			CONTAINER containerPairValue = collectors->container();
+//			Value pairValue;
+//			MapType < K, V > result;
+//
+//			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
+//				pairValue = it->second;
+//				result[it->first] = pairValue.first / pairValue.second;
+//			}
+//
+//			return result;
+//		}
 
 		//Average
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >

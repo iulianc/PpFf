@@ -319,7 +319,8 @@ using namespace ff;
 		}
 
 		template < typename In, typename K, typename V, typename Collector, typename Workers, typename Aggr >
-		void groupByKey(Workers &workers, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate){
+		typename std::enable_if< !std::is_same< Aggr, Aggregate< Aggregates::OperatorAvg, V, std::pair < V, int > > >::value, void >::type
+		groupByKey(Workers &workers, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate){
 
 			typedef typename Workers::Container Container;
 			Container &container = workers.getContainer();
@@ -338,6 +339,29 @@ using namespace ff;
 			}
 		}
 
+		//Average
+		template < typename In, typename K, typename V, typename Collector, typename Workers, typename Aggr >
+		typename std::enable_if< std::is_same< Aggr, Aggregate< Aggregates::OperatorAvg, V, std::pair < V, int > > >::value, void >::type
+		groupByKey(Workers &workers, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate){
+
+			typedef typename Workers::Container Container;
+			Container &container = workers.getContainer();
+
+			if(!isParallel()){
+				pipe.add_stage(new GroupByKey< 3, In, K, V, Collector, Aggr >(container[0], taskFuncOnKey, taskFuncOnValue, aggregate));
+			}else{
+				utilities::Farm *farm = InstantiateFarm();
+
+				for(int i = 0; i < no_workers; i++){
+					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
+					worker_pipe->add_stage(new GroupByKey< 3, In, K, V, Collector, Aggr >(container[i], taskFuncOnKey, taskFuncOnValue, aggregate));
+				}
+
+				pipe.add_stage(farm->getFarm());
+			}
+		}
+
+
 		template < typename In, typename K, typename Out, typename Collector, typename Workers, typename Aggr >
 		void groupByKey(Workers &workers){
 
@@ -345,13 +369,13 @@ using namespace ff;
 			Container &container = workers.getContainer();
 
 			if(!isParallel()){
-				pipe.add_stage(new GroupByKey< 3, In, K, Out, Collector, Aggr >(container[0]));
+				pipe.add_stage(new GroupByKey< 4, In, K, Out, Collector, Aggr >(container[0]));
 			}else{
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new GroupByKey< 3, In, K, Out, Collector, Aggr >(container[i]));
+					worker_pipe->add_stage(new GroupByKey< 4, In, K, Out, Collector, Aggr >(container[i]));
 				}
 
 				pipe.add_stage(farm->getFarm());
@@ -365,13 +389,13 @@ using namespace ff;
 			Container &container = workers.getContainer();
 
 			if(!isParallel()){
-				pipe.add_stage(new GroupByKey< 4, In, K, V, Collector, Aggr >(container[0], taskFuncOnKey));
+				pipe.add_stage(new GroupByKey< 5, In, K, V, Collector, Aggr >(container[0], taskFuncOnKey));
 			}else{
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new GroupByKey< 4, In, K, V, Collector, Aggr >(container[i], taskFuncOnKey));
+					worker_pipe->add_stage(new GroupByKey< 5, In, K, V, Collector, Aggr >(container[i], taskFuncOnKey));
 				}
 
 				pipe.add_stage(farm->getFarm());
@@ -385,13 +409,13 @@ using namespace ff;
 			Container &container = workers.getContainer();
 
 			if(!isParallel()){
-				pipe.add_stage(new GroupByKey< 5, In, K, V, Collector, Aggr >(container[0], taskFuncOnKey, taskFuncOnValue));
+				pipe.add_stage(new GroupByKey< 6, In, K, V, Collector, Aggr >(container[0], taskFuncOnKey, taskFuncOnValue));
 			}else{
 				utilities::Farm *farm = InstantiateFarm();
 
 				for(int i = 0; i < no_workers; i++){
 					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(new GroupByKey< 5, In, K, V, Collector, Aggr >(container[i], taskFuncOnKey, taskFuncOnValue));
+					worker_pipe->add_stage(new GroupByKey< 6, In, K, V, Collector, Aggr >(container[i], taskFuncOnKey, taskFuncOnValue));
 				}
 
 				pipe.add_stage(farm->getFarm());

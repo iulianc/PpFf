@@ -499,47 +499,305 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAge", "GroupByKeyOperator" ) {
 }
 
 
-//Error
-//TEST_CASE( "GroupByJobTitleEmployeesMinAge", "GroupByKeyOperator" ) {
-//    typedef MapType<std::string, int> CONTAINER;
-//
-//    unsigned int noEmployees = 10;
-//    std::vector<Employee> employees;
-//    for (unsigned int i = 0; i < noEmployees; i++) {
-//        Employee employee(0,
-//                          "Employee" + ConvertNumberToString(i),
-//                          i % 3 == 0 ? i * 100 : i * 10,
-//                          i % 3 == 0 ? "manager" : "technician");
-//        employees.push_back(employee);
-//    };
-//
-//    employees[0].age = 40;
-//    employees[1].age = employees[2].age = 23;
-//    employees[3].age = 30;
-//    employees[4].age = employees[5].age = 18;
-//    employees[6].age = 40;
-//    employees[7].age = employees[8].age = 30;
-//    employees[9].age = 50;
-//
-//    CONTAINER expectedResult =
-//		{ {"manager", 30 },
-//		  {"technician",  18 }
-//		};
-//
-//    pp::Pipe pipe;
-//    CONTAINER result = pipe
-//        .source<Employee>(employees.begin(), employees.end())
-//        .groupByKey<Employee, std::string, int, Aggregates::OperatorMin>( [](Employee *e) ->std::string* { return &(e->job_title); },
-//        																  [](Employee *e) ->int* { return &(e->age); } );
-//
-//
-//    REQUIRE(result.size() == expectedResult.size());
-//    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-//        int resultValue = result[it->first];
-//        int expectedResultValue = it->second;
-//
-//        std::cout << it->first << "-" << it->second << std::endl;
-//
-//        REQUIRE(resultValue == expectedResultValue);
-//    }
-//}
+TEST_CASE( "GroupByJobTitleEmployeesMinAge", "GroupByKeyOperator" ) {
+    typedef MapType<std::string, int> CONTAINER;
+
+    unsigned int noEmployees = 10;
+    std::vector<Employee> employees;
+    for (unsigned int i = 0; i < noEmployees; i++) {
+        Employee employee(0,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10,
+                          i % 3 == 0 ? "manager" : "technician");
+        employees.push_back(employee);
+    };
+
+    employees[0].age = 40;
+    employees[1].age = employees[2].age = 23;
+    employees[3].age = 30;
+    employees[4].age = employees[5].age = 18;
+    employees[6].age = 40;
+    employees[7].age = employees[8].age = 30;
+    employees[9].age = 50;
+
+    CONTAINER expectedResult =
+		{ {"manager", 30 },
+		  {"technician",  18 }
+		};
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<Employee>(employees.begin(), employees.end())
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorMin>( [](Employee *e) ->std::string* { return &(e->job_title); },
+        																  [](Employee *e) ->int* { return &(e->age); } );
+
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = result[it->first];
+        int expectedResultValue = it->second;
+
+        std::cout << it->first << "-" << it->second << std::endl;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}
+
+//Testing function Aggregate in Parallel
+TEST_CASE( "GroupByKeyCountElementsContainerParallel", "GroupByKeyOperator" ) {
+    typedef MapType<std::string, int> CONTAINER;
+
+    std::vector<std::string> strElems = {"Employee3","Employee6", "Employee9", "Employee3", "Employee6", "Employee6", "Employee9", "Employee3", "Employee3"};
+
+    CONTAINER expectedResult = {{"Employee9", 2}, {"Employee6", 3}, {"Employee3", 4}};
+
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<std::string>(strElems.begin(), strElems.end())
+		.parallel(4)
+        .groupByKey<std::string, std::string, int, Aggregates::OperatorCount>();
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = result[it->first];
+        int expectedResultValue = it->second;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}
+
+
+TEST_CASE( "GroupByAgeCountEmployeesParallel", "GroupByKeyOperator" ) {
+    typedef MapType<int, int> CONTAINER;
+
+    unsigned int noEmployees = 10;
+    std::vector<Employee> employees;
+    for (unsigned int i = 0; i < noEmployees; i++) {
+        Employee employee(0,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10);
+        employees.push_back(employee);
+    };
+
+    employees[0].age = employees[1].age = employees[2].age = 22;
+    employees[3].age = employees[4].age = 18;
+    employees[5].age = employees[6].age = 55;
+    employees[7].age = employees[8].age = 33;
+    employees[9].age = 44;
+
+    CONTAINER expectedResult =
+        { {18, 2 },
+		  {22, 3 },
+          {33, 2 },
+          {44, 1 },
+          {55, 2 }
+        };
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<Employee>(employees.begin(), employees.end())
+		.parallel(4)
+        .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) ->int* { return &(e->age); } );
+
+    std::map<int, int> sortedResult;
+    for (auto it = result.begin(); it != result.end(); it++) {
+    	sortedResult[it->first] = it->second;
+    }
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = sortedResult[it->first];
+        int expectedResultValue = it->second;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}
+
+
+TEST_CASE( "GroupByJobTitleEmployeesSumSalaryParallel", "GroupByKeyOperator" ) {
+    typedef MapType<std::string, int> CONTAINER;
+
+    unsigned int noEmployees = 10;
+    std::vector<Employee> employees;
+    for (unsigned int i = 0; i < noEmployees; i++) {
+        Employee employee(0,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10,
+                          i % 3 == 0 ? "manager" : "technician");
+        employees.push_back(employee);
+    };
+
+    CONTAINER expectedResult =
+        { {"manager", 1800},
+          {"technician",  270 }
+        };
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<Employee>(employees.begin(), employees.end())
+		.parallel(4)
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorSum>( [](Employee *e) ->std::string* { return &(e->job_title); },
+        																  [](Employee *e) ->int* { return &(e->salary); });
+
+    std::map<std::string, int> sortedResult;
+    for (auto it = result.begin(); it != result.end(); it++) {
+    	sortedResult[it->first] = it->second;
+    }
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = sortedResult[it->first];
+        int expectedResultValue = it->second;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}
+
+
+TEST_CASE( "GroupByJobTitleEmployeesAverageAgeParallel", "GroupByKeyOperator" ) {
+    typedef MapType<std::string, int> CONTAINER;
+
+    unsigned int noEmployees = 10;
+    std::vector<Employee> employees;
+    for (unsigned int i = 0; i < noEmployees; i++) {
+        Employee employee(0,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10,
+                          i % 3 == 0 ? "manager" : "technician");
+        employees.push_back(employee);
+    };
+
+    employees[0].age = 40;
+    employees[1].age = employees[2].age = 23;
+    employees[3].age = 30;
+    employees[4].age = employees[5].age = 18;
+    employees[6].age = 40;
+    employees[7].age = employees[8].age = 30;
+    employees[9].age = 50;
+
+    CONTAINER expectedResult =
+		{ {"manager", 40 },
+		  {"technician",  23 }
+		};
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<Employee>(employees.begin(), employees.end())
+		.parallel(4)
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorAvg>( [](Employee *e) ->std::string* { return &(e->job_title); },
+        																  [](Employee *e) ->int* { return &(e->age); } );
+
+    std::map<std::string, int> sortedResult;
+    for (auto it = result.begin(); it != result.end(); it++) {
+    	sortedResult[it->first] = it->second;
+    }
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = sortedResult[it->first];
+        int expectedResultValue = it->second;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}
+
+
+TEST_CASE( "GroupByJobTitleEmployeesMaxAgeParallel", "GroupByKeyOperator" ) {
+    typedef MapType<std::string, int> CONTAINER;
+
+    unsigned int noEmployees = 10;
+    std::vector<Employee> employees;
+    for (unsigned int i = 0; i < noEmployees; i++) {
+        Employee employee(0,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10,
+                          i % 3 == 0 ? "manager" : "technician");
+        employees.push_back(employee);
+    };
+
+    employees[0].age = 40;
+    employees[1].age = employees[2].age = 23;
+    employees[3].age = 30;
+    employees[4].age = employees[5].age = 18;
+    employees[6].age = 40;
+    employees[7].age = employees[8].age = 30;
+    employees[9].age = 50;
+
+    CONTAINER expectedResult =
+		{ {"manager", 50 },
+		  {"technician",  30 }
+		};
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<Employee>(employees.begin(), employees.end())
+		.parallel(4)
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorMax>( [](Employee *e) ->std::string* { return &(e->job_title); },
+        																  [](Employee *e) ->int* { return &(e->age); } );
+
+    std::map<std::string, int> sortedResult;
+    for (auto it = result.begin(); it != result.end(); it++) {
+    	sortedResult[it->first] = it->second;
+    }
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = sortedResult[it->first];
+        int expectedResultValue = it->second;
+
+        std::cout << it->first << "-" << it->second << std::endl;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}
+
+
+TEST_CASE( "GroupByJobTitleEmployeesMinAgeParallel", "GroupByKeyOperator" ) {
+    typedef MapType<std::string, int> CONTAINER;
+
+    unsigned int noEmployees = 10;
+    std::vector<Employee> employees;
+    for (unsigned int i = 0; i < noEmployees; i++) {
+        Employee employee(0,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10,
+                          i % 3 == 0 ? "manager" : "technician");
+        employees.push_back(employee);
+    };
+
+    employees[0].age = 40;
+    employees[1].age = employees[2].age = 23;
+    employees[3].age = 30;
+    employees[4].age = employees[5].age = 18;
+    employees[6].age = 40;
+    employees[7].age = employees[8].age = 30;
+    employees[9].age = 50;
+
+    CONTAINER expectedResult =
+		{ {"manager", 30 },
+		  {"technician",  18 }
+		};
+
+    pp::Pipe pipe;
+    CONTAINER result = pipe
+        .source<Employee>(employees.begin(), employees.end())
+		.parallel(4)
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorMin>( [](Employee *e) ->std::string* { return &(e->job_title); },
+        																  [](Employee *e) ->int* { return &(e->age); } );
+
+    std::map<std::string, int> sortedResult;
+    for (auto it = result.begin(); it != result.end(); it++) {
+    	sortedResult[it->first] = it->second;
+    }
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = sortedResult[it->first];
+        int expectedResultValue = it->second;
+
+        std::cout << it->first << "-" << it->second << std::endl;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}

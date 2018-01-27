@@ -69,6 +69,48 @@ public:
 	void* svc(void* task) {
 		K *key = taskFuncOnKey((In*)task);
 		V *value = taskFuncOnValue((In*)task);
+		it = container.find(*key);
+		//aggregate.compute((&container[*key]), value);
+
+		if (container.find(*key) != container.end()){
+			aggregate.compute((&container[*key]), value);
+		}else{
+			it->second = *value;
+		}
+
+		return GO_ON;
+	}
+
+private:
+	C *collectors;
+	std::function< K*(In*) > const& taskFuncOnKey;
+	std::function< V*(In*) > const& taskFuncOnValue;
+	Aggr &aggregate;
+
+	Container &container = collectors->container();
+
+	typedef std::pair < V, int > Value;
+	typedef Aggregate< Aggregates::OperatorAvg, V, Value > AggOpAvg;
+	typedef MapType < K, V > MapKV;
+	typedef MapType < K, Value > MapKPair;
+	typedef typename std::conditional< std::is_same< Aggr, AggOpAvg >::value, MapKPair, MapKV >::type Map;
+
+	typename Map::iterator it;
+};
+
+//Average
+template < typename In, typename K, typename V, typename C, typename Aggr >
+class GroupByKey< 3, In, K, V, C, Aggr >: public ff_node {
+public:
+	typedef typename C::Container Container;
+
+
+	GroupByKey(C* collectors, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate): collectors(collectors), taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue), aggregate(aggregate){};
+	~GroupByKey(){};
+
+	void* svc(void* task) {
+		K *key = taskFuncOnKey((In*)task);
+		V *value = taskFuncOnValue((In*)task);
 		aggregate.compute((&container[*key]), value);
 
 		return GO_ON;
@@ -81,11 +123,19 @@ private:
 	Aggr &aggregate;
 
 	Container &container = collectors->container();
+
+//	typedef std::pair < V, int > Value;
+//	typedef Aggregate< Aggregates::OperatorAvg, V, Value > AggOpAvg;
+//	typedef MapType < K, V > MapKV;
+//	typedef MapType < K, Value > MapKPair;
+//	typedef typename std::conditional< std::is_same< Aggr, AggOpAvg >::value, MapKPair, MapKV >::type Map;
+//
+//	typename Map::iterator it;
 };
 
 
 template < typename In, typename K, typename V, typename C, typename Aggr >
-class GroupByKey< 3, In, K, V, C, Aggr >: public ff_node {
+class GroupByKey< 4, In, K, V, C, Aggr >: public ff_node {
 public:
 	typedef typename C::Container Container;
 
@@ -104,7 +154,7 @@ private:
 
 
 template < typename In, typename K, typename V, typename C, typename Aggr >
-class GroupByKey< 4, In, K, V, C, Aggr >: public ff_node {
+class GroupByKey< 5, In, K, V, C, Aggr >: public ff_node {
 public:
 	typedef typename C::Container Container;
 
@@ -127,7 +177,7 @@ private:
 
 
 template < typename In, typename K, typename V, typename C, typename Aggr >
-class GroupByKey< 5, In, K, V, C, Aggr >: public ff_node {
+class GroupByKey< 6, In, K, V, C, Aggr >: public ff_node {
 public:
 	typedef typename C::Container Container;
 
