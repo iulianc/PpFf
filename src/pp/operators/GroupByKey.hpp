@@ -72,10 +72,10 @@ public:
 		it = container.find(*key);
 		//aggregate.compute((&container[*key]), value);
 
-		if (container.find(*key) != container.end()){
-			aggregate.compute((&container[*key]), value);
+		if (it != container.end()){
+			aggregate.compute(&(it->second), value);
 		}else{
-			it->second = *value;
+			container[*key] = *value;
 		}
 
 		return GO_ON;

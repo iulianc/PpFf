@@ -492,8 +492,6 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAge", "GroupByKeyOperator" ) {
         int resultValue = result[it->first];
         int expectedResultValue = it->second;
 
-        std::cout << it->first << "-" << it->second << std::endl;
-
         REQUIRE(resultValue == expectedResultValue);
     }
 }
@@ -536,8 +534,6 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAge", "GroupByKeyOperator" ) {
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
         int resultValue = result[it->first];
         int expectedResultValue = it->second;
-
-        std::cout << it->first << "-" << it->second << std::endl;
 
         REQUIRE(resultValue == expectedResultValue);
     }
@@ -746,8 +742,6 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAgeParallel", "GroupByKeyOperator" ) {
         int resultValue = sortedResult[it->first];
         int expectedResultValue = it->second;
 
-        std::cout << it->first << "-" << it->second << std::endl;
-
         REQUIRE(resultValue == expectedResultValue);
     }
 }
@@ -795,8 +789,6 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAgeParallel", "GroupByKeyOperator" ) {
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
         int resultValue = sortedResult[it->first];
         int expectedResultValue = it->second;
-
-        std::cout << it->first << "-" << it->second << std::endl;
 
         REQUIRE(resultValue == expectedResultValue);
     }

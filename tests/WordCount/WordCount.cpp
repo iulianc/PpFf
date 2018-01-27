@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
             .flatMap<std::string, std::string, Words>(splitInWords)
             .map<std::string, std::string>(toLowercaseLetters)
             .find<std::string>(notEmpty)
-            .groupByKey<std::string, std::string, int>(incCount);
+            .groupByKey<std::string, std::string, int, Aggregates::OperatorCount>();
 
     }
     auto end = std::chrono::high_resolution_clock::now();

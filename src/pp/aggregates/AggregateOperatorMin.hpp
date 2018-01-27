@@ -14,7 +14,4 @@ class AggregateOperatorMin{
 			//std::cout << "Min reduce" << std::endl;
 			compute(out, in);
 		}
-
-	private:
-		T max_val = std::numeric_limits<T>::max();
 };
