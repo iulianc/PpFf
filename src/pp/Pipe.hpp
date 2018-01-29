@@ -264,7 +264,7 @@ namespace pp{
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
 					{
 						CONTAINER &containerIn = in->container();
 						CONTAINER &containerOut = out->container();
@@ -297,7 +297,7 @@ namespace pp{
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
 					{
 						CONTAINER &containerIn = in->container();
 						CONTAINER &containerOut = out->container();
@@ -330,7 +330,7 @@ namespace pp{
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
 					{
 						CONTAINER &containerIn = in->container();
 						CONTAINER &containerOut = out->container();
@@ -362,7 +362,7 @@ namespace pp{
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([](COLLECTORS *out, COLLECTORS *in)
 					{
 						CONTAINER &containerIn = in->container();
 						CONTAINER &containerOut = out->container();
@@ -392,7 +392,7 @@ namespace pp{
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([](COLLECTORS *out, COLLECTORS *in)
 					{
 						CONTAINER &containerIn = in->container();
 						CONTAINER &containerOut = out->container();
@@ -422,7 +422,7 @@ namespace pp{
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([](COLLECTORS *out, COLLECTORS *in)
 					{
 						CONTAINER &containerIn = in->container();
 						CONTAINER &containerOut = out->container();
@@ -548,7 +548,7 @@ namespace pp{
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
 					{
 						CONTAINER &containerIn = in->container();
 						CONTAINER &containerOut = out->container();
