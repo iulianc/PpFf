@@ -16,7 +16,7 @@ class GroupByKey< 0, In, K, V, C, Aggr >: public ff_node {
 public:
 	typedef typename C::Container Container;
 
-	GroupByKey(C* collectors, Aggr &aggregate): collectors(collectors), aggregate(aggregate){};
+	GroupByKey(C &collectors, Aggr &aggregate): collectors(collectors), aggregate(aggregate){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -26,10 +26,10 @@ public:
 	}
 
 private:
-	C *collectors;
+	C &collectors;
 	Aggr &aggregate;
 
-	Container &container = collectors->container();
+	Container &container = collectors.container();
 };
 
 template < typename In, typename K, typename V, typename C, typename Aggr >
@@ -38,7 +38,7 @@ public:
 	typedef typename C::Container Container;
 
 
-	GroupByKey(C* collectors, std::function< K*(In*) > const& taskFuncOnKey, Aggr &aggregate): collectors(collectors), taskFuncOnKey(taskFuncOnKey), aggregate(aggregate){};
+	GroupByKey(C &collectors, std::function< K*(In*) > const& taskFuncOnKey, Aggr &aggregate): collectors(collectors), taskFuncOnKey(taskFuncOnKey), aggregate(aggregate){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -49,11 +49,11 @@ public:
 	}
 
 private:
-	C *collectors;
+	C &collectors;
 	std::function< K*(In*) > const& taskFuncOnKey;
 	Aggr &aggregate;
 
-	Container &container = collectors->container();
+	Container &container = collectors.container();
 };
 
 
@@ -63,7 +63,7 @@ public:
 	typedef typename C::Container Container;
 
 
-	GroupByKey(C* collectors, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate): collectors(collectors), taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue), aggregate(aggregate){};
+	GroupByKey(C &collectors, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate): collectors(collectors), taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue), aggregate(aggregate){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -82,12 +82,12 @@ public:
 	}
 
 private:
-	C *collectors;
+	C &collectors;
 	std::function< K*(In*) > const& taskFuncOnKey;
 	std::function< V*(In*) > const& taskFuncOnValue;
 	Aggr &aggregate;
 
-	Container &container = collectors->container();
+	Container &container = collectors.container();
 
 	typedef std::pair < V, int > Value;
 	typedef Aggregate< Aggregates::OperatorAvg, V, Value > AggOpAvg;
@@ -105,7 +105,7 @@ public:
 	typedef typename C::Container Container;
 
 
-	GroupByKey(C* collectors, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate): collectors(collectors), taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue), aggregate(aggregate){};
+	GroupByKey(C &collectors, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue, Aggr &aggregate): collectors(collectors), taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue), aggregate(aggregate){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -117,12 +117,12 @@ public:
 	}
 
 private:
-	C *collectors;
+	C &collectors;
 	std::function< K*(In*) > const& taskFuncOnKey;
 	std::function< V*(In*) > const& taskFuncOnValue;
 	Aggr &aggregate;
 
-	Container &container = collectors->container();
+	Container &container = collectors.container();
 
 //	typedef std::pair < V, int > Value;
 //	typedef Aggregate< Aggregates::OperatorAvg, V, Value > AggOpAvg;
@@ -139,7 +139,7 @@ class GroupByKey< 4, In, K, V, C, Aggr >: public ff_node {
 public:
 	typedef typename C::Container Container;
 
-	GroupByKey(C* collectors): collectors(collectors){};
+	GroupByKey(C &collectors): collectors(collectors){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -148,8 +148,8 @@ public:
 	}
 
 private:
-	C *collectors;
-	Container &container = collectors->container();
+	C &collectors;
+	Container &container = collectors.container();
 };
 
 
@@ -158,7 +158,7 @@ class GroupByKey< 5, In, K, V, C, Aggr >: public ff_node {
 public:
 	typedef typename C::Container Container;
 
-	GroupByKey(C* collectors, std::function< K*(In*) > const& taskFuncOnKey): collectors(collectors), taskFuncOnKey(taskFuncOnKey){};
+	GroupByKey(C &collectors, std::function< K*(In*) > const& taskFuncOnKey): collectors(collectors), taskFuncOnKey(taskFuncOnKey){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -169,10 +169,10 @@ public:
 	}
 
 private:
-	C *collectors;
+	C &collectors;
 	std::function< K*(In*) > const& taskFuncOnKey;
 
-	Container &container = collectors->container();
+	Container &container = collectors.container();
 };
 
 
@@ -181,7 +181,7 @@ class GroupByKey< 6, In, K, V, C, Aggr >: public ff_node {
 public:
 	typedef typename C::Container Container;
 
-	GroupByKey(C* collectors, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue): collectors(collectors), taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue){};
+	GroupByKey(C &collectors, std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue): collectors(collectors), taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue){};
 	~GroupByKey(){};
 
 	void* svc(void* task) {
@@ -193,11 +193,11 @@ public:
 	}
 
 private:
-	C *collectors;
+	C &collectors;
 	std::function< K*(In*) > const& taskFuncOnKey;
 	std::function< V*(In*) > const& taskFuncOnValue;
 
-	Container &container = collectors->container();
+	Container &container = collectors.container();
 };
 
 

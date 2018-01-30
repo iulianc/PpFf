@@ -258,16 +258,21 @@ namespace pp{
 			typedef Workers < COLLECTORS > Workers;
 			typedef Aggregate< AggrOp, In, V > Aggr;
 
-			Workers workers(no_workers);
 			Aggr aggregate;
+			Workers workers;
+
+			for(int i = 0; i < no_workers; i++){
+				COLLECTORS worker{};
+				workers.push(worker);
+			}
 
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS &out, COLLECTORS &in)
 					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
+						CONTAINER &containerIn = in.container();
+						CONTAINER &containerOut = out.container();
 
 						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
 							V &out = containerOut[it->first];
@@ -278,8 +283,8 @@ namespace pp{
 					});
 			}
 
-			COLLECTORS *collectors = workers.value();
-			return collectors->container();
+			COLLECTORS &collectors = workers.value();
+			return collectors.container();
 		}
 
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
@@ -291,16 +296,21 @@ namespace pp{
 			typedef Workers < COLLECTORS > Workers;
 			typedef Aggregate< AggrOp, In, V > Aggr;
 
-			Workers workers(no_workers);
 			Aggr aggregate;
+			Workers workers;
+
+			for(int i = 0; i < no_workers; i++){
+				COLLECTORS worker{};
+				workers.push(worker);
+			}
 
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS &out, COLLECTORS &in)
 					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
+						CONTAINER &containerIn = in.container();
+						CONTAINER &containerOut = out.container();
 
 						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
 							V &out = containerOut[it->first];
@@ -311,8 +321,8 @@ namespace pp{
 					});
 			}
 
-			COLLECTORS *collectors = workers.value();
-			return collectors->container();
+			COLLECTORS &collectors = workers.value();
+			return collectors.container();
 		}
 
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
@@ -324,16 +334,21 @@ namespace pp{
 			typedef Workers < COLLECTORS > Workers;
 			typedef Aggregate< AggrOp, In, V > Aggr;
 
-			Workers workers(no_workers);
 			Aggr aggregate;
+			Workers workers;
+
+			for(int i = 0; i < no_workers; i++){
+				COLLECTORS worker{};
+				workers.push(worker);
+			}
 
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS &out, COLLECTORS &in)
 					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
+						CONTAINER &containerIn = in.container();
+						CONTAINER &containerOut = out.container();
 
 						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
 							V &out = containerOut[it->first];
@@ -344,8 +359,8 @@ namespace pp{
 					});
 			}
 
-			COLLECTORS *collectors = workers.value();
-			return collectors->container();
+			COLLECTORS &collectors = workers.value();
+			return collectors.container();
 		}
 
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
@@ -357,15 +372,20 @@ namespace pp{
 			typedef Workers < COLLECTORS > Workers;
 			typedef Aggregate< AggrOp, In, V > Aggr;
 
-			Workers workers(no_workers);
+			Workers workers;
+
+			for(int i = 0; i < no_workers; i++){
+				COLLECTORS worker{};
+				workers.push(worker);
+			}
 
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers);
 			this->run();
 			if(isParallel()){
-				workers.reduce([](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([](COLLECTORS &out, COLLECTORS &in)
 					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
+						CONTAINER &containerIn = in.container();
+						CONTAINER &containerOut = out.container();
 
 						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
 							std::vector< V > &out = containerOut[it->first];
@@ -374,8 +394,8 @@ namespace pp{
 					});
 			}
 
-			COLLECTORS *collectors = workers.value();
-			return collectors->container();
+			COLLECTORS &collectors = workers.value();
+			return collectors.container();
 		}
 
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
@@ -387,15 +407,20 @@ namespace pp{
 			typedef Workers < COLLECTORS > Workers;
 			typedef Aggregate< AggrOp, In, V > Aggr;
 
-			Workers workers(no_workers);
+			Workers workers;
+
+			for(int i = 0; i < no_workers; i++){
+				COLLECTORS worker{};
+				workers.push(worker);
+			}
 
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey);
 			this->run();
 			if(isParallel()){
-				workers.reduce([](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([](COLLECTORS &out, COLLECTORS &in)
 					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
+						CONTAINER &containerIn = in.container();
+						CONTAINER &containerOut = out.container();
 
 						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
 							std::vector< V > &out = containerOut[it->first];
@@ -404,8 +429,8 @@ namespace pp{
 					});
 			}
 
-			COLLECTORS *collectors = workers.value();
-			return collectors->container();
+			COLLECTORS &collectors = workers.value();
+			return collectors.container();
 		}
 
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
@@ -417,15 +442,20 @@ namespace pp{
 			typedef Workers < COLLECTORS > Workers;
 			typedef Aggregate< AggrOp, In, V > Aggr;
 
-			Workers workers(no_workers);
+			Workers workers;
+
+			for(int i = 0; i < no_workers; i++){
+				COLLECTORS worker{};
+				workers.push(worker);
+			}
 
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue);
 			this->run();
 			if(isParallel()){
-				workers.reduce([](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([](COLLECTORS &out, COLLECTORS &in)
 					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
+						CONTAINER &containerIn = in.container();
+						CONTAINER &containerOut = out.container();
 
 						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
 							std::vector< V > &out = containerOut[it->first];
@@ -434,8 +464,8 @@ namespace pp{
 					});
 			}
 
-			COLLECTORS *collectors = workers.value();
-			return collectors->container();
+			COLLECTORS &collectors = workers.value();
+			return collectors.container();
 		}
 
 
@@ -542,16 +572,21 @@ namespace pp{
 			typedef Workers < COLLECTORS > Workers;
 			typedef Aggregate< AggrOp, V, Value > Aggr;
 
-			Workers workers(no_workers);
 			Aggr aggregate;
+			Workers workers;
+
+			for(int i = 0; i < no_workers; i++){
+				COLLECTORS worker{};
+				workers.push(worker);
+			}
 
 			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, taskFuncOnValue, aggregate);
 			this->run();
 			if(isParallel()){
-				workers.reduce([&aggregate](COLLECTORS *out, COLLECTORS *in)
+				workers.reduce([&aggregate](COLLECTORS &out, COLLECTORS &in)
 					{
-						CONTAINER &containerIn = in->container();
-						CONTAINER &containerOut = out->container();
+						CONTAINER &containerIn = in.container();
+						CONTAINER &containerOut = out.container();
 
 						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
 							Value &out = containerOut[it->first];
@@ -562,8 +597,8 @@ namespace pp{
 					});
 			}
 
-			COLLECTORS *collectors = workers.value();
-			CONTAINER containerPairValue = collectors->container();
+			COLLECTORS &collectors = workers.value();
+			CONTAINER containerPairValue = collectors.container();
 			Value pairValue;
 			MapType < K, V > result;
 
