@@ -83,13 +83,13 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorBigNombreElements", "GroupByKeyOperat
     CONTAINER expectedResult;
     std::vector<std::string> elems;
     for (int i = 0; i < n; i++) {
+        std::string en = "Employee" + ConvertNumberToString(i) ;
         std::vector<std::string> lesElems;
         for (int j = 0; j <= i; j++ ) {
-            std::string en = "Employee" + ConvertNumberToString(i) ;
             elems.push_back(en);
             lesElems.push_back(en);
         }
-        expectedResult["Employee" + ConvertNumberToString(i)] = lesElems;
+        expectedResult[en] = lesElems;
     }
 
     pp::Pipe pipe;
@@ -208,13 +208,13 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorBigNombreElementsParallel", "GroupByK
     CONTAINER expectedResult;
     std::vector<std::string> elems;
     for (int i = 0; i < n; i++) {
+        std::string en = "Employee" + ConvertNumberToString(i) ;
         std::vector<std::string> lesElems;
         for( int j = 0; j <= i; j++ ) {
-            std::string en = "Employee" + ConvertNumberToString(i) ;
             elems.push_back(en);
             lesElems.push_back(en);
         }
-        expectedResult["Employee" + ConvertNumberToString(i)] = lesElems;
+        expectedResult[en] = lesElems;
     }
 
     pp::Pipe pipe;
@@ -407,8 +407,8 @@ TEST_CASE( "GroupByJobTitleEmployeesAverageAge", "GroupByKeyOperator" ) {
     employees[9].age = 50;
 
     CONTAINER expectedResult =
-        { {"manager", 40 },
-          {"technician",  23 }
+        { {"manager", 40},
+          {"technician",  23}
         };
 
     pp::Pipe pipe;
@@ -444,8 +444,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAge", "GroupByKeyOperator" ) {
     employees[9].age = 50;
 
     CONTAINER expectedResult =
-        { {"manager", 50 },
-          {"technician",  30 }
+        { {"manager", 50},
+          {"technician",  30}
         };
 
     pp::Pipe pipe;
@@ -480,8 +480,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAge", "GroupByKeyOperator" ) {
     employees[9].age = 50;
     
     CONTAINER expectedResult =
-        { {"manager", 30 },
-          {"technician",  18 }
+        { {"manager", 30},
+          {"technician",  18}
         };
 
     pp::Pipe pipe;
@@ -498,7 +498,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAge", "GroupByKeyOperator" ) {
 TEST_CASE( "GroupByKeyCountElementsContainerParallel", "GroupByKeyOperator" ) {
     typedef MapType<std::string, int> CONTAINER;
 
-    std::vector<std::string> strElems = {"Employee3","Employee6", "Employee9", "Employee3", "Employee6", "Employee6", "Employee9", "Employee3", "Employee3"};
+    std::vector<std::string> strElems = {"Employee3","Employee6", "Employee9", "Employee3", "Employee6", 
+                                         "Employee6", "Employee9", "Employee3", "Employee3"};
 
     CONTAINER expectedResult = {{"Employee9", 2}, {"Employee6", 3}, {"Employee3", 4}};
 
@@ -600,8 +601,8 @@ TEST_CASE( "GroupByJobTitleEmployeesAverageAgeParallel", "GroupByKeyOperator" ) 
     employees[9].age = 50;
 
     CONTAINER expectedResult =
-        { {"manager", 40 },
-          {"technician",  23 }
+        { {"manager", 40},
+          {"technician",  23}
         };
 
     pp::Pipe pipe;
@@ -637,8 +638,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAgeParallel", "GroupByKeyOperator" ) {
     employees[9].age = 50;
 
     CONTAINER expectedResult =
-        { {"manager", 50 },
-          {"technician",  30 }
+        { {"manager", 50},
+          {"technician",  30}
         };
 
     pp::Pipe pipe;
@@ -674,8 +675,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAgeParallel", "GroupByKeyOperator" ) {
     employees[9].age = 50;
 
     CONTAINER expectedResult =
-        { {"manager", 30 },
-          {"technician",  18 }
+        { {"manager", 30},
+          {"technician",  18}
         };
 
     pp::Pipe pipe;
