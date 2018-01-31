@@ -163,35 +163,43 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
 }
 
 
-TEST_CASE( "GroupByAgeAGivingAgeCollectionEmployees", "GroupByKeyOperator" ) {
-    typedef MapType<int, std::vector<int>> CONTAINER;
-
+TEST_CASE( "GroupByXGivingCollectionOfTypes", "GroupByKeyOperator" ) {
     unsigned int noEmployees = 10;
     std::vector<Employee> employees;
     for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee(ageForID(i),
-                          "Employee" + ConvertNumberToString(i),
-                          i % 3 == 0 ? i * 100 : i * 10);
+        Employee employee(ageForID(i), "Employee" + ConvertNumberToString(i), ageForID(i) * 10);
         employees.push_back(employee);
     };
 
-    CONTAINER expectedResult =
-        { {22, {22, 22, 22}},
-          {18, {18, 18}},
-          {55, {55, 55, 55}},
-          {33, {33}},
-          {44, {44}}
-        };
-    
+    MapType<int, std::vector<int>> expectedResult;
+    MapType<int, std::vector<int>> result;
     pp::Pipe pipe;
-    CONTAINER result = pipe
-        .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, int>( [](Employee *e) { return &e->age; },
-                                         [](Employee *e) { return &e->age; });
-    
-    assertVectorContainerEquals(result, 
-                                expectedResult, 
-                                [](int age){ return age; });
+
+    SECTION( "K = age; V = age" ) {
+        expectedResult = { {22, {22, 22, 22}}, {18, {18, 18}}, {55, {55, 55, 55}}, {33, {33}}, {44, {44}} };
+        result = pipe
+            .source<Employee>(employees.begin(), employees.end())
+            .groupByKey<Employee, int, int>( [](Employee *e) { return &e->age; },
+                                             [](Employee *e) { return &e->age; });
+    }
+
+    SECTION( "K = age; V = salaire" ) {
+        expectedResult = { {22, {220, 220, 220}}, {18, {180, 180}}, {55, {550, 550, 550}}, {33, {330}}, {44, {440}} };
+        result = pipe
+            .source<Employee>(employees.begin(), employees.end())
+            .groupByKey<Employee, int, int>( [](Employee *e) { return &e->age; },
+                                             [](Employee *e) { return &e->salary; });
+    }
+
+    SECTION( "K = salaire; V = age" ) {
+        expectedResult = { {220, {22, 22, 22}}, {180, {18, 18}}, {550, {55, 55, 55}}, {330, {33}}, {440, {44}} };
+        result = pipe
+            .source<Employee>(employees.begin(), employees.end())
+            .groupByKey<Employee, int, int>( [](Employee *e) { return &e->salary; },
+                                             [](Employee *e) { return &e->age; });
+    }
+
+    assertVectorContainerEquals(result, expectedResult, []( int x ) { return x; } );
 }
 
 TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
