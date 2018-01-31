@@ -46,7 +46,7 @@ void assertVectorContainerEquals( MapType<K,std::vector<V>> result,
         
         REQUIRE(resultValue.size() == expectedResultValue.size());
         std::sort(resultValue.begin(), resultValue.end(), 
-                  ([f](V v1, V v2)-> bool {return f(v1) < f(v2);}));
+                  ([f](V v1, V v2) {return f(v1) < f(v2);}));
 
         for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
             REQUIRE(f(resultValue[i]) == f(expectedResultValue[i]));
@@ -267,7 +267,7 @@ TEST_CASE( "GroupByAgeACollectionEmployeesParallel", "GroupByKeyOperator" ) {
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .groupByKey<Employee, int, Employee>( [](Employee *e) -> int* { return new int(e->age); } );
+        .groupByKey<Employee, int, Employee>( [](Employee *e) { return new int(e->age); } );
 
 
     assertVectorContainerEquals(result, expectedResult, [](Employee e){ return e.name; });
@@ -307,7 +307,7 @@ TEST_CASE( "GroupByAgeAndCountEmployeesParallel", "GroupByKeyOperator" ) {
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) { return &(e->age); } );
 
     assertContainerEquals(result, expectedResult);
 }
@@ -360,7 +360,7 @@ TEST_CASE( "GroupByAgeCountEmployees", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) { return &(e->age); } );
 
     assertContainerEquals(result, expectedResult);
 }
@@ -387,8 +387,8 @@ TEST_CASE( "GroupByJobTitleEmployeesSumSalary", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorSum>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->salary); });
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorSum>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->salary); });
 
 
     assertContainerEquals(result, expectedResult);
@@ -424,8 +424,8 @@ TEST_CASE( "GroupByJobTitleEmployeesAverageAge", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorAvg>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorAvg>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->age); } );
 
 
     assertContainerEquals(result, expectedResult);
@@ -461,8 +461,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAge", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorMax>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorMax>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->age); } );
 
     assertContainerEquals(result, expectedResult);
 }
@@ -497,9 +497,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAge", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorMin>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->age); } );
-
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorMin>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->age); } );
 
     assertContainerEquals(result, expectedResult);
 }
@@ -582,8 +581,8 @@ TEST_CASE( "GroupByJobTitleEmployeesSumSalaryParallel", "GroupByKeyOperator" ) {
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorSum>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->salary); });
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorSum>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->salary); });
 
     assertContainerEquals(result, expectedResult);
 }
@@ -619,8 +618,8 @@ TEST_CASE( "GroupByJobTitleEmployeesAverageAgeParallel", "GroupByKeyOperator" ) 
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorAvg>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorAvg>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->age); } );
 
     assertContainerEquals(result, expectedResult);
 }
@@ -656,8 +655,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAgeParallel", "GroupByKeyOperator" ) {
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorMax>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorMax>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->age); } );
 
     assertContainerEquals(result, expectedResult);
 }
@@ -693,8 +692,8 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAgeParallel", "GroupByKeyOperator" ) {
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .groupByKey<Employee, std::string, int, Aggregates::OperatorMin>( [](Employee *e) -> std::string* { return &(e->job_title); },
-                                                                          [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, std::string, int, Aggregates::OperatorMin>( [](Employee *e) { return &(e->job_title); },
+                                                                          [](Employee *e) { return &(e->age); } );
 
     assertContainerEquals(result, expectedResult);
 }
