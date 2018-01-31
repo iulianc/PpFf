@@ -129,10 +129,20 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
         };
 
     pp::Pipe pipe;
-    CONTAINER result = pipe
-        .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, Employee>( [](Employee *e) -> int* { return &(e->age); },
-                                              [](Employee *e) -> Employee* { return e; });
+    CONTAINER result;
+
+    SECTION( "Appel avec deux arguments" ) {
+        result = pipe
+            .source<Employee>(employees.begin(), employees.end())
+            .groupByKey<Employee, int, Employee>( [](Employee *e) { return &(e->age); },
+                                                  [](Employee *e) { return e; });
+        
+    }
+    SECTION( "Appel semblable mais avec un seul argument, produisant le meme resultat" ) {
+        result = pipe
+            .source<Employee>(employees.begin(), employees.end())
+            .groupByKey<Employee, int, Employee>( [](Employee *e) { return &(e->age); } );
+    }
 
     assertVectorContainerEquals(result, 
                                 expectedResult, 
@@ -172,7 +182,7 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
     pp::Pipe pipe;
     CONTAINER result = pipe
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) -> int* { return &(e->age); } );
+        .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) { return &(e->age); } );
     
     assertContainerEquals(result, expectedResult);
 }
