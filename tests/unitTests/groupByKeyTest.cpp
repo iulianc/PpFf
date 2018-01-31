@@ -6,6 +6,54 @@
 #include "utility.hpp"
 #include <algorithm>
 
+//////////////////////////////////////////////////////////////////////////
+// Fonctions auxiliaires pour factoriser le code des tests ci-bas.
+//////////////////////////////////////////////////////////////////////////
+
+template<typename K>
+void assertContainerEquals( MapType<K,int> result, MapType<K,int> expectedResult ) {
+    REQUIRE(result.size() == expectedResult.size());
+
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        int resultValue = result[it->first];
+        int expectedResultValue = it->second;
+
+        REQUIRE(resultValue == expectedResultValue);
+    }
+}
+
+template<typename K, typename V>
+void assertContainerEquals( MapType<K,V> result, MapType<K,V> expectedResult ) {
+    REQUIRE(result.size() == expectedResult.size());
+
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        V resultValue = result[it->first];
+        V expectedResultValue = it->second;
+
+        REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
+    }
+}
+
+template<typename K, typename V, typename Func>
+void assertVectorContainerEquals( MapType<K,std::vector<V>> result, 
+                                  MapType<K,std::vector<V>> expectedResult,
+                                  Func f ) {
+    REQUIRE(result.size() == expectedResult.size());
+    
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        std::vector<V> resultValue = result[it->first];
+        std::vector<V> expectedResultValue = it->second;
+        
+        REQUIRE(resultValue.size() == expectedResultValue.size());
+        std::sort(resultValue.begin(), resultValue.end(), 
+                  ([f](V v1, V v2)-> bool {return f(v1) < f(v2);}));
+
+        for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
+            REQUIRE(f(resultValue[i]) == f(expectedResultValue[i]));
+        }
+    }
+}
+//////////////////////////////////////////////////////////////////////////
 
 TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
     typedef std::vector<std::string> VALUE;
@@ -24,13 +72,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVector", "GroupByKeyOperator" ) {
         .source<std::string>(strElems.begin(), strElems.end())
         .groupByKey<std::string>();
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        VALUE resultValue = result[it->first];
-        VALUE expectedResultValue = it->second;
-
-        REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 TEST_CASE( "GroupByKeyACollectionTypeVectorBigNombreElements", "GroupByKeyOperator" ) {
@@ -55,13 +97,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorBigNombreElements", "GroupByKeyOperat
         .source<std::string>(elems.begin(), elems.end())
         .groupByKey<std::string>();
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        VALUE resultValue = result[it->first];
-        VALUE expectedResultValue = it->second;
-
-        REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -98,16 +134,9 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
         .groupByKey<Employee, int, Employee>( [](Employee *e) -> int* { return &(e->age); },
                                               [](Employee *e) -> Employee* { return e; });
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        VALUE resultValue = result[it->first];
-        VALUE expectedResultValue = it->second;
-
-        REQUIRE(resultValue.size() == expectedResultValue.size());
-        for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
-            REQUIRE(resultValue[i].name == expectedResultValue[i].name);
-        }
-    }
+    assertVectorContainerEquals(result, 
+                                expectedResult, 
+                                [](Employee e){ return e.name; });
 }
 
 
@@ -145,13 +174,7 @@ TEST_CASE( "GroupByAgeAndCountEmployees", "GroupByKeyOperator" ) {
         .source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) -> int* { return &(e->age); } );
     
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -173,13 +196,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorParallel", "GroupByKeyOperator" ) {
         .parallel(4)
         .groupByKey<std::string>();
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        VALUE resultValue = result[it->first];
-        VALUE expectedResultValue = it->second;
-
-        REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -206,13 +223,7 @@ TEST_CASE( "GroupByKeyACollectionTypeVectorBigNombreElementsParallel", "GroupByK
         .parallel(4)
         .groupByKey<std::string>();
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        VALUE resultValue = result[it->first];
-        VALUE expectedResultValue = it->second;
-
-        REQUIRE_THAT(resultValue, Catch::Equals(expectedResultValue));
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 TEST_CASE( "GroupByAgeACollectionEmployeesParallel", "GroupByKeyOperator" ) {
@@ -249,19 +260,7 @@ TEST_CASE( "GroupByAgeACollectionEmployeesParallel", "GroupByKeyOperator" ) {
         .groupByKey<Employee, int, Employee>( [](Employee *e) -> int* { return new int(e->age); } );
 
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        VALUE resultValue = result[it->first];
-        VALUE expectedResultValue = it->second;
-
-        std::sort(resultValue.begin(), resultValue.end(), 
-                  ([](Employee e1, Employee e2)-> bool {return e1.name < e2.name;}));
-
-        REQUIRE(resultValue.size() == expectedResultValue.size());
-        for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
-            REQUIRE(resultValue[i].name == expectedResultValue[i].name);
-        }
-    }
+    assertVectorContainerEquals(result, expectedResult, [](Employee e){ return e.name; });
 }
 
 
@@ -300,13 +299,7 @@ TEST_CASE( "GroupByAgeAndCountEmployeesParallel", "GroupByKeyOperator" ) {
         .parallel(4)
         .groupByKey<Employee, int, int, Aggregates::OperatorCount>( [](Employee *e) -> int* { return &(e->age); } );
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 //****************Testing functions Aggregates**************************************
@@ -324,13 +317,7 @@ TEST_CASE( "GroupByKeyCountElementsContainer", "GroupByKeyOperator" ) {
         .source<std::string>(strElems.begin(), strElems.end())
         .groupByKey<std::string, std::string, int, Aggregates::OperatorCount>();
     
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -370,13 +357,7 @@ TEST_CASE( "GroupByAgeCountEmployees", "GroupByKeyOperator" ) {
     	sortedResult[it->first] = it->second;
     }
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = sortedResult[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -405,13 +386,7 @@ TEST_CASE( "GroupByJobTitleEmployeesSumSalary", "GroupByKeyOperator" ) {
                                                                           [](Employee *e) -> int* { return &(e->salary); });
 
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -448,13 +423,7 @@ TEST_CASE( "GroupByJobTitleEmployeesAverageAge", "GroupByKeyOperator" ) {
                                                                           [](Employee *e) -> int* { return &(e->age); } );
 
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -490,14 +459,7 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAge", "GroupByKeyOperator" ) {
         .groupByKey<Employee, std::string, int, Aggregates::OperatorMax>( [](Employee *e) -> std::string* { return &(e->job_title); },
                                                                           [](Employee *e) -> int* { return &(e->age); } );
 
-
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -534,13 +496,7 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAge", "GroupByKeyOperator" ) {
                                                                           [](Employee *e) -> int* { return &(e->age); } );
 
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 //Testing function Aggregate in Parallel
@@ -558,13 +514,7 @@ TEST_CASE( "GroupByKeyCountElementsContainerParallel", "GroupByKeyOperator" ) {
         .parallel(4)
         .groupByKey<std::string, std::string, int, Aggregates::OperatorCount>();
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = result[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -605,13 +555,7 @@ TEST_CASE( "GroupByAgeCountEmployeesParallel", "GroupByKeyOperator" ) {
     	sortedResult[it->first] = it->second;
     }
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = sortedResult[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -645,13 +589,7 @@ TEST_CASE( "GroupByJobTitleEmployeesSumSalaryParallel", "GroupByKeyOperator" ) {
     	sortedResult[it->first] = it->second;
     }
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = sortedResult[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -693,13 +631,7 @@ TEST_CASE( "GroupByJobTitleEmployeesAverageAgeParallel", "GroupByKeyOperator" ) 
     	sortedResult[it->first] = it->second;
     }
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = sortedResult[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -741,13 +673,7 @@ TEST_CASE( "GroupByJobTitleEmployeesMaxAgeParallel", "GroupByKeyOperator" ) {
     	sortedResult[it->first] = it->second;
     }
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = sortedResult[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
 
 
@@ -789,11 +715,5 @@ TEST_CASE( "GroupByJobTitleEmployeesMinAgeParallel", "GroupByKeyOperator" ) {
     	sortedResult[it->first] = it->second;
     }
 
-    REQUIRE(result.size() == expectedResult.size());
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        int resultValue = sortedResult[it->first];
-        int expectedResultValue = it->second;
-
-        REQUIRE(resultValue == expectedResultValue);
-    }
+    assertContainerEquals(result, expectedResult);
 }
