@@ -9,8 +9,8 @@ mapFromTo * ** == [(*, **)]
 || Les aggregators.
 ||
 
-aggregator * ::= Aggregator (* -> * -> *) || Binary operator to merge values
-                            *             || Unit value
+aggregator * ::= Aggregator (* -> * -> *) || Operateur binaire pour combiner les valeurs.
+                            *             || Valeur initiale/element neutre
 sumAggregator 
   = Aggregator (+) 0
 
@@ -72,11 +72,11 @@ groupByKey2 theAggregator keyFunc valueFunc theStream
 
 groupByKey1 :: (aggregator *) -> (* -> **) -> (streamOf *) -> (mapFromTo ** *)
 groupByKey1 aggregator keyFunc
-    = groupByKey2 aggregator keyFunc id
+    = groupByKey2 aggregator keyFunc identity
 
 groupByKey0 :: (aggregator *) -> (streamOf *) -> (mapFromTo * *)
 groupByKey0 aggregator
-    = groupByKey2 aggregator id id
+    = groupByKey2 aggregator identity identity
 
 
 groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
@@ -96,13 +96,14 @@ groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
 inc x = x + 1
 mkList x = [x]
 one x = 1
+identity x = x
 
 
 str0 = [10, 20, 10, 20, 30, 10]
 
 res0 = [
         || Count
-        groupByKey sumAggregator id one str0
+        groupByKey sumAggregator identity one str0
           = [(10, 3), (20, 2), (30, 1)],
         || Max
         groupByKey0 maxAggregator str0
@@ -114,7 +115,7 @@ res0 = [
         groupByKey0 sumAggregator str0
           = [(10, 30), (20, 40), (30, 30)],
         || Vector: (++) = list concatenation
-        groupByKey vectorAggregator id (mkList . id) str0
+        groupByKey vectorAggregator identity (mkList . identity) str0
           = [(10, [10, 10, 10]), (20, [20, 20]), (30, [30])],
         True
        ]
