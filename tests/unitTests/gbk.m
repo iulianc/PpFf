@@ -1,6 +1,5 @@
 || -*- fundamental -*- 
 
-
 || Type synonyms.
 streamOf * == [*]
 mapFromTo * ** == [(*, **)]
@@ -68,10 +67,3 @@ res
        sort (groupByKey1 fst snd str2) 
          = [(1,["10","10","20"]),(2,["20","20"]),(3,["30"])]
       ]
-
-
-
-
-||
-
-
