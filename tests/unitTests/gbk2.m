@@ -4,9 +4,34 @@
 streamOf * == [*]
 mapFromTo * ** == [(*, **)]
 
-aggregator * ** == (*, ** -> ** -> **)
 
-|| Auxiliary values and functions on streams.
+||
+|| Les aggregators.
+||
+
+aggregator * ::= Aggregator (* -> * -> *) || Binary operator to merge values
+                            *             || Unit value
+sumAggregator 
+  = Aggregator (+) 0
+
+maxAggregator 
+  = Aggregator maxValue 0
+     where
+       maxValue x y = max [x, y]
+minAggregator 
+  = Aggregator minValue infini
+     where
+       minValue x y 
+          = y, if x = infini
+          = x, if y = infini
+          = min [x, y], otherwise
+       infini = 99912323 || BIDON
+   
+vectorAggregator 
+  = Aggregator (++) []
+
+
+|| Valeurs et fonctions auxiliaires sur les streams.
 emptyStream = []
 
 isEmpty [] = True
@@ -38,13 +63,25 @@ all_true xs = all xs is_true
 
 || groupByKey.
 
-groupByKey :: (* -> **) -> (* -> ***) -> *** -> (*** -> *** -> ***) -> (streamOf *) -> (mapFromTo ** ***)
-groupByKey keyFunc valueFunc initValue mergeValue theStream
-   = groupByKey_ keyFunc valueFunc initValue mergeValue emptyMap theStream
+groupByKey = groupByKey2 
+             || Par defaut, on doit specifier les deux fonctions (sur cle et valeur).
 
-groupByKey_ keyFunc valueFunc initValue mergeValue theMap theStream
+groupByKey2 :: (aggregator ***) -> (* -> **) -> (* -> ***) -> (streamOf *) -> (mapFromTo ** ***)
+groupByKey2 theAggregator keyFunc valueFunc theStream
+   = groupByKey_ keyFunc valueFunc theAggregator emptyMap theStream
+
+groupByKey1 :: (aggregator *) -> (* -> **) -> (streamOf *) -> (mapFromTo ** *)
+groupByKey1 aggregator keyFunc
+    = groupByKey2 aggregator keyFunc id
+
+groupByKey0 :: (aggregator *) -> (streamOf *) -> (mapFromTo * *)
+groupByKey0 aggregator
+    = groupByKey2 aggregator id id
+
+
+groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
    = theMap, if isEmpty theStream
-   = groupByKey_ keyFunc valueFunc initValue mergeValue newMap (nextElement theStream), otherwise
+   = groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) newMap (nextElement theStream), otherwise
       where
          x = firstElement theStream
          k = keyFunc x
@@ -60,33 +97,24 @@ inc x = x + 1
 mkList x = [x]
 one x = 1
 
-maxValue x y = max [x, y]
-
-infini = 99912323 || BIDON
-
-minValue x y 
-  = y, if x = infini
-  = x, if y = infini
-  = min [x, y], otherwise
-             
 
 str0 = [10, 20, 10, 20, 30, 10]
 
 res0 = [
         || Count
-        groupByKey id one 0 (+) str0
+        groupByKey sumAggregator id one str0
           = [(10, 3), (20, 2), (30, 1)],
         || Max
-        groupByKey id id 0 maxValue str0
+        groupByKey0 maxAggregator str0
           = [(10, 10), (20, 20), (30, 30)],
         || Min
-        groupByKey id id infini minValue str0
+        groupByKey0 minAggregator str0
           = [(10, 10), (20, 20), (30, 30)],
         || Sum
-        groupByKey id id 0 (+) str0
+        groupByKey0 sumAggregator str0
           = [(10, 30), (20, 40), (30, 30)],
         || Vector: (++) = list concatenation
-        groupByKey id (mkList . id) [] (++) str0
+        groupByKey vectorAggregator id (mkList . id) str0
           = [(10, [10, 10, 10]), (20, [20, 20]), (30, [30])],
         True
        ]
@@ -95,19 +123,19 @@ str1 = [(1, 10), (2, 20), (1, 10), (3, 30), (1, 20), (2, 20)]
 
 res1 = [
         || Count
-        groupByKey fst one 0 (+) str1
+        groupByKey sumAggregator fst one str1
           = [(1, 3), (2, 2), (3, 1)],
         || Max
-        groupByKey fst snd 0 maxValue str1
+        groupByKey maxAggregator fst snd str1
           = [(1, 20), (2, 20), (3, 30)],
         || Min
-        groupByKey fst snd infini minValue str1
+        groupByKey minAggregator fst snd str1
           = [(1, 10), (2, 20), (3, 30)],
         || Sum
-        groupByKey fst snd 0 (+) str1
+        groupByKey sumAggregator fst snd str1
           = [(1, 40), (2, 40), (3, 30)],
         || Vector: (++) = list concatenation
-        groupByKey fst (mkList . snd) [] (++) str1
+        groupByKey vectorAggregator fst (mkList . snd)  str1
           = [(1, [20, 10, 10]), (2, [20, 20]), (3, [30])],
         True
        ]
@@ -115,21 +143,22 @@ res1 = [
 str2 = [(1, "10"), (2, "20"), (1, "10"), (3, "30"), (1, "20"), (2, "20")]
 
 res2 
-      = [groupByKey fst (mkList . inc . snd) [] (++) str1 
+     = [True,
+        groupByKey vectorAggregator fst (mkList . inc . snd) str1 
            = [(1,[21,11,11]),(2,[21,21]),(3,[31])],
-         groupByKey fst (inc . snd) 0 (+) str1 
+        groupByKey sumAggregator fst (inc . snd) str1 
            = [(1,43),(2,42),(3,31)],
-        sort (groupByKey fst (mkList . inc . snd) [] (++) str1) 
+        sort (groupByKey vectorAggregator fst (mkList . inc . snd) str1)
            = [(1,[21,11,11]),(2,[21,21]),(3,[31])],
-        sort (groupByKey fst (mkList . inc . snd) [] (++) str1)
+        sort (groupByKey vectorAggregator fst (mkList . inc . snd) str1)
           = [(1,[21, 11,11]),(2,[21,21]),(3,[31])],
-        sort (groupByKey (inc . snd) (mkList . inc . inc . fst) [] (++) str1) 
+        sort (groupByKey vectorAggregator (inc . snd) (mkList . inc . inc . fst) str1)
           = [(11,[3,3]), (21,[4,3,4]), (31,[5])],
-        sort (groupByKey fst (mkList . snd) [] (++) str2) 
+        sort (groupByKey vectorAggregator fst (mkList . snd) str2)
           = [(1,["20","10","10"]),(2,["20","20"]),(3,["30"])],
-        sort (groupByKey fst snd "" (++) str2) 
+        sort (groupByKey (Aggregator (++) "") fst snd str2)
           = [(1,"201010"),(2,"2020"),(3,"30")],
-        sort (groupByKey fst snd "" (++) str2) 
+        sort (groupByKey (Aggregator (++) "") fst snd str2) 
           = [(1,"201010"),(2,"2020"),(3,"30")],
         True
         ]
