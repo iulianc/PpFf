@@ -57,9 +57,20 @@ inc x = x + 1
 str1 = [(1, 10), (2, 20), (1, 10), (3, 30), (1, 20), (2, 20)]
 str2 = [(1, "10"), (2, "20"), (1, "10"), (3, "30"), (1, "20"), (2, "20")]
 
-res 
+res0 
     = [sort (groupByKey0 fst (inc . snd) str1) 
          = [(1,[21,11,11]),(2,[21,21]),(3,[31])],
+       sort (groupByKey0 fst (inc . snd) str1) 
+         = [(1,[21, 11,11]),(2,[21,21]),(3,[31])],
+       sort (groupByKey0 (inc . snd) (inc . inc . fst) str1) 
+         = [(11,[3,3]), (21,[4,3,4]), (31,[5])],
+       sort (groupByKey0 fst snd str2) 
+         = [(1,["20","10","10"]),(2,["20","20"]),(3,["30"])]
+      ]
+
+res1 
+    = [sort (groupByKey1 fst (inc . snd) str1) 
+         = [(1,[11,11,21]),(2,[21,21]),(3,[31])],
        sort (groupByKey1 fst (inc . snd) str1) 
          = [(1,[11,11,21]),(2,[21,21]),(3,[31])],
        sort (groupByKey1 (inc . snd) (inc . inc . fst) str1) 
@@ -67,3 +78,5 @@ res
        sort (groupByKey1 fst snd str2) 
          = [(1,["10","10","20"]),(2,["20","20"]),(3,["30"])]
       ]
+
+res = [res0, res1]
