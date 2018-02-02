@@ -98,7 +98,7 @@ res0 = [
 
 str1 = [(1, 10), (2, 20), (1, 10), (3, 30), (1, 20), (2, 20)]
 
-res1 = [
+res1 = [True,
         || Count
         groupByKey sumAggregator fst one str1
           = [(1, 3), (2, 2), (3, 1)],
@@ -119,8 +119,7 @@ res1 = [
 
 str2 = [(1, "10"), (2, "20"), (1, "10"), (3, "30"), (1, "20"), (2, "20")]
 
-res2 
-     = [True,
+res2 = [True,
         groupByKey vectorAggregator fst (mkList . inc . snd) str1 
            = [(1,[11,11,21]),(2,[21,21]),(3,[31])],
         groupByKey sumAggregator fst (inc . snd) str1 
@@ -140,7 +139,27 @@ res2
         True
         ]
 
+employee ::= Employee num [char] num
+age (Employee a n s) = a
+nom (Employee a n s) = n
+salaire (Employee a n s) = s
+
+employes = [Employee 22 "n1" 0,
+            Employee 22 "n2" 0,
+            Employee 33 "n3" 0,
+            Employee 33 "n4" 0,
+            Employee 44 "n5" 0,
+            Employee 22 "n6" 0
+           ]
+
+res3 = [True,
+        groupByKey sumAggregator age one employes 
+          = [(22, 3), (33, 2), (44, 1)],
+        True
+        ]
+  
 res = [||res0, 
        ||res1, 
        ||res2, 
-       [all_true res0 & all_true res1 & all_true res2]]
+       res3,
+       [all_true res0 & all_true res1 & all_true res2 & all_true res3]]
