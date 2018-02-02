@@ -18,127 +18,68 @@ maxAggregator
   = Aggregator maxValue 0
      where
        maxValue x y = max [x, y]
+
 minAggregator 
   = Aggregator minValue infini
      where
-       minValue x y 
-          = y, if x = infini
-          = x, if y = infini
-          = min [x, y], otherwise
+       minValue x y = y, if x = infini
+                    = x, if y = infini
+                    = min [x, y], otherwise
        infini = 99912323 || BIDON
    
 vectorAggregator 
   = Aggregator (++) []
 
-
-|| Valeurs et fonctions auxiliaires sur les streams.
-emptyStream = []
-
-isEmpty [] = True
-isEmpty (x : xs) = False
-
-firstElement = hd
-nextElement = tl
-
-
-|| Auxiliary values and functions on maps.
-
-emptyMap = []
-
-addKeyValue :: ** -> (** -> ** -> **) -> * -> ** -> (mapFromTo * **) -> (mapFromTo * **)
-addKeyValue initValue mergeValue k v [] 
-   = [(k, mergeValue v initValue)]
-addKeyValue initValue mergeValue k v ((k2, v2) : rest) 
-   = (k, mergeValue v v2) : rest, if k = k2
-   = (k2, v2) : addKeyValue initValue mergeValue k v rest, otherwise
-
-
-|| Autres definitions auxiliaires.
-all [] p = True
-all (x : xs) p = (p x) & (all xs p)
-
-all_true xs = all xs is_true
-              where is_true x = x
-
-
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 || groupByKey.
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-groupByKey = groupByKey2 
-             || Par defaut, on doit specifier les deux fonctions (sur cle et valeur).
+|| NOTE: id = identity: id x = x
+||       foldr = reduce
 
+groupByKey = groupByKey2 || Par defaut, on doit specifier les deux fonctions (sur cle et valeur).
+
+|| Resultat trie selon cles, pour uniformiser le resultat et simplifier les tests.
 groupByKey2 :: (aggregator ***) -> (* -> **) -> (* -> ***) -> (streamOf *) -> (mapFromTo ** ***)
-groupByKey2 theAggregator keyFunc valueFunc theStream
-   = groupByKey_ keyFunc valueFunc theAggregator emptyMap theStream
+groupByKey2 (Aggregator mergeValue initValue) keyFunc valueFunc theStream
+   = aggregatedPairs
+     where
+       || L'ensemble des differentes cles produites via keyFunc.
+       keys            = sort (mkset [keyFunc x | x <- theStream])
+       || On associe a chaque cle la liste des differentes valeurs obtenues via valueFunc.
+       keyAndValues    = [(k, [valueFunc x | x <- theStream; keyFunc x = k]) | k <- keys]
+       || On reduit/combine les valeurs associees a chaque cle.
+       aggregatedPairs = [(k, foldr mergeValue initValue values) | (k, values) <- keyAndValues]
 
 groupByKey1 :: (aggregator *) -> (* -> **) -> (streamOf *) -> (mapFromTo ** *)
 groupByKey1 aggregator keyFunc
-    = groupByKey2 aggregator keyFunc identity
+    = groupByKey2 aggregator keyFunc id
 
 groupByKey0 :: (aggregator *) -> (streamOf *) -> (mapFromTo * *)
 groupByKey0 aggregator
-    = groupByKey2 aggregator identity identity
-
-|| Nouvelle definition non-recursive, plus claire pour la semantique quant aux fonctions sur les cles, 
-|| valeurs, etc.
-
-groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
-   = sort theAggregatedPairs  || On tri, pour uniformiser le resultat et simplifier les tests
-     where
-       allTheKeys         = [keyFunc x | x <- theStream]
-       allTheValues       = [valueFunc x | x <- theStream]
-       allKeyValuePairs   = zip2 allTheKeys allTheValues
-       theKeyValuesMap    = assocListToMap allKeyValuePairs
-       theAggregatedPairs = [(k, foldr mergeValue initValue values) | (k, values) <- theKeyValuesMap]
-
-
-|| Ancienne definition recursive, moins claire pour la semantique.
-groupByKey__ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
-   = theMap, if isEmpty theStream
-   = groupByKey__ keyFunc valueFunc (Aggregator mergeValue initValue) newMap (nextElement theStream), otherwise
-      where
-         x = firstElement theStream
-         k = keyFunc x
-         v = valueFunc x
-         newMap = addKeyValue initValue mergeValue k v theMap
-
-assocListToMap keyValuePairs 
-   = listToMap_ keyValuePairs []
-
-listToMap_ [] m
-   = m
-listToMap_ ((k, value) : rest) m
-   = listToMap_ rest ((k, [value]) : m), if ~(contains m k)
-   = listToMap_ rest newM, otherwise
-      where
-        newM = update m k (value : valueFor m k)
-
-contains [] k = False
-contains ((k, v) : m_) k = True
-contains ((k0, v) : m_) k = contains m_ k
-
-valueFor ((k, v) : m_) k = v
-valueFor ((k0, v) : m_) k = valueFor m_ k
-
-update ((k, v) : m_) k newValue = (k, newValue) : m_
-update ((k0, v) : m_) k newValue = (k0, v) : (update m_ k newValue)
-
+    = groupByKey2 aggregator id id
 
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 || TESTS.
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+all [] p = True
+all (x : xs) p = (p x) & (all xs p)
+
+all_true xs = all xs is_true
+              where is_true x = x
+
 inc x = x + 1
 mkList x = [x]
 one x = 1
-identity x = x
 
 
 str0 = [10, 20, 10, 20, 30, 10]
 
 res0 = [
         || Count
-        groupByKey sumAggregator identity one str0
+        groupByKey sumAggregator id one str0
           = [(10, 3), (20, 2), (30, 1)],
         || Max
         groupByKey0 maxAggregator str0
@@ -150,7 +91,7 @@ res0 = [
         groupByKey0 sumAggregator str0
           = [(10, 30), (20, 40), (30, 30)],
         || Vector: (++) = list concatenation
-        groupByKey vectorAggregator identity (mkList . identity) str0
+        groupByKey vectorAggregator id (mkList . id) str0
           = [(10, [10, 10, 10]), (20, [20, 20]), (30, [30])],
         True
        ]
@@ -172,7 +113,7 @@ res1 = [
           = [(1, 40), (2, 40), (3, 30)],
         || Vector: (++) = list concatenation
         groupByKey vectorAggregator fst (mkList . snd)  str1
-          = [(1, [20, 10, 10]), (2, [20, 20]), (3, [30])],
+          = [(1, [10, 10, 20]), (2, [20, 20]), (3, [30])],
         True
        ]
 
@@ -181,43 +122,25 @@ str2 = [(1, "10"), (2, "20"), (1, "10"), (3, "30"), (1, "20"), (2, "20")]
 res2 
      = [True,
         groupByKey vectorAggregator fst (mkList . inc . snd) str1 
-           = [(1,[21,11,11]),(2,[21,21]),(3,[31])],
+           = [(1,[11,11,21]),(2,[21,21]),(3,[31])],
         groupByKey sumAggregator fst (inc . snd) str1 
            = [(1,43),(2,42),(3,31)],
-        sort (groupByKey vectorAggregator fst (mkList . inc . snd) str1)
-           = [(1,[21,11,11]),(2,[21,21]),(3,[31])],
-        sort (groupByKey vectorAggregator fst (mkList . inc . snd) str1)
-          = [(1,[21, 11,11]),(2,[21,21]),(3,[31])],
-        sort (groupByKey vectorAggregator (inc . snd) (mkList . inc . inc . fst) str1)
+        groupByKey vectorAggregator fst (mkList . inc . snd) str1
+           = [(1,[11,11,21]),(2,[21,21]),(3,[31])],
+        groupByKey vectorAggregator fst (mkList . inc . snd) str1
+          = [(1,[11,11,21]),(2,[21,21]),(3,[31])],
+        groupByKey vectorAggregator (inc . snd) (mkList . inc . inc . fst) str1
           = [(11,[3,3]), (21,[4,3,4]), (31,[5])],
-        sort (groupByKey vectorAggregator fst (mkList . snd) str2)
-          = [(1,["20","10","10"]),(2,["20","20"]),(3,["30"])],
-        sort (groupByKey (Aggregator (++) "") fst snd str2)
-          = [(1,"201010"),(2,"2020"),(3,"30")],
-        sort (groupByKey (Aggregator (++) "") fst snd str2) 
-          = [(1,"201010"),(2,"2020"),(3,"30")],
+        groupByKey vectorAggregator fst (mkList . snd) str2
+          = [(1,["10","10","20"]),(2,["20","20"]),(3,["30"])],
+        groupByKey (Aggregator (++) "") fst snd str2
+          = [(1,"101020"),(2,"2020"),(3,"30")],
+        groupByKey (Aggregator (++) "") fst snd str2
+          = [(1,"101020"),(2,"2020"),(3,"30")],
         True
         ]
 
-res = [res0, 
+res = [||res0, 
        ||res1, 
        ||res2, 
        [all_true res0 & all_true res1 & all_true res2]]
-
-
-
-|| Autres tests
-
-l0 = [(1, 10), (2, 20), (1, 30), (1, 40), (2, 50), (3, 60)]
-m0 = [(1, [10]), (2, [20])]
-
-resMap = [True,
-          contains l0 1,
-          contains l0 10 = False,
-          contains m0 1,
-          contains m0 10 = False,
-          valueFor l0 1 = 10,
-          valueFor m0 1 = [10],
-          update m0 1 [10, 20] = [(1, [10, 20]), (2, [20])],
-          sort (assocListToMap l0) = [(1, [40, 30, 10]), (2, [50, 20]), (3, [60])],
-          True]
