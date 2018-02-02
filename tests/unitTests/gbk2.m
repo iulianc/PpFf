@@ -84,12 +84,11 @@ groupByKey0 aggregator
 groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
    = sort theAggregatedPairs  || On tri, pour uniformiser le resultat et simplifier les tests
      where
-       allTheKeys = map keyFunc theStream
-       allTheValues = map valueFunc theStream
-       allKeyValuePairs = zip (allTheKeys, allTheValues)
-       theKeyValuesMap = assocListToMap allKeyValuePairs
-       theAggregatedPairs = map reduceValues theKeyValuesMap
-                             where reduceValues (k, values) = (k, foldr mergeValue initValue values)
+       allTheKeys         = [keyFunc x | x <- theStream]
+       allTheValues       = [valueFunc x | x <- theStream]
+       allKeyValuePairs   = zip2 allTheKeys allTheValues
+       theKeyValuesMap    = assocListToMap allKeyValuePairs
+       theAggregatedPairs = [(k, foldr mergeValue initValue values) | (k, values) <- theKeyValuesMap]
 
 
 || Ancienne definition recursive, moins claire pour la semantique.
