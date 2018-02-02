@@ -78,15 +78,51 @@ groupByKey0 :: (aggregator *) -> (streamOf *) -> (mapFromTo * *)
 groupByKey0 aggregator
     = groupByKey2 aggregator identity identity
 
+|| Nouvelle definition non-recursive, plus claire pour la semantique quant aux fonctions sur les cles, 
+|| valeurs, etc.
 
 groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
+   = sort theAggregatedPairs  || On tri, pour uniformiser le resultat et simplifier les tests
+     where
+       allTheKeys = map keyFunc theStream
+       allTheValues = map valueFunc theStream
+       allKeyValuePairs = zip (allTheKeys, allTheValues)
+       theKeyValuesMap = assocListToMap allKeyValuePairs
+       theAggregatedPairs = map reduceValues theKeyValuesMap
+                             where reduceValues (k, values) = (k, foldr mergeValue initValue values)
+
+
+|| Ancienne definition recursive, moins claire pour la semantique.
+groupByKey__ keyFunc valueFunc (Aggregator mergeValue initValue) theMap theStream
    = theMap, if isEmpty theStream
-   = groupByKey_ keyFunc valueFunc (Aggregator mergeValue initValue) newMap (nextElement theStream), otherwise
+   = groupByKey__ keyFunc valueFunc (Aggregator mergeValue initValue) newMap (nextElement theStream), otherwise
       where
          x = firstElement theStream
          k = keyFunc x
          v = valueFunc x
          newMap = addKeyValue initValue mergeValue k v theMap
+
+assocListToMap keyValuePairs 
+   = listToMap_ keyValuePairs []
+
+listToMap_ [] m
+   = m
+listToMap_ ((k, value) : rest) m
+   = listToMap_ rest ((k, [value]) : m), if ~(contains m k)
+   = listToMap_ rest newM, otherwise
+      where
+        newM = update m k (value : valueFor m k)
+
+contains [] k = False
+contains ((k, v) : m_) k = True
+contains ((k0, v) : m_) k = contains m_ k
+
+valueFor ((k, v) : m_) k = v
+valueFor ((k0, v) : m_) k = valueFor m_ k
+
+update ((k, v) : m_) k newValue = (k, newValue) : m_
+update ((k0, v) : m_) k newValue = (k0, v) : (update m_ k newValue)
+
 
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -169,3 +205,20 @@ res = [res0,
        ||res2, 
        [all_true res0 & all_true res1 & all_true res2]]
 
+
+
+|| Autres tests
+
+l0 = [(1, 10), (2, 20), (1, 30), (1, 40), (2, 50), (3, 60)]
+m0 = [(1, [10]), (2, [20])]
+
+resMap = [True,
+          contains l0 1,
+          contains l0 10 = False,
+          contains m0 1,
+          contains m0 10 = False,
+          valueFor l0 1 = 10,
+          valueFor m0 1 = [10],
+          update m0 1 [10, 20] = [(1, [10, 20]), (2, [20])],
+          sort (assocListToMap l0) = [(1, [40, 30, 10]), (2, [50, 20]), (3, [60])],
+          True]

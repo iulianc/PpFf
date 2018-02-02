@@ -1,3 +1,6 @@
+gt:
+	make -f gt-makefile
+
 NB_TIMES=1
 
 # Specify the final target name
