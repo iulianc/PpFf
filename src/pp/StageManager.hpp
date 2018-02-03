@@ -188,96 +188,7 @@ using namespace ff;
 			}
 		}
 
-//
-//		//*****GroupByKey-Deprecated**********************************
-//		template < typename In, typename K, typename V >
-//		void groupByKey(Collectors< MapType < K, std::vector< V > > > &collectors){
-//
-//			typedef MapType < K, std::vector< V > > MAP;
-//			typedef Container< MAP, std::vector > CONTAINER;
-//			CONTAINER &container = collectors.getContainer();
-//
-//			if(!isParallel()){
-//				pipe.add_stage(new GroupByKey< In, K, V, false, false >(container[0]));
-//			}else{
-//				utilities::Farm *farm = InstantiateFarm();
-//
-//				for(int i = 0; i < no_workers; i++){
-//					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-//					worker_pipe->add_stage(new GroupByKey< In, K, V, false, false >(container[i]));
-//				}
-//
-//				pipe.add_stage(farm->getFarm());
-//			}
-//		}
-//
-//		template < typename In, typename K, typename V >
-//		void groupByKey(Collectors< MapType < K, std::vector< V > > > &collectors, std::function< K*(In*) > const& taskFunc){
-//
-//			typedef MapType < K, std::vector< V > > MAP;
-//			typedef Container< MAP, std::vector > CONTAINER;
-//			CONTAINER &container = collectors.getContainer();
-//
-//			if(!isParallel()){
-//				pipe.add_stage(new GroupByKey< In, K, V, true, false >(container[0], taskFunc));
-//			}else{
-//				utilities::Farm *farm = InstantiateFarm();
-//
-//				for(int i = 0; i < no_workers; i++){
-//					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-//					worker_pipe->add_stage(new GroupByKey< In, K, V, true, false >(container[i], taskFunc));
-//				}
-//
-//				pipe.add_stage(farm->getFarm());
-//			}
-//		}
-//
-//		template < typename In, typename K, typename V >
-//		void groupByKey(Collectors< MapType < K, V > > &collectors, std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
-//
-//			typedef MapType < K , V > MAP;
-//			typedef Container< MAP, std::vector > CONTAINER;
-//			CONTAINER &container = collectors.getContainer();
-//
-//			if(!isParallel()){
-//				pipe.add_stage(new GroupByKey< In, K, V, true, true >(container[0], taskFunc, binaryOperator));
-//			}else{
-//				utilities::Farm *farm = InstantiateFarm();
-//
-//				for(int i = 0; i < no_workers; i++){
-//					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-//					worker_pipe->add_stage(new GroupByKey< In, K, V, true, true >(container[i], taskFunc, binaryOperator));
-//				}
-//
-//				pipe.add_stage(farm->getFarm());
-//			}
-//		}
-//
-//		template < typename In, typename K, typename V >
-//		void groupByKey(Collectors< MapType < K, V > > &collectors, std::function< void(V&, In*) > const& binaryOperator){
-//
-//			typedef MapType < K, V > MAP;
-//			typedef Container< MAP, std::vector > CONTAINER;
-//			CONTAINER &container = collectors.getContainer();
-//
-//			if(!isParallel()){
-//				pipe.add_stage(new GroupByKey< In, K, V, false, true >(container[0], binaryOperator));
-//			}else{
-//				utilities::Farm *farm = InstantiateFarm();
-//
-//				for(int i = 0; i < no_workers; i++){
-//					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-//					worker_pipe->add_stage(new GroupByKey< In, K, V, false, true >(container[i], binaryOperator));
-//				}
-//
-//				pipe.add_stage(farm->getFarm());
-//			}
-//		}
-//		//*****************************************************************************
 
-
-
-		//*****GroupByKey-New Version**********************************
 		template < typename In, typename K, typename Out, typename Collector, typename Workers, typename Aggr >
 		void groupByKey(Workers &workers, Aggr &aggregate){
 
@@ -421,7 +332,6 @@ using namespace ff;
 				pipe.add_stage(farm->getFarm());
 			}
 		}
-		//*******************************************************************
 
 
 		template < typename T, typename C >

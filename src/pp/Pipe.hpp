@@ -19,8 +19,6 @@ using namespace ff;
 
 namespace pp{
 
-	//enum class Collector {Undefined, ToList, ToVector};
-
 	class Pipe {
 	public:
 
@@ -132,13 +130,6 @@ namespace pp{
 			if(isParallel())
 				collectors.reduce(biOp);
 			return collectors.template value< Out >();
-
-//			//TODO delete pointer
-//			Out *result = new Out();
-//			//result->age = 0;
-//			stageManager->reduce< Out >(result, biOp);
-//			this->run();
-//			return *result;
 		}
 
 		template < typename In, typename Out = In >
@@ -150,13 +141,6 @@ namespace pp{
 				collectors.reduce(biOp);
 			biOp(&identity, &collectors.template value< Out >());
 			return identity;
-
-//			//TODO delete pointer
-//			Out *result = new Out();
-//			*result = identity;
-//			stageManager->reduce< Out >(result, biOp);
-//			this->run();
-//			return *result;
 		}
 
 		template < typename In, typename Out >
@@ -169,86 +153,9 @@ namespace pp{
 				collectors.reduce(biOp);
 			biOp(&identity, &collectors.template value< Out >());
 			return identity;
-
-//			//TODO delete pointer
-//			Out *result = new Out();
-//			*result = identity;
-//			stageManager->map< In, Out >(taskFunc);
-//			stageManager->reduce< Out >(result, biOp);
-//			this->run();
-//			return *result;
 		}
 
 
-//
-//		//*****GroupByKey-Deprecated**********************************
-//		template < typename In, typename K = In, typename V = In >
-//		MapType < K, std::vector< V > > groupByKey(){
-//			typedef MapType < K, std::vector< V > > CONTAINER;
-//			Collectors< CONTAINER > collectors(no_workers);
-//			stageManager->groupByKey< In, K, V >(collectors);
-//			this->run();
-//			if(isParallel())
-//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-//					{
-//						for (auto it = in->begin(); it != in->end(); it++) {
-//							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
-//						}
-//					});
-//			return collectors.template value< CONTAINER >();
-//		}
-//
-//		template < typename In, typename K = In, typename V = In >
-//		MapType < K, std::vector< V > > groupByKey(std::function< K*(In*) > const& taskFunc){
-//			typedef MapType < K, std::vector< V > > CONTAINER;
-//			Collectors< CONTAINER > collectors(no_workers);
-//			stageManager->groupByKey< In, K, V >(collectors, taskFunc);
-//			this->run();
-//			if(isParallel())
-//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-//					{
-//						for (auto it = in->begin(); it != in->end(); it++) {
-//							(*out)[it->first].insert((*out)[it->first].end(), (it->second).begin(), (it->second).end());
-//						}
-//					});
-//			return collectors.template value< CONTAINER >();
-//		}
-//
-//		template < typename In, typename K = In, typename V = In >
-//		MapType < K, V > groupByKey(std::function< K*(In*) > taskFunc, std::function< void(V&, In*) > const& binaryOperator){
-//			typedef MapType < K, V > CONTAINER;
-//			Collectors< CONTAINER > collectors(no_workers);
-//			stageManager->groupByKey< In, K, V >(collectors, taskFunc, binaryOperator);
-//			this->run();
-//			if(isParallel())
-//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-//					{
-//						for (auto it = in->begin(); it != in->end(); it++) {
-//							(*out)[it->first] += it->second;
-//						}
-//					});
-//			return collectors.template value< CONTAINER >();
-//		}
-//
-//		template < typename In, typename K = In, typename V = In >
-//		MapType < K, V > groupByKey(std::function< void(V&, In*) > const& binaryOperator){
-//			typedef MapType < K, V > CONTAINER;
-//			Collectors< CONTAINER > collectors(no_workers);
-//			stageManager->groupByKey< In, K, V >(collectors, binaryOperator);
-//			this->run();
-//			if(isParallel())
-//				collectors.reduce([](CONTAINER *out, CONTAINER *in)
-//					{
-//						for (auto it = in->begin(); it != in->end(); it++) {
-//							(*out)[it->first] += it->second;
-//						}
-//					});
-//			return collectors.template value< CONTAINER >();
-//		}
-//		//**************************************************************
-
-
-		//*****GroupByKey-New Version**********************************
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
 		typename std::enable_if< (AggrOp < 4) , MapType < K, V > >::type
 		groupByKey(){
@@ -468,98 +375,6 @@ namespace pp{
 			return collectors.container();
 		}
 
-
-//		//Average
-//		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
-//		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
-//		groupByKey(){
-//			typedef std::pair < V, int > Out;
-//
-//			typedef MapType < K, Out > CONTAINER;
-//			typedef MapCollectors< K, Out, CONTAINER > COLLECTORS;
-//
-//			typedef Workers < COLLECTORS > Workers;
-//			typedef Aggregate< AggrOp, In, Out > Aggr;
-//
-//			Workers workers(no_workers);
-//			Aggr aggregate;
-//
-//
-//			stageManager->groupByKey< In, K, Out, COLLECTORS, Workers, Aggr >(workers, aggregate);
-//			this->run();
-//			if(isParallel()){
-//				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
-//					{
-//						CONTAINER &containerIn = in->container();
-//						CONTAINER &containerOut = out->container();
-//
-//						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
-//							Out &out = containerOut[it->first];
-//							Out in = it->second;
-//
-//							aggregate.reduce(&out, &in);
-//						}
-//					});
-//			}
-//
-//			COLLECTORS *collectors = workers.value();
-//			CONTAINER containerPairValue = collectors->container();
-//			Out pairValue;
-//			MapType < K, V > result;
-//
-//			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
-//				pairValue = it->second;
-//				result[it->first] = pairValue.first / pairValue.second;
-//			}
-//
-//			return result;
-//		}
-//
-//		//Average
-//		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
-//		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
-//		groupByKey(std::function< K*(In*) > const& taskFuncOnKey){
-//			typedef std::pair < V, int > Value;
-//
-//			typedef MapType < K, Value > CONTAINER;
-//			typedef MapCollectors< K, Value, CONTAINER > COLLECTORS;
-//
-//			typedef Workers < COLLECTORS > Workers;
-//			typedef Aggregate< AggrOp, V, Value > Aggr;
-//
-//			Workers workers(no_workers);
-//			Aggr aggregate;
-//
-//			stageManager->groupByKey< In, K, V, COLLECTORS, Workers, Aggr >(workers, taskFuncOnKey, aggregate);
-//			this->run();
-//			if(isParallel()){
-//				workers.reduce([&](COLLECTORS *out, COLLECTORS *in)
-//					{
-//						CONTAINER &containerIn = in->container();
-//						CONTAINER &containerOut = out->container();
-//
-//						for (auto it = containerIn.begin(); it != containerIn.end(); it++) {
-//							Value &out = containerOut[it->first];
-//							Value in = it->second;
-//
-//							aggregate.reduce(&out, &in);
-//						}
-//					});
-//			}
-//
-//			COLLECTORS *collectors = workers.value();
-//			CONTAINER containerPairValue = collectors->container();
-//			Value pairValue;
-//			MapType < K, V > result;
-//
-//			for (auto it = containerPairValue.begin(); it != containerPairValue.end(); it++) {
-//				pairValue = it->second;
-//				result[it->first] = pairValue.first / pairValue.second;
-//			}
-//
-//			return result;
-//		}
-
 		//Average
 		template < typename In, typename K = In, typename V = In, int AggrOp = Aggregates::Undefined >
 		typename std::enable_if< (AggrOp == Aggregates::OperatorAvg) , MapType < K, V > >::type
@@ -609,7 +424,6 @@ namespace pp{
 
 			return result;
 		}
-		//*********************************************************
 
 
 		unsigned int count(){
@@ -617,7 +431,6 @@ namespace pp{
 			Collectors< ACCUM > collectors(no_workers);
 			stageManager->count(collectors);
 
-			//this->add_stage(new Count< Accumulator< unsigned int > >(accum));
 			this->run();
 			if(isParallel())
 				collectors.reduce([](ACCUM *out, ACCUM *in){*out = *out + *in;});
@@ -641,51 +454,9 @@ namespace pp{
 		}
 
 		ff_pipeline pipe;
-		//ff_pipeline pipep;
 		int no_workers;
 		StageManager* stageManager;
 	};
-
-
-//	void Pipe::add_stage(ff::ff_node *stage){
-//		if(is_parallel){
-//			pipep.add_stage(stage);
-//		}else{
-//			pipe.add_stage(stage);
-//		}
-//	}
-
-//	template < typename T, typename Iterator >
-//	Pipe& Pipe::add_to_pipe(Iterator begin, Iterator end){
-//		this->add_stage(new AddToPipe< T, Iterator >(begin, end));
-//		return *this;
-//	}
-
-
-
-
-//	template < typename In, typename Out, typename TaskFunc >
-//	Pipe& Pipe::map(TaskFunc const& taskf){
-//		//pipe.add_stage(new Map< In, Out, TaskFunc >(TaskFunc));
-//		//pipe.add_stage(new Map<int, int, mapF>(FuncMap));
-//		//pipe.add_stage(new Find<int, findF>([&](int in){if(in % 2 == 0) return true; return false;}));
-//		//pipe.add_stage(new Find<int, findF>(FuncFind));
-//		pipe.add_stage(new thirdStage());
-//		return *this;
-//	}
-
-
-//	template < typename T >
-//	T Pipe::sum(){
-//		//T out;
-//		Accumulator< T, T > accum;
-//		this->add_stage(new Sum< T, Accumulator< T, T > >(accum));
-//		this->run();
-//		std::cout<<"Total in Pipe: "<<accum.value()<<"\n";
-//		return accum.value();
-//	}
-
-
 
 }
 
