@@ -30,6 +30,10 @@ minAggregator
 vectorAggregator 
   = Aggregator (++) []
 
+avgAggregator 
+  = Aggregator sumCountAvg [0, 0]
+    where sumCountAvg [x1, y1] [x2, y2] = [x1 + x2, y1 + y2]
+
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 || groupByKey.
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -93,8 +97,16 @@ res0 = [
         || Vector: (++) = list concatenation
         groupByKey vectorAggregator id (mkList . id) str0
           = [(10, [10, 10, 10]), (20, [20, 20]), (30, [30])],
+        || Average
+        groupByKey avgAggregator id id_one str0
+          = [(10, [30, 3]), (20, [40, 2]), (30, [30, 1])],
+        groupByKey avgAggregator moy id_one str0
+          = [("moyenne", [100 , 6])],
         True
        ]
+
+id_one x = [x, 1]
+moy x = "moyenne"
 
 str1 = [(1, 10), (2, 20), (1, 10), (3, 30), (1, 20), (2, 20)]
 
@@ -158,7 +170,7 @@ res3 = [True,
         True
         ]
   
-res = [||res0, 
+res = [res0, 
        ||res1, 
        ||res2, 
        res3,
