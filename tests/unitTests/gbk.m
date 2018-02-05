@@ -9,19 +9,19 @@ mapFromTo * ** == [(*, **)]
 || Les reducers.
 ||
 
-reducer * ** ::= Reducer (* -> ** -> **) || Operateur binaire pour combiner l'element du stream
-                                         ||   avec l'accumulateur.
-                          **             || Valeur initiale/element neutre
+reducer * ** ::= Reducer (* -> ** -> **)  || Combine l'element du stream (*) avec l'accumulateur (**)
+                         (** -> ** -> **) || Combine les accumulateurs (**) des threads
+                         **               || Valeur initiale/element neutre (**)
 sumReducer 
-  = Reducer (+) 0
+  = Reducer (+) (+) 0
 
 maxReducer 
-  = Reducer maxValue 0
+  = Reducer maxValue maxValue 0
      where
        maxValue x y = max [x, y]
 
 minReducer 
-  = Reducer minValue infini
+  = Reducer minValue minValue infini
      where
        minValue x y = y, if x = infini
                     = x, if y = infini
@@ -29,10 +29,10 @@ minReducer
        infini = 99912323 || BIDON
    
 vectorReducer 
-  = Reducer (++) []
+  = Reducer (++) (++) []
 
 avgReducer 
-  = Reducer sumCountAvg [0, 0]
+  = Reducer sumCountAvg sumCountAvg [0, 0]
     where sumCountAvg [x1, y1] [x2, y2] = [x1 + x2, y1 + y2]
 
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -46,7 +46,7 @@ groupByKey = groupByKey2 || Par defaut, on doit specifier les deux fonctions (su
 
 || Resultat trie selon cles, pour uniformiser le resultat et simplifier les tests.
 groupByKey2 :: (reducer *** ***) -> (* -> **) -> (* -> ***) -> (streamOf *) -> (mapFromTo ** ***)
-groupByKey2 (Reducer mergeValue initValue) keyFunc valueFunc theStream
+groupByKey2 (Reducer injectValue combineValues initValue) keyFunc valueFunc theStream
    = aggregatedPairs
      where
        || L'ensemble des differentes cles produites via keyFunc.
@@ -54,7 +54,7 @@ groupByKey2 (Reducer mergeValue initValue) keyFunc valueFunc theStream
        || On associe a chaque cle la liste des differentes valeurs obtenues via valueFunc.
        keyAndValues    = [(k, [valueFunc x | x <- theStream; keyFunc x = k]) | k <- keys]
        || On reduit/combine les valeurs associees a chaque cle.
-       aggregatedPairs = [(k, foldr mergeValue initValue values) | (k, values) <- keyAndValues]
+       aggregatedPairs = [(k, foldr injectValue initValue values) | (k, values) <- keyAndValues]
 
 groupByKey1 :: (reducer * *) -> (* -> **) -> (streamOf *) -> (mapFromTo ** *)
 groupByKey1 reducer keyFunc
@@ -68,9 +68,21 @@ groupByKey0 reducer
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 || reduce
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+nb_threads = 3
+
+|| Fonction reduce avec pseudo-decomposition en sous-streams traites par des threads distincts.
+|| Definie uniquement pour assurer validite des exemples/tests avec les deux fonctions d'un reduecr.
 reduce :: (reducer * **) -> (streamOf *) -> **
-reduce (Reducer op initValue) theStream
-    = foldr op initValue theStream
+reduce (Reducer injectValue combineThreadValues initValue) theStream
+    = foldr combineThreadValues initValue threadResults
+      where
+        subStreams = splitIntoSubstreams theStream nb_threads
+                     where
+                       splitIntoSubstreams theStream nb_threads = split theStream nb_threads [[] | i <- [1..nb_threads]] 0
+                       split []       nb_threads sub_streams k = sub_streams
+                       split (x : xs) nb_threads sub_streams k = split xs nb_threads (tl sub_streams ++ [x : hd sub_streams]) ((k+1) mod nb_threads)
+        threadResults = [foldr injectValue initValue subStream | subStream <- subStreams]
 
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -153,9 +165,9 @@ res2 = [True,
           = [(11,[3,3]), (21,[4,3,4]), (31,[5])],
         groupByKey vectorReducer fst (mkList . snd) str2
           = [(1,["10","10","20"]),(2,["20","20"]),(3,["30"])],
-        groupByKey (Reducer (++) "") fst snd str2
+        groupByKey (Reducer (++) (++) "") fst snd str2
           = [(1,"101020"),(2,"2020"),(3,"30")],
-        groupByKey (Reducer (++) "") fst snd str2
+        groupByKey (Reducer (++) (++) "") fst snd str2
           = [(1,"101020"),(2,"2020"),(3,"30")],
         True
         ]
@@ -181,13 +193,13 @@ res3 = [True,
   
 res4 = [True,
        || Count.
-        reduce (Reducer plus_1 0) employes 
+        reduce (Reducer plus_1 (+) 0) employes 
           = 6,
        || Somme des ages.
-        reduce (Reducer plus_age 0) employes 
+        reduce (Reducer plus_age (+) 0) employes 
           = 176,
        || Moyenne des ages.
-        reduce (Reducer avg (0, 0)) employes 
+        reduce (Reducer avg sum (0, 0)) employes 
           = (176/6, 6),
         True
         ]
@@ -195,6 +207,7 @@ res4 = [True,
           plus_age e n = (age e) + n
           plus_1 e n = n + 1
           avg e (somme, nb)  = ((nb * somme + (age e)) / (nb + 1), nb + 1)
+          sum (x1, y1) (x2, y2) = ((x1 * y1 + x2 * y2) / (y1 + y2), y1+y2)
 
 res = [||res0, 
        ||res1, 
