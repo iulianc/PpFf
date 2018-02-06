@@ -97,14 +97,12 @@ all_true xs = all xs is_true
 
 inc x = x + 1
 mkList x = [x]
-one x = 1
-
 
 str0 = [10, 20, 10, 20, 30, 10]
 
 res0 = [
         || Count
-        groupByKey sumReducer id one str0
+        groupByKey sumReducer id (const 1) str0
           = [(10, 3), (20, 2), (30, 1)],
         || Max
         groupByKey0 maxReducer str0
@@ -133,7 +131,7 @@ str1 = [(1, 10), (2, 20), (1, 10), (3, 30), (1, 20), (2, 20)]
 
 res1 = [True,
         || Count
-        groupByKey sumReducer fst one str1
+        groupByKey sumReducer fst (const 1) str1
           = [(1, 3), (2, 2), (3, 1)],
         || Max
         groupByKey maxReducer fst snd str1
@@ -186,7 +184,7 @@ employes = [Employee 22 "n1" 0,
            ]
 
 res3 = [True,
-        groupByKey sumReducer age one employes 
+        groupByKey sumReducer age (const 1) employes 
           = [(22, 3), (33, 2), (44, 1)],
         True
         ]
