@@ -88,6 +88,7 @@ protected:
         return 0;
     }
 
+#if defined(BLOCKING_MODE)
     // consumer
     virtual inline bool init_input_blocking(pthread_mutex_t   *&m,
                                             pthread_cond_t    *&c,
@@ -116,6 +117,7 @@ protected:
     virtual inline pthread_mutex_t   &get_prod_m()        { return gt->get_prod_m(); }
     virtual inline pthread_cond_t    &get_prod_c()        { return gt->get_prod_c(); }
     virtual inline std::atomic_ulong &get_prod_counter()  { return gt->get_prod_counter();}
+#endif /* BLOCKING_MODE */
 
 public:
     /**
@@ -170,7 +172,7 @@ public:
      * \return 0 if successful, otherwise -1 is returned.
      *
      */
-    int run(bool=false) {
+    int run(bool skip_init=false) {
         gt->set_filter(this);
 
         for(size_t i=0;i<inputNodes.size();++i)
@@ -259,21 +261,12 @@ protected:
         return 1;
     }
 
-    int create_output_buffer(int nentries, bool fixedsize=false) {
-        if (ff_node::create_output_buffer(nentries,fixedsize) <0) return -1;
-        ff_node *t = new ff_buffernode(-1, get_out_buffer(), get_out_buffer());
-        assert(t);
-        internalSupportNodes.push_back(t);
-        set_output(t);
-        return 0;
-    }
-
-
     int  wait(/* timeout */) { 
         if (lb->waitlb()<0) return -1;
         return 0;
     }
 
+#if defined(BLOCKING_MODE)
     // consumer
     virtual inline bool init_input_blocking(pthread_mutex_t   *&m,
                                             pthread_cond_t    *&c,
@@ -291,31 +284,18 @@ protected:
     virtual inline bool init_output_blocking(pthread_mutex_t   *&m,
                                              pthread_cond_t    *&c,
                                              std::atomic_ulong *&counter) {
-        bool r = lb->init_output_blocking(m,c,counter);
-        if (!r) return false;
-        // for all registered output node (or buffernode) we have to set the lb 
-        // blocking stuff
-        for(size_t i=0;i<outputNodes.size(); ++i) 
-            outputNodes[i]->set_input_blocking(m,c,counter);
-        for(size_t i=0;i<outputNodesFeedback.size(); ++i) 
-            outputNodesFeedback[i]->set_input_blocking(m,c,counter);
-        return true;
+        return lb->init_output_blocking(m,c,counter);
     }
     virtual inline void set_output_blocking(pthread_mutex_t   *&m,
                                             pthread_cond_t    *&c,
                                             std::atomic_ulong *&counter) {
-        // here we don't want to call the set_output_blocking for each outputNodes
-        // because it may create inconsistencies.
         ff_node::set_output_blocking(m,c,counter);
     }
-
-    virtual inline pthread_mutex_t   &get_prod_m()        { return lb->get_prod_m();}
-    virtual inline pthread_cond_t    &get_prod_c()        { return lb->get_prod_c();}
-    virtual inline std::atomic_ulong &get_prod_counter()  { return lb->get_prod_counter();}
 
     virtual inline pthread_mutex_t   &get_cons_m()        { return lb->get_cons_m();}
     virtual inline pthread_cond_t    &get_cons_c()        { return lb->get_cons_c();}
     virtual inline std::atomic_ulong &get_cons_counter()  { return lb->get_cons_counter();}
+#endif /* BLOCKING_MODE */
 
 public:
     /**
@@ -332,11 +312,6 @@ public:
      */
     virtual ~ff_monode() {
         if (lb) delete lb;
-        for(size_t i=0;i<internalSupportNodes.size();++i) {
-            delete internalSupportNodes.back();
-            internalSupportNodes.pop_back();
-        }
-
     }
     
     /**
@@ -360,26 +335,11 @@ public:
         return 0;
     }
 
-    /**
-     * \brief Assembly an output channels
-     *
-     * Attach a output channelname to ff_node channel
-     */
-    virtual inline int set_output_feedback(ff_node *node) { 
-        outputNodesFeedback.push_back(node); 
-        return 0;
-    }
-
-
     virtual bool isMultiOutput() const { return true;}
 
     virtual inline void get_out_nodes(svector<ff_node*>&w) {
-        w += outputNodes;
+        w = outputNodes;
     }
-    virtual inline void get_out_nodes_feedback(svector<ff_node*>&w) {
-        w += outputNodesFeedback;
-    }
-
 
     /**
      * \brief Skips the first pop
@@ -399,10 +359,6 @@ public:
         return lb->ff_send_out_to(task,id);
     }
     
-    inline void broadcast_task(void *task) {
-        lb->broadcast_task(task);
-    }
-
     /**
      * \brief run
      *
@@ -414,11 +370,8 @@ public:
         if (!lb) return -1;
         lb->set_filter(this);
 
-        for(size_t i=0;i<outputNodesFeedback.size();++i)
-            lb->register_worker(outputNodesFeedback[i]);
         for(size_t i=0;i<outputNodes.size();++i)
             lb->register_worker(outputNodes[i]);
-
         if (ff_node::skipfirstpop()) lb->skipfirstpop();       
         if (lb->runlb()<0) {
             error("ff_monode, running loadbalancer module\n");
@@ -455,8 +408,6 @@ public:
 
 protected:
     svector<ff_node*> outputNodes;
-    svector<ff_node*> outputNodesFeedback;
-    svector<ff_node*>  internalSupportNodes;
     ff_loadbalancer* lb;
 };
 
@@ -481,12 +432,11 @@ struct ff_minode_t: ff_minode {
     typedef OUT_t out_type;
     ff_minode_t():
         GO_ON((OUT_t*)FF_GO_ON),
-        EOS((OUT_t*)FF_EOS),EOSW((OUT_t*)FF_EOSW),
+        EOS((OUT_t*)FF_EOS),
         GO_OUT((OUT_t*)FF_GO_OUT),
-        EOS_NOFREEZE((OUT_t*) FF_EOS_NOFREEZE),
-        BLK((OUT_t*)FF_BLK), NBLK((OUT_t*)FF_NBLK) {
+        EOS_NOFREEZE((OUT_t*) FF_EOS_NOFREEZE) {
 	}
-    OUT_t * const GO_ON,  *const EOS, *const EOSW, *const GO_OUT, *const EOS_NOFREEZE, *const BLK, *const NBLK;
+    OUT_t * const GO_ON,  *const EOS, *const GO_OUT, *const EOS_NOFREEZE;
     virtual ~ff_minode_t()  {}
     virtual OUT_t* svc(IN_t*)=0;
     inline  void *svc(void *task) { return svc(reinterpret_cast<IN_t*>(task)); };
@@ -509,12 +459,11 @@ struct ff_monode_t: ff_monode {
     typedef OUT_t out_type;
     ff_monode_t():
         GO_ON((OUT_t*)FF_GO_ON),
-        EOS((OUT_t*)FF_EOS),EOSW((OUT_t*)FF_EOSW),
+        EOS((OUT_t*)FF_EOS),
         GO_OUT((OUT_t*)FF_GO_OUT),
-        EOS_NOFREEZE((OUT_t*) FF_EOS_NOFREEZE),
-        BLK((OUT_t*)FF_BLK), NBLK((OUT_t*)FF_NBLK) {
+        EOS_NOFREEZE((OUT_t*) FF_EOS_NOFREEZE) {
 	}
-    OUT_t * const GO_ON,  *const EOS, *const EOSW, *const GO_OUT, *const EOS_NOFREEZE, *const BLK, *const NBLK;
+    OUT_t * const GO_ON,  *const EOS, *const GO_OUT, *const EOS_NOFREEZE;
     virtual ~ff_monode_t()  {}
     virtual OUT_t* svc(IN_t*)=0;
     inline  void *svc(void *task) { return svc(reinterpret_cast<IN_t*>(task)); };

@@ -76,7 +76,7 @@ public:
     // - setEnvPtr for adding to env-list the host-pointer to a read-only env
     // - other methods from classes derived from baseOCLTask
     // NOTE: order of setEnvPtr calls matters! TODO refine interface?
-    virtual void setTask(TaskT *t) = 0;
+    virtual void setTask(const TaskT *t) = 0;
     
     /* --- the user may overrider these methods --- */ 
 
@@ -110,53 +110,30 @@ public:
      * @param reuse TODO
      * @param release TODO
      */
-    void setInPtr(Tin* _inPtr, size_t sizeIn, 
-                  const CopyFlags    copy   =CopyFlags::COPY, 
-                  const ReuseFlags   reuse  =ReuseFlags::DONTREUSE, 
-                  const ReleaseFlags release=ReleaseFlags::DONTRELEASE)  { 
+    void setInPtr(Tin* _inPtr, size_t sizeIn=1, 
+                  const BitFlags copy   =BitFlags::COPYTO, 
+                  const BitFlags reuse  =BitFlags::DONTREUSE, 
+                  const BitFlags release=BitFlags::DONTRELEASE)  { 
         inPtr  = _inPtr; size_in = sizeIn; 
-        tuple_in = std::make_tuple(copy==CopyFlags::COPY,
-                                   reuse==ReuseFlags::REUSE,
-                                   release==ReleaseFlags::RELEASE);
-    }
-
-    /**
-     * set the host-pointer to the input array.
-     *
-     * @see setInPtr()
-     */
-    void setInPtr(Tin* _inPtr, size_t sizeIn, const MemoryFlags &flags) { 
-        inPtr  = _inPtr; size_in = sizeIn; 
-        tuple_in = std::make_tuple(flags.copy==CopyFlags::COPY,
-                                   flags.reuse==ReuseFlags::REUSE,
-                                   flags.release==ReleaseFlags::RELEASE);
+        tuple_in = std::make_tuple(copy==BitFlags::COPYTO,
+                                   reuse==BitFlags::REUSE,
+                                   release==BitFlags::RELEASE);
     }
 
     /**
      * set the host-pointer to the output array.
      *
      * @see setInPtr()
+     * @param copyback TODO
      */
-    void setOutPtr(Tout* _outPtr, size_t sizeOut, 
-                   const CopyFlags copyback    =CopyFlags::COPY, 
-                   const ReuseFlags reuse      =ReuseFlags::DONTREUSE, 
-                   const ReleaseFlags release  =ReleaseFlags::DONTRELEASE)  { 
+    void setOutPtr(Tout* _outPtr, size_t sizeOut=0, 
+                   const BitFlags copyback =BitFlags::COPYBACK, 
+                   const BitFlags reuse    =BitFlags::DONTREUSE, 
+                   const BitFlags release  =BitFlags::DONTRELEASE)  { 
         outPtr = _outPtr; size_out = sizeOut; 
-        tuple_out = std::make_tuple(copyback==CopyFlags::COPY,
-                                    reuse==ReuseFlags::REUSE,
-                                    release==ReleaseFlags::RELEASE);
-    }
-
-    /**
-     * set the host-pointer to the output array.
-     *
-     * @see setInPtr()
-     */
-    void setOutPtr(Tout* _outPtr, size_t sizeOut, const MemoryFlags &flags ) { 
-        outPtr = _outPtr; size_out = sizeOut; 
-        tuple_out = std::make_tuple(flags.copy==CopyFlags::COPY,
-                                    flags.reuse==ReuseFlags::REUSE,
-                                    flags.release==ReleaseFlags::RELEASE);
+        tuple_out = std::make_tuple(copyback==BitFlags::COPYBACK,
+                                    reuse==BitFlags::REUSE,
+                                    release==BitFlags::RELEASE);
     }
 
     /**
@@ -166,32 +143,18 @@ public:
      */
     template<typename ptrT>
     void setEnvPtr(const ptrT* _envPtr, size_t size, 
-                  const CopyFlags copy   =CopyFlags::COPY, 
-                  const ReuseFlags reuse  =ReuseFlags::DONTREUSE, 
-                  const ReleaseFlags release=ReleaseFlags::DONTRELEASE)  { 
+                  const BitFlags copy   =BitFlags::COPYTO, 
+                  const BitFlags reuse  =BitFlags::DONTREUSE, 
+                  const BitFlags release=BitFlags::DONTRELEASE)  { 
         assert(envPtr.size() == copyEnv.size());
         envPtr.push_back(std::make_pair((void*)_envPtr,size*sizeof(ptrT)));
         copyEnv.push_back(std::make_tuple(sizeof(ptrT), 
-                                          copy==CopyFlags::COPY,
-                                          reuse==ReuseFlags::REUSE,
-                                          release==ReleaseFlags::RELEASE));                   
+                                          copy==BitFlags::COPYTO,
+                                          reuse==BitFlags::REUSE,
+                                          release==BitFlags::RELEASE));
+                                          
     }
     
-    /**
-     * add to env-list the host-pointer to a read-only env.
-     *
-     * @see setInPtr()
-     */
-    template<typename ptrT>
-    void setEnvPtr(const ptrT* _envPtr, size_t size, const MemoryFlags &flags) { 
-        assert(envPtr.size() == copyEnv.size());
-        envPtr.push_back(std::make_pair((void*)_envPtr,size*sizeof(ptrT)));
-        copyEnv.push_back(std::make_tuple(sizeof(ptrT), 
-                                          flags.copy==CopyFlags::COPY,
-                                          flags.reuse==ReuseFlags::REUSE,
-                                          flags.release==ReleaseFlags::RELEASE));
-    }
-
     Tin *   getInPtr()    const { return inPtr;  }
     Tout *  getOutPtr()   const { return outPtr; }
     template<typename ptrT>
@@ -308,7 +271,6 @@ public:
 
     virtual ~ff_oclAccelerator() {
         if (my_own_allocator) {
-            allocator->releaseAllBuffers(context);
             delete allocator;
             allocator = NULL;
             my_own_allocator = false;
@@ -566,48 +528,28 @@ public:
         }
 	}
 
-	size_t asyncH2Dinput(Tin *p) {
+	void asyncH2Dinput(Tin *p) {
         if (nevents_h2d >= events_h2d.size()) events_h2d.reserve(nevents_h2d);
 		p += offset1_in - halo_in_left;
 		cl_int status = clEnqueueWriteBuffer(cmd_queue, inputBuffer, CL_FALSE, 0,
                                              sizeInput_padded, p, 0, NULL, &events_h2d[nevents_h2d++]);
 		checkResult(status, "copying Task to device input-buffer");
-        return sizeInput_padded;
 	}
 
-	size_t asyncH2Denv(const size_t idx, char *p) {
+	void asyncH2Denv(const size_t idx, char *p) {
         if (nevents_h2d >= events_h2d.size()) events_h2d.reserve(nevents_h2d);
 		cl_int status = clEnqueueWriteBuffer(cmd_queue, envBuffer[idx].first, CL_FALSE, 0,
                                              envBuffer[idx].second, p, 0, NULL, &events_h2d[nevents_h2d++]);    
 		checkResult(status, "copying Task to device env-buffer");
-        return envBuffer[idx].second;
 	}
 
-	size_t  asyncH2Dborders(Tout *p) {
-		if (halo_out_left) {
-			cl_int status = clEnqueueWriteBuffer(cmd_queue, outputBuffer, CL_FALSE, 0,
-                                                 halo_out_left * sizeof(Tout), p + offset1_out - halo_out_left, 0, NULL,
-                                                 &events_h2d[nevents_h2d++]);
-			checkResult(status, "copying left border to device");
-            return halo_out_left * sizeof(Tout);
-		}
-		if (halo_out_right) {
-			cl_int status = clEnqueueWriteBuffer(cmd_queue, outputBuffer, CL_FALSE,
-                                                 (halo_out_left + lenOutput) * sizeof(Tout), halo_out_right * sizeof(Tout),  // NOTE: in a loop Tin == Tout !!
-                                                 p + offset1_out + lenOutput, 0, NULL, &events_h2d[nevents_h2d++]);
-			checkResult(status, "copying right border to device");
-		}
-        return halo_out_left * sizeof(Tout);
-	}
-
-	size_t asyncD2Houtput(Tout *p) {
+	void asyncD2Houtput(Tout *p) {
 		cl_int status = clEnqueueReadBuffer(cmd_queue, outputBuffer, CL_FALSE,
                                             halo_out_left * sizeof(Tout), sizeOutput, p + offset1_out, 0, NULL, &event_d2h);
 		checkResult(status, "copying output back from device");
-        return sizeOutput;
 	}
 
-	size_t asyncD2Hborders(Tout *p) {
+	void asyncD2Hborders(Tout *p) {
 		cl_int status = clEnqueueReadBuffer(cmd_queue, outputBuffer, CL_FALSE,
                                             halo_out_left * sizeof(Tout), halo_half * sizeof(Tout), p + offset1_out, 0, NULL,
                                             &events_h2d[0]);
@@ -617,10 +559,22 @@ public:
                                      (halo_out_left + lenOutput - halo_half) * sizeof(Tout), halo_half * sizeof(Tout),
                                      p + offset1_out + lenOutput - halo_half, 0, NULL, &event_d2h);
 		checkResult(status, "copying border2 back from device");
-        return halo_half * sizeof(Tout);
 	}
 
-
+	void asyncH2Dborders(Tout *p) {
+		if (halo_out_left) {
+			cl_int status = clEnqueueWriteBuffer(cmd_queue, outputBuffer, CL_FALSE, 0,
+                                                 halo_out_left * sizeof(Tout), p + offset1_out - halo_out_left, 0, NULL,
+                                                 &events_h2d[nevents_h2d++]);
+			checkResult(status, "copying left border to device");
+		}
+		if (halo_out_right) {
+			cl_int status = clEnqueueWriteBuffer(cmd_queue, outputBuffer, CL_FALSE,
+                                                 (halo_out_left + lenOutput) * sizeof(Tout), halo_out_right * sizeof(Tout),  // NOTE: in a loop Tin == Tout !!
+                                                 p + offset1_out + lenOutput, 0, NULL, &events_h2d[nevents_h2d++]);
+			checkResult(status, "copying right border to device");
+		}
+	}
 
 	//void initReduce(const Tout &initReduceVal, reduceMode m = REDUCE_OUTPUT) {
     void initReduce() {
@@ -865,10 +819,9 @@ private:
 		// 64 and 256 are the max number of blocks and threads we want to use
 		//getBlocksAndThreads(lenInput, 64, 256, nwg_reduce, wgsize_reduce);
 		//nthreads_reduce = nwg_reduce * wgsize_reduce;
-		nthreads_reduce = lenReduceInput;
-		if(!isPowerOf2(nthreads_reduce))
-			nthreads_reduce = nextPowerOf2(nthreads_reduce);
-		wgsize_reduce = std::min<size_t>(nthreads_reduce, wgsize_reduce_static);
+		wgsize_reduce = std::min<size_t>(lenReduceInput, wgsize_reduce_static);
+		nthreads_reduce = wgsize_reduce
+				* ((lenReduceInput + wgsize_reduce - 1) / wgsize_reduce); //round up
 		nwg_reduce = nthreads_reduce / wgsize_reduce;
 
 		//compute size of per-workgroup working memory
@@ -1038,7 +991,7 @@ public:
         oldBytesizeIn(0), oldSizeOut(0), oldSizeReduce(0) {
 		ff_node::skipfirstpop(true);
 		setcode(mapf, reducef);
-        setTask(const_cast<T&>(task));
+		setTask(task);
         for(size_t i = 0; i< NACCELERATORS; ++i)
             accelerators[i]= new accelerator_t(allocator, width,identityVal);
 #ifdef FF_OPENCL_LOG
@@ -1061,7 +1014,7 @@ public:
         stencil_width_half(width), offset_dev(0), old_inPtr(NULL), old_outPtr(NULL),
         oldBytesizeIn(0), oldSizeOut(0),  oldSizeReduce(0)  {
 		setsourcecode(kernels_source, mapf_name, reducef_name);
-        setTask(const_cast<T&>(task));
+        setTask(task);
         for(size_t i = 0; i< NACCELERATORS; ++i)
             accelerators[i]= new accelerator_t(allocator, width, identityVal, true);
 	}
@@ -1073,7 +1026,7 @@ public:
     }
 
     // used to set tasks when in onshot mode
-    void setTask(T &task) {
+    void setTask(const T &task) {
         Task.resetTask();
         Task.setTask(&task);
     }
@@ -1185,7 +1138,6 @@ public:
 								return -1;
 						break;
 					}
-					break;
 				}
 				case CL_DEVICE_TYPE_CPU: {
 					if (accelerators.size() > 1) {
@@ -1230,19 +1182,12 @@ public:
 		return 0;
 	}
     
-    void nodeEnd() {}
-
-#if defined(FF_REPARA)
-    /** 
-     *  Returns input data size
-     */
-    size_t rpr_get_sizeIn()  const { return ff_node::rpr_sizeIn; }
-
-    /** 
-     *  Returns output data size
-     */
-    size_t rpr_get_sizeOut() const { return ff_node::rpr_sizeOut; }
-#endif
+    void nodeEnd() {
+    	//TODO check:
+    	// if multi-device, casuses multiple releaseAllBuffers calls to same object
+		for (size_t i = 0; i < accelerators.size(); ++i)
+			accelerators[i]->releaseAll();
+    }
      
 protected:
 
@@ -1310,10 +1255,6 @@ protected:
 		Tout  *outPtr    = Task.getOutPtr();
         Tout  *reducePtr = Task.getReduceVar();
         const size_t envSize = Task.getEnvNum(); //n. added environments
-
-#if defined(FF_REPARA)
-        ff_node::rpr_sizeIn = ff_node::rpr_sizeOut = 0;
-#endif
         
         // if the computation is not in-place then we start from the output 
         if ((void*)inPtr != (void*)outPtr) {
@@ -1378,23 +1319,14 @@ protected:
 		//(async) copy input and environments (h2d)
 		for (size_t i = 0; i < accelerators.size(); ++i) {
 
-            if (Task.getCopyIn()) {
-#if defined(FF_REPARA)
-                ff_node::rpr_sizeIn += accelerators[i]->asyncH2Dinput(Task.getInPtr());  //in
-#else
+            if (Task.getCopyIn())
                 accelerators[i]->asyncH2Dinput(Task.getInPtr());  //in
-#endif
-            }
 
             for(size_t k=0; k < envSize; ++k) {
                 if (Task.getCopyEnv(k)) {
                     char *envptr;
-                    Task.getEnvPtr(k, envptr);    
-#if defined(FF_REPARA)
-                    ff_node::rpr_sizeIn += accelerators[i]->asyncH2Denv(k, envptr);
-#else
+                    Task.getEnvPtr(k, envptr);
                     accelerators[i]->asyncH2Denv(k, envptr);
-#endif
                 }
             }
         } 
@@ -1496,26 +1428,21 @@ protected:
             
             //(async)read back output (d2h)
             if (outPtr && Task.getCopyOut()) { // do we have to copy back the output result ?
-                for (size_t i = 0; i < accelerators.size(); ++i) {
-#if defined(FF_REPARA)
-                    ff_node::rpr_sizeOut += accelerators[i]->asyncD2Houtput(outPtr);
-#else
+                for (size_t i = 0; i < accelerators.size(); ++i)
                     accelerators[i]->asyncD2Houtput(outPtr);
-#endif
-                }
                 waitford2h(); //wait for cross-accelerators d2h
             }
 		}
 
         // device memory cleanup phase
 
-        if (Task.getReleaseIn() && (void *)outPtr != (void *)inPtr) {
+        if (Task.getReleaseIn()) {
             for (size_t i = 0; i < accelerators.size(); ++i) 
                 accelerators[i]->releaseInput(inPtr);
             oldBytesizeIn = 0;
             old_inPtr = NULL;
         }
-        if ( Task.getReleaseOut() ) {
+        if ( Task.getReleaseOut() && ((void *)outPtr != (void *)inPtr || !Task.getReleaseIn()) ) {
             for (size_t i = 0; i < accelerators.size(); ++i) 
                 accelerators[i]->releaseOutput(outPtr);
             oldSizeOut = 0;
@@ -1524,12 +1451,10 @@ protected:
 
         for(size_t k=0; k < envSize; ++k) {
             if (Task.getReleaseEnv(k)) {
-                char *envptr;
-                Task.getEnvPtr(k, envptr);
-                if ((void*)envptr != (void*)outPtr) { 
-                    for (size_t i = 0; i < accelerators.size(); ++i) {
-                        accelerators[i]->releaseEnv(k,envptr);
-                    }
+                for (size_t i = 0; i < accelerators.size(); ++i) {
+                    char *envptr;
+                    Task.getEnvPtr(k, envptr);
+                    accelerators[i]->releaseEnv(k,envptr);
                 }
             }
 

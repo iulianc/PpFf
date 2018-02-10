@@ -670,7 +670,7 @@ public:
         if (delayedAllocator) return 0;
         delayedAllocator = new FFAllocator(2); 
         if (!delayedAllocator) {
-            error("MSqueue::init, cannot allocate FFAllocator\n");
+            std::cerr << "ERROR: MSqueue, cannot allocate FFAllocator!!!\n";
             return -1;
         }
 
@@ -938,14 +938,14 @@ public:
     }
 private:
     // std::atomic<long> enqueue;
-    atomic_long_t enqueue;
-    long padding1[longxCacheLine-sizeof(atomic_long_t)];
+    ff::atomic_long_t enqueue;
+    long padding1[longxCacheLine-sizeof(std::atomic<long>)];
     //std::atomic<long> dequeue;
-    atomic_long_t dequeue;
-    long padding2[longxCacheLine-sizeof(atomic_long_t)];
+    ff::atomic_long_t dequeue;
+    long padding2[longxCacheLine-sizeof(std::atomic<long>)];
     //std::atomic<long> count;
-    atomic_long_t count;
-    long padding3[longxCacheLine-sizeof(atomic_long_t)];
+    ff::atomic_long_t count;
+    long padding3[longxCacheLine-sizeof(std::atomic<long>)];
 protected:
     std::vector<Q> pool;
 };
@@ -958,13 +958,13 @@ protected:
         
         multiMSqueue(size_t poolsize = scalableMPMCqueue<MSqueue>::DEFAULT_POOL_SIZE) {
             if (! scalableMPMCqueue<MSqueue>::init(poolsize)) {
-                error("multiMSqueue init ERROR\n");
+                std::cerr << "multiMSqueue init ERROR, abort....\n";
                 abort();
             }
             
             for(size_t i=0;i<poolsize;++i)
                 if (pool[i].init()<0) {
-                    error("multiMSqueue init ERROR\n");
+                    std::cerr << "ERROR initializing MSqueue, abort....\n";
                     abort();
                 }
         }

@@ -455,8 +455,8 @@ public:
     inline unsigned long length() const {
         unsigned long len = buf_r->length();
         if (buf_r == buf_w) return len;
-        ssize_t in_use = in_use_buffers-2;
-        return len+(in_use>0?in_use:0)*size+buf_w->length();
+        assert(in_use_buffers>2);
+        return len+(in_use_buffers-2)*size+buf_w->length();
     }
 
     inline bool isFixedSize() const { return fixedsize; }
@@ -504,7 +504,7 @@ private:
 
     unsigned long       in_use_buffers; // used to estimate queue length
     const unsigned long	size;
-    bool			    fixedsize;
+    const bool			fixedsize;
     BufferPool			pool;
 };
 
