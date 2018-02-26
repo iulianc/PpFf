@@ -39,7 +39,7 @@ namespace PpFf{
 
 		template < typename T >
 		T sum(){
-            typedef SumOperator<int> Sum;
+            typedef SumOperator< T > Sum;
             typedef Collectors< Sum > StageCollectors;
 
             StageCollectors *collectors = pipe.createStage< StageCollectors >();
@@ -49,6 +49,11 @@ namespace PpFf{
 
             return collectors->value();
 		}
+
+		Pipe& parallel(int no_workers = 1){
+			pipe.setWorkers(no_workers);
+			return *this;
+		};
 
 	private:
 		Pipeline pipe;

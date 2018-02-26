@@ -11,14 +11,14 @@ namespace PpFf{
 		void reduce(){
 			if(this->workers.size() > 0){
 				for(unsigned int i = 1; i < this->workers.size(); i++){
-					this->workers[0] += this->workers[i];
+					*(this->workers[0]) += *(this->workers[i]);
 				}
 			}
 		}
 
 		Value value(){
 			reduce();
-			return this->workers[0].value();
+			return this->workers[0]->value();
 		}
 	};
 }

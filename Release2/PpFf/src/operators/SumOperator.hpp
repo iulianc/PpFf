@@ -28,7 +28,7 @@ namespace PpFf{
 		}
 
 	private:
-		T sum = 0;
+		T sum{};
 	};
 
 }

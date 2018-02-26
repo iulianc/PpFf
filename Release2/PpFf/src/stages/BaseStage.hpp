@@ -11,19 +11,27 @@ namespace PpFf{
 	class BaseStage : public IStage {
 	public:
 		bool const isFinalStage = false;
-		std::vector< TOperator > workers;
+		std::vector< TOperator* > workers;
+
+		~BaseStage(){
+			for (unsigned int i = 0; i < workers.size(); i++) {
+				delete (workers[i]);
+			}
+
+			workers.clear();
+		}
 
 		template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE >
 		void createOperators(int const& no_workers){
 			for(int i = 0; i < no_workers; i++){
-				workers.push_back(TOperator());
+				workers.push_back(new TOperator());
 			}
 		}
 
 		template< typename Param1, typename Param2 >
 		void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc){
 			for(int i = 0; i < no_workers; i++){
-				workers.push_back(TOperator(taskFunc));
+				workers.push_back(new TOperator(taskFunc));
 			}
 		}
 
@@ -31,7 +39,7 @@ namespace PpFf{
 		template< typename Param1, typename Param2 >
 		void createOperators(int const& no_workers, Param1 &param1, Param2 &param2){
 			for(int i = 0; i < no_workers; i++){
-				workers.push_back(TOperator(param1, param2));
+				workers.push_back(new TOperator(param1, param2));
 			}
 		}
 	};
