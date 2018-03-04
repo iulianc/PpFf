@@ -4,7 +4,7 @@ gt:
 NB_TIMES=1
 
 # Specify the final target name
-EXE 		:= WordCount
+EXE 		:= WordCount WordCountSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -74,7 +74,7 @@ clean:
 
 cleanall cleanxtra: clean
 	\rm -f *.o *~
-	\rm -f obtenus*txt
+	\rm -f obtenus*txt temps-sh.txt
 
 # Include the dependency
 -include $(DEP)
