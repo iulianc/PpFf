@@ -21,6 +21,7 @@ namespace PpFf{
 			workers.clear();
 		}
 
+		//count; collect; sum; flat
 		template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE >
 		void createOperators(int const& no_workers){
 			for(int i = 0; i < no_workers; i++){
@@ -28,6 +29,7 @@ namespace PpFf{
 			}
 		}
 
+		//map
 		template< typename Param1, typename Param2 >
 		void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc){
 			for(int i = 0; i < no_workers; i++){
@@ -35,7 +37,23 @@ namespace PpFf{
 			}
 		}
 
-		//Source
+		//find
+		template< typename Param1, typename Param2 >
+		void createOperators(int const& no_workers, std::function< Param2(Param1*) > const& taskFunc){
+			for(int i = 0; i < no_workers; i++){
+				workers.push_back(new TOperator(taskFunc));
+			}
+		}
+
+		//peek
+		template< typename Param1, typename Param2 >
+		void createOperators(int const& no_workers, std::function< void(Param1*) > const& taskFunc){
+			for(int i = 0; i < no_workers; i++){
+				workers.push_back(new TOperator(taskFunc));
+			}
+		}
+
+		//source
 		template< typename Param1, typename Param2 >
 		void createOperators(int const& no_workers, Param1 &param1, Param2 &param2){
 			for(int i = 0; i < no_workers; i++){

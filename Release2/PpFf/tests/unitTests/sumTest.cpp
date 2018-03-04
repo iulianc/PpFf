@@ -1,6 +1,8 @@
 #include "catch.hpp"
 #include "../../src/Pipe.hpp"
 
+using namespace PpFf;
+
 TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
     int n = 10000;
     std::vector<int> elems(n);
@@ -10,7 +12,7 @@ TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
         elems[i] = i;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     int currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .sum<int>();
@@ -27,7 +29,7 @@ TEST_CASE("CollectionOfNegativeIntegers", "SumOperator") {
         elems[i] = -i;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     int currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .sum<int>();
@@ -46,7 +48,7 @@ TEST_CASE("CollectionOfFloatElements", "SumOperator") {
         temp += 0.1;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     float currentResult = pipe
         .source<float>(elems.begin(), elems.end())
         .sum<float>();
@@ -65,7 +67,7 @@ TEST_CASE("CollectionOfDoubleElements", "SumOperator") {
         temp += 0.1;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     double currentResult = pipe
         .source<double>(elems.begin(), elems.end())
         .sum<double>();
@@ -82,7 +84,7 @@ TEST_CASE("SumParallel", "SumOperator") {
         elems[i] = i;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     int currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
@@ -100,7 +102,7 @@ TEST_CASE("SumOnCollectionTypeDeque", "SumOperator") {
         elems[i] = i + 1;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     int currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .parallel()

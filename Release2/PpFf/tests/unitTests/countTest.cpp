@@ -4,6 +4,7 @@
 #include "utility.hpp"
 #include "../../src/Pipe.hpp"
 
+using namespace PpFf;
 
 TEST_CASE("CollectionOfIntegers", "CountOperator") {
     int n = 10000;
@@ -14,7 +15,7 @@ TEST_CASE("CollectionOfIntegers", "CountOperator") {
         elems[i] = i;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     unsigned int currentResult = pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
@@ -22,7 +23,6 @@ TEST_CASE("CollectionOfIntegers", "CountOperator") {
 
     REQUIRE(currentResult == expectedResult);
 }
-
 
 TEST_CASE("CollectionOfObjects", "CountOperator") {
     unsigned int n = 15;
@@ -34,7 +34,7 @@ TEST_CASE("CollectionOfObjects", "CountOperator") {
         elems.push_back(employee);
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     unsigned int currentResult = pipe
         .source<Employee>(elems.begin(), elems.end())
         .count();
@@ -51,7 +51,7 @@ TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
         elems.push_back(employee);
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     unsigned int currentResult = pipe
         .source<Employee*>(elems.begin(), elems.end())
         .count();
@@ -70,7 +70,7 @@ TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
         elems.push_back(employee);
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     unsigned int currentResult = pipe
         .source<Employee>(elems.begin(), elems.end())
         .count();
@@ -89,7 +89,7 @@ TEST_CASE("CountParallel", "CountOperator") {
         elems[i] = employee;
     };
 
-    PpFf::Pipe pipe;
+    Pipe pipe;
     unsigned int currentResult = pipe
         .source<Employee>(elems.begin(), elems.end())
         .parallel(4)
