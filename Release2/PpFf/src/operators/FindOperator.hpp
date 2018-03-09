@@ -1,3 +1,5 @@
+#ifndef FINDOPERATOR_HPP
+#define FINDOPERATOR_HPP
 
 #include <operators/BaseOperator.hpp>
 #include <functional>
@@ -8,10 +10,10 @@ namespace PpFf{
 	template < typename T >
 	class FindOperator: public BaseOperator {
 	public:
-		FindOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc){ };
+		FindOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) { };
 		FindOperator(const FindOperator& other) : taskFunc(other.taskFunc) { }
 		FindOperator(FindOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
-		~FindOperator(){};
+		~FindOperator() { }
 
 		void* svc(void* task) {
 			if(!taskFunc((T*)task)){
@@ -29,3 +31,4 @@ namespace PpFf{
 
 }
 
+#endif

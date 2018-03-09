@@ -8,7 +8,7 @@ namespace PpFf{
 	class FinalOperator : public BaseOperator {
 	public:
 		bool const isFinalOperator = true;
-		virtual void* svc(void * task) = 0;
+		virtual void* svc(void *task) = 0;
 	};
 
 }

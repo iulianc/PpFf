@@ -1,6 +1,7 @@
+#ifndef SUMOPERATOR_HPP
+#define SUMOPERATOR_HPP
 
 #include <operators/FinalOperator.hpp>
-
 
 namespace PpFf{
 
@@ -8,7 +9,7 @@ namespace PpFf{
 	class SumOperator: public FinalOperator {
 	public:
 		typedef T Value;
-		SumOperator(){}
+		SumOperator() { }
 		SumOperator(const SumOperator& other) : sum(other.sum) { }
 		SumOperator(SumOperator&& other) noexcept : sum(std::move(other.sum)) { }
 		SumOperator& operator+= ( const SumOperator& other ) {
@@ -32,3 +33,5 @@ namespace PpFf{
 	};
 
 }
+
+#endif

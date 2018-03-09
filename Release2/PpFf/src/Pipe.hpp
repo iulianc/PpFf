@@ -7,12 +7,16 @@
 #include <operators/MapOperator.hpp>
 #include <operators/FlatOperator.hpp>
 #include <operators/PeekOperator.hpp>
+#include <operators/GroupByKeyOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
 #include <stages/BaseStage.hpp>
+#include <vector>
+#include <map>
+#include <unordered_map>
 
-using namespace ff;
+using namespace PpFf;
 
 namespace PpFf{
 
@@ -143,6 +147,34 @@ namespace PpFf{
 			pipe.addStage(stage);
 
 			return *this;
+		}
+
+		template < typename In, typename K = In, typename V = In,
+				   typename MapType = std::unordered_map< K, std::vector< V > > >
+		MapType groupByKey(std::function< K*(In*) > const& taskFuncOnKey){
+            typedef GroupByKeyOperator< In, K, V, MapType, false > GroupByKey;
+            typedef Collectors< GroupByKey > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), taskFuncOnKey);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
+		}
+
+		template < typename In, typename K = In, typename V = In,
+				   typename MapType = std::unordered_map< K, std::vector< V > > >
+		MapType groupByKey(std::function< K*(In*) > const& taskFuncOnKey, std::function< V*(In*) > const& taskFuncOnValue){
+            typedef GroupByKeyOperator< In, K, V, MapType, true > GroupByKey;
+            typedef Collectors< GroupByKey > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), taskFuncOnKey, taskFuncOnValue);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
 		}
 
 	private:

@@ -1,3 +1,5 @@
+#ifndef FLATOPERATOR_HPP
+#define FLATOPERATOR_HPP
 
 #include <operators/BaseOperator.hpp>
 #include <functional>
@@ -7,8 +9,8 @@ namespace PpFf{
 	template < typename TContainer, typename Out >
 	class FlatOperator: public BaseOperator {
 	public:
-		FlatOperator() { };
-		~FlatOperator() { };
+		FlatOperator() { }
+		~FlatOperator() { }
 
 		void* svc(void* task) {
 			for(auto &elem : *(TContainer*)task){
@@ -20,3 +22,5 @@ namespace PpFf{
 	};
 
 }
+
+#endif

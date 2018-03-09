@@ -1,3 +1,5 @@
+#ifndef COLLECTOROPERATOR_HPP
+#define COLLECTOROPERATOR_HPP
 
 #include <operators/FinalOperator.hpp>
 
@@ -9,7 +11,7 @@ namespace PpFf{
 	class CollectorOperator: public FinalOperator {
 	public:
 		typedef TContainer Value;
-		CollectorOperator(){}
+		CollectorOperator() { }
 		CollectorOperator(const CollectorOperator& other) : container(other.container) { }
 		CollectorOperator(CollectorOperator&& other) noexcept : container(std::move(other.container)) { }
 		CollectorOperator& operator+= ( const CollectorOperator& other ) {
@@ -36,3 +38,5 @@ namespace PpFf{
 
 
 }
+
+#endif
