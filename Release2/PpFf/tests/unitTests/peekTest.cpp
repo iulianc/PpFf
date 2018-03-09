@@ -21,7 +21,7 @@ TEST_CASE("PrintElementsCollection", "PeekOperator") {
     Pipe pipe;
     std::vector<int> currentResult = pipe
         .source<int>(elems.begin(), elems.end())
-        .peek<int>( [&peekedResult](int *in)->void { peekedResult.push_back( *in ); } )
+		.peek<int>( [&peekedResult](int *in){ peekedResult.push_back( *in ); } )
         .collect< int, std::vector >();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
