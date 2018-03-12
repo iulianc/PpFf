@@ -69,7 +69,7 @@ namespace PpFf{
 			}
 		}
 
-		//reduce
+		//reduce; linesFromFile
 		template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
 		void createOperators(int const& no_workers, Param1 const& param1){
 			for(int i = 0; i < no_workers; i++){

@@ -7,7 +7,10 @@
 #include <operators/MapOperator.hpp>
 #include <operators/FlatOperator.hpp>
 #include <operators/PeekOperator.hpp>
+#include <operators/ReduceOperator.hpp>
+#include <operators/Reducing.hpp>
 #include <operators/GroupByKeyOperator.hpp>
+#include <operators/LinesFromFileOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -32,6 +35,17 @@ namespace PpFf{
 			StageCount *stage = pipe.createStage< StageCount >();
 			stage->createOperators(pipe.getWorkers(), begin, end);
 			pipe.addStage(stage);
+			return *this;
+		}
+
+		Pipe& linesFromFile(const std::string& path){
+			typedef LinesFromFileOperator LinesFromFile;
+			typedef BaseStage< LinesFromFile > Stage;
+
+			Stage *stage = pipe.createStage< Stage >();
+			stage->createOperators(pipe.getWorkers(), path);
+			pipe.addStage(stage);
+
 			return *this;
 		}
 
@@ -147,6 +161,19 @@ namespace PpFf{
 			pipe.addStage(stage);
 
 			return *this;
+		}
+
+		template < typename In, typename Out = In >
+		Out reduce(Reducing< In, Out > const& reducing){
+            typedef ReduceOperator< In, Out > Reduce;
+            typedef Collectors< Reduce > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), reducing);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
 		}
 
 		template < typename In, typename K = In, typename V = In,
