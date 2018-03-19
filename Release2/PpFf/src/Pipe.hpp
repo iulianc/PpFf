@@ -10,6 +10,7 @@
 #include <operators/ReduceOperator.hpp>
 #include <operators/Reducing.hpp>
 #include <operators/GroupByKeyOperator.hpp>
+#include <operators/ReduceByKeyOperator.hpp>
 #include <operators/LinesFromFileOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
@@ -18,6 +19,8 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+
+#include <operators/ReduceByKeyOperator2.hpp>
 
 using namespace PpFf;
 
@@ -198,6 +201,48 @@ namespace PpFf{
 
             StageCollectors *collectors = pipe.createStage< StageCollectors >();
             collectors->createOperators(pipe.getWorkers(), taskFuncOnKey, taskFuncOnValue);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
+		}
+
+		template < typename In, typename K = In, typename V = In,
+				   typename MapType = std::unordered_map< K, V > >
+		MapType reduceByKey(Reducing< In, V > const& reducing){
+            typedef ReduceByKeyOperator< In, K, V, MapType, false > ReduceByKey;
+            typedef Collectors< ReduceByKey > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), reducing);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
+		}
+
+		template < typename In, typename K = In, typename V = In,
+				   typename MapType = std::unordered_map< K, V > >
+		MapType reduceByKey(std::function< K*(In*) > const& taskFuncOnKey, Reducing< In, V > const& reducing){
+            typedef ReduceByKeyOperator< In, K, V, MapType, true > ReduceByKey;
+            typedef Collectors< ReduceByKey > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), taskFuncOnKey, reducing);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
+		}
+
+		template < typename In, typename K = In, typename V = In,
+				   typename MapType = std::unordered_map< K, V > >
+		MapType reduceByKey2(std::function< void(V*, In*) > const& accumulator, std::function< void(V*, V*) > const& combiner){
+            typedef ReduceByKeyOperator2< In, K, V, MapType > ReduceByKey;
+            typedef Collectors< ReduceByKey > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), accumulator, combiner);
             pipe.addStage(collectors);
             pipe.run();
 
