@@ -2,118 +2,115 @@
 #define REDUCEBYKEYOPERATOR_HPP
 
 #include <operators/FinalOperator.hpp>
-#include <operators/Reducing.hpp>
+#include <operators/Reducer.hpp>
 #include <functional>
 
 namespace PpFf{
 
-	template < typename In, typename K, typename V, typename MapContainer, bool IsFuncOnKey>
-	class ReduceByKeyOperator: public FinalOperator {};
+    template < typename In, typename K, typename V, typename MapContainer, bool IsFuncOnKey>
+    class ReduceByKeyOperator: public FinalOperator {};
 
 
-	template < typename In, typename K, typename V, typename MapContainer >
-	class ReduceByKeyOperator< In, K, V, MapContainer, false >: public FinalOperator {
-	public:
-		typedef MapContainer Value;
-		ReduceByKeyOperator(Reducing< In, V > const& reducing): reducing(reducing) { }
-		ReduceByKeyOperator(const ReduceByKeyOperator& other) : reducing(other.reducing) { }
-		ReduceByKeyOperator(ReduceByKeyOperator&& other) noexcept : reducing(std::move(other.reducing)) { }
-		ReduceByKeyOperator& operator+= ( ReduceByKeyOperator& other ) {
-			for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
-				mapIt = mapContainer.find(otherIt->first);
+    template < typename In, typename K, typename V, typename MapContainer >
+    class ReduceByKeyOperator< In, K, V, MapContainer, false >: public FinalOperator {
+    public:
+        typedef MapContainer Value;
+        ReduceByKeyOperator(Reducer< In, V > const& reducer): reducer(reducer) { }
+        ReduceByKeyOperator(const ReduceByKeyOperator& other) : reducer(other.reducer) { }
+        ReduceByKeyOperator(ReduceByKeyOperator&& other) noexcept : reducer(std::move(other.reducer)) { }
+        ReduceByKeyOperator& operator+= ( ReduceByKeyOperator& other ) {
+            for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
+                mapIt = mapContainer.find(otherIt->first);
 
-				if(mapIt != mapContainer.end()){
-					if(reducing.isCombiner){
-						reducing.combiner(&(mapIt->second), &(otherIt->second));
-					}
-				}
-				else{
-					mapContainer[otherIt->first] = otherIt->second;
-				}
-			}
+                if (mapIt != mapContainer.end()) {
+                    if (reducer.isCombiner) {
+                        reducer.combiner(&(mapIt->second), &(otherIt->second));
+                    }
+                } else {
+                    mapContainer[otherIt->first] = otherIt->second;
+                }
+            }
 
-			return *this;
-		}
-		~ReduceByKeyOperator() { };
+            return *this;
+        }
+        ~ReduceByKeyOperator() {};
 
-		void* svc(void* task) {
-			mapIt = mapContainer.find(*((In*)task));
+        void* svc(void* task) {
+            mapIt = mapContainer.find(*((In*)task));
 
-			if (mapIt != mapContainer.end()){
-				reducing.accumulator(&(mapIt->second), (In*)task);
-			}else{
-				mapContainer[*((In*)task)] = val;
-				reducing.accumulator(&(mapContainer[*((In*)task)]), (In*)task);
-			}
+            if (mapIt != mapContainer.end()) {
+                reducer.accumulator(&(mapIt->second), (In*)task);
+            } else {
+                mapContainer[*((In*)task)] = val;
+                reducer.accumulator(&(mapContainer[*((In*)task)]), (In*)task);
+            }
 
-			return GO_ON;
-		}
+            return GO_ON;
+        }
 
-		MapContainer value(){
-			return mapContainer;
-		}
+        MapContainer value() {
+            return mapContainer;
+        }
 
-	private:
-		Reducing< In, V > const& reducing;
-		V val = reducing.identity;
-		MapContainer mapContainer;
-		typename MapContainer::iterator mapIt;
-	};
-
+    private:
+        Reducer< In, V > const& reducer;
+        V val = reducer.identity;
+        MapContainer mapContainer;
+        typename MapContainer::iterator mapIt;
+    };
 
 
-	template < typename In, typename K, typename V, typename MapContainer >
-	class ReduceByKeyOperator< In, K, V, MapContainer, true >: public FinalOperator {
-	public:
-		typedef MapContainer Value;
-		ReduceByKeyOperator(std::function< K*(In*) > const& taskFuncOnKey, Reducing< In, V > const& reducing): taskFuncOnKey(taskFuncOnKey), reducing(reducing) { }
-		ReduceByKeyOperator(const ReduceByKeyOperator& other) : taskFuncOnKey(other.taskFuncOnKey), reducing(other.reducing) { }
-		ReduceByKeyOperator(ReduceByKeyOperator&& other) noexcept : taskFuncOnKey(std::move(other.taskFuncOnKey)), reducing(std::move(other.reducing)) { }
-		ReduceByKeyOperator& operator+= ( ReduceByKeyOperator& other ) {
-			for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
-				mapIt = mapContainer.find(otherIt->first);
 
-				if(mapIt != mapContainer.end()){
-					if(reducing.isCombiner){
-						reducing.combiner(&(mapIt->second), &(otherIt->second));
-					}
-				}
-				else{
-					mapContainer[otherIt->first] = otherIt->second;
-				}
-			}
+    template < typename In, typename K, typename V, typename MapContainer >
+    class ReduceByKeyOperator< In, K, V, MapContainer, true >: public FinalOperator {
+    public:
+        typedef MapContainer Value;
+        ReduceByKeyOperator(std::function< K*(In*) > const& taskFuncOnKey, Reducer< In, V > const& reducer): taskFuncOnKey(taskFuncOnKey), reducer(reducer) { }
+        ReduceByKeyOperator(const ReduceByKeyOperator& other) : taskFuncOnKey(other.taskFuncOnKey), reducer(other.reducer) { }
+        ReduceByKeyOperator(ReduceByKeyOperator&& other) noexcept : taskFuncOnKey(std::move(other.taskFuncOnKey)), reducer(std::move(other.reducer)) { }
+        ReduceByKeyOperator& operator+= ( ReduceByKeyOperator& other ) {
+            for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
+                mapIt = mapContainer.find(otherIt->first);
 
-			return *this;
-		}
-		~ReduceByKeyOperator() { };
+                if (mapIt != mapContainer.end()) {
+                    if (reducer.isCombiner) {
+                        reducer.combiner(&(mapIt->second), &(otherIt->second));
+                    }
+                } else {
+                    mapContainer[otherIt->first] = otherIt->second;
+                }
+            }
 
-		void* svc(void* task) {
-			key = taskFuncOnKey((In*)task);
-			mapIt = mapContainer.find(*key);
+            return *this;
+        }
+        ~ReduceByKeyOperator() { };
 
-			if (mapIt != mapContainer.end()){
-				reducing.accumulator(&(mapIt->second), (In*)task);
-			}else{
-				mapContainer[*key] = val;
-				reducing.accumulator(&(mapContainer[*key]), (In*)task);
-			}
+        void* svc(void* task) {
+            key = taskFuncOnKey((In*)task);
+            mapIt = mapContainer.find(*key);
 
-			return GO_ON;
-		}
+            if (mapIt != mapContainer.end()) {
+                reducer.accumulator(&(mapIt->second), (In*)task);
+            } else {
+                mapContainer[*key] = val;
+                reducer.accumulator(&(mapContainer[*key]), (In*)task);
+            }
 
-		MapContainer value(){
-			return mapContainer;
-		}
+            return GO_ON;
+        }
 
-	private:
-		std::function< K*(In*) > const& taskFuncOnKey;
-		Reducing< In, V > const& reducing;
-		V val = reducing.identity;
-		MapContainer mapContainer;
-		typename MapContainer::iterator mapIt;
-		K *key;
-	};
+        MapContainer value() {
+            return mapContainer;
+        }
 
+    private:
+        std::function< K*(In*) > const& taskFuncOnKey;
+        Reducer< In, V > const& reducer;
+        V val = reducer.identity;
+        MapContainer mapContainer;
+        typename MapContainer::iterator mapIt;
+        K *key;
+    };
 }
 
 #endif

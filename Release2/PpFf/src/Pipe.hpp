@@ -8,7 +8,7 @@
 #include <operators/FlatOperator.hpp>
 #include <operators/PeekOperator.hpp>
 #include <operators/ReduceOperator.hpp>
-#include <operators/Reducing.hpp>
+#include <operators/Reducer.hpp>
 #include <operators/GroupByKeyOperator.hpp>
 #include <operators/ReduceByKeyOperator.hpp>
 #include <operators/LinesFromFileOperator.hpp>
@@ -167,12 +167,12 @@ namespace PpFf{
 		}
 
 		template < typename In, typename Out = In >
-		Out reduce(Reducing< In, Out > const& reducing){
+		Out reduce(Reducer< In, Out > const& reducer){
             typedef ReduceOperator< In, Out > Reduce;
             typedef Collectors< Reduce > StageCollectors;
 
             StageCollectors *collectors = pipe.createStage< StageCollectors >();
-            collectors->createOperators(pipe.getWorkers(), reducing);
+            collectors->createOperators(pipe.getWorkers(), reducer);
             pipe.addStage(collectors);
             pipe.run();
 
@@ -209,12 +209,12 @@ namespace PpFf{
 
 		template < typename In, typename K = In, typename V = In,
 				   typename MapType = std::unordered_map< K, V > >
-		MapType reduceByKey(Reducing< In, V > const& reducing){
+		MapType reduceByKey(Reducer< In, V > const& reducer){
             typedef ReduceByKeyOperator< In, K, V, MapType, false > ReduceByKey;
             typedef Collectors< ReduceByKey > StageCollectors;
 
             StageCollectors *collectors = pipe.createStage< StageCollectors >();
-            collectors->createOperators(pipe.getWorkers(), reducing);
+            collectors->createOperators(pipe.getWorkers(), reducer);
             pipe.addStage(collectors);
             pipe.run();
 
@@ -223,12 +223,12 @@ namespace PpFf{
 
 		template < typename In, typename K = In, typename V = In,
 				   typename MapType = std::unordered_map< K, V > >
-		MapType reduceByKey(std::function< K*(In*) > const& taskFuncOnKey, Reducing< In, V > const& reducing){
+		MapType reduceByKey(std::function< K*(In*) > const& taskFuncOnKey, Reducer< In, V > const& reducer){
             typedef ReduceByKeyOperator< In, K, V, MapType, true > ReduceByKey;
             typedef Collectors< ReduceByKey > StageCollectors;
 
             StageCollectors *collectors = pipe.createStage< StageCollectors >();
-            collectors->createOperators(pipe.getWorkers(), taskFuncOnKey, reducing);
+            collectors->createOperators(pipe.getWorkers(), taskFuncOnKey, reducer);
             pipe.addStage(collectors);
             pipe.run();
 

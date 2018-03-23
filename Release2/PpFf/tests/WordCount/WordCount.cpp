@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
         nbIterations = atoi(argv[2]);
     }
 
-    Reducing< std::string, int > 
+    Reducer< std::string, int > 
         reducer(0, 
                 [](int* count, std::string* _) { *count += 1; },
                 [](int* total, int* workerResult) { *total += *workerResult; } );

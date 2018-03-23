@@ -41,8 +41,8 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLinesAvecLignesBlanches", "LinesFr
         "p", "", ""
     };
 
-    //std::string test_file = "testdata/avec-lignes-blanches.txt";
-    std::string test_file = "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/avec-lignes-blanches.txt";
+    std::string test_file = "testdata/avec-lignes-blanches.txt";
+    //std::string test_file = "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/avec-lignes-blanches.txt";
 
     Pipe pipe;
     std::vector<std::string> currentResult = pipe

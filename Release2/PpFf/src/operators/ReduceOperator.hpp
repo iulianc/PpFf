@@ -2,40 +2,43 @@
 #define REDUCEOPERATOR_HPP
 
 #include <operators/FinalOperator.hpp>
-#include <operators/Reducing.hpp>
+#include <operators/Reducer.hpp>
 
 
-namespace PpFf{
+namespace PpFf {
 
-	template < typename In, typename Out >
-	class ReduceOperator: public FinalOperator {
-	public:
-		typedef Out Value;
-		ReduceOperator(Reducing< In, Out > const& reducing): reducing(reducing) { };
-		ReduceOperator(const ReduceOperator& other) : reducing(other.reducing) { }
-		ReduceOperator(ReduceOperator&& other) noexcept : reducing(std::move(other.reducing)) { }
-		ReduceOperator& operator+= ( ReduceOperator& other ) {
-			if(reducing.isCombiner){
-				reducing.combiner(&val, &other.val);
-			}
-			return *this ;
-		}
-		~ReduceOperator() { };
+    template < typename In, typename Out >
+    class ReduceOperator: public FinalOperator {
+    public:
+        typedef Out Value;
 
-		void* svc(void* task) {
-			reducing.accumulator(&val, (In*)task);
+        ReduceOperator(Reducer< In, Out > const& reducer): reducer(reducer) {};
+        ReduceOperator(const ReduceOperator& other): reducer(other.reducer) {}
+        ReduceOperator(ReduceOperator&& other) noexcept: reducer(std::move(other.reducer)) {}
 
-			return (Out*)GO_ON;
-		}
+        ReduceOperator& operator+= ( ReduceOperator& other ) {
+            if (reducer.isCombiner) {
+                reducer.combiner(&val, &other.val);
+            }
+            return *this ;
+        }
 
-		Out value(){
-			return val;
-		}
+        ~ReduceOperator() {};
 
-	private:
-		Reducing< In, Out > const& reducing;
-		Out val = reducing.identity;
-	};
+        void* svc(void* task) {
+            reducer.accumulator(&val, (In*)task);
+
+            return (Out*)GO_ON;
+        }
+
+        Out value() {
+            return val;
+        }
+
+    private:
+        Reducer< In, Out > const& reducer;
+        Out val = reducer.identity;
+    };
 
 }
 
