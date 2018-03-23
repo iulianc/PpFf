@@ -56,11 +56,7 @@ bool notEmpty(std::string* s) {
     return s->size() > 0;
 }
 
-void incCount(int& count, std::string* _) {
-    count += 1;
-}
-
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
     std::string inputFile = DEFAULT_INPUT_FILE;
 
@@ -72,9 +68,11 @@ int main(int argc, char *argv[]) {
         nbIterations = atoi(argv[2]);
     }
 
-    Reducing< std::string, int > reducing(0, [](int *count, std::string *word) ->void { *count += 1; },
-     									  	 [](int *total, int *workerResult) ->void { *total += *workerResult; } );
-
+    Reducing< std::string, int > 
+        reducer(0, 
+                [](int* count, std::string* _) { *count += 1; },
+                [](int* total, int* workerResult) { *total += *workerResult; } );
+    
     auto begin = std::chrono::high_resolution_clock::now();
 
     std::unordered_map<std::string, int> currentResult;
@@ -85,11 +83,10 @@ int main(int argc, char *argv[]) {
             .flatMap<std::string, std::string, Words>(splitInWords)
             .map<std::string, std::string>(toLowercaseLetters)
             .find<std::string>(notEmpty)
-            .reduceByKey<std::string, std::string, int>(reducing);
+            .reduceByKey<std::string, std::string, int>(reducer);
 
     }
     auto end = std::chrono::high_resolution_clock::now();
-
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
     std::cerr << "Temps C++:  " << duration_ms / nbIterations << " ms" << std::endl;
