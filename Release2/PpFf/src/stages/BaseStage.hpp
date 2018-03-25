@@ -84,6 +84,14 @@ namespace PpFf{
 				workers.push_back(new TOperator(taskFunc1, taskFunc2));
 			}
 		}
+
+		//min; max;
+		template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
+		void createOperators(int const& no_workers, std::function< void(Param1*, Param1*) > taskFunc){
+			for(int i = 0; i < no_workers; i++){
+				workers.push_back(new TOperator(taskFunc));
+			}
+		}
 	};
 }
 

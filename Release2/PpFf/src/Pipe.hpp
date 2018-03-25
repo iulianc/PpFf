@@ -12,6 +12,8 @@
 #include <operators/GroupByKeyOperator.hpp>
 #include <operators/ReduceByKeyOperator.hpp>
 #include <operators/LinesFromFileOperator.hpp>
+#include <operators/MinOperator.hpp>
+#include <operators/MaxOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -243,6 +245,32 @@ namespace PpFf{
 
             StageCollectors *collectors = pipe.createStage< StageCollectors >();
             collectors->createOperators(pipe.getWorkers(), accumulator, combiner);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
+		}
+
+		template < typename T >
+		T min(std::function< void(T*, T*) > compare = ([](T *a, T *b) -> void { if(*a > *b) *a = *b;}) ){
+			typedef MinOperator< T > Min;
+            typedef Collectors< Min > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), compare);
+            pipe.addStage(collectors);
+            pipe.run();
+
+            return collectors->value();
+		}
+
+		template < typename T >
+		T max(std::function< void(T*, T*) > compare = ([](T *a, T *b) -> void { if(*a < *b) *a = *b;}) ){
+			typedef MaxOperator< T > Max;
+            typedef Collectors< Max > StageCollectors;
+
+            StageCollectors *collectors = pipe.createStage< StageCollectors >();
+            collectors->createOperators(pipe.getWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();
 
