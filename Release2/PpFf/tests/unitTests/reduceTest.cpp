@@ -5,6 +5,7 @@
 #include "../../src/operators/Reducer.hpp"
 #include <string>
 #include <iostream>
+#include <thread>
 
 using namespace PpFf;
 
@@ -87,14 +88,35 @@ TEST_CASE( "SumCollectionOfIntegerParallel", "ReduceOperator" ) {
                                [](int* sum, int* in) { *sum += *in; },
                                [](int* result, int* threadResult) { *result += *threadResult; } );
     
-    Pipe pipe;
-    int currentResult = 
-        pipe
-        .source<int>(elems.begin(), elems.end())
-        .parallel(4)
-        .reduce<int, int>(reducer);
 
-    REQUIRE(currentResult == expectedResult);
+    int maxNbThreads =  std::thread::hardware_concurrency();
+
+    // Test avec differents nombres de threads.
+    SECTION( "Avec des puissances de 2" ) {
+        for (int nbThreads = 1; nbThreads <= 2 * maxNbThreads; nbThreads *= 2) {
+            Pipe pipe;
+            int currentResult = 
+                pipe
+                .source<int>(elems.begin(), elems.end())
+                .parallel(nbThreads)
+                .reduce<int, int>(reducer);
+        
+            REQUIRE(currentResult == expectedResult);
+        }
+    }
+
+    SECTION( "Avec des valeurs consecutives" ) {
+        for (int nbThreads = 2; nbThreads <= maxNbThreads / 2; nbThreads += 1) {
+            Pipe pipe;
+            int currentResult = 
+                pipe
+                .source<int>(elems.begin(), elems.end())
+                .parallel(nbThreads)
+                .reduce<int, int>(reducer);
+        
+            REQUIRE(currentResult == expectedResult);
+        }
+    }
 }
 
 
