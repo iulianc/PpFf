@@ -15,7 +15,7 @@ namespace PpFf{
 
         std::function< void(Out*, In*) > const& accumulator;
         std::function< void(Out*, Out*) > const& combiner = dummyCombiner;
-        bool const isCombiner = false;
+        bool const hasCombiner = false;
 
         Reducer(std::function< void(Out*, In*) > const& accumulator): 
             accumulator(accumulator) {}
@@ -24,7 +24,7 @@ namespace PpFf{
                 std::function< void(Out*, Out*) > const& combiner): 
             accumulator(accumulator), 
             combiner(combiner), 
-            isCombiner(true) {}
+            hasCombiner(true) {}
 
         Reducer(Out identity, 
                 std::function< void(Out*, In*) > const& accumulator):
@@ -37,9 +37,9 @@ namespace PpFf{
             identity(identity), 
             accumulator(accumulator), 
             combiner(combiner), 
-            isCombiner(true) {}
+            hasCombiner(true) {}
 
-        ~Reducer() { }
+        ~Reducer() {}
     };
 
 }

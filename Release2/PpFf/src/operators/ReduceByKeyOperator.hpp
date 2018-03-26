@@ -23,7 +23,7 @@ namespace PpFf{
                 mapIt = mapContainer.find(otherIt->first);
 
                 if (mapIt != mapContainer.end()) {
-                    if (reducer.isCombiner) {
+                    if (reducer.hasCombiner) {
                         reducer.combiner(&(mapIt->second), &(otherIt->second));
                     }
                 } else {
@@ -73,7 +73,7 @@ namespace PpFf{
                 mapIt = mapContainer.find(otherIt->first);
 
                 if (mapIt != mapContainer.end()) {
-                    if (reducer.isCombiner) {
+                    if (reducer.hasCombiner) {
                         reducer.combiner(&(mapIt->second), &(otherIt->second));
                     }
                 } else {

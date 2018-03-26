@@ -17,7 +17,7 @@ namespace PpFf {
         ReduceOperator(ReduceOperator&& other) noexcept: reducer(std::move(other.reducer)) {}
 
         ReduceOperator& operator+= ( ReduceOperator& other ) {
-            if (reducer.isCombiner) {
+            if (reducer.hasCombiner) {
                 reducer.combiner(&val, &other.val);
             }
             return *this ;
