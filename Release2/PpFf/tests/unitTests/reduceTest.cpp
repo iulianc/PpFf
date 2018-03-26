@@ -8,10 +8,6 @@
 
 using namespace PpFf;
 
-void FuncReduce(int *sum, int *in) {
-    *sum = *sum + *in;
-};
-
 TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
     int n = 1000;
     std::vector<int> elems(n);
@@ -19,11 +15,12 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
         elems[i] = i;
     };
     int expectedResult = n * (n - 1) / 2;
-
-    Reducer< int, int > reducer(FuncReduce);
-
+    
+    Reducer<int, int> reducer( [](int* sum, int* in) { *sum += *in; } );
+    
     Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        pipe
         .source<int>(elems.begin(), elems.end())
         .reduce<int, int>(reducer);
 
@@ -43,10 +40,11 @@ TEST_CASE( "AgerEmployee", "ReduceOperator" ) {
     employees[78].age = 999;
     std::string expectedResult = "Employee78";
 
-    Reducer<Employee, Employee> reducer([](Employee *e1, Employee *e2) ->void { if(e1->age < e2->age) *e1 = *e2; });
+    Reducer<Employee, Employee> reducer([](Employee* e1, Employee* e2) { if (e1->age < e2->age) *e1 = *e2; });
 
     Pipe pipe;
-    Employee currentResult = pipe
+    Employee currentResult = 
+        pipe
         .source<Employee>(employees.begin(), employees.end())
         .reduce<Employee, Employee>(reducer);
 
@@ -65,10 +63,11 @@ TEST_CASE( "TotalSalaryEmployees", "ReduceOperator" ) {
     int expectedResult = n * 1000 + 20 * n * (n - 1) / 2;
 
     Reducer<Employee, int> reducer( 0,
-                                    [](int *totalSalary, Employee *e) ->void { *totalSalary += e->salary; } );
+                                    [](int* totalSalary, Employee* e) { *totalSalary += e->salary; } );
 
     Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        pipe
         .source<Employee>(employees.begin(), employees.end())
         .reduce<Employee, int>(reducer);
 
@@ -84,10 +83,13 @@ TEST_CASE( "SumCollectionOfIntegerParallel", "ReduceOperator" ) {
     };
     int expectedResult = n * (n - 1) / 2;
 
-    Reducer<int, int> reducer( 0, FuncReduce, [](int *result, int *threadResult) -> void {*result += *threadResult;} );
-
+    Reducer<int, int> reducer( 0, 
+                               [](int* sum, int* in) { *sum += *in; },
+                               [](int* result, int* threadResult) { *result += *threadResult; } );
+    
     Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .reduce<int, int>(reducer);
@@ -108,11 +110,13 @@ TEST_CASE( "AgerEmployeeParallel", "ReduceOperator" ) {
     employees[78].age = 999;
     std::string expectedResult = "Employee78";
 
-    Reducer<Employee, Employee> reducer( [](Employee *e1, Employee *e2) ->void { if(e1->age < e2->age) *e1 = *e2; },
-                                         [](Employee *e1, Employee *e2) ->void { if(e1->age < e2->age) *e1 = *e2; } );
+    auto employeeAgeMin = [](Employee* e1, Employee* e2) { if (e1->age < e2->age) *e1 = *e2; };
+
+    Reducer<Employee, Employee> reducer( employeeAgeMin, employeeAgeMin );
 
     Pipe pipe;
-    Employee currentResult = pipe
+    Employee currentResult = 
+        pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .reduce<Employee, Employee>(reducer);
@@ -132,11 +136,12 @@ TEST_CASE( "TotalSalaryEmployeesParallel", "ReduceOperator" ) {
     int expectedResult = n * 1000 + 20 * n * (n - 1) / 2;
 
     Reducer<Employee, int> reducer( 0,
-                                    [](int *totalSalary, Employee *e) ->void { *totalSalary += e->salary; },
-                                    [](int *result, int *threadResult) -> void {*result += *threadResult;} );
+                                    [](int* totalSalary, Employee* e) { *totalSalary += e->salary; },
+                                    [](int* result, int* threadResult) { *result += *threadResult; } );
 
     Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .reduce<Employee, int>(reducer);
