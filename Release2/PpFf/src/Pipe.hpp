@@ -182,6 +182,21 @@ namespace PpFf {
         return collectors->value();
     }
 
+    template < typename In, typename Out = In >
+    Out reduce(std::function<void (In*, Out*)> accumulator) {
+        // Cas simple special ou accumulator = combiner & pas de valeur initiale.
+        typedef ReduceOperator<In, Out> Reduce;
+        typedef Collectors<Reduce> StageCollectors;
+
+        Reducer<In, Out> reducer(accumulator, accumulator);
+        StageCollectors* collectors = pipe.createStage<StageCollectors>();
+        collectors->createOperators(pipe.getWorkers(), reducer);
+        pipe.addStage(collectors);
+        pipe.run();
+
+        return collectors->value();
+    }
+
     template < typename In, 
                typename K = In, 
                typename V = In,

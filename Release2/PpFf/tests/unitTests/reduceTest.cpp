@@ -28,6 +28,23 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
     REQUIRE(currentResult == expectedResult);
 }
 
+TEST_CASE( "SumCollectionOfInteger avec meme lambda comme accumulator et combiner", "ReduceOperator" ) {
+    int n = 1000;
+    std::vector<int> elems(n);
+    for (unsigned int i = 0; i < elems.size(); i++) {
+        elems[i] = i;
+    };
+    int expectedResult = n * (n - 1) / 2;
+    
+    Pipe pipe;
+    int currentResult = 
+        pipe
+        .source<int>(elems.begin(), elems.end())
+        .parallel(4)
+        .reduce<int, int>([](int* sum, int* in) { *sum += *in; });
+
+    REQUIRE(currentResult == expectedResult);
+}
 
 TEST_CASE( "AgerEmployee", "ReduceOperator" ) {
     int n = 100;

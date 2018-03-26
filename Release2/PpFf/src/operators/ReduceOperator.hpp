@@ -12,9 +12,17 @@ namespace PpFf {
     public:
         typedef Out Value;
 
-        ReduceOperator(Reducer< In, Out > const& reducer): reducer(reducer) {};
-        ReduceOperator(const ReduceOperator& other): reducer(other.reducer) {}
-        ReduceOperator(ReduceOperator&& other) noexcept: reducer(std::move(other.reducer)) {}
+        ReduceOperator(std::function< void(Out*, In*) > const& accumulator) 
+        { reducer.accumulator = accumulator; }
+
+        ReduceOperator(Reducer<In, Out> const& reducer): 
+            reducer(reducer) {};
+
+        ReduceOperator(const ReduceOperator& other): 
+            reducer(other.reducer) {}
+
+        ReduceOperator(ReduceOperator&& other) noexcept: 
+            reducer(std::move(other.reducer)) {}
 
         ReduceOperator& operator+= ( ReduceOperator& other ) {
             if (reducer.hasCombiner) {
@@ -36,7 +44,7 @@ namespace PpFf {
         }
 
     private:
-        Reducer< In, Out > const& reducer;
+        Reducer<In, Out> const& reducer;
         Out val = reducer.identity;
     };
 
