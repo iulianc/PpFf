@@ -7,92 +7,92 @@
 
 namespace PpFf{
 
-	template< typename TOperator >
-	class BaseStage : public IStage {
-	public:
-		bool const isFinalStage = false;
-		std::vector< TOperator* > workers;
+    template< typename TOperator >
+    class BaseStage : public IStage {
+    public:
+        bool const isFinalStage = false;
+        std::vector<TOperator*> workers;
 
-		~BaseStage(){
-			for (unsigned int i = 0; i < workers.size(); i++) {
-				delete (workers[i]);
-			}
+        ~BaseStage() {
+            for (unsigned int i = 0; i < workers.size(); i++) {
+                delete (workers[i]);
+            }
 
-			workers.clear();
-		}
+            workers.clear();
+        }
 
-		//count; collect; sum; flat
-		template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator());
-			}
-		}
+        //count; collect; sum; flat
+        template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator());
+            }
+        }
 
-		//map; groupByKey
-		template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(taskFunc));
-			}
-		}
+        //map; groupByKey
+        template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(taskFunc));
+            }
+        }
 
-		//groupByKey
-		template< typename Param1, typename Param2, typename Param3 >
-		void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc1, std::function< Param3*(Param1*) > const& taskFunc2){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(taskFunc1, taskFunc2));
-			}
-		}
+        //groupByKey
+        template< typename Param1, typename Param2, typename Param3 >
+        void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc1, std::function< Param3*(Param1*) > const& taskFunc2) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(taskFunc1, taskFunc2));
+            }
+        }
 
-		//find
-		template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers, std::function< Param2(Param1*) > const& taskFunc){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(taskFunc));
-			}
-		}
+        //find
+        template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers, std::function< Param2(Param1*) > const& taskFunc) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(taskFunc));
+            }
+        }
 
-		//peek
-		template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers, std::function< void(Param1*) > const& taskFunc){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(taskFunc));
-			}
-		}
+        //peek
+        template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers, std::function< void(Param1*) > const& taskFunc) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(taskFunc));
+            }
+        }
 
-		//source
-		template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers, Param1 const& param1, Param2 const& param2){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(param1, param2));
-			}
-		}
+        //source
+        template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers, Param1 const& param1, Param2 const& param2) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(param1, param2));
+            }
+        }
 
-		//reduce; linesFromFile; reduceByKey
-		template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers, Param1 const& param1){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(param1));
-			}
-		}
+        //reduce; linesFromFile; reduceByKey
+        template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers, Param1 const& param1) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(param1));
+            }
+        }
 
-		//reduceByKey2
-		template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers, std::function< void(Param2*, Param1*) > const& taskFunc1, std::function< void(Param2*, Param2*) > const& taskFunc2){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(taskFunc1, taskFunc2));
-			}
-		}
+        //reduceByKey2
+        template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers, std::function< void(Param2*, Param1*) > const& taskFunc1, std::function< void(Param2*, Param2*) > const& taskFunc2) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(taskFunc1, taskFunc2));
+            }
+        }
 
-		//min; max;
-		template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-		void createOperators(int const& no_workers, std::function< void(Param1*, Param1*) > taskFunc){
-			for(int i = 0; i < no_workers; i++){
-				workers.push_back(new TOperator(taskFunc));
-			}
-		}
-	};
+        //min; max;
+        template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
+        void createOperators(int const& no_workers, std::function< void(Param1*, Param1*) > taskFunc) {
+            for (int i = 0; i < no_workers; i++) {
+                workers.push_back(new TOperator(taskFunc));
+            }
+        }
+    };
 }
 
 #endif

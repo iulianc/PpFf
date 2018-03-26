@@ -2,7 +2,7 @@
 #ifndef BASE_HPP
 #define BASE_HPP
 
-namespace PpFf{
+namespace PpFf {
 
 	class IStage{};
 

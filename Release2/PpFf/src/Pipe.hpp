@@ -26,9 +26,9 @@
 
 using namespace PpFf;
 
-namespace PpFf{
+namespace PpFf {
 
-    class Pipe{
+    class Pipe {
     public:
         ~Pipe(){};
 

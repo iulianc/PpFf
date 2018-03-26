@@ -2,11 +2,11 @@
 
 #include <stages/BaseStage.hpp>
 
-namespace PpFf{
+namespace PpFf {
 
-	template< typename TOperator >
-	class Stage : public BaseStage< TOperator > {
-	public:
-		bool const isFinalStage = false;
-	};
+    template< typename TOperator >
+    class Stage : public BaseStage<TOperator> {
+    public:
+        bool const isFinalStage = false;
+    };
 }
