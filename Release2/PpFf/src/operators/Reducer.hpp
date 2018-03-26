@@ -8,10 +8,13 @@ namespace PpFf{
     template< typename In, typename Out >
     class Reducer {
     public:
+        // Valeur bidon pour supprimer les warnings sur MacBook.
+        std::function<void(Out*, Out*)> dummyCombiner = [](Out*, Out*){};
+
         Out identity{};
 
         std::function< void(Out*, In*) > const& accumulator;
-        std::function< void(Out*, Out*) > const& combiner = [](Out*, Out*) {};
+        std::function< void(Out*, Out*) > const& combiner = dummyCombiner;
         bool const isCombiner = false;
 
         Reducer(std::function< void(Out*, In*) > const& accumulator): 
