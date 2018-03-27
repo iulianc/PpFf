@@ -68,10 +68,9 @@ int main(int argc, char* argv[]) {
         nbIterations = atoi(argv[2]);
     }
 
-    Reducer< std::string, int > 
-        reducer(0, 
-                [](int* count, std::string* _) { *count += 1; },
-                [](int* total, int* workerResult) { *total += *workerResult; } );
+    Reducer<std::string, int> reducer(0, 
+                                      [](int count, std::string _) { return count + 1; },
+                                      std::plus<int>{} );
     
     auto begin = std::chrono::high_resolution_clock::now();
 
