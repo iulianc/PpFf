@@ -183,7 +183,7 @@ namespace PpFf {
     }
 
     template < typename In, typename Out = In >
-    Out reduce(std::function<void (In*, Out*)> accumulator) {
+    Out reduce(std::function<Out (In, Out)> accumulator) {
         // Cas simple special ou accumulator = combiner & pas de valeur initiale.
         typedef ReduceOperator<In, Out> Reduce;
         typedef Collectors<Reduce> StageCollectors;
