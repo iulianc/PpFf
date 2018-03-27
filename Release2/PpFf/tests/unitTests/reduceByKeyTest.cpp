@@ -12,8 +12,8 @@
 
 using namespace PpFf;
 
-void FuncReduce(int *count, std::string *in) {
-    *count = *count + 1;
+int FuncReduce(int count, std::string in) {
+    return count + 1;
 };
 
 TEST_CASE( "ReduceByKeyCountElementsContainer", "ReduceByKeyOperator" ) {
@@ -99,7 +99,7 @@ TEST_CASE( "ReduceByAgeCountEmployees", "ReduceByKeyOperator" ) {
           {55, 2 }
         };
 
-    Reducer<Employee, int> reducer( 0, [](int *count, Employee *e) ->void { *count = *count + 1; } );
+    Reducer<Employee, int> reducer( 0, [](int count, Employee e) ->int { return count + 1; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -139,7 +139,7 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalary", "ReduceByKeyOperator" ) {
           {"technician",  270 }
         };
 
-    Reducer<Employee, int> reducer( 0, [](int *totalSalary, Employee *e) ->void { *totalSalary += e->salary; } );
+    Reducer<Employee, int> reducer( 0, [](int totalSalary, Employee e) ->int { return totalSalary + e.salary; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -185,7 +185,7 @@ TEST_CASE( "ReduceByJobTitleEmployeesMaxAge", "ReduceByKeyOperator" ) {
           {"technician",  30 }
         };
 
-    Reducer<Employee, int> reducer( 0, [](int *maxAge, Employee *e) ->void { if(*maxAge < e->age) *maxAge = e->age; } );
+    Reducer<Employee, int> reducer( 0, [](int maxAge, Employee e) ->int { return maxAge < e.age ? e.age : maxAge; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -229,7 +229,7 @@ TEST_CASE( "ReduceByJobTitleEmployeesMinAge", "ReduceByKeyOperator" ) {
           {"technician",  18 }
         };
 
-    Reducer<Employee, int> reducer( 1000, [](int *minAge, Employee *e) ->void { if(*minAge > e->age) *minAge = e->age; } );
+    Reducer<Employee, int> reducer( 1000, [](int minAge, Employee e) ->int { return minAge > e.age ? e.age : minAge; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -254,7 +254,7 @@ TEST_CASE( "ReduceByKeyCountElementsContainerParallel", "ReduceByKeyOperator" ) 
 
     CONTAINER expectedResult = {{"Employee3", 4}, {"Employee6", 3}, {"Employee9", 2}};
 
-    Reducer< std::string, int > reducer(FuncReduce, [](int *total, int *workerResult) ->void { *total += *workerResult; } );
+    Reducer< std::string, int > reducer(FuncReduce, [](int total, int workerResult) ->int {  return total + workerResult; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -303,7 +303,7 @@ TEST_CASE( "ReduceByAgeCountEmployeesParallel", "ReduceByKeyOperator" ) {
           {55, 2 }
         };
 
-    Reducer< Employee, int > reducer([](int *count, Employee *e) ->void { *count += 1; }, [](int *total, int *workerResult) ->void { *total += *workerResult; } );
+    Reducer< Employee, int > reducer([](int count, Employee e) ->int { return count + 1; }, [](int total, int workerResult) ->int { return total + workerResult; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -344,8 +344,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalaryParallel", "ReduceByKeyOperator" )
           {"technician",  270 }
         };
 
-    Reducer< Employee, int > reducer(0, [](int *salary, Employee *e) ->void { *salary += e->salary; },
-                                     [](int *total, int *workerResult) ->void { *total += *workerResult; } );
+    Reducer< Employee, int > reducer(0, [](int salary, Employee e) ->int { return salary + e.salary; },
+                                     [](int total, int workerResult) ->int { return total + workerResult; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -396,8 +396,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMaxAgeParallel", "ReduceByKeyOperator" ) {
           {"technician",  30 }
         };
 
-    Reducer< Employee, int > reducer(0, [](int *maxAge, Employee *e) ->void { if(*maxAge < e->age) *maxAge = e->age; },
-                                     [](int *max, int *workerResult) ->void { if(*max < *workerResult) *max = *workerResult; } );
+    Reducer< Employee, int > reducer(0, [](int maxAge, Employee e) ->int { return maxAge < e.age ? e.age : maxAge; },
+                                        [](int max, int workerResult) ->int { return max < workerResult ? workerResult : max; } );
 
     Pipe pipe;
     CONTAINER result = pipe
@@ -447,8 +447,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMinAgeParallel", "ReduceByKeyOperator" ) {
           {"technician",  18 }
         };
 
-    Reducer< Employee, int > reducer(1000, [](int *minAge, Employee *e) ->void { if(*minAge > e->age) *minAge = e->age; },
-                                     [](int *min, int *workerResult) ->void { if(*min > *workerResult) *min = *workerResult; } );
+    Reducer< Employee, int > reducer(1000, [](int minAge, Employee e) ->int { return minAge > e.age ? e.age : minAge; },
+                                     [](int min, int workerResult) ->int { return min > workerResult ? workerResult : min; } );
 
     Pipe pipe;
     CONTAINER result = pipe

@@ -26,7 +26,7 @@ namespace PpFf {
 
         ReduceOperator& operator+= ( ReduceOperator& other ) {
             if (reducer.hasCombiner) {
-                reducer.combiner(&val, &other.val);
+            	val = reducer.combiner(val, other.val);
             }
             return *this ;
         }
@@ -34,7 +34,7 @@ namespace PpFf {
         ~ReduceOperator() {};
 
         void* svc(void* task) {
-            reducer.accumulator(&val, (In*)task);
+        	val = reducer.accumulator(val, *((In*)task));
 
             return (Out*)GO_ON;
         }

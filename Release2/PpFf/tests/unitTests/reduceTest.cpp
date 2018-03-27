@@ -16,11 +16,11 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
         elems[i] = i;
     };
     int expectedResult = n * (n - 1) / 2;
-    
-    Reducer<int, int> reducer( [](int* sum, int* in) { *sum += *in; } );
-    
+
+    Reducer<int, int> reducer( [](int sum, int in) { return sum + in; } );
+
     Pipe pipe;
-    int currentResult = 
+    int currentResult =
         pipe
         .source<int>(elems.begin(), elems.end())
         .reduce<int, int>(reducer);
@@ -35,13 +35,16 @@ TEST_CASE( "SumCollectionOfInteger avec meme lambda comme accumulator et combine
         elems[i] = i;
     };
     int expectedResult = n * (n - 1) / 2;
-    
+
+    Reducer<int, int> reducer( [](int sum, int in) { return sum + in; },
+    						   [](int result, int threadResult) { return result + threadResult; } );
+
     Pipe pipe;
-    int currentResult = 
+    int currentResult =
         pipe
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .reduce<int, int>([](int* sum, int* in) { *sum += *in; });
+        .reduce<int, int>(reducer);
 
     REQUIRE(currentResult == expectedResult);
 }
@@ -58,10 +61,10 @@ TEST_CASE( "AgerEmployee", "ReduceOperator" ) {
     employees[78].age = 999;
     std::string expectedResult = "Employee78";
 
-    Reducer<Employee, Employee> reducer([](Employee* e1, Employee* e2) { if (e1->age < e2->age) *e1 = *e2; });
+    Reducer<Employee, Employee> reducer([](Employee e1, Employee e2) { return e1.age > e2.age ? e1 : e2; });
 
     Pipe pipe;
-    Employee currentResult = 
+    Employee currentResult =
         pipe
         .source<Employee>(employees.begin(), employees.end())
         .reduce<Employee, Employee>(reducer);
@@ -81,10 +84,10 @@ TEST_CASE( "TotalSalaryEmployees", "ReduceOperator" ) {
     int expectedResult = n * 1000 + 20 * n * (n - 1) / 2;
 
     Reducer<Employee, int> reducer( 0,
-                                    [](int* totalSalary, Employee* e) { *totalSalary += e->salary; } );
+                                    [](int totalSalary, Employee e)->int { return totalSalary + e.salary; } );
 
     Pipe pipe;
-    int currentResult = 
+    int currentResult =
         pipe
         .source<Employee>(employees.begin(), employees.end())
         .reduce<Employee, int>(reducer);
@@ -101,10 +104,10 @@ TEST_CASE( "SumCollectionOfIntegerParallel", "ReduceOperator" ) {
     };
     int expectedResult = n * (n - 1) / 2;
 
-    Reducer<int, int> reducer( 0, 
-                               [](int* sum, int* in) { *sum += *in; },
-                               [](int* result, int* threadResult) { *result += *threadResult; } );
-    
+    Reducer<int, int> reducer( 0,
+                               [](int sum, int in) { return sum + in; },
+                               [](int result, int threadResult)->int { return result + threadResult; } );
+
 
     int maxNbThreads =  std::thread::hardware_concurrency();
 
@@ -112,12 +115,12 @@ TEST_CASE( "SumCollectionOfIntegerParallel", "ReduceOperator" ) {
     SECTION( "Avec des puissances de 2" ) {
         for (int nbThreads = 1; nbThreads <= 2 * maxNbThreads; nbThreads *= 2) {
             Pipe pipe;
-            int currentResult = 
+            int currentResult =
                 pipe
                 .source<int>(elems.begin(), elems.end())
                 .parallel(nbThreads)
                 .reduce<int, int>(reducer);
-        
+
             REQUIRE(currentResult == expectedResult);
         }
     }
@@ -125,12 +128,12 @@ TEST_CASE( "SumCollectionOfIntegerParallel", "ReduceOperator" ) {
     SECTION( "Avec des valeurs consecutives" ) {
         for (int nbThreads = 2; nbThreads <= maxNbThreads / 2; nbThreads += 1) {
             Pipe pipe;
-            int currentResult = 
+            int currentResult =
                 pipe
                 .source<int>(elems.begin(), elems.end())
                 .parallel(nbThreads)
                 .reduce<int, int>(reducer);
-        
+
             REQUIRE(currentResult == expectedResult);
         }
     }
@@ -149,12 +152,12 @@ TEST_CASE( "AgerEmployeeParallel", "ReduceOperator" ) {
     employees[78].age = 999;
     std::string expectedResult = "Employee78";
 
-    auto employeeAgeMin = [](Employee* e1, Employee* e2) { if (e1->age < e2->age) *e1 = *e2; };
+    auto employeeAgeMin = [](Employee e1, Employee e2)->Employee { return e1.age > e2.age ? e1 : e2; };
 
     Reducer<Employee, Employee> reducer( employeeAgeMin, employeeAgeMin );
 
     Pipe pipe;
-    Employee currentResult = 
+    Employee currentResult =
         pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
@@ -175,11 +178,11 @@ TEST_CASE( "TotalSalaryEmployeesParallel", "ReduceOperator" ) {
     int expectedResult = n * 1000 + 20 * n * (n - 1) / 2;
 
     Reducer<Employee, int> reducer( 0,
-                                    [](int* totalSalary, Employee* e) { *totalSalary += e->salary; },
-                                    [](int* result, int* threadResult) { *result += *threadResult; } );
+                                    [](int totalSalary, Employee e)->int { return totalSalary + e.salary; },
+                                    [](int result, int threadResult)->int { return result + threadResult; } );
 
     Pipe pipe;
-    int currentResult = 
+    int currentResult =
         pipe
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
