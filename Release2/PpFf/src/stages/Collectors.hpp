@@ -4,7 +4,7 @@
 namespace PpFf {
 
     template< typename TOperator >
-    class Collectors : public BaseCollectors<TOperator> {
+    class Collectors: public BaseCollectors<TOperator> {
     public:
         typedef typename TOperator::Value Value;
 

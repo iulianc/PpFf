@@ -5,7 +5,7 @@
 namespace PpFf {
 
     template< typename TOperator >
-    class Stage : public BaseStage<TOperator> {
+    class Stage: public BaseStage<TOperator> {
     protected:
         bool const isFinalStage = false;
     };

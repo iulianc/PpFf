@@ -5,29 +5,32 @@
 #include <functional>
 
 
-namespace PpFf{
+namespace PpFf {
 
-	template < typename T >
-	class FindOperator: public BaseOperator {
-	public:
-		FindOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) { };
-		FindOperator(const FindOperator& other) : taskFunc(other.taskFunc) { }
-		FindOperator(FindOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
-		~FindOperator() { }
+    template < typename T >
+    class FindOperator: public BaseOperator {
+    public:
+        FindOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) { };
 
-		void* svc(void* task) {
-			if(!taskFunc((T*)task)){
-				//delete((T*)task);
-				return (T*)GO_ON;
-			}else{
-				return task;
-			}
-		}
+        FindOperator(const FindOperator& other) : taskFunc(other.taskFunc) { }
 
+        FindOperator(FindOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
 
-	private:
-		std::function< bool(T*) > const& taskFunc;
-	};
+        ~FindOperator() { }
+
+        void* svc(void* task) {
+            if (!taskFunc((T*)task)) {
+                //delete((T*)task);
+                return (T*)GO_ON;
+            } else {
+                return task;
+            }
+        }
+
+        
+    private:
+        std::function< bool(T*) > const& taskFunc;
+    };
 
 }
 

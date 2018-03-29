@@ -5,7 +5,7 @@
 
 using namespace ff;
 
-namespace PpFf{
+namespace PpFf {
 
 	class BaseOperator : public ff_node {
 	public:

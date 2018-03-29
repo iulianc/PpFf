@@ -36,7 +36,7 @@ TEST_CASE( "ProductCollectionOfInteger", "ReduceOperator" ) {
         expectedResult *= i+1;
     };
 
-    Reducer<int, int> reducer(std::multiplies<int>{});
+    Reducer<int, int> reducer(1, std::multiplies<int>{});
 
     int currentResult =
         Pipe()

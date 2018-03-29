@@ -5,15 +5,14 @@
 
 using namespace ff;
 
-namespace PpFf{
+namespace PpFf {
 
-	class Empty: public ff::ff_node {
-	public:
-
-		void* svc(void* task) {
-			return task;
-		}
-	};
+    class Empty: public ff::ff_node {
+    public:
+        void* svc(void* task) {
+            return task;
+        }
+    };
 
 }
 

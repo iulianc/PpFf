@@ -3,13 +3,13 @@
 
 #include <operators/BaseOperator.hpp>
 
-namespace PpFf{
+namespace PpFf {
 
-	class FinalOperator : public BaseOperator {
-	public:
-		bool const isFinalOperator = true;
-		virtual void* svc(void *task) = 0;
-	};
+    class FinalOperator: public BaseOperator {
+    protected:
+        bool const isFinalOperator = true;
+        virtual void* svc(void *task) = 0;
+    };
 
 }
 

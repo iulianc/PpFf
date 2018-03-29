@@ -5,42 +5,46 @@
 #include <operators/Reducer.hpp>
 #include <functional>
 
-namespace PpFf{
+namespace PpFf {
 
-	template < typename T >
-	class MinOperator: public FinalOperator {
-	public:
-		typedef T Value;
-		MinOperator(std::function< void(T*, T*) > compare): compare(compare) { }
-		MinOperator(const MinOperator& other) : compare(other.compare) { }
-		MinOperator(MinOperator&& other) noexcept : compare(std::move(other.compare)) { }
-		MinOperator& operator+= ( MinOperator& other ) {
-			compare(val, other.val);
+    template < typename T >
+    class MinOperator: public FinalOperator {
+    public:
+        typedef T Value;
 
-			return *this ;
-		}
-		~MinOperator() { delete val; };
+        MinOperator(std::function< void(T*, T*) > compare): compare(compare) { }
 
-		void* svc(void* task) {
-			if(firstVal){
-				val = (T*)task;
-				firstVal = false;
-			}
+        MinOperator(const MinOperator& other) : compare(other.compare) { }
 
-			compare(val, (T*)task);
+        MinOperator(MinOperator&& other) noexcept : compare(std::move(other.compare)) { }
 
-			return (T*)GO_ON;
-		}
+        MinOperator& operator+= (MinOperator& other) {
+            compare(val, other.val);
 
-		T value(){
-			return *val;
-		}
+            return *this ;
+        }
 
-	private:
-		std::function< void(T*, T*) > compare;
-		T *val = new T();
-		bool firstVal = true;
-	};
+        ~MinOperator() { delete val; };
+
+        void* svc(void* task) {
+            if (firstVal) {
+                val = (T*)task;
+                firstVal = false;
+            }
+            compare(val, (T*)task);
+
+            return (T*)GO_ON;
+        }
+
+        T value() {
+            return *val;
+        }
+
+    private:
+        std::function< void(T*, T*) > compare;
+        T *val = new T();
+        bool firstVal = true;
+    };
 
 }
 

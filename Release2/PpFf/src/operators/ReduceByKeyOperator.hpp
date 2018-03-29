@@ -5,7 +5,7 @@
 #include <operators/Reducer.hpp>
 #include <functional>
 
-namespace PpFf{
+namespace PpFf {
 
     template < typename In, typename K, typename V, typename MapContainer, bool IsFuncOnKey >
     class ReduceByKeyOperator: public FinalOperator {};
@@ -15,9 +15,13 @@ namespace PpFf{
     class ReduceByKeyOperator<In, K, V, MapContainer, false>: public FinalOperator {
     public:
         typedef MapContainer Value;
+
         ReduceByKeyOperator(Reducer<In, V> const& reducer): reducer(reducer) { }
+
         ReduceByKeyOperator(const ReduceByKeyOperator& other): reducer(other.reducer) { }
+
         ReduceByKeyOperator(ReduceByKeyOperator&& other) noexcept: reducer(std::move(other.reducer)) { }
+
         ReduceByKeyOperator& operator+= (ReduceByKeyOperator& other) {
             for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
                 mapIt = mapContainer.find(otherIt->first);
@@ -66,9 +70,13 @@ namespace PpFf{
     class ReduceByKeyOperator<In, K, V, MapContainer, true>: public FinalOperator {
     public:
         typedef MapContainer Value;
+
         ReduceByKeyOperator(std::function<K*(In*)> const& taskFuncOnKey, Reducer<In, V> const& reducer): taskFuncOnKey(taskFuncOnKey), reducer(reducer) { }
+
         ReduceByKeyOperator(const ReduceByKeyOperator& other): taskFuncOnKey(other.taskFuncOnKey), reducer(other.reducer) { }
+
         ReduceByKeyOperator(ReduceByKeyOperator&& other) noexcept: taskFuncOnKey(std::move(other.taskFuncOnKey)), reducer(std::move(other.reducer)) { }
+
         ReduceByKeyOperator& operator+= (ReduceByKeyOperator& other) {
             for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
                 mapIt = mapContainer.find(otherIt->first);

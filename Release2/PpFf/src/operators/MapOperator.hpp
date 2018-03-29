@@ -5,23 +5,26 @@
 #include <operators/BaseOperator.hpp>
 
 
-namespace PpFf{
+namespace PpFf {
 
-	template < typename In, typename Out >
-	class MapOperator: public BaseOperator {
-	public:
-		MapOperator(std::function< Out*(In*) > const& taskFunc): taskFunc(taskFunc) { }
-		MapOperator(const MapOperator& other) : taskFunc(other.taskFunc) { }
-		MapOperator(MapOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
-		~MapOperator() { }
+    template < typename In, typename Out >
+    class MapOperator: public BaseOperator {
+    public:
+        MapOperator(std::function< Out*(In*) > const& taskFunc): taskFunc(taskFunc) {}
 
-		void* svc(void* task) {
-			return taskFunc((In*)task);
-		}
+        MapOperator(const MapOperator& other) : taskFunc(other.taskFunc) {}
 
-	private:
-		std::function< Out*(In*) > const& taskFunc;
-	};
+        MapOperator(MapOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) {}
+
+        ~MapOperator() {}
+
+        void* svc(void* task) {
+            return taskFunc((In*)task);
+        }
+
+    private:
+        std::function< Out*(In*) > const& taskFunc;
+    };
 
 }
 

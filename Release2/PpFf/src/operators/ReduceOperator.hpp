@@ -23,7 +23,7 @@ namespace PpFf {
             reducer(other.reducer) {}
 
         ReduceOperator(ReduceOperator&& other) noexcept: 
-            reducer(std::move(other.reducer)) {}
+        reducer(std::move(other.reducer)) {}
 
         ReduceOperator& operator+= (ReduceOperator& other) {
             if (reducer.hasCombiner) {

@@ -3,7 +3,7 @@
 
 #include <functional>
 
-namespace PpFf{
+namespace PpFf {
 
     template< typename In, typename Out >
     class Reducer {

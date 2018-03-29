@@ -5,10 +5,10 @@
 #include <utilities/NullType.hpp>
 #include <stages/IStage.hpp>
 
-namespace PpFf{
+namespace PpFf {
 
     template< typename TOperator >
-    class BaseStage : public IStage {
+    class BaseStage: public IStage {
     public:
         bool const isFinalStage = false;
         std::vector<TOperator*> workers;

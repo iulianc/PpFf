@@ -3,8 +3,7 @@
 
 #include <operators/FinalOperator.hpp>
 
-
-namespace PpFf{
+namespace PpFf {
 
 	template < typename T >
 	class CountOperator: public FinalOperator {

@@ -3,34 +3,39 @@
 
 #include <operators/FinalOperator.hpp>
 
-namespace PpFf{
+namespace PpFf {
 
-	template < typename T >
-	class SumOperator: public FinalOperator {
-	public:
-		typedef T Value;
-		SumOperator() { }
-		SumOperator(const SumOperator& other) : sum(other.sum) { }
-		SumOperator(SumOperator&& other) noexcept : sum(std::move(other.sum)) { }
-		SumOperator& operator+= ( const SumOperator& other ) {
-			sum += other.sum;
-			return *this ;
-		}
-		virtual ~SumOperator() {}
+    template < typename T >
+    class SumOperator: public FinalOperator {
+    public:
+        typedef T Value;
+        SumOperator() {}
 
-		void* svc(void* task) {
-			sum += *((T*)task);
+        SumOperator(const SumOperator& other) : sum(other.sum) {}
 
-			return GO_ON;
-		}
+        SumOperator(SumOperator&& other) noexcept : sum(std::move(other.sum)) {}
 
-		T value(){
-			return sum;
-		}
+        SumOperator& operator+= (const SumOperator& other) {
+            sum += other.sum;
 
-	private:
-		T sum{};
-	};
+            return *this ;
+        }
+
+        virtual ~SumOperator() {}
+
+        void* svc(void* task) {
+            sum += *((T*)task);
+
+            return GO_ON;
+        }
+
+        T value() {
+            return sum;
+        }
+
+    private:
+        T sum{};
+    };
 
 }
 

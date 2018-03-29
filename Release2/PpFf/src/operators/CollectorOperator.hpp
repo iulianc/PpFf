@@ -5,7 +5,7 @@
 
 using namespace ff;
 
-namespace PpFf{
+namespace PpFf {
 
 	template < typename T, typename TContainer >
 	class CollectorOperator: public FinalOperator {

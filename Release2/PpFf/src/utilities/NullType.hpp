@@ -1,7 +1,7 @@
 #ifndef NULLTYPE_HPP
 #define NULLTYPE_HPP
 
-namespace PpFf{
+namespace PpFf {
 
 	struct NULL_TYPE {};
 
