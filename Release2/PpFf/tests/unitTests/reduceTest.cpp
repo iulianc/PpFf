@@ -27,25 +27,6 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
     REQUIRE(currentResult == expectedResult);
 }
 
-TEST_CASE( "ProductCollectionOfInteger", "ReduceOperator" ) {
-    int n = 5;
-    std::vector<int> elems(n);
-    int expectedResult = 1;
-    for (unsigned int i = 0; i < elems.size(); i++) {
-        elems[i] = i+1;
-        expectedResult *= i+1;
-    };
-
-    Reducer<int, int> reducer(1, std::multiplies<int>{});
-
-    int currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
-        .reduce<int, int>(reducer);
-
-    REQUIRE(currentResult == expectedResult);
-}
-
 TEST_CASE( "SumCollectionOfInteger avec meme lambda comme accumulator et combiner", "ReduceOperator" ) {
     int n = 1000;
     std::vector<int> elems(n);
@@ -61,6 +42,41 @@ TEST_CASE( "SumCollectionOfInteger avec meme lambda comme accumulator et combine
         .reduce<int, int>(std::plus<int>{});
 
     REQUIRE(currentResult == expectedResult);
+}
+
+TEST_CASE( "SumCollectionOfIntegerWithVariousThreads", "ReduceOperator" ) {
+    int n = 1000;
+    int initVal = 9; // Valeur arbitraire.
+    
+    std::vector<int> elems(n);
+    for (int i = 0; i < elems.size(); i++) {
+        elems[i] = i+1;
+    };
+    int expectedResult = n * (n + 1) / 2;
+
+    Reducer<int, int> reducer(initVal, std::plus<int>{}, std::plus<int>{});
+
+    SECTION( "Sans parallel") {
+        int currentResult =
+            Pipe()
+            .source<int>(elems.begin(), elems.end())
+            .reduce<int, int>(reducer);
+        
+        REQUIRE(currentResult == initVal + expectedResult);
+    }
+
+    SECTION( "Avec parallel et divers nombres de threads" ) {
+        int maxNbThreads =  std::thread::hardware_concurrency();
+        for (int nbThreads = 1; nbThreads <= maxNbThreads; nbThreads *= 2) {
+            int currentResult =
+                Pipe()
+                .source<int>(elems.begin(), elems.end())
+                .parallel(nbThreads)
+                .reduce<int, int>(reducer);
+            
+            REQUIRE(currentResult == initVal * nbThreads + expectedResult);
+        }
+    }
 }
 
 TEST_CASE( "AgerEmployee", "ReduceOperator" ) {

@@ -26,9 +26,9 @@ namespace PpFf {
         reducer(std::move(other.reducer)) {}
 
         ReduceOperator& operator+= (ReduceOperator& other) {
-            if (reducer.hasCombiner) {
-            	val = reducer.combiner(val, other.val);
-            }
+            if (!reducer.hasCombiner) throw std::logic_error( "ReduceOperator::operator+= => There is no combiner!" );
+            
+            val = reducer.combiner(val, other.val);
 
             return *this ;
         }
