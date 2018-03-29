@@ -5,7 +5,7 @@ namespace PpFf {
 
     template< typename TOperator >
     class BaseCollectors : public BaseStage<TOperator> {
-    public:
+    protected:
         bool const isFinalStage = true;
     };
 
