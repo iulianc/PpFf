@@ -13,28 +13,30 @@ namespace PpFf{
 
         Out initialValue{};
 
-        std::function< Out(Out, In) > const& accumulator;
-        std::function< Out(Out, Out) > const& combiner = dummyCombiner;
+        std::function<Out(Out, In)> const& accumulator;
+        std::function<Out(Out, Out)> const& combiner = dummyCombiner;
         bool const hasCombiner = false;
 
-        Reducer(std::function< Out(Out, In) > const& accumulator):
-            accumulator(accumulator) {}
-
-        Reducer(std::function< Out(Out, In) > const& accumulator,
-                std::function< Out(Out, Out) > const& combiner):
+        
+        // Forme la plus generale, avec les trois elements.
+        Reducer(Out initialValue, 
+                std::function<Out(Out, In)> const& accumulator,
+                std::function<Out(Out, Out)> const& combiner):
+            initialValue(initialValue), 
             accumulator(accumulator), 
             combiner(combiner), 
             hasCombiner(true) {}
 
         Reducer(Out initialValue, 
-                std::function< Out(Out, In) > const& accumulator):
+                std::function<Out(Out, In)> const& accumulator):
             initialValue(initialValue), 
             accumulator(accumulator) {}
 
-        Reducer(Out initialValue, 
-                std::function< Out(Out, In) > const& accumulator,
-                std::function< Out(Out, Out) > const& combiner):
-            initialValue(initialValue), 
+        Reducer(std::function<Out(Out, In)> const& accumulator):
+            accumulator(accumulator) {}
+
+        Reducer(std::function<Out(Out, In)> const& accumulator,
+                std::function<Out(Out, Out)> const& combiner):
             accumulator(accumulator), 
             combiner(combiner), 
             hasCombiner(true) {}
