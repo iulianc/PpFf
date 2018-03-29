@@ -54,7 +54,7 @@ namespace PpFf{
 
 	private:
 		Reducer< In, V > const& reducer;
-		V val = reducer.identity;
+		V val = reducer.initialValue;
 		MapContainer mapContainer;
 		typename MapContainer::iterator mapIt;
 	};
@@ -106,7 +106,7 @@ namespace PpFf{
 	private:
 		std::function< K*(In*) > const& taskFuncOnKey;
 		Reducer< In, V > const& reducer;
-		V val = reducer.identity;
+		V val = reducer.initialValue;
 		MapContainer mapContainer;
 		typename MapContainer::iterator mapIt;
 		K *key;
@@ -165,7 +165,7 @@ namespace PpFf{
 //
 //    private:
 //        Reducer< In, V > const& reducer;
-//        V val = reducer.identity;
+//        V val = reducer.initialValue;
 //        MapContainer mapContainer;
 //        typename MapContainer::iterator mapIt;
 //    };
@@ -217,7 +217,7 @@ namespace PpFf{
 //    private:
 //        std::function< K*(In*) > const& taskFuncOnKey;
 //        Reducer< In, V > const& reducer;
-//        V val = reducer.identity;
+//        V val = reducer.initialValue;
 //        MapContainer mapContainer;
 //        typename MapContainer::iterator mapIt;
 //        K *key;

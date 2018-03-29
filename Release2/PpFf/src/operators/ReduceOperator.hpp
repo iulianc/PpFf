@@ -12,11 +12,12 @@ namespace PpFf {
     public:
         typedef Out Value;
 
-        ReduceOperator(std::function< void(Out*, In*) > const& accumulator) 
-        { reducer.accumulator = accumulator; }
+        // Constructeur pas utilise... et interface maintenant incorrecte!
+        //        ReduceOperator(std::function< void(Out*, In*) > const& accumulator) 
+        //        { reducer.accumulator = accumulator; }
 
         ReduceOperator(Reducer<In, Out> const& reducer): 
-            reducer(reducer) {};
+            reducer(reducer) {}
 
         ReduceOperator(const ReduceOperator& other): 
             reducer(other.reducer) {}
@@ -24,17 +25,18 @@ namespace PpFf {
         ReduceOperator(ReduceOperator&& other) noexcept: 
             reducer(std::move(other.reducer)) {}
 
-        ReduceOperator& operator+= ( ReduceOperator& other ) {
+        ReduceOperator& operator+= (ReduceOperator& other) {
             if (reducer.hasCombiner) {
             	val = reducer.combiner(val, other.val);
             }
+
             return *this ;
         }
 
         ~ReduceOperator() {};
 
         void* svc(void* task) {
-        	val = reducer.accumulator(val, *((In*)task));
+            val = reducer.accumulator(val, *((In*)task));
 
             return (Out*)GO_ON;
         }
@@ -45,7 +47,7 @@ namespace PpFf {
 
     private:
         Reducer<In, Out> const& reducer;
-        Out val = reducer.identity;
+        Out val = reducer.initialValue;
     };
 
 }

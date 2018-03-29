@@ -11,7 +11,7 @@ namespace PpFf{
         // Valeur bidon pour supprimer les warnings sur MacBook.
         std::function<Out(Out, Out)> dummyCombiner = [](Out, Out) {Out out{}; return out;};
 
-        Out identity{};
+        Out initialValue{};
 
         std::function< Out(Out, In) > const& accumulator;
         std::function< Out(Out, Out) > const& combiner = dummyCombiner;
@@ -26,15 +26,15 @@ namespace PpFf{
             combiner(combiner), 
             hasCombiner(true) {}
 
-        Reducer(Out identity, 
+        Reducer(Out initialValue, 
                 std::function< Out(Out, In) > const& accumulator):
-            identity(identity), 
+            initialValue(initialValue), 
             accumulator(accumulator) {}
 
-        Reducer(Out identity, 
+        Reducer(Out initialValue, 
                 std::function< Out(Out, In) > const& accumulator,
                 std::function< Out(Out, Out) > const& combiner):
-            identity(identity), 
+            initialValue(initialValue), 
             accumulator(accumulator), 
             combiner(combiner), 
             hasCombiner(true) {}
