@@ -40,7 +40,7 @@ namespace PpFf {
             typedef Stage<Source> StageCount;
 
             StageCount* stage = pipe.createStage<StageCount>();
-            stage->createOperators(pipe.getWorkers(), begin, end);
+            stage->createOperators(pipe.nbWorkers(), begin, end);
             pipe.addStage(stage);
 
             return *this;
@@ -51,7 +51,7 @@ namespace PpFf {
             typedef BaseStage<LinesFromFile> Stage;
 
             Stage* stage = pipe.createStage<Stage>();
-            stage->createOperators(pipe.getWorkers(), path);
+            stage->createOperators(pipe.nbWorkers(), path);
             pipe.addStage(stage);
 
             return *this;
@@ -62,7 +62,7 @@ namespace PpFf {
             typedef Collectors<Count> StageCollectors;
 
             StageCollectors* collectors = pipe.createStage<StageCollectors>();
-            collectors->createOperators(pipe.getWorkers());
+            collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
 
@@ -75,7 +75,7 @@ namespace PpFf {
             typedef Collectors<Sum> StageCollectors;
 
             StageCollectors* collectors = pipe.createStage<StageCollectors>();
-            collectors->createOperators(pipe.getWorkers());
+            collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
 
@@ -83,7 +83,7 @@ namespace PpFf {
         }
 
         Pipe& parallel(int no_workers = 1) {
-            pipe.setWorkers(no_workers);
+            pipe.setNbWorkers(no_workers);
 
             return *this;
         };
@@ -97,7 +97,7 @@ namespace PpFf {
             typedef Collectors<Collector> StageCollectors;
 
             StageCollectors* collectors = pipe.createStage<StageCollectors>();
-            collectors->createOperators(pipe.getWorkers());
+            collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
 
@@ -110,7 +110,7 @@ namespace PpFf {
         typedef BaseStage<Map> Stage;
 
         Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.getWorkers(), taskFunc);
+        stage->createOperators(pipe.nbWorkers(), taskFunc);
         pipe.addStage(stage);
 
         return *this;
@@ -122,7 +122,7 @@ namespace PpFf {
         typedef BaseStage<Find> Stage;
 
         Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.getWorkers(), taskFunc);
+        stage->createOperators(pipe.nbWorkers(), taskFunc);
         pipe.addStage(stage);
 
         return *this;
@@ -138,8 +138,8 @@ namespace PpFf {
         MapStage* mapStage = pipe.createStage<MapStage>();
         FlatStage* flatStage = pipe.createStage<FlatStage>();
 
-        mapStage->createOperators(pipe.getWorkers(), taskFunc);
-        flatStage->createOperators(pipe.getWorkers());
+        mapStage->createOperators(pipe.nbWorkers(), taskFunc);
+        flatStage->createOperators(pipe.nbWorkers());
 
         pipe.addStage(mapStage);
         pipe.addStage(flatStage);
@@ -153,7 +153,7 @@ namespace PpFf {
         typedef BaseStage<Flat> Stage;
 
         Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.getWorkers());
+        stage->createOperators(pipe.nbWorkers());
         pipe.addStage(stage);
 
         return *this;
@@ -165,7 +165,7 @@ namespace PpFf {
         typedef BaseStage<Peek> Stage;
 
         Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.getWorkers(), taskFunc);
+        stage->createOperators(pipe.nbWorkers(), taskFunc);
         pipe.addStage(stage);
 
         return *this;
@@ -177,7 +177,7 @@ namespace PpFf {
         typedef Collectors<Reduce> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), reducer);
+        collectors->createOperators(pipe.nbWorkers(), reducer);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -192,7 +192,7 @@ namespace PpFf {
 
         Reducer<In, Out> reducer(accumulator, accumulator);
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), reducer);
+        collectors->createOperators(pipe.nbWorkers(), reducer);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -208,7 +208,7 @@ namespace PpFf {
         typedef Collectors<GroupByKey> StageCollectors;
                 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), taskFuncOnKey);
+        collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -222,7 +222,7 @@ namespace PpFf {
         typedef Collectors<GroupByKey> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), taskFuncOnKey, taskFuncOnValue);
+        collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, taskFuncOnValue);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -236,7 +236,7 @@ namespace PpFf {
         typedef Collectors<ReduceByKey> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), reducer);
+        collectors->createOperators(pipe.nbWorkers(), reducer);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -250,7 +250,7 @@ namespace PpFf {
         typedef Collectors<ReduceByKey> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), taskFuncOnKey, reducer);
+        collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, reducer);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -264,7 +264,7 @@ namespace PpFf {
         typedef Collectors<ReduceByKey> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), accumulator, combiner);
+        collectors->createOperators(pipe.nbWorkers(), accumulator, combiner);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -277,7 +277,7 @@ namespace PpFf {
         typedef Collectors<Min> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), compare);
+        collectors->createOperators(pipe.nbWorkers(), compare);
         pipe.addStage(collectors);
         pipe.run();
 
@@ -290,7 +290,7 @@ namespace PpFf {
         typedef Collectors<Max> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.getWorkers(), compare);
+        collectors->createOperators(pipe.nbWorkers(), compare);
         pipe.addStage(collectors);
         pipe.run();
 

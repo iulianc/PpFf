@@ -7,75 +7,76 @@ using namespace ff;
 
 namespace PpFf{
 
-	class Pipeline{
-	public:
-		Pipeline(): no_workers(1), farm(NULL){}
-		~Pipeline(){
-			for (unsigned int i = 0; i < stages.size(); i++) {
-				delete (stages[i]);
-			}
+    class Pipeline{
+    public:
+        Pipeline(): no_workers(1), farm(NULL) {}
 
-			stages.clear();
-		}
+        ~Pipeline(){
+            for (unsigned int i = 0; i < stages.size(); i++) {
+                delete (stages[i]);
+            }
 
-		template< typename T >
-		T* createStage(){
-			T *stage = new T();
-			stages.push_back(stage);
-			return stage;
-		}
+            stages.clear();
+        }
 
-		template< typename T >
-		void addStage(T *stage){
-			assert(stage->workers.size() == no_workers);
+        template< typename T >
+        T* createStage(){
+            T *stage = new T();
+            stages.push_back(stage);
 
-			if(!isParallel()){
-				pipeline.add_stage(stage->workers[0]);
-			} else {
-				Farm *farm = InstantiateFarm();
+            return stage;
+        }
 
-				for(unsigned int i = 0; i < no_workers; i++){
-					ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
-					worker_pipe->add_stage(stage->workers[i]);
-				}
-			}
-		}
+        template< typename T >
+        void addStage(T *stage){
+            assert(stage->workers.size() == no_workers);
 
-		int getWorkers(){
-			return no_workers;
-		}
+            if (!isParallel()) {
+                pipeline.add_stage(stage->workers[0]);
+            } else {
+                Farm *farm = InstantiateFarm();
 
-		void setWorkers(int no_workers){
-			if(this->no_workers == 1){
-				this->no_workers = no_workers;
-			}
-		}
+                for (unsigned int i = 0; i < no_workers; i++) {
+                    ff_pipeline *worker_pipe = (ff_pipeline*)farm->getWorker(i);
+                    worker_pipe->add_stage(stage->workers[i]);
+                }
+            }
+        }
 
-		bool isParallel(){
-			return no_workers > 1;
-		}
+        int nbWorkers(){
+            return no_workers;
+        }
 
-		void run(){
-			if (pipeline.run_and_wait_end() < 0) error("running pipeline");
-		}
+        void setNbWorkers(int no_workers){
+            if (this->no_workers == 1) {
+                this->no_workers = no_workers;
+            }
+        }
 
-	private:
-		Farm* InstantiateFarm(){
-			if(farm == NULL){
-				farm = new Farm(no_workers);
-				pipeline.add_stage(farm->getFarm());
-			}
+        bool isParallel() {
+            return no_workers > 1;
+        }
 
-			return farm;
-		}
+        void run() {
+            if (pipeline.run_and_wait_end() < 0) error("running pipeline");
+        }
 
-	private:
-		unsigned int no_workers;
-		std::vector< IStage* > stages;
-		ff_pipeline pipeline;
-		Farm *farm;
+    private:
+        Farm* InstantiateFarm() {
+            if (farm == NULL) {
+                farm = new Farm(no_workers);
+                pipeline.add_stage(farm->getFarm());
+            }
 
-	};
+            return farm;
+        }
+
+    private:
+        unsigned int no_workers;
+        std::vector< IStage* > stages;
+        ff_pipeline pipeline;
+        Farm *farm;
+    };
 
 }
 
