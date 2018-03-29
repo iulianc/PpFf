@@ -15,8 +15,8 @@ TEST_CASE("CollectionOfIntegers", "CountOperator") {
         elems[i] = i;
     };
 
-    Pipe pipe;
-    unsigned int currentResult = pipe
+    unsigned int currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .count();
@@ -34,8 +34,8 @@ TEST_CASE("CollectionOfObjects", "CountOperator") {
         elems.push_back(employee);
     };
 
-    Pipe pipe;
-    unsigned int currentResult = pipe
+    unsigned int currentResult = 
+        Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .count();
 
@@ -51,8 +51,8 @@ TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
         elems.push_back(employee);
     };
 
-    Pipe pipe;
-    unsigned int currentResult = pipe
+    unsigned int currentResult = 
+        Pipe()
         .source<Employee*>(elems.begin(), elems.end())
         .count();
 
@@ -70,8 +70,8 @@ TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
         elems.push_back(employee);
     };
 
-    Pipe pipe;
-    unsigned int currentResult = pipe
+    unsigned int currentResult = 
+        Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .count();
 
@@ -89,8 +89,8 @@ TEST_CASE("CountParallel", "CountOperator") {
         elems[i] = employee;
     };
 
-    Pipe pipe;
-    unsigned int currentResult = pipe
+    unsigned int currentResult = 
+        Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .parallel(4)
         .count();

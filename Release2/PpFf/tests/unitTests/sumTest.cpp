@@ -12,8 +12,8 @@ TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
         elems[i] = i;
     };
 
-    Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .sum<int>();
 
@@ -29,8 +29,8 @@ TEST_CASE("CollectionOfNegativeIntegers", "SumOperator") {
         elems[i] = -i;
     };
 
-    Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .sum<int>();
 
@@ -48,8 +48,8 @@ TEST_CASE("CollectionOfFloatElements", "SumOperator") {
         temp += 0.1;
     };
 
-    Pipe pipe;
-    float currentResult = pipe
+    float currentResult = 
+        Pipe()
         .source<float>(elems.begin(), elems.end())
         .sum<float>();
 
@@ -67,8 +67,8 @@ TEST_CASE("CollectionOfDoubleElements", "SumOperator") {
         temp += 0.1;
     };
 
-    Pipe pipe;
-    double currentResult = pipe
+    double currentResult = 
+        Pipe()
         .source<double>(elems.begin(), elems.end())
         .sum<double>();
 
@@ -84,8 +84,8 @@ TEST_CASE("SumParallel", "SumOperator") {
         elems[i] = i;
     };
 
-    Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .sum<int>();
@@ -102,8 +102,8 @@ TEST_CASE("SumOnCollectionTypeDeque", "SumOperator") {
         elems[i] = i + 1;
     };
 
-    Pipe pipe;
-    int currentResult = pipe
+    int currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel()
         .sum<int>();

@@ -23,8 +23,8 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLines", "LinesFromFileOperator" ) 
 
     std::string test_file = TEST_FILE;
 
-    Pipe pipe;
-    std::vector<std::string> currentResult = pipe
+    std::vector<std::string> currentResult = 
+        Pipe()
         .linesFromFile(test_file)
         .collect<std::string, std::vector>();
 
@@ -44,8 +44,8 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLinesAvecLignesBlanches", "LinesFr
     std::string test_file = "testdata/avec-lignes-blanches.txt";
     //std::string test_file = "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/avec-lignes-blanches.txt";
 
-    Pipe pipe;
-    std::vector<std::string> currentResult = pipe
+    std::vector<std::string> currentResult = 
+        Pipe()
         .linesFromFile(test_file)
         .collect<std::string, std::vector>();
 

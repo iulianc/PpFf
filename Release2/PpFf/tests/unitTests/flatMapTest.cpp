@@ -12,9 +12,9 @@ typedef std::vector<std::string> Languages;
 typedef std::vector<int> Integers;
 
 Languages* GetLanguages(Employee *employee) {
-	Languages *languages = new Languages();
-	*languages = employee->languages;
-	return languages;
+    Languages *languages = new Languages();
+    *languages = employee->languages;
+    return languages;
 }
 
 TEST_CASE( "FlatCollectionTypeVector", "FlatMapOperator" ) {
@@ -31,8 +31,8 @@ TEST_CASE( "FlatCollectionTypeVector", "FlatMapOperator" ) {
 
     Integers expectedResult = {0, 3, 6, 1, 4, 7, 2, 5, 8};
 
-    Pipe pipe;
-    Integers currentResult = pipe
+    Integers currentResult = 
+        Pipe()
         .source<Integers>(collection.begin(), collection.end())
         .flatMap<Integers, int>()
         .collect<int, std::vector>();
@@ -56,8 +56,8 @@ TEST_CASE( "FlatCollectionTypeDeque", "FlatMapOperator" ) {
     Integers expectedResult = {0, 3, 6, 1, 4, 7, 2, 5, 8};
 
     typedef std::deque<int> deque_type;
-    Pipe pipe;
-    Integers currentResult = pipe
+    Integers currentResult = 
+        Pipe()
         .source<deque_type>(collection.begin(), collection.end())
         .flatMap<deque_type, int>()
         .collect<int, std::vector>();
@@ -79,8 +79,8 @@ TEST_CASE( "FlatCollectionParallel", "FlatMapOperator" ) {
 
     Integers expectedResult = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
-    Pipe pipe;
-    Integers currentResult = pipe
+    Integers currentResult = 
+        Pipe()
         .source<Integers>(collection.begin(), collection.end())
         .parallel(4)
         .flatMap<Integers, int>()
@@ -105,8 +105,8 @@ TEST_CASE( "FlatCollectionApplyingFunction", "FlatMapOperator" ) {
         {"French", "English", "Chinese", "Arabic", "French", "Spanish", "Portuguese"};
 
 
-    Pipe pipe;
-    std::vector<std::string> currentResult = pipe
+    std::vector<std::string> currentResult = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .flatMap<Employee, std::string, Languages>(GetLanguages)
         .collect<std::string, std::vector>();
@@ -128,16 +128,16 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
         {"Arabic", "Chinese", "English", "French", "French", "Portuguese", "Spanish" };
 
 
-    Pipe pipe;
-    std::vector<std::string> currentResult = pipe
+    std::vector<std::string> currentResult = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .flatMap<Employee, std::string, Languages>( [](Employee *empl)
-        		{
-					Languages *languages = new Languages();
-					*languages = empl->languages;
-					return languages;
-        		} )
+                                                    {
+                                                        Languages *languages = new Languages();
+                                                        *languages = empl->languages;
+                                                        return languages;
+                                                    } )
         .collect<std::string, std::vector>();
     std::sort(currentResult.begin(), currentResult.end());
 
@@ -153,16 +153,16 @@ TEST_CASE( "FlatCollectionGrosNombreElements", "FlatMapOperator" ) {
         employees[i] = employee;
     };
 
-    Pipe pipe;
-    std::vector<std::string> currentResult = pipe
+    std::vector<std::string> currentResult = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .flatMap<Employee, std::string, Languages>( [](Employee *empl)
-        		{
-					Languages *languages = new Languages();
-					*languages = empl->languages;
-					return languages;
-        		} )
+                                                    {
+                                                        Languages *languages = new Languages();
+                                                        *languages = empl->languages;
+                                                        return languages;
+                                                    } )
         .collect<std::string, std::vector>();
     std::sort(currentResult.begin(), currentResult.end());
 

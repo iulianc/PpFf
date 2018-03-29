@@ -18,8 +18,8 @@ TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
         expectedResult[i] = 3 * i;
     };
 
-    Pipe pipe;
-    std::vector<int> currentResult = pipe
+    std::vector<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
         .collect<int, std::vector>();
@@ -37,8 +37,8 @@ TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
         expectedResult[i] = 2 * i;
     };
 
-    Pipe pipe;
-    std::deque<int> currentResult = pipe
+    std::deque<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) ->int* { *in = *in * 2; return in; } )
         .collect<int, std::deque>();
@@ -59,8 +59,8 @@ TEST_CASE("ReturnCollectionTypeList", "CollectOperator") {
         expectedResult.push_back( i + 1 );
     };
 
-    Pipe pipe;
-    std::list<int> currentResult = pipe
+    std::list<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) ->int* { *in = *in + 1; return in; } )
         .collect<int, std::list>();
@@ -83,8 +83,8 @@ TEST_CASE("CollectElementsParallel", "CollectOperator") {
         expectedResult[i] = 3 * i;
     };
 
-    Pipe pipe;
-    std::vector<int> currentResult = pipe
+    std::vector<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
@@ -107,8 +107,8 @@ TEST_CASE("CollectObjects", "CollectOperator") {
         expectedResult.push_back(employee);
     };
 
-    Pipe pipe;
-    std::list<Employee> currentResult = pipe
+    std::list<Employee> currentResult = 
+        Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .collect<Employee, std::list>();
 

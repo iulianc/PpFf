@@ -19,8 +19,8 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
         elems[i] = i;
     };
 
-    Pipe pipe;
-    std::vector<int> currentResult = pipe
+    std::vector<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .find<int>(FuncFind)
         .collect<int, std::vector>();
@@ -36,8 +36,8 @@ TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
         elems[i] = i;
     };
 
-    Pipe pipe;
-    std::vector<int> currentResult = pipe
+    std::vector<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
         .collect<int, std::vector>();
@@ -58,8 +58,8 @@ TEST_CASE("FindOddElementsUsingLambdaFunction with large number of elements", "F
         }
     };
 
-    Pipe pipe;
-    std::vector<int> currentResult = pipe
+    std::vector<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
@@ -83,8 +83,8 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
         elems.push_back(employee);
     };
 
-    Pipe pipe;
-    std::vector<std::string> currentResult = pipe
+    std::vector<std::string> currentResult = 
+        Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .find<Employee>( [](Employee *e) ->bool { return e->salary > 100; } )
         .map<Employee, std::string>( [](Employee *e) ->std::string* { return &(e->name); } )
@@ -92,5 +92,3 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
-
-

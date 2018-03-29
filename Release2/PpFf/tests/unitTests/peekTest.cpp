@@ -18,8 +18,8 @@ TEST_CASE("PrintElementsCollection", "PeekOperator") {
     };
 
     std::vector<int> peekedResult;
-    Pipe pipe;
-    std::vector<int> currentResult = pipe
+    std::vector<int> currentResult = 
+        Pipe()
         .source<int>(elems.begin(), elems.end())
         .peek<int>( [&peekedResult](int *in)->void { peekedResult.push_back( *in ); } )
         .collect< int, std::vector >();
@@ -43,8 +43,8 @@ TEST_CASE("PrintPropertyObject", "PeekOperator") {
     };
 
     std::vector<std::string> peekedResult;
-    Pipe pipe;
-    std::vector<std::string> currentResult = pipe
+    std::vector<std::string> currentResult = 
+        Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .peek<Employee>( [&peekedResult](Employee *e) { peekedResult.push_back(e->name); } )
         .map<Employee, std::string>( [](Employee *e) { return &(e->name); } )

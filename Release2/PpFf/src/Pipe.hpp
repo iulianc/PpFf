@@ -30,6 +30,8 @@ namespace PpFf {
 
     class Pipe {
     public:
+        Pipe() {};
+
         ~Pipe(){};
 
         template < typename T, typename Iterator >

@@ -41,21 +41,10 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
           {44, {employees[9]}}
         };
 
-    Pipe pipe;
-    CONTAINER result = pipe
+    CONTAINER result = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, Employee>( [](Employee *e) ->int* { return &(e->age); } );
-
-//    for (auto it = result.begin(); it != result.end(); it++) {
-//        VALUE expectedResultValue = it->second;
-//
-//        std::sort(expectedResultValue.begin(), expectedResultValue.end(), [](Employee e1, Employee e2)->bool {return e1.name < e2.name; } );
-//
-//        std::cout << it->first << std::endl;
-//        for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
-//        	std::cout << expectedResultValue[i].name << std::endl;
-//        }
-//    }
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
@@ -72,7 +61,7 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
 
 
 TEST_CASE( "GroupByAgeNamesEmployees", "GroupByKeyOperator" ) {
-	typedef std::vector<Employee> EMPLOYEES;
+    typedef std::vector<Employee> EMPLOYEES;
     typedef std::vector<std::string> VALUE;
     typedef std::unordered_map<int, VALUE> CONTAINER;
 
@@ -99,11 +88,11 @@ TEST_CASE( "GroupByAgeNamesEmployees", "GroupByKeyOperator" ) {
           {44, {"Employee9"}}
         };
 
-    Pipe pipe;
-    CONTAINER result = pipe
+    CONTAINER result = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, std::string>( [](Employee *e) ->int* { return new int(e->age); },
-        										 [](Employee *e) ->std::string* { return new std::string(e->name); } );
+                                                 [](Employee *e) ->std::string* { return new std::string(e->name); } );
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
@@ -140,15 +129,15 @@ TEST_CASE( "GroupByAgeACollectionEmployeesWithMap", "GroupByKeyOperator" ) {
 
     CONTAINER expectedResult =
         {
-          {18, {employees[3], employees[4]}},
-		  {22, {employees[0], employees[1], employees[2]}},
-          {33, {employees[7], employees[8]}},
-          {44, {employees[9]}},
-          {55, {employees[5], employees[6]}}
+            {18, {employees[3], employees[4]}},
+            {22, {employees[0], employees[1], employees[2]}},
+            {33, {employees[7], employees[8]}},
+            {44, {employees[9]}},
+            {55, {employees[5], employees[6]}}
         };
 
-    Pipe pipe;
-    CONTAINER result = pipe
+    CONTAINER result = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, Employee, CONTAINER>( [](Employee *e) ->int* { return &(e->age); } );
 
@@ -194,10 +183,10 @@ TEST_CASE( "GroupByAgeACollectionEmployeesParallel", "GroupByKeyOperator" ) {
           {44, {employees[9]}}
         };
 
-    Pipe pipe;
-    CONTAINER result = pipe
+    CONTAINER result = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
-		.parallel(4)
+        .parallel(4)
         .groupByKey<Employee, int, Employee>( [](Employee *e) ->int* { return &(e->age); } );
 
 
@@ -217,7 +206,7 @@ TEST_CASE( "GroupByAgeACollectionEmployeesParallel", "GroupByKeyOperator" ) {
 
 
 TEST_CASE( "GroupByAgeNamesEmployeesParallel", "GroupByKeyOperator" ) {
-	typedef std::vector<Employee> EMPLOYEES;
+    typedef std::vector<Employee> EMPLOYEES;
     typedef std::vector<std::string> VALUE;
     typedef std::unordered_map<int, VALUE> CONTAINER;
 
@@ -244,12 +233,12 @@ TEST_CASE( "GroupByAgeNamesEmployeesParallel", "GroupByKeyOperator" ) {
           {44, {"Employee9"}}
         };
 
-    Pipe pipe;
-    CONTAINER result = pipe
+    CONTAINER result = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
-		.parallel(4)
+        .parallel(4)
         .groupByKey<Employee, int, std::string>( [](Employee *e) ->int* { return new int(e->age); },
-        										 [](Employee *e) ->std::string* { return new std::string(e->name); } );
+                                                 [](Employee *e) ->std::string* { return new std::string(e->name); } );
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
@@ -289,17 +278,17 @@ TEST_CASE( "GroupByAgeACollectionEmployeesWithMapParallel", "GroupByKeyOperator"
 
     CONTAINER expectedResult =
         {
-          {18, {employees[3], employees[4]}},
-		  {22, {employees[0], employees[1], employees[2]}},
-		  {33, {employees[7], employees[8]}},
-		  {44, {employees[9]}},
-          {55, {employees[5], employees[6]}}
+            {18, {employees[3], employees[4]}},
+            {22, {employees[0], employees[1], employees[2]}},
+            {33, {employees[7], employees[8]}},
+            {44, {employees[9]}},
+            {55, {employees[5], employees[6]}}
         };
 
-    Pipe pipe;
-    CONTAINER result = pipe
+    CONTAINER result = 
+        Pipe()
         .source<Employee>(employees.begin(), employees.end())
-		.parallel(4)
+        .parallel(4)
         .groupByKey<Employee, int, Employee, CONTAINER>( [](Employee *e) ->int* { return &(e->age); } );
 
 

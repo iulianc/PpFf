@@ -76,8 +76,8 @@ int main(int argc, char* argv[]) {
 
     std::unordered_map<std::string, int> currentResult;
     for (uint32_t i = 0; i < nbIterations; ++i) {
-        Pipe pipe;
-        currentResult = pipe
+        currentResult = 
+            Pipe()
             .linesFromFile(inputFile)
             .flatMap<std::string, std::string, Words>(splitInWords)
             .map<std::string, std::string>(toLowercaseLetters)
