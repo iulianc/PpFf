@@ -14,6 +14,8 @@
 #include <operators/LinesFromFileOperator.hpp>
 #include <operators/MinOperator.hpp>
 #include <operators/MaxOperator.hpp>
+#include <operators/AnyMachOperator.hpp>
+#include <operators/NoneMachOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -259,7 +261,7 @@ namespace PpFf {
 
     template < typename In, typename K = In, typename V = In,
                typename MapType = std::unordered_map<K, V> >
-    MapType reduceByKey2(std::function<void(V*, In*)> const& accumulator, std::function<void(V*, V*)> const& combiner) {
+    MapType reduceByKey2(std::function< void(V*, In*) > const& accumulator, std::function< void(V*, V*) > const& combiner) {
         typedef ReduceByKeyOperator2<In, K, V, MapType> ReduceByKey;
         typedef Collectors<ReduceByKey> StageCollectors;
 
@@ -272,7 +274,7 @@ namespace PpFf {
     }
 
     template < typename T >
-    T min(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a> *b) *a = *b;})) {
+    T min(std::function< void(T*, T*) > compare = ([](T* a, T* b) { if (*a> *b) *a = *b;})) {
         typedef MinOperator<T> Min;
         typedef Collectors<Min> StageCollectors;
 
@@ -285,7 +287,7 @@ namespace PpFf {
     }
 
     template < typename T >
-        T max(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a <*b) *a = *b;})) {
+        T max(std::function< void(T*, T*) > compare = ([](T* a, T* b) { if (*a <*b) *a = *b;})) {
         typedef MaxOperator<T> Max;
         typedef Collectors<Max> StageCollectors;
 
@@ -296,6 +298,33 @@ namespace PpFf {
 
         return collectors->value();
     }
+
+    template < typename T >
+        bool anyMach(std::function< bool(T*) > predicate) {
+        typedef AnyMachOperator<T> AnyMach;
+        typedef Collectors<AnyMach> StageCollectors;
+
+        StageCollectors* collectors = pipe.createStage<StageCollectors>();
+        collectors->createOperators(pipe.nbWorkers(), predicate);
+        pipe.addStage(collectors);
+        pipe.run();
+
+        return collectors->value();
+    }
+
+    template < typename T >
+        bool noneMach(std::function< bool(T*) > predicate) {
+        typedef NoneMachOperator<T> NoneMach;
+        typedef Collectors<NoneMach> StageCollectors;
+
+        StageCollectors* collectors = pipe.createStage<StageCollectors>();
+        collectors->createOperators(pipe.nbWorkers(), predicate);
+        pipe.addStage(collectors);
+        pipe.run();
+
+        return collectors->value();
+    }
+
 
 private:
     Pipeline pipe;

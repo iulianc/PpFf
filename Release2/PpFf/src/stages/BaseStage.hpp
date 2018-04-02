@@ -45,7 +45,7 @@ namespace PpFf {
             }
         }
 
-        //find
+        //find; anyMach; noneMach
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
         void createOperators(int const& no_workers, std::function< Param2(Param1*) > const& taskFunc) {
             for (int i = 0; i < no_workers; i++) {
