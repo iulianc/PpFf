@@ -8,24 +8,24 @@
 using namespace PpFf;
 
 TEST_CASE("FindAnyElementExisteInCollection1", "AnyMachOperator") {
-    std::vector<int> elems(10);
-    bool expectedResult = true;
+    int n = 10;
+    std::vector<int> elems(n);
 
-    for(unsigned int i = 0; i < elems.size(); i++) {
+    for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
     };
 
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .anyMach<int>([](int *in)->bool {return (*in == 3); } );
+        .anyMach<int>([=](int *in) { return *in == 3; });
 
-    REQUIRE(currentResult == expectedResult);
+    REQUIRE(currentResult);
 }
 
 TEST_CASE("FindAnyElementExisteInCollection2", "AnyMachOperator") {
-    std::vector<int> elems(10);
-    bool expectedResult = false;
+    int n = 100;
+    std::vector<int> elems(n);
 
     for(unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
@@ -34,32 +34,32 @@ TEST_CASE("FindAnyElementExisteInCollection2", "AnyMachOperator") {
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .anyMach<int>([](int *in)->bool {return (*in == 11); } );
+        .anyMach<int>([=](int *in) { return *in == (n+1); });
 
-    REQUIRE(currentResult == expectedResult);
+    REQUIRE(!currentResult);
 }
 
 
 TEST_CASE("FindAnyElementExisteInCollection1Parallel", "AnyMachOperator") {
-    std::vector<int> elems(10000);
-    bool expectedResult = true;
+    int n = 10000;
+    std::vector<int> elems(n);
 
-    for(unsigned int i = 0; i < elems.size(); i++) {
+    for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
     };
 
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-		.parallel(4)
-        .anyMach<int>([](int *in)->bool {return (*in == 3); } );
+        .parallel(4)
+        .anyMach<int>([](int *in) { return *in == 3; });
 
-    REQUIRE(currentResult == expectedResult);
+    REQUIRE(currentResult);
 }
 
 TEST_CASE("FindAnyElementExisteInCollection2Parallel", "AnyMachOperator") {
-    std::vector<int> elems(10000);
-    bool expectedResult = false;
+    int n = 10000;
+    std::vector<int> elems(n);
 
     for(unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
@@ -68,18 +68,17 @@ TEST_CASE("FindAnyElementExisteInCollection2Parallel", "AnyMachOperator") {
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-		.parallel(4)
-        .anyMach<int>([](int *in)->bool {return (*in == 10001); } );
+        .parallel(4)
+        .anyMach<int>([=](int *in) { return *in == (n+1); });
 
-    REQUIRE(currentResult == expectedResult);
+    REQUIRE(!currentResult);
 }
 
 
 
 TEST_CASE("FindAnyEmployeeWithAgeBetween30And40", "AnyMachOperator") {
-    std::vector<Employee> elems;
-    bool expectedResult = true;
     unsigned int noEmployees = 10;
+    std::vector<Employee> elems;
 
     for (unsigned int i = 0; i < noEmployees; i++) {
         Employee employee(i + 25,
@@ -91,15 +90,14 @@ TEST_CASE("FindAnyEmployeeWithAgeBetween30And40", "AnyMachOperator") {
     bool currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
-        .anyMach<Employee>( [](Employee *e) ->bool { return (e->age > 30 && e->age < 40); } );
+        .anyMach<Employee>([](Employee *e) { return e->age > 30 && e->age < 40; });
 
-    REQUIRE(currentResult == expectedResult);
+    REQUIRE(currentResult);
 }
 
 
 TEST_CASE("FindAnyEmployeeWithAgeBetween31And40", "AnyMachOperator") {
     std::vector<Employee> elems;
-    bool expectedResult = false;
     unsigned int noEmployees = 10;
 
     for (unsigned int i = 0; i < noEmployees; i++) {
@@ -112,7 +110,7 @@ TEST_CASE("FindAnyEmployeeWithAgeBetween31And40", "AnyMachOperator") {
     bool currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
-        .anyMach<Employee>( [](Employee *e) ->bool { return (e->age > 30 && e->age < 40); } );
+        .anyMach<Employee>([](Employee *e) { return e->age > 30 && e->age < 40; });
 
-    REQUIRE(currentResult == expectedResult);
+    REQUIRE(!currentResult);
 }

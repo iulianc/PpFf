@@ -18,7 +18,7 @@ TEST_CASE("CheckAllElementsSatisfyCondition1", "AllMatchOperator") {
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .allMatch<int>([=](int *in) { return (*in != (n+1)); });
+        .allMatch<int>([=](int *in) { return *in != (n+1); });
 
     REQUIRE(currentResult);
 }
@@ -34,7 +34,7 @@ TEST_CASE("CheckAllElementsSatisfyCondition2", "AllMatchOperator") {
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .allMatch<int>([](int *in) { return (*in != 3); });
+        .allMatch<int>([](int *in) { return *in != 3; });
 
     REQUIRE(!currentResult);
 }
@@ -52,7 +52,7 @@ TEST_CASE("CheckAllElemenstSatisfyCondition1Parallel", "AllMatchOperator") {
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .allMatch<int>([=](int *in) { return (*in != (n+1)); });
+        .allMatch<int>([=](int *in) { return *in != (n+1); });
     
     REQUIRE(currentResult);
 }
@@ -69,7 +69,7 @@ TEST_CASE("CheckAllElemensSatisfyCondition2Parallel", "AllMatchOperator") {
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .allMatch<int>([](int *in) { return (*in == 3); });
+        .allMatch<int>([](int *in) { return *in == 3; });
     
     REQUIRE(!currentResult);
 }
