@@ -16,6 +16,7 @@
 #include <operators/MaxOperator.hpp>
 #include <operators/AnyMachOperator.hpp>
 #include <operators/NoneMachOperator.hpp>
+#include <operators/AllMatchOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -316,6 +317,20 @@ namespace PpFf {
         bool noneMach(std::function< bool(T*) > predicate) {
         typedef NoneMachOperator<T> NoneMach;
         typedef Collectors<NoneMach> StageCollectors;
+
+        StageCollectors* collectors = pipe.createStage<StageCollectors>();
+        collectors->createOperators(pipe.nbWorkers(), predicate);
+        pipe.addStage(collectors);
+        pipe.run();
+
+        return collectors->value();
+    }
+
+
+    template < typename T >
+        bool allMatch(std::function< bool(T*) > predicate) {
+        typedef AllMatchOperator<T> AllMatch;
+        typedef Collectors<AllMatch> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
         collectors->createOperators(pipe.nbWorkers(), predicate);
