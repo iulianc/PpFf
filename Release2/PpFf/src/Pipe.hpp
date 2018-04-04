@@ -18,6 +18,7 @@
 #include <operators/AnyMatchOperator.hpp>
 #include <operators/NoneMatchOperator.hpp>
 #include <operators/LimitOperator.hpp>
+#include <operators/SkipOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -346,6 +347,18 @@ namespace PpFf {
         Pipe& limit(int n) {
             typedef LimitOperator<T> Limit;
             typedef BaseStage<Limit> Stage;
+
+            Stage* stage = pipe.createStage<Stage>();
+            stage->createOperators(pipe.nbWorkers(), n);
+            pipe.addStage(stage);
+
+            return *this;
+        }
+
+        template < typename T >
+        Pipe& skip(int n) {
+            typedef SkipOperator<T> Skip;
+            typedef BaseStage<Skip> Stage;
 
             Stage* stage = pipe.createStage<Stage>();
             stage->createOperators(pipe.nbWorkers(), n);
