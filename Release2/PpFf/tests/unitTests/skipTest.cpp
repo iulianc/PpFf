@@ -27,7 +27,7 @@ TEST_CASE("Skip0", "SkipOperator") {
 }
 
 TEST_CASE("SkipMiddle", "SkipOperator") {
-    int n = 1000;
+    unsigned int n = 1000;
     std::vector<int> elems(n);
     std::vector<int> expectedResult;
     

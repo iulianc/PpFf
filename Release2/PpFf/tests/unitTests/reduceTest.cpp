@@ -49,7 +49,7 @@ TEST_CASE( "SumCollectionOfIntegerWithVariousThreads", "ReduceOperator" ) {
     int initVal = 9; // Valeur arbitraire.
     
     std::vector<int> elems(n);
-    for (int i = 0; i < elems.size(); i++) {
+    for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i+1;
     };
     int expectedResult = n * (n + 1) / 2;

@@ -12,7 +12,7 @@ TEST_CASE("Limit0", "LimitOperator") {
     std::vector<int> elems(n);
     std::vector<int> expectedResult = {};
     
-    for(unsigned int i = 0; i < elems.size(); i++) {
+    for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
     };
 
@@ -26,11 +26,11 @@ TEST_CASE("Limit0", "LimitOperator") {
 }
 
 TEST_CASE("LimitMiddle", "LimitOperator") {
-    int n = 1000;
+    unsigned int n = 1000;
     std::vector<int> elems(n);
     std::vector<int> expectedResult;
     
-    for(unsigned int i = 0; i < elems.size(); i++) {
+    for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
         if (i < n / 2) expectedResult.push_back(i);
     };
@@ -49,7 +49,7 @@ TEST_CASE("LimitN", "LimitOperator") {
 
     std::vector<int> elems(n);
     std::vector<int> expectedResult;
-    for(unsigned int i = 0; i < elems.size(); i++) {
+    for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
         expectedResult.push_back(i);
     };
@@ -68,7 +68,7 @@ TEST_CASE("LimitMoreThanN", "LimitOperator") {
 
     std::vector<int> elems(n);
     std::vector<int> expectedResult;
-    for(unsigned int i = 0; i < elems.size(); i++) {
+    for (unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
         expectedResult.push_back(i);
     };
