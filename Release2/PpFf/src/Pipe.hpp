@@ -14,9 +14,9 @@
 #include <operators/LinesFromFileOperator.hpp>
 #include <operators/MinOperator.hpp>
 #include <operators/MaxOperator.hpp>
-#include <operators/AnyMachOperator.hpp>
-#include <operators/NoneMachOperator.hpp>
 #include <operators/AllMatchOperator.hpp>
+#include <operators/AnyMatchOperator.hpp>
+#include <operators/NoneMatchOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -301,9 +301,9 @@ namespace PpFf {
     }
 
     template < typename T >
-        bool anyMach(std::function< bool(T*) > predicate) {
-        typedef AnyMachOperator<T> AnyMach;
-        typedef Collectors<AnyMach> StageCollectors;
+        bool anyMatch(std::function< bool(T*) > predicate) {
+        typedef AnyMatchOperator<T> AnyMatch;
+        typedef Collectors<AnyMatch> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
         collectors->createOperators(pipe.nbWorkers(), predicate);
@@ -314,9 +314,9 @@ namespace PpFf {
     }
 
     template < typename T >
-        bool noneMach(std::function< bool(T*) > predicate) {
-        typedef NoneMachOperator<T> NoneMach;
-        typedef Collectors<NoneMach> StageCollectors;
+        bool noneMatch(std::function< bool(T*) > predicate) {
+        typedef NoneMatchOperator<T> NoneMatch;
+        typedef Collectors<NoneMatch> StageCollectors;
 
         StageCollectors* collectors = pipe.createStage<StageCollectors>();
         collectors->createOperators(pipe.nbWorkers(), predicate);

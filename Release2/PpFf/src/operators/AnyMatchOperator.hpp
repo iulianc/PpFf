@@ -8,19 +8,19 @@
 namespace PpFf{
 
 	template < typename T >
-	class AnyMachOperator: public FinalOperator {
+	class AnyMatchOperator: public FinalOperator {
 	public:
 		typedef bool Value;
-		AnyMachOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) { };
-		AnyMachOperator(const AnyMachOperator& other) : taskFunc(other.taskFunc) { }
-		AnyMachOperator(AnyMachOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
-		AnyMachOperator& operator+= ( const AnyMachOperator& other ) {
+		AnyMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) { };
+		AnyMatchOperator(const AnyMatchOperator& other) : taskFunc(other.taskFunc) { }
+		AnyMatchOperator(AnyMatchOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
+		AnyMatchOperator& operator+= ( const AnyMatchOperator& other ) {
 			if(!val){
 				val = other.val;
 			}
 			return *this;
 		}
-		~AnyMachOperator() { }
+		~AnyMatchOperator() { }
 
 		void* svc(void* task) {
 			if(val)

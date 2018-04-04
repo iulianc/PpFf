@@ -7,8 +7,8 @@
 
 using namespace PpFf;
 
-TEST_CASE("CheckAnyElementExisteInCollection1", "NoneMachOperator") {
-    int n = 100;
+TEST_CASE("FindAnyElementExisteInCollection1", "AnyMachOperator") {
+    int n = 10;
     std::vector<int> elems(n);
 
     for (unsigned int i = 0; i < elems.size(); i++) {
@@ -18,31 +18,14 @@ TEST_CASE("CheckAnyElementExisteInCollection1", "NoneMachOperator") {
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .noneMach<int>([=](int *in)->bool { return *in == (n+1); });
-    
+        .anyMatch<int>([=](int *in) { return *in == 3; });
+
     REQUIRE(currentResult);
 }
 
-TEST_CASE("CheckAnyElementExisteInCollection2", "NoneMachOperator") {
+TEST_CASE("FindAnyElementExisteInCollection2", "AnyMachOperator") {
     int n = 100;
     std::vector<int> elems(n);
-
-    for (unsigned int i = 0; i < elems.size(); i++) {
-        elems[i] = i;
-    };
-
-    bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
-        .noneMach<int>([](int *in) { return *in == 3; });
-
-    REQUIRE(!currentResult);
-}
-
-
-TEST_CASE("CheckAnyElementExisteInCollection1Parallel", "NoneMachOperator") {
-    std::vector<int> elems(10000);
-    bool expectedResult = true;
 
     for(unsigned int i = 0; i < elems.size(); i++) {
         elems[i] = i;
@@ -51,13 +34,30 @@ TEST_CASE("CheckAnyElementExisteInCollection1Parallel", "NoneMachOperator") {
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-		.parallel(4)
-        .noneMach<int>([](int *in)->bool {return (*in == 10001); } );
+        .anyMatch<int>([=](int *in) { return *in == (n+1); });
 
-    REQUIRE(currentResult == expectedResult);
+    REQUIRE(!currentResult);
 }
 
-TEST_CASE("CheckAnyElementExisteInCollection2Parallel", "NoneMachOperator") {
+
+TEST_CASE("FindAnyElementExisteInCollection1Parallel", "AnyMachOperator") {
+    int n = 10000;
+    std::vector<int> elems(n);
+
+    for (unsigned int i = 0; i < elems.size(); i++) {
+        elems[i] = i;
+    };
+
+    bool currentResult =
+        Pipe()
+        .source<int>(elems.begin(), elems.end())
+        .parallel(4)
+        .anyMatch<int>([](int *in) { return *in == 3; });
+
+    REQUIRE(currentResult);
+}
+
+TEST_CASE("FindAnyElementExisteInCollection2Parallel", "AnyMachOperator") {
     int n = 10000;
     std::vector<int> elems(n);
 
@@ -68,35 +68,16 @@ TEST_CASE("CheckAnyElementExisteInCollection2Parallel", "NoneMachOperator") {
     bool currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-		.parallel(4)
-        .noneMach<int>([](int *in) { return *in == 3; });
+        .parallel(4)
+        .anyMatch<int>([=](int *in) { return *in == (n+1); });
 
     REQUIRE(!currentResult);
 }
 
 
-TEST_CASE("CheckAnyEmployeeWithAgeBetween30And40", "NoneMachOperator") {
+
+TEST_CASE("FindAnyEmployeeWithAgeBetween30And40", "AnyMachOperator") {
     unsigned int noEmployees = 10;
-    std::vector<Employee> elems;
-
-    for (unsigned int i = 0; i < noEmployees; i++) {
-        Employee employee(i * 10,
-                          "Employee" + ConvertNumberToString(i),
-                          i % 3 == 0 ? i * 100 : i * 10);
-        elems.push_back(employee);
-    };
-
-    bool currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
-        .noneMach<Employee>([](Employee *e) ->bool { return e->age > 30 && e->age < 40; });
-
-    REQUIRE(currentResult);
-}
-
-
-TEST_CASE("CheckAnyEmployeeWithAgeBetween31And40", "NoneMachOperator") {
-    unsigned int noEmployees = 100;
     std::vector<Employee> elems;
 
     for (unsigned int i = 0; i < noEmployees; i++) {
@@ -109,7 +90,27 @@ TEST_CASE("CheckAnyEmployeeWithAgeBetween31And40", "NoneMachOperator") {
     bool currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
-        .noneMach<Employee>([](Employee *e) { return e->age > 30 && e->age < 40; });
+        .anyMatch<Employee>([](Employee *e) { return e->age > 30 && e->age < 40; });
+
+    REQUIRE(currentResult);
+}
+
+
+TEST_CASE("FindAnyEmployeeWithAgeBetween31And40", "AnyMachOperator") {
+    std::vector<Employee> elems;
+    unsigned int noEmployees = 10;
+
+    for (unsigned int i = 0; i < noEmployees; i++) {
+        Employee employee(i * 10,
+                          "Employee" + ConvertNumberToString(i),
+                          i % 3 == 0 ? i * 100 : i * 10);
+        elems.push_back(employee);
+    };
+
+    bool currentResult =
+        Pipe()
+        .source<Employee>(elems.begin(), elems.end())
+        .anyMatch<Employee>([](Employee *e) { return e->age > 30 && e->age < 40; });
 
     REQUIRE(!currentResult);
 }
