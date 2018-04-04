@@ -17,6 +17,7 @@
 #include <operators/AllMatchOperator.hpp>
 #include <operators/AnyMatchOperator.hpp>
 #include <operators/NoneMatchOperator.hpp>
+#include <operators/LimitOperator.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -35,7 +36,7 @@ namespace PpFf {
     public:
         Pipe() {};
 
-        ~Pipe(){};
+        ~Pipe() {};
 
         template < typename T, typename Iterator >
         Pipe& source(Iterator begin, Iterator end) {
@@ -95,7 +96,7 @@ namespace PpFf {
         template < typename T,
                    template < typename ELEM, class ALLOC = std::allocator<ELEM>>
                    class TContainer >
-        TContainer<T> collect() {
+            TContainer<T> collect() {
             typedef CollectorOperator<T, TContainer<T>> Collector;
             typedef Collectors<Collector> StageCollectors;
 
@@ -107,242 +108,254 @@ namespace PpFf {
             return collectors->value();
         }
 
-    template < typename In, typename Out >
-    Pipe& map(std::function< Out*(In*) > const& taskFunc) {
-        typedef MapOperator<In, Out> Map;
-        typedef BaseStage<Map> Stage;
+        template < typename In, typename Out >
+        Pipe& map(std::function< Out*(In*) > const& taskFunc) {
+            typedef MapOperator<In, Out> Map;
+            typedef BaseStage<Map> Stage;
 
-        Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.nbWorkers(), taskFunc);
-        pipe.addStage(stage);
+            Stage* stage = pipe.createStage<Stage>();
+            stage->createOperators(pipe.nbWorkers(), taskFunc);
+            pipe.addStage(stage);
 
-        return *this;
-    }
+            return *this;
+        }
 
-    template < typename In >
-    Pipe& find(std::function< bool(In*) > const& taskFunc) {
-        typedef FindOperator<In> Find;
-        typedef BaseStage<Find> Stage;
+        template < typename In >
+        Pipe& find(std::function< bool(In*) > const& taskFunc) {
+            typedef FindOperator<In> Find;
+            typedef BaseStage<Find> Stage;
 
-        Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.nbWorkers(), taskFunc);
-        pipe.addStage(stage);
+            Stage* stage = pipe.createStage<Stage>();
+            stage->createOperators(pipe.nbWorkers(), taskFunc);
+            pipe.addStage(stage);
 
-        return *this;
-    }
+            return *this;
+        }
 
-    template< typename In, typename Out, typename OutContainer >
-    Pipe& flatMap(std::function< OutContainer*(In*) > const& taskFunc) {
-        typedef MapOperator<In, OutContainer> Map;
-        typedef FlatOperator<OutContainer, Out> Flat;
-        typedef BaseStage<Map> MapStage;
-        typedef BaseStage<Flat> FlatStage;
+        template< typename In, typename Out, typename OutContainer >
+        Pipe& flatMap(std::function< OutContainer*(In*) > const& taskFunc) {
+            typedef MapOperator<In, OutContainer> Map;
+            typedef FlatOperator<OutContainer, Out> Flat;
+            typedef BaseStage<Map> MapStage;
+            typedef BaseStage<Flat> FlatStage;
 
-        MapStage* mapStage = pipe.createStage<MapStage>();
-        FlatStage* flatStage = pipe.createStage<FlatStage>();
+            MapStage* mapStage = pipe.createStage<MapStage>();
+            FlatStage* flatStage = pipe.createStage<FlatStage>();
 
-        mapStage->createOperators(pipe.nbWorkers(), taskFunc);
-        flatStage->createOperators(pipe.nbWorkers());
+            mapStage->createOperators(pipe.nbWorkers(), taskFunc);
+            flatStage->createOperators(pipe.nbWorkers());
 
-        pipe.addStage(mapStage);
-        pipe.addStage(flatStage);
+            pipe.addStage(mapStage);
+            pipe.addStage(flatStage);
 
-        return *this;
-    };
+            return *this;
+        };
 
-    template< typename In, typename Out, typename OutContainer = In >
-    Pipe& flatMap() {
-        typedef FlatOperator<In, Out> Flat;
-        typedef BaseStage<Flat> Stage;
+        template< typename In, typename Out, typename OutContainer = In >
+        Pipe& flatMap() {
+            typedef FlatOperator<In, Out> Flat;
+            typedef BaseStage<Flat> Stage;
 
-        Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.nbWorkers());
-        pipe.addStage(stage);
+            Stage* stage = pipe.createStage<Stage>();
+            stage->createOperators(pipe.nbWorkers());
+            pipe.addStage(stage);
 
-        return *this;
-    };
+            return *this;
+        };
 
-    template < typename In >
-    Pipe& peek(std::function< void(In*) > const& taskFunc) {
-        typedef PeekOperator<In> Peek;
-        typedef BaseStage<Peek> Stage;
+        template < typename In >
+        Pipe& peek(std::function< void(In*) > const& taskFunc) {
+            typedef PeekOperator<In> Peek;
+            typedef BaseStage<Peek> Stage;
 
-        Stage* stage = pipe.createStage<Stage>();
-        stage->createOperators(pipe.nbWorkers(), taskFunc);
-        pipe.addStage(stage);
+            Stage* stage = pipe.createStage<Stage>();
+            stage->createOperators(pipe.nbWorkers(), taskFunc);
+            pipe.addStage(stage);
 
-        return *this;
-    }
+            return *this;
+        }
 
-    template < typename In, typename Out = In >
-    Out reduce(Reducer<In, Out> const& reducer) {
-        typedef ReduceOperator<In, Out> Reduce;
-        typedef Collectors<Reduce> StageCollectors;
+        template < typename In, typename Out = In >
+        Out reduce(Reducer<In, Out> const& reducer) {
+            typedef ReduceOperator<In, Out> Reduce;
+            typedef Collectors<Reduce> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), reducer);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), reducer);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename In, typename Out = In >
-    Out reduce(std::function<Out (In, Out)> accumulator) {
-        // Cas simple special ou accumulator = combiner & pas de valeur initiale.
-        typedef ReduceOperator<In, Out> Reduce;
-        typedef Collectors<Reduce> StageCollectors;
+        template < typename In, typename Out = In >
+        Out reduce(std::function<Out (In, Out)> accumulator) {
+            // Cas simple special ou accumulator = combiner & pas de valeur initiale.
+            typedef ReduceOperator<In, Out> Reduce;
+            typedef Collectors<Reduce> StageCollectors;
 
-        Reducer<In, Out> reducer(accumulator, accumulator);
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), reducer);
-        pipe.addStage(collectors);
-        pipe.run();
+            Reducer<In, Out> reducer(accumulator, accumulator);
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), reducer);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename In, 
-               typename K = In, 
-               typename V = In,
-               typename MapType = std::unordered_map<K, std::vector<V>> >
-        MapType groupByKey(std::function< K*(In*)> const& taskFuncOnKey) {
-        typedef GroupByKeyOperator<In, K, V, MapType, false> GroupByKey;
-        typedef Collectors<GroupByKey> StageCollectors;
+        template < typename In, 
+                   typename K = In, 
+                   typename V = In,
+                   typename MapType = std::unordered_map<K, std::vector<V>> >
+            MapType groupByKey(std::function< K*(In*)> const& taskFuncOnKey) {
+            typedef GroupByKeyOperator<In, K, V, MapType, false> GroupByKey;
+            typedef Collectors<GroupByKey> StageCollectors;
                 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename In, typename K = In, typename V = In,
-               typename MapType = std::unordered_map<K, std::vector<V>> >
-    MapType groupByKey(std::function<K*(In*)> const& taskFuncOnKey, std::function<V*(In*)> const& taskFuncOnValue) {
-        typedef GroupByKeyOperator<In, K, V, MapType, true> GroupByKey;
-        typedef Collectors<GroupByKey> StageCollectors;
+        template < typename In, typename K = In, typename V = In,
+                   typename MapType = std::unordered_map<K, std::vector<V>> >
+            MapType groupByKey(std::function<K*(In*)> const& taskFuncOnKey, std::function<V*(In*)> const& taskFuncOnValue) {
+            typedef GroupByKeyOperator<In, K, V, MapType, true> GroupByKey;
+            typedef Collectors<GroupByKey> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, taskFuncOnValue);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, taskFuncOnValue);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename In, typename K = In, typename V = In,
-               typename MapType = std::unordered_map<K, V> >
-    MapType reduceByKey(Reducer<In, V> const& reducer) {
-        typedef ReduceByKeyOperator<In, K, V, MapType, false> ReduceByKey;
-        typedef Collectors<ReduceByKey> StageCollectors;
+        template < typename In, typename K = In, typename V = In,
+                   typename MapType = std::unordered_map<K, V> >
+        MapType reduceByKey(Reducer<In, V> const& reducer) {
+            typedef ReduceByKeyOperator<In, K, V, MapType, false> ReduceByKey;
+            typedef Collectors<ReduceByKey> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), reducer);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), reducer);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename In, typename K = In, typename V = In,
-               typename MapType = std::unordered_map<K, V> >
-    MapType reduceByKey(std::function<K*(In*)> const& taskFuncOnKey, Reducer<In, V> const& reducer) {
-        typedef ReduceByKeyOperator<In, K, V, MapType, true> ReduceByKey;
-        typedef Collectors<ReduceByKey> StageCollectors;
+        template < typename In, typename K = In, typename V = In,
+                   typename MapType = std::unordered_map<K, V> >
+        MapType reduceByKey(std::function<K*(In*)> const& taskFuncOnKey, Reducer<In, V> const& reducer) {
+            typedef ReduceByKeyOperator<In, K, V, MapType, true> ReduceByKey;
+            typedef Collectors<ReduceByKey> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, reducer);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, reducer);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename In, typename K = In, typename V = In,
-               typename MapType = std::unordered_map<K, V> >
-    MapType reduceByKey2(std::function< void(V*, In*) > const& accumulator, std::function< void(V*, V*) > const& combiner) {
-        typedef ReduceByKeyOperator2<In, K, V, MapType> ReduceByKey;
-        typedef Collectors<ReduceByKey> StageCollectors;
+        template < typename In, typename K = In, typename V = In,
+                   typename MapType = std::unordered_map<K, V> >
+        MapType reduceByKey2(std::function< void(V*, In*) > const& accumulator, std::function< void(V*, V*) > const& combiner) {
+            typedef ReduceByKeyOperator2<In, K, V, MapType> ReduceByKey;
+            typedef Collectors<ReduceByKey> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), accumulator, combiner);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), accumulator, combiner);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename T >
-    T min(std::function< void(T*, T*) > compare = ([](T* a, T* b) { if (*a> *b) *a = *b;})) {
-        typedef MinOperator<T> Min;
-        typedef Collectors<Min> StageCollectors;
+        template < typename T >
+        T min(std::function< void(T*, T*) > compare = ([](T* a, T* b) { if (*a> *b) *a = *b;})) {
+            typedef MinOperator<T> Min;
+            typedef Collectors<Min> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), compare);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), compare);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename T >
+        template < typename T >
         T max(std::function< void(T*, T*) > compare = ([](T* a, T* b) { if (*a <*b) *a = *b;})) {
-        typedef MaxOperator<T> Max;
-        typedef Collectors<Max> StageCollectors;
+            typedef MaxOperator<T> Max;
+            typedef Collectors<Max> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), compare);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), compare);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename T >
+        template < typename T >
         bool anyMatch(std::function< bool(T*) > predicate) {
-        typedef AnyMatchOperator<T> AnyMatch;
-        typedef Collectors<AnyMatch> StageCollectors;
+            typedef AnyMatchOperator<T> AnyMatch;
+            typedef Collectors<AnyMatch> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), predicate);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), predicate);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
-    template < typename T >
+        template < typename T >
         bool noneMatch(std::function< bool(T*) > predicate) {
-        typedef NoneMatchOperator<T> NoneMatch;
-        typedef Collectors<NoneMatch> StageCollectors;
+            typedef NoneMatchOperator<T> NoneMatch;
+            typedef Collectors<NoneMatch> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), predicate);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), predicate);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
 
-    template < typename T >
+        template < typename T >
         bool allMatch(std::function< bool(T*) > predicate) {
-        typedef AllMatchOperator<T> AllMatch;
-        typedef Collectors<AllMatch> StageCollectors;
+            typedef AllMatchOperator<T> AllMatch;
+            typedef Collectors<AllMatch> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
-        collectors->createOperators(pipe.nbWorkers(), predicate);
-        pipe.addStage(collectors);
-        pipe.run();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            collectors->createOperators(pipe.nbWorkers(), predicate);
+            pipe.addStage(collectors);
+            pipe.run();
 
-        return collectors->value();
-    }
+            return collectors->value();
+        }
 
 
-private:
-    Pipeline pipe;
-};
+        template < typename T >
+        Pipe& limit(int n) {
+            typedef LimitOperator<T> Limit;
+            typedef BaseStage<Limit> Stage;
+
+            Stage* stage = pipe.createStage<Stage>();
+            stage->createOperators(pipe.nbWorkers(), n);
+            pipe.addStage(stage);
+
+            return *this;
+        }
+
+    private:
+        Pipeline pipe;
+    };
 
 }
