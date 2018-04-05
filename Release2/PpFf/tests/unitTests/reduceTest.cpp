@@ -27,6 +27,39 @@ TEST_CASE( "SumCollectionOfInteger", "ReduceOperator" ) {
     REQUIRE(currentResult == expectedResult);
 }
 
+TEST_CASE( "ProductCollectionOfInteger with no initial value", "ReduceOperator" ) {
+    int n = 10;
+
+    std::vector<int> elems(n);
+    int expectedResult = 1;
+    for (unsigned int i = 0; i < elems.size(); i++) {
+        elems[i] = i+1;
+        expectedResult *= i+1;
+    };
+
+    Reducer<int, int> reducer(std::multiplies<int>{});
+
+    int currentResult =
+        Pipe()
+        .source<int>(elems.begin(), elems.end())
+        .reduce<int, int>(reducer);
+
+    REQUIRE(currentResult == expectedResult);
+}
+
+TEST_CASE( "ProductCollectionOfInteger with no initial value and no element", "ReduceOperator" ) {
+    std::vector<int> elems(0);
+
+    Reducer<int, int> reducer(std::multiplies<int>{});
+
+    int currentResult =
+        Pipe()
+        .source<int>(elems.begin(), elems.end())
+        .reduce<int, int>(reducer);
+
+    REQUIRE(currentResult == 0);
+}
+
 TEST_CASE( "SumCollectionOfInteger avec meme lambda comme accumulator et combiner", "ReduceOperator" ) {
     int n = 1000;
     std::vector<int> elems(n);

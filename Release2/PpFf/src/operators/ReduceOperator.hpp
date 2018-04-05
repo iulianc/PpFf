@@ -23,7 +23,7 @@ namespace PpFf {
             reducer(other.reducer) {}
 
         ReduceOperator(ReduceOperator&& other) noexcept: 
-        reducer(std::move(other.reducer)) {}
+            reducer(std::move(other.reducer)) {}
 
         ReduceOperator& operator+= (ReduceOperator& other) {
             if (!reducer.hasCombiner) throw std::logic_error( "ReduceOperator::operator+= => There is no combiner!" );
@@ -34,9 +34,16 @@ namespace PpFf {
         }
 
         ~ReduceOperator() {};
-
+        
         void* svc(void* task) {
-            val = reducer.accumulator(val, *((In*)task));
+            if (initialized) {
+                val = reducer.accumulator(val, *((In*)task));
+            } else {
+                // Pas initialise: On utilise le premier element
+                // rencontre comme valeur initiale de l'accumulateur.
+                val = *((Out*)task);
+                initialized = true;
+            }
 
             return (Out*)GO_ON;
         }
@@ -47,6 +54,7 @@ namespace PpFf {
 
     private:
         Reducer<In, Out> const& reducer;
+        bool initialized = reducer.hasInitialValue;
         Out val = reducer.initialValue;
     };
 
