@@ -12,7 +12,7 @@
 
 using namespace PpFf;
 
-int plus1(int count, std::string in) {
+int plus1(int count, std::string _) {
     return count + 1;
 };
 
@@ -133,12 +133,12 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalary", "ReduceByKeyOperator" ) {
         };
 
     Reducer<Employee, int> reducer(0, 
-                                   [](int totalSalary, Employee e) ->int { return totalSalary + e.salary; });
+                                   [](int totalSalary, Employee e) { return totalSalary + e.salary; });
 
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
-        .reduceByKey<Employee, std::string, int>([](Employee *e) ->std::string* { return &(e->job_title); }, 
+        .reduceByKey<Employee, std::string, int>([](Employee *e) { return &(e->job_title); }, 
                                                  reducer);
 
 
@@ -306,7 +306,7 @@ TEST_CASE( "ReduceByAgeCountEmployeesParallel", "ReduceByKeyOperator" ) {
 
     Reducer< Employee, int > reducer(0,
                                      [](int count, Employee e) { return count + 1; }, 
-                                     [](int total, int workerResult) ->int { return total + workerResult; });
+                                     [](int total, int workerResult) { return total + workerResult; });
 
     CONTAINER result = 
         Pipe()
