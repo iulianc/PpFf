@@ -190,12 +190,12 @@ namespace PpFf {
         }
 
         template < typename In, typename Out = In >
-        Out reduce(std::function<Out (In, Out)> accumulator) {
-            // Cas simple special ou accumulator = combiner & pas de valeur initiale.
+        // Cas special ou accumulator = combiner.
+        Out reduce(Out initialValue, std::function<Out (In, Out)> accumulator) {
             typedef ReduceOperator<In, Out> Reduce;
             typedef Collectors<Reduce> StageCollectors;
 
-            Reducer<In, Out> reducer(accumulator, accumulator);
+            Reducer<In, Out> reducer(initialValue, accumulator, accumulator);
             StageCollectors* collectors = pipe.createStage<StageCollectors>();
             collectors->createOperators(pipe.nbWorkers(), reducer);
             pipe.addStage(collectors);

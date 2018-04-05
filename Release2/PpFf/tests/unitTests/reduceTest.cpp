@@ -60,22 +60,22 @@ TEST_CASE( "ProductCollectionOfInteger with no initial value and no element", "R
     REQUIRE(currentResult == 0);
 }
 
-TEST_CASE( "SumCollectionOfInteger avec meme lambda comme accumulator et combiner", "ReduceOperator" ) {
-    int n = 1000;
-    std::vector<int> elems(n);
-    for (unsigned int i = 0; i < elems.size(); i++) {
-        elems[i] = i;
-    };
-    int expectedResult = n * (n - 1) / 2;
+ TEST_CASE( "SumCollectionOfInteger avec meme lambda comme accumulator et combiner", "ReduceOperator" ) {
+     int n = 1000;
+     std::vector<int> elems(n);
+     for (unsigned int i = 0; i < elems.size(); i++) {
+         elems[i] = i;
+     };
+     int expectedResult = n * (n - 1) / 2;
 
-    int currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
-        .parallel(4)
-        .reduce<int, int>(std::plus<int>{});
+     int currentResult =
+         Pipe()
+         .source<int>(elems.begin(), elems.end())
+         .parallel(4)
+         .reduce<int, int>(0, std::plus<int>{});
 
-    REQUIRE(currentResult == expectedResult);
-}
+     REQUIRE(currentResult == expectedResult);
+ }
 
 TEST_CASE( "SumCollectionOfIntegerWithVariousThreads", "ReduceOperator" ) {
     int n = 1000;
@@ -214,7 +214,7 @@ TEST_CASE( "AgerEmployeeParallel", "ReduceOperator" ) {
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .reduce<Employee, Employee>(employeeAgeMin);
+        .reduce<Employee, Employee>(employees[0], employeeAgeMin);
 
     REQUIRE(currentResult.name == expectedResult);
 }

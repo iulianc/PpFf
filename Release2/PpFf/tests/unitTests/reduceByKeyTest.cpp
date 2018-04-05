@@ -23,7 +23,7 @@ TEST_CASE( "ReduceByKeyCountElementsContainer", "ReduceByKeyOperator" ) {
 
     CONTAINER expectedResult = {{"Employee9", 2}, {"Employee6", 3}, {"Employee3", 4}};
 
-    Reducer< std::string, int > reducer(plus1);
+    Reducer< std::string, int > reducer(0, plus1);
 
     CONTAINER result = 
         Pipe()
@@ -47,7 +47,7 @@ TEST_CASE( "ReduceInOrderByKeyCountElementsContainer", "ReduceByKeyOperator" ) {
 
     CONTAINER expectedResult = {{"Employee9", 2}, {"Employee6", 3}, {"Employee3", 4}};
 
-    Reducer<std::string, int> reducer(plus1);
+    Reducer<std::string, int> reducer(0, plus1);
 
     CONTAINER result =
         Pipe()
@@ -91,7 +91,7 @@ TEST_CASE( "ReduceByAgeCountEmployees", "ReduceByKeyOperator" ) {
           {55, 2 }
         };
 
-    Reducer<Employee, int> reducer( 0, [](int count, Employee _) { return count + 1; } );
+    Reducer<Employee, int> reducer(0, [](int count, Employee _) { return count + 1; });
 
     CONTAINER result = 
         Pipe()
@@ -132,8 +132,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalary", "ReduceByKeyOperator" ) {
           {"technician",  270 }
         };
 
-    Reducer<Employee, int> reducer( 0, 
-                                    [](int totalSalary, Employee e) ->int { return totalSalary + e.salary; } );
+    Reducer<Employee, int> reducer(0, 
+                                   [](int totalSalary, Employee e) ->int { return totalSalary + e.salary; });
 
     CONTAINER result = 
         Pipe()
@@ -180,7 +180,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMaxAge", "ReduceByKeyOperator" ) {
           {"technician",  30 }
         };
 
-    Reducer<Employee, int> reducer( 0, [](int maxAge, Employee e) ->int { return maxAge < e.age ? e.age : maxAge; } );
+    Reducer<Employee, int> reducer(0, 
+                                   [](int maxAge, Employee e) { return maxAge < e.age ? e.age : maxAge; });
 
     CONTAINER result = 
         Pipe()
@@ -225,7 +226,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMinAge", "ReduceByKeyOperator" ) {
           {"technician",  18 }
         };
 
-    Reducer<Employee, int> reducer( 1000, [](int minAge, Employee e) ->int { return minAge > e.age ? e.age : minAge; } );
+    Reducer<Employee, int> reducer(1000, 
+                                   [](int minAge, Employee e) { return minAge > e.age ? e.age : minAge; });
 
     CONTAINER result = 
         Pipe()
@@ -251,7 +253,8 @@ TEST_CASE( "ReduceByKeyCountElementsContainerParallel", "ReduceByKeyOperator" ) 
 
     CONTAINER expectedResult = {{"Employee3", 4}, {"Employee6", 3}, {"Employee9", 2}};
 
-    Reducer<std::string, int> reducer(plus1, 
+    Reducer<std::string, int> reducer(0,
+                                      plus1, 
                                       std::plus<int>());
 
     CONTAINER result = 
@@ -301,7 +304,9 @@ TEST_CASE( "ReduceByAgeCountEmployeesParallel", "ReduceByKeyOperator" ) {
           {55, 2 }
         };
 
-    Reducer< Employee, int > reducer([](int count, Employee e) ->int { return count + 1; }, [](int total, int workerResult) ->int { return total + workerResult; } );
+    Reducer< Employee, int > reducer(0,
+                                     [](int count, Employee e) { return count + 1; }, 
+                                     [](int total, int workerResult) ->int { return total + workerResult; });
 
     CONTAINER result = 
         Pipe()
