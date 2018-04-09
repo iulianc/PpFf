@@ -21,7 +21,7 @@ namespace PpFf {
             workers.clear();
         }
 
-        //count; collect; sum; flat
+        //count; collect; sum; flat; sort
         template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
         void createOperators(int const& no_workers) {
             for (int i = 0; i < no_workers; i++) {
