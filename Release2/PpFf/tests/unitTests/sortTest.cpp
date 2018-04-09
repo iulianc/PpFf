@@ -1,4 +1,3 @@
-
 #include <string>
 #include <vector>
 #include "../unitTests/catch.hpp"
@@ -9,7 +8,6 @@
 #include <iostream>
 
 using namespace PpFf;
-
 
 TEST_CASE( "SortElementsCollection", "SortOperator" ) {
     std::vector<int> elems = {2, 5, 0, 3, 9, 1, 6, 8, 7, 4};
@@ -30,7 +28,7 @@ TEST_CASE( "SortElementsCollectionParallel", "SortOperator" ) {
     std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-		.parallel(4)
+        .parallel(4)
         .sort<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -73,7 +71,7 @@ TEST_CASE("SortEmployeesCollectionByAge", "SortOperator") {
     std::vector<Employee> currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
-        .sort<Employee, std::vector>(([](Employee e1, Employee e2 )->bool { return e1.age < e2.age; }));
+        .sort<Employee, std::vector>(([](Employee e1, Employee e2) { return e1.age < e2.age; } ));
 
     for (unsigned int i = 0; i < noEmployees; i++) {
     	REQUIRE(currentResult[i].name == expectedResult[i].name);
@@ -96,9 +94,9 @@ TEST_CASE("SortEmployeesCollectionByAgeParallel", "SortOperator") {
     std::vector<Employee> currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
-		.parallel(4)
-        .sort<Employee, std::vector>(([](Employee e1, Employee e2 )->bool { return e1.age < e2.age; }));
-
+        .parallel(4)
+        .sort<Employee, std::vector>(([](Employee e1, Employee e2 ) { return e1.age < e2.age; }));
+    
     for (unsigned int i = 0; i < noEmployees; i++) {
     	REQUIRE(currentResult[i].name == expectedResult[i].name);
     }

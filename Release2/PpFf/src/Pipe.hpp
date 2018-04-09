@@ -371,11 +371,11 @@ namespace PpFf {
         template < typename T,
                    template < typename ELEM, class ALLOC = std::allocator< ELEM > >
                    class TContainer >
-            TContainer<T> sort() {
-            typedef SortOperator< T, TContainer< T >, false > Sort;
-            typedef Collectors< Sort > StageCollectors;
+        TContainer<T> sort() {
+            typedef SortOperator<T, TContainer<T>, false> Sort;
+            typedef Collectors<Sort> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage< StageCollectors >();
+            StageCollectors* collectors = pipe.createStage<StageCollectors>();
             collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -383,24 +383,24 @@ namespace PpFf {
             return collectors->value();
         }
 
-        template < typename T,
-                   template < typename ELEM, class ALLOC = std::allocator< ELEM > >
-                   class TContainer >
-            TContainer<T> sort(std::function< bool(T, T) > const& compare) {
-            typedef SortOperator< T, TContainer< T >, true > Sort;
-            typedef Collectors< Sort > StageCollectors;
+    template < typename T,
+               template < typename ELEM, class ALLOC = std::allocator< ELEM > >
+               class TContainer >
+    TContainer<T> sort(std::function< bool(T, T) > const& compare) {
+        typedef SortOperator<T, TContainer<T>, true> Sort;
+        typedef Collectors<Sort> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage< StageCollectors >();
-            collectors->createOperators(pipe.nbWorkers(), compare);
-            pipe.addStage(collectors);
-            pipe.run();
+        StageCollectors* collectors = pipe.createStage<StageCollectors>();
+        collectors->createOperators(pipe.nbWorkers(), compare);
+        pipe.addStage(collectors);
+        pipe.run();
 
-            return collectors->value();
-        }
+        return collectors->value();
+    }
 
 
     private:
         Pipeline pipe;
-    };
+};
 
 }
