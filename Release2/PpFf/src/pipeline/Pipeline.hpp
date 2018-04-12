@@ -22,14 +22,15 @@ namespace PpFf {
         template< typename T >
         void addStage(T *stage) {
             assert(stage->workers.size() == no_workers);
-
+            
+            // On ajoute le stage dans les stages locaux.
             stages.push_back(stage);
 
+            // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
             if (!isParallel()) {
                 pipeline.add_stage(stage->workers[0]);
             } else {
-                Farm *farm = InstantiateFarm();
-
+                allocateFarm(); // Lazy allocation.
                 for (unsigned int i = 0; i < no_workers; i++) {
                     ff_pipeline *worker_pipe = (ff_pipeline*) farm->getWorker(i);
                     worker_pipe->add_stage(stage->workers[i]);
@@ -56,20 +57,18 @@ namespace PpFf {
         }
 
     private:
-        Farm* InstantiateFarm() {
+        void allocateFarm() {
             if (farm == NULL) {
                 farm = new Farm(no_workers);
                 pipeline.add_stage(farm->getFarm());
             }
-
-            return farm;
         }
 
     private:
         unsigned int no_workers;
         std::vector<IStage*> stages;
         ff_pipeline pipeline;
-        Farm *farm;
+        Farm* farm;
     };
 
 }
