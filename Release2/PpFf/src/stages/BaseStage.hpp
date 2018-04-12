@@ -14,7 +14,7 @@ namespace PpFf {
         std::vector<TOperator*> workers;
 
         ~BaseStage() {
-            for (unsigned int i = 0; i < workers.size(); i++) {
+            for (unsigned int i = 0; i <workers.size(); i++) {
                 delete (workers[i]);
             }
 
@@ -23,7 +23,7 @@ namespace PpFf {
 
         //count; collect; sum; flat; sort
         template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers) {
+        void addOperator(int const& no_workers) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator());
             }
@@ -31,7 +31,7 @@ namespace PpFf {
 
         //map; groupByKey
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc) {
+        void addOperator(int const& no_workers, std::function<Param2*(Param1*)> const& taskFunc) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(taskFunc));
             }
@@ -39,7 +39,7 @@ namespace PpFf {
 
         //groupByKey
         template< typename Param1, typename Param2, typename Param3 >
-        void createOperators(int const& no_workers, std::function< Param2*(Param1*) > const& taskFunc1, std::function< Param3*(Param1*) > const& taskFunc2) {
+        void addOperator(int const& no_workers, std::function<Param2*(Param1*)> const& taskFunc1, std::function<Param3*(Param1*)> const& taskFunc2) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(taskFunc1, taskFunc2));
             }
@@ -47,7 +47,7 @@ namespace PpFf {
 
         //find; anyMach; noneMach
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers, std::function< Param2(Param1*) > const& taskFunc) {
+        void addOperator(int const& no_workers, std::function<Param2(Param1*)> const& taskFunc) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(taskFunc));
             }
@@ -55,7 +55,7 @@ namespace PpFf {
 
         //peek
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers, std::function< void(Param1*) > const& taskFunc) {
+        void addOperator(int const& no_workers, std::function<void(Param1*)> const& taskFunc) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(taskFunc));
             }
@@ -63,7 +63,7 @@ namespace PpFf {
 
         //source
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers, Param1 const& param1, Param2 const& param2) {
+        void addOperator(int const& no_workers, Param1 const& param1, Param2 const& param2) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(param1, param2));
             }
@@ -71,7 +71,7 @@ namespace PpFf {
 
         //reduce; linesFromFile; reduceByKey
         template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers, Param1 const& param1) {
+        void addOperator(int const& no_workers, Param1 const& param1) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(param1));
             }
@@ -79,7 +79,7 @@ namespace PpFf {
 
         //reduceByKey2
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers, std::function< void(Param2*, Param1*) > const& taskFunc1, std::function< void(Param2*, Param2*) > const& taskFunc2) {
+        void addOperator(int const& no_workers, std::function<void(Param2*, Param1*)> const& taskFunc1, std::function<void(Param2*, Param2*)> const& taskFunc2) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(taskFunc1, taskFunc2));
             }
@@ -87,7 +87,7 @@ namespace PpFf {
 
         //min; max;
         template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-        void createOperators(int const& no_workers, std::function< void(Param1*, Param1*) > taskFunc) {
+        void addOperator(int const& no_workers, std::function<void(Param1*, Param1*)> taskFunc) {
             for (int i = 0; i < no_workers; i++) {
                 workers.push_back(new TOperator(taskFunc));
             }
