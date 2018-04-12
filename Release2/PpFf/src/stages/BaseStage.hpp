@@ -17,7 +17,6 @@ namespace PpFf {
             for (unsigned int i = 0; i <workers.size(); i++) {
                 delete (workers[i]);
             }
-
             workers.clear();
         }
 

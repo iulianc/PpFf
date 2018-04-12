@@ -353,27 +353,27 @@ namespace PpFf {
             collectors->addOperator(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
-
+            
             return collectors->value();
         }
-
-    template < typename T,
-               template < typename ELEM, class ALLOC = std::allocator< ELEM > >
-               class TContainer >
-    TContainer<T> sort(std::function< bool(T, T) > const& compare) {
-        typedef SortOperator<T, TContainer<T>, true> Sort;
         
-        Collectors<Sort>* collectors = new Collectors<Sort>();
-        collectors->addOperator(pipe.nbWorkers(), compare);
-        pipe.addStage(collectors);
-        pipe.run();
-
-        return collectors->value();
-    }
-
-
+        template < typename T,
+                   template < typename ELEM, class ALLOC = std::allocator< ELEM > >
+                   class TContainer >
+        TContainer<T> sort(std::function< bool(T, T) > const& compare) {
+            typedef SortOperator<T, TContainer<T>, true> Sort;
+            
+            Collectors<Sort>* collectors = new Collectors<Sort>();
+            collectors->addOperator(pipe.nbWorkers(), compare);
+            pipe.addStage(collectors);
+            pipe.run();
+            
+            return collectors->value();
+        }
+    
+    
     private:
         Pipeline pipe;
-};
-
+    };
+    
 }

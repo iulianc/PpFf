@@ -43,9 +43,9 @@ namespace PpFf {
         }
 
         void setNbWorkers(int no_workers) {
-            if (this->no_workers == 1) {
-                this->no_workers = no_workers;
-            }
+            if (this->no_workers != 1) return;
+
+            this->no_workers = no_workers;
         }
 
         bool isParallel() {
@@ -58,10 +58,10 @@ namespace PpFf {
 
     private:
         void allocateFarm() {
-            if (farm == NULL) {
-                farm = new Farm(no_workers);
-                pipeline.add_stage(farm->getFarm());
-            }
+            if (farm != NULL) return;
+
+            farm = new Farm(no_workers);
+            pipeline.add_stage(farm->getFarm());
         }
 
     private:
