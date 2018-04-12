@@ -20,16 +20,10 @@ namespace PpFf {
         }
 
         template< typename T >
-        T* createStage() {
-            T *stage = new T();
-            stages.push_back(stage);
-
-            return stage;
-        }
-
-        template< typename T >
         void addStage(T *stage) {
             assert(stage->workers.size() == no_workers);
+
+            stages.push_back(stage);
 
             if (!isParallel()) {
                 pipeline.add_stage(stage->workers[0]);

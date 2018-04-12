@@ -45,7 +45,7 @@ namespace PpFf {
             typedef SourceOperator<T, Iterator> Source;
             typedef Stage<Source> StageCount;
 
-            StageCount* stage = pipe.createStage<StageCount>();
+            StageCount* stage = new StageCount();
             stage->createOperators(pipe.nbWorkers(), begin, end);
             pipe.addStage(stage);
 
@@ -56,7 +56,7 @@ namespace PpFf {
             typedef LinesFromFileOperator LinesFromFile;
             typedef BaseStage<LinesFromFile> Stage;
 
-            Stage* stage = pipe.createStage<Stage>();
+            Stage* stage = new Stage();
             stage->createOperators(pipe.nbWorkers(), path);
             pipe.addStage(stage);
 
@@ -67,7 +67,7 @@ namespace PpFf {
             typedef CountOperator<int> Count;
             typedef Collectors<Count> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -80,7 +80,7 @@ namespace PpFf {
             typedef SumOperator<T> Sum;
             typedef Collectors<Sum> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -102,7 +102,7 @@ namespace PpFf {
             typedef CollectorOperator<T, TContainer<T>> Collector;
             typedef Collectors<Collector> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -115,7 +115,7 @@ namespace PpFf {
             typedef MapOperator<In, Out> Map;
             typedef BaseStage<Map> Stage;
 
-            Stage* stage = pipe.createStage<Stage>();
+            Stage* stage = new Stage();
             stage->createOperators(pipe.nbWorkers(), taskFunc);
             pipe.addStage(stage);
 
@@ -127,7 +127,7 @@ namespace PpFf {
             typedef FindOperator<In> Find;
             typedef BaseStage<Find> Stage;
 
-            Stage* stage = pipe.createStage<Stage>();
+            Stage* stage = new Stage();
             stage->createOperators(pipe.nbWorkers(), taskFunc);
             pipe.addStage(stage);
 
@@ -141,8 +141,8 @@ namespace PpFf {
             typedef BaseStage<Map> MapStage;
             typedef BaseStage<Flat> FlatStage;
 
-            MapStage* mapStage = pipe.createStage<MapStage>();
-            FlatStage* flatStage = pipe.createStage<FlatStage>();
+            MapStage* mapStage = new MapStage();
+            FlatStage* flatStage = new FlatStage();
 
             mapStage->createOperators(pipe.nbWorkers(), taskFunc);
             flatStage->createOperators(pipe.nbWorkers());
@@ -158,7 +158,7 @@ namespace PpFf {
             typedef FlatOperator<In, Out> Flat;
             typedef BaseStage<Flat> Stage;
 
-            Stage* stage = pipe.createStage<Stage>();
+            Stage* stage = new Stage();
             stage->createOperators(pipe.nbWorkers());
             pipe.addStage(stage);
 
@@ -170,7 +170,7 @@ namespace PpFf {
             typedef PeekOperator<In> Peek;
             typedef BaseStage<Peek> Stage;
 
-            Stage* stage = pipe.createStage<Stage>();
+            Stage* stage = new Stage();
             stage->createOperators(pipe.nbWorkers(), taskFunc);
             pipe.addStage(stage);
 
@@ -182,7 +182,7 @@ namespace PpFf {
             typedef ReduceOperator<In, Out> Reduce;
             typedef Collectors<Reduce> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), reducer);
             pipe.addStage(collectors);
             pipe.run();
@@ -197,7 +197,7 @@ namespace PpFf {
             typedef Collectors<Reduce> StageCollectors;
 
             Reducer<In, Out> reducer(initialValue, accumulator, accumulator);
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), reducer);
             pipe.addStage(collectors);
             pipe.run();
@@ -213,7 +213,7 @@ namespace PpFf {
             typedef GroupByKeyOperator<In, K, V, MapType, false> GroupByKey;
             typedef Collectors<GroupByKey> StageCollectors;
                 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey);
             pipe.addStage(collectors);
             pipe.run();
@@ -227,7 +227,7 @@ namespace PpFf {
             typedef GroupByKeyOperator<In, K, V, MapType, true> GroupByKey;
             typedef Collectors<GroupByKey> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, taskFuncOnValue);
             pipe.addStage(collectors);
             pipe.run();
@@ -241,7 +241,7 @@ namespace PpFf {
             typedef ReduceByKeyOperator<In, K, V, MapType, false> ReduceByKey;
             typedef Collectors<ReduceByKey> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), reducer);
             pipe.addStage(collectors);
             pipe.run();
@@ -255,7 +255,7 @@ namespace PpFf {
             typedef ReduceByKeyOperator<In, K, V, MapType, true> ReduceByKey;
             typedef Collectors<ReduceByKey> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), taskFuncOnKey, reducer);
             pipe.addStage(collectors);
             pipe.run();
@@ -269,7 +269,7 @@ namespace PpFf {
             typedef ReduceByKeyOperator2<In, K, V, MapType> ReduceByKey;
             typedef Collectors<ReduceByKey> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), accumulator, combiner);
             pipe.addStage(collectors);
             pipe.run();
@@ -282,7 +282,7 @@ namespace PpFf {
             typedef MinOperator<T> Min;
             typedef Collectors<Min> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();
@@ -295,7 +295,7 @@ namespace PpFf {
             typedef MaxOperator<T> Max;
             typedef Collectors<Max> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();
@@ -308,7 +308,7 @@ namespace PpFf {
             typedef AnyMatchOperator<T> AnyMatch;
             typedef Collectors<AnyMatch> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), predicate);
             pipe.addStage(collectors);
             pipe.run();
@@ -321,7 +321,7 @@ namespace PpFf {
             typedef NoneMatchOperator<T> NoneMatch;
             typedef Collectors<NoneMatch> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), predicate);
             pipe.addStage(collectors);
             pipe.run();
@@ -335,7 +335,7 @@ namespace PpFf {
             typedef AllMatchOperator<T> AllMatch;
             typedef Collectors<AllMatch> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers(), predicate);
             pipe.addStage(collectors);
             pipe.run();
@@ -349,7 +349,7 @@ namespace PpFf {
             typedef LimitOperator<T> Limit;
             typedef BaseStage<Limit> Stage;
 
-            Stage* stage = pipe.createStage<Stage>();
+            Stage* stage = new Stage();
             stage->createOperators(pipe.nbWorkers(), n);
             pipe.addStage(stage);
 
@@ -361,7 +361,7 @@ namespace PpFf {
             typedef SkipOperator<T> Skip;
             typedef BaseStage<Skip> Stage;
 
-            Stage* stage = pipe.createStage<Stage>();
+            Stage* stage = new Stage();
             stage->createOperators(pipe.nbWorkers(), n);
             pipe.addStage(stage);
 
@@ -375,7 +375,7 @@ namespace PpFf {
             typedef SortOperator<T, TContainer<T>, false> Sort;
             typedef Collectors<Sort> StageCollectors;
 
-            StageCollectors* collectors = pipe.createStage<StageCollectors>();
+            StageCollectors* collectors = new StageCollectors();
             collectors->createOperators(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -390,7 +390,7 @@ namespace PpFf {
         typedef SortOperator<T, TContainer<T>, true> Sort;
         typedef Collectors<Sort> StageCollectors;
 
-        StageCollectors* collectors = pipe.createStage<StageCollectors>();
+        StageCollectors* collectors = new StageCollectors();
         collectors->createOperators(pipe.nbWorkers(), compare);
         pipe.addStage(collectors);
         pipe.run();
