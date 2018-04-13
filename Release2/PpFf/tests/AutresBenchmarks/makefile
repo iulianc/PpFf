@@ -39,13 +39,13 @@ compile: $(EXE)
 
 N=10000000
 N=1000000
-N=10000
+N=20000
 
 run: compile
 	@echo "*** Execution MapFilterMap *** "
 	@./MapFilterMap $(N) 1
 	@./MapFilterMap $(N) 2
-	@#./MapFilterMap $(N) 4
+	@./MapFilterMap $(N) 4
 	@#./MapFilterMap $(N) 8
 	@echo ""
 	@echo "*** Execution FastFlow *** "
