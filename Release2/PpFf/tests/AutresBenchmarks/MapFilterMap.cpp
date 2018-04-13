@@ -20,9 +20,10 @@
 using namespace PpFf;
 
 static int* fois10(int *in){
-    *in *= 10;
+    int* res = (int*) malloc(sizeof(int));
+    *res = 10 * *in;
 
-    return in;
+    return res;
 };
 
 static bool divise20(int *in){
@@ -50,11 +51,6 @@ int main(int argc, char* argv[]) {
         nbThreads = atoi(argv[2]);
     }
     
-    Reducer<std::string, int> reducer(0, 
-                                      [](int count, std::string _) { return count + 1; },
-                                      std::plus<int>{} );
-    
-
     std::vector<int> elems(n);
     std::vector<int> expectedResult(n);
     int nbResults = 0;
@@ -69,6 +65,7 @@ int main(int argc, char* argv[]) {
 
     // EXECUTION PARALLELE.
     auto begin = std::chrono::high_resolution_clock::now();
+
     std::vector<int> currentResult = 
         Pipe()
         .source<int>(elems.begin(), elems.end())
@@ -77,6 +74,7 @@ int main(int argc, char* argv[]) {
         .find<int>(divise20)
         .map<int, int>(sommeJusqua)
         .collect<int, std::vector>();
+
     auto end = std::chrono::high_resolution_clock::now();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -90,26 +88,30 @@ int main(int argc, char* argv[]) {
     printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
 
 
+
     // EXECUTION SEQUENTIELLE.
     begin = std::chrono::high_resolution_clock::now();
-    nbResults = 0;
     for (int i = 0; i < n; i++) {
-        currentResult[i] = *fois10(&currentResult[i]);
+        elems[i] = i; 
     }
     for (int i = 0; i < n; i++) {
-        if (divise20(&i)) {
-            currentResult[nbResults] = i;
+        elems[i] = *fois10(&elems[i]);
+    }
+    nbResults = 0;
+    for (int i = 0; i < n; i++) {
+        if (divise20(&elems[i])) {
+            elems[nbResults] = elems[i];
             nbResults += 1;
         }
     }
     for (int i = 0; i < nbResults; i++) {
-        currentResult[i] = *sommeJusqua(&currentResult[i]);
+        elems[i] = *sommeJusqua(&elems[i]);
     }
     end = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < nbResults; i++) {
-        if (currentResult[i] != expectedResult[i]) {
-            printf( "Pas ok pour %d: currentResult = %d vs. expectedResult = %d\n", i, currentResult[i], expectedResult[i] );
+        if (elems[i] != expectedResult[i]) {
+            printf( "Pas ok pour %d: elems = %d vs. expectedResult = %d\n", i, elems[i], expectedResult[i] );
             break;
         }
     }
