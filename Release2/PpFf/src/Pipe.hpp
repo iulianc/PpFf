@@ -24,6 +24,7 @@
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
 #include <stages/BaseStage.hpp>
+#include <utilities/Debug.hpp>
 #include <vector>
 #include <map>
 #include <unordered_map>
