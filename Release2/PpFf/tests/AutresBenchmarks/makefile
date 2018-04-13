@@ -5,7 +5,7 @@ default:  run
 ########################################################
 
 # Specify the final target name
-EXE 		:= MapFilterMap MapFilterMapFastFlow
+EXE 		:= MapFilterMap MapFilterMapFastFlow MapFilterMapFastFlowSansMalloc
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -39,10 +39,10 @@ compile: $(EXE)
 
 N=10000000
 N=1000000
-N=100000
+N=10000
 
 run: compile
-	@#echo "*** Execution PpFF *** "
+	@echo "*** Execution MapFilterMap *** "
 	@./MapFilterMap $(N) 1
 	@./MapFilterMap $(N) 2
 	@#./MapFilterMap $(N) 4
@@ -50,6 +50,9 @@ run: compile
 	@echo ""
 	@echo "*** Execution FastFlow *** "
 	./MapFilterMapFastFlow $(N)
+	@echo ""
+	@echo "*** Execution MapFilterMapFastFlowSansMalloc *** "
+	./MapFilterMapFastFlowSansMalloc $(N)
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

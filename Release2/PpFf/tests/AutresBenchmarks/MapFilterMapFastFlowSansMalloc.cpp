@@ -18,14 +18,14 @@ using namespace ff;
 
 int N = 10;
 
+
 struct uptoStage: ff_node {
-    int k = 0;
+    int* vals = (int*) malloc(N * sizeof(int));
 
     void* svc(void* task) {
         for( int k = 0; k < N; k++ ) {
-            int* val = (int *) malloc(sizeof(int));
-            *val = k;
-            ff_send_out(val);
+            vals[k] = k;
+            ff_send_out(&vals[k]);
         }
         return EOS;
     }
@@ -33,10 +33,9 @@ struct uptoStage: ff_node {
 
 struct fois10Stage: ff_node_t<int> {
     int* svc(int* task) {
-        int* res = (int*) malloc(sizeof(int));
-        *res = 10 * (*task);
+        *task *= 10;
 
-        return res;
+        return task;
     }
 };
 
@@ -48,13 +47,14 @@ struct divise20Stage: ff_node_t<int> {
 
 struct sommeJusquaStage: ff_node_t<int> {
     int* svc(int* task) {
-        int* res = (int*) malloc(sizeof(int));
-        *res = 0;
+        int res = 0;
         for (int i = 1; i <= *task; i++) {
-            *res += i / 20 % 2 == 0 ? 1 : 2;
+            res += i / 20 % 2 == 0 ? 1 : 2;
         }
 
-        return res;
+        *task = res;
+
+        return task;
     }
 };
 
