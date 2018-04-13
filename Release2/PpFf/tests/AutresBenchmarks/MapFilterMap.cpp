@@ -87,7 +87,8 @@ int main(int argc, char* argv[]) {
         break;
     }
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    printf( "Temps parallele = %ld\n", duration_ms );
+    printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
+
 
     // EXECUTION SEQUENTIELLE.
     begin = std::chrono::high_resolution_clock::now();

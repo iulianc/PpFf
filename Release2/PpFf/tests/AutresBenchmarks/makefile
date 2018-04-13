@@ -46,7 +46,8 @@ run: compile
 	@./MapFilterMap $(N) 1
 	@./MapFilterMap $(N) 2
 	@#./MapFilterMap $(N) 4
-	@#./MapFilterMap $(N) 8
+	@./MapFilterMap $(N) 8
+	@./MapFilterMap $(N) 16
 	@echo ""
 	@echo "*** Execution FastFlow *** "
 	./MapFilterMapFastFlow $(N)
