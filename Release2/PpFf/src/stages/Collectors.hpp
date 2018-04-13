@@ -10,6 +10,7 @@ namespace PpFf {
 
         Value value() {
             combineWorkersResults();
+            
             return this->workers[0]->value();
         }
 

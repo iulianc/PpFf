@@ -43,7 +43,10 @@ namespace PpFf {
         }
 
         void setNbWorkers(int no_workers) {
-            if (this->no_workers != 1) return;
+            if (this->no_workers != 1) {
+                std::cerr << "*** Avertissement setNbWorkers(" << no_workers << "): this->no_workers != 1 => nouvel appel ignore***\n";
+                return;
+            }
 
             this->no_workers = no_workers;
         }
