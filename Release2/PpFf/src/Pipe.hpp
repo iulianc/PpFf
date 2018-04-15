@@ -59,6 +59,25 @@ namespace PpFf {
             return *this;
         }
 
+        template < typename T, typename Iterator >
+        Pipe& source(Iterator &begin, Iterator &end, bool Preserve) {
+            typedef SourceOperator<T, Iterator, true> Source;
+
+            Stage<Source>* stage = new Stage<Source>();
+            stage->addOperator(pipe.nbWorkers(), begin, end);
+            pipe.addStage(stage);
+
+            return *this;
+        }
+
+        template < typename T, typename Iterator >
+        Pipe stream(Iterator begin, Iterator end) {
+        	Pipe pipe;
+            pipe.source<T>(begin, end, true);
+
+            return pipe;
+        }
+
         Pipe& linesFromFile(const std::string& path) {
             typedef LinesFromFileOperator LinesFromFile;
 
@@ -347,7 +366,7 @@ namespace PpFf {
         template < typename T,
                    template < typename ELEM, class ALLOC = std::allocator< ELEM > >
                    class TContainer >
-        TContainer<T> sort() {
+        Pipe sort() {
             typedef SortOperator<T, TContainer<T>, false> Sort;
             
             Collectors<Sort>* collectors = new Collectors<Sort>();
@@ -355,13 +374,14 @@ namespace PpFf {
             pipe.addStage(collectors);
             pipe.run();
             
-            return collectors->value();
+            TContainer<T> container = collectors->value();
+            return stream<T>(container.begin(), container.end());
         }
         
         template < typename T,
                    template < typename ELEM, class ALLOC = std::allocator< ELEM > >
                    class TContainer >
-        TContainer<T> sort(std::function< bool(T, T) > const& compare) {
+        Pipe sort(std::function< bool(T, T) > const& compare) {
             typedef SortOperator<T, TContainer<T>, true> Sort;
             
             Collectors<Sort>* collectors = new Collectors<Sort>();
@@ -369,7 +389,8 @@ namespace PpFf {
             pipe.addStage(collectors);
             pipe.run();
             
-            return collectors->value();
+            TContainer<T> container = collectors->value();
+            return stream<T>(container.begin(), container.end());
         }
     
     
