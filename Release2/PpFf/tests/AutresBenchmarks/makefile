@@ -36,10 +36,16 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 .SUFFIXES: .cpp 
 
 compile: $(EXE)
+	javac MapFilterMapJava.java
 
 N=10000000
 N=1000000
-N=20000
+N=30000
+
+run_java: compile
+	@echo "*** Execution Java *** "
+	java MapFilterMapJava $(N)
+	@echo ""
 
 run: compile
 	@echo "*** Execution MapFilterMap *** "
@@ -54,13 +60,17 @@ run: compile
 	@echo ""
 	@echo "*** Execution MapFilterMapFastFlowSansMalloc *** "
 	./MapFilterMapFastFlowSansMalloc $(N)
+	@echo ""
+	@echo "*** Execution Java *** "
+	java MapFilterMapJava $(N)
+	@echo ""
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
 	\rm -f *.class
+	\rm -f *.o *~
 
 cleanall cleanxtra: clean
-	\rm -f *.o *~
 	\rm -f obtenus*txt temps-sh.txt res.txt
 
 # Include the dependency
