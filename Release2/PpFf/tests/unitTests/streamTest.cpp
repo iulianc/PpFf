@@ -35,11 +35,9 @@ TEST_CASE("CountEmployeesCollection", "StreamOperator") {
         elems.push_back(employee);
     };
 
-    Pipe pipe = Pipe()
-    		.stream<Employee>(elems.begin(), elems.end());
-
     unsigned int currentResult =
-        pipe
+        Pipe()
+        .stream<Employee>(elems.begin(), elems.end())
         .count();
 
     REQUIRE(currentResult == expectedResult);
@@ -58,11 +56,9 @@ TEST_CASE("FilterEmployeesWithSalaryBiggerThan100", "StreamOperator") {
         elems.push_back(employee);
     };
 
-    Pipe pipe = Pipe()
-    		.stream<Employee>(elems.begin(), elems.end());
-
     std::vector<std::string> currentResult =
-        pipe
+        Pipe()
+        .stream<Employee>(elems.begin(), elems.end())
         .find<Employee>( [](Employee *e) ->bool { return e->salary > 100; } )
         .map<Employee, std::string>( [](Employee *e) ->std::string* { return &(e->name); } )
         .collect<std::string, std::vector>();
@@ -187,20 +183,20 @@ TEST_CASE( "ReduceByAgeCountEmployeesWithStream", "StreamOperator" ) {
 }
 
 TEST_CASE("CollectionOfDoubleElementsWithStream", "StreamOperator") {
-	int n = 10000;
-	std::vector<double> elems(n);
-	double expectedResult = 0.1 * n * (n - 1) / 2.0;
+    int n = 10000;
+    std::vector<double> elems(n);
+    double expectedResult = 0.1 * n * (n - 1) / 2.0;
 
-	double temp = 0.0;
-	for (unsigned int i = 0; i < elems.size(); i++) {
-		elems[i] = temp;
-		temp += 0.1;
-	};
+    double temp = 0.0;
+    for (unsigned int i = 0; i < elems.size(); i++) {
+        elems[i] = temp;
+        temp += 0.1;
+    };
 
-	double currentResult =
-		Pipe()
-		.stream<double>(elems.begin(), elems.end())
-		.sum<double>();
+    double currentResult =
+        Pipe()
+        .stream<double>(elems.begin(), elems.end())
+        .sum<double>();
 
-	REQUIRE(currentResult == Approx(expectedResult));
+    REQUIRE(currentResult == Approx(expectedResult));
 }
