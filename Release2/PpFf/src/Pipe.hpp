@@ -71,11 +71,11 @@ namespace PpFf {
         }
 
         template < typename T, typename Iterator >
-        Pipe stream(Iterator begin, Iterator end) {
-        	Pipe pipe;
-            pipe.source<T>(begin, end, true);
+        Pipe& stream(Iterator begin, Iterator end) {
+            Pipe* pipe = new Pipe();
+            pipe->source<T>(begin, end, true);
 
-            return pipe;
+            return *pipe;
         }
 
         Pipe& linesFromFile(const std::string& path) {
@@ -366,7 +366,7 @@ namespace PpFf {
         template < typename T,
                    template < typename ELEM, class ALLOC = std::allocator< ELEM > >
                    class TContainer >
-        Pipe sort() {
+        Pipe& sort() {
             typedef SortOperator<T, TContainer<T>, false> Sort;
             
             Collectors<Sort>* collectors = new Collectors<Sort>();
@@ -381,7 +381,7 @@ namespace PpFf {
         template < typename T,
                    template < typename ELEM, class ALLOC = std::allocator< ELEM > >
                    class TContainer >
-        Pipe sort(std::function< bool(T, T) > const& compare) {
+        Pipe& sort(std::function< bool(T, T) > const& compare) {
             typedef SortOperator<T, TContainer<T>, true> Sort;
             
             Collectors<Sort>* collectors = new Collectors<Sort>();
@@ -393,9 +393,8 @@ namespace PpFf {
             return stream<T>(container.begin(), container.end());
         }
     
-    
-    private:
+private:
         Pipeline pipe;
-    };
+};
     
 }
