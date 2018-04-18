@@ -363,33 +363,29 @@ namespace PpFf {
             return *this;
         }
 
-        template < typename T,
-                   template < typename ELEM, class ALLOC = std::allocator< ELEM > >
-                   class TContainer >
+        template < typename T >
         Pipe& sort() {
-            typedef SortOperator<T, TContainer<T>, false> Sort;
+            typedef SortOperator<T, false> Sort;
             
             Collectors<Sort>* collectors = new Collectors<Sort>();
             collectors->addOperator(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
             
-            TContainer<T> container = collectors->value();
+            std::vector<T> container = collectors->value();
             return stream<T>(container.begin(), container.end());
         }
         
-        template < typename T,
-                   template < typename ELEM, class ALLOC = std::allocator< ELEM > >
-                   class TContainer >
+        template < typename T >
         Pipe& sort(std::function< bool(T, T) > const& compare) {
-            typedef SortOperator<T, TContainer<T>, true> Sort;
+            typedef SortOperator<T, true> Sort;
             
             Collectors<Sort>* collectors = new Collectors<Sort>();
             collectors->addOperator(pipe.nbWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();
             
-            TContainer<T> container = collectors->value();
+            std::vector<T> container = collectors->value();
             return stream<T>(container.begin(), container.end());
         }
     

@@ -9,13 +9,13 @@ using namespace ff;
 
 namespace PpFf {
     
-    template < typename T, typename TContainer, bool HasComparator >
+    template < typename T, bool HasComparator >
     class SortOperator: public FinalOperator {};
 
-    template< typename T, typename TContainer >
-    class SortOperator<T, TContainer, false>: public FinalOperator {
+    template< typename T >
+    class SortOperator<T, false>: public FinalOperator {
     public:
-    	typedef TContainer Value;
+    	typedef std::vector<T> Value;
 
     	SortOperator() {}
 
@@ -32,21 +32,21 @@ namespace PpFf {
             return (T*)GO_ON;
         }
 
-        TContainer value() {
+        std::vector<T> value() {
             std::sort (container.begin(), container.end());
 
             return container;
         }
 
     private:
-        TContainer container{};
+        std::vector<T> container{};
     };
 
 
-    template< typename T, typename TContainer >
-    class SortOperator<T, TContainer, true>: public FinalOperator {
+    template< typename T >
+    class SortOperator<T, true>: public FinalOperator {
     public:
-    	typedef TContainer Value;
+    	typedef std::vector<T> Value;
 
     	SortOperator(std::function<bool(T, T)> const& compare): compare(compare) { }
 
@@ -68,7 +68,7 @@ namespace PpFf {
             return (T*)GO_ON;
         }
 
-        TContainer value() {
+        std::vector<T> value() {
             std::sort (container.begin(), container.end(), compare);
 
             return container;
@@ -76,7 +76,7 @@ namespace PpFf {
 
     private:
         std::function<bool(T, T)> const& compare;
-        TContainer container{};
+        std::vector<T> container{};
     };
 
 }

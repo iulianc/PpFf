@@ -16,8 +16,8 @@ TEST_CASE( "SortElementsCollection", "SortOperator" ) {
     std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .sort<int, std::vector>()
-		.collect<int, std::vector>();
+        .sort<int>()
+        .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
@@ -30,7 +30,7 @@ TEST_CASE( "SortElementsCollectionParallel", "SortOperator" ) {
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .sort<int, std::vector>()
+        .sort<int>()
     	.collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -51,8 +51,8 @@ TEST_CASE("SortElementsCollectionLargeNumberElements", "SortOperator") {
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .sort<int, std::vector>()
-		.collect<int, std::vector>();
+        .sort<int>()
+        .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
@@ -74,7 +74,7 @@ TEST_CASE("SortEmployeesCollectionByAge", "SortOperator") {
     std::vector<Employee> currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
-        .sort<Employee, std::vector>(([](Employee e1, Employee e2) { return e1.age < e2.age; } ))
+        .sort<Employee>(([](Employee e1, Employee e2) { return e1.age < e2.age; } ))
     	.collect<Employee, std::vector>();
 
     for (unsigned int i = 0; i < noEmployees; i++) {
@@ -99,7 +99,7 @@ TEST_CASE("SortEmployeesCollectionByAgeParallel", "SortOperator") {
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .parallel(4)
-        .sort<Employee, std::vector>(([](Employee e1, Employee e2 ) { return e1.age < e2.age; }))
+        .sort<Employee>(([](Employee e1, Employee e2 ) { return e1.age < e2.age; }))
     	.collect<Employee, std::vector>();
     
     for (unsigned int i = 0; i < noEmployees; i++) {
