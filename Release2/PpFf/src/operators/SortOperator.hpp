@@ -9,57 +9,23 @@ using namespace ff;
 
 namespace PpFf {
     
-    template < typename T, bool HasComparator >
-    class SortOperator: public FinalOperator {};
-
     template< typename T >
-    class SortOperator<T, false>: public FinalOperator {
+    class SortOperator: public FinalOperator {
     public:
     	typedef std::vector<T> Value;
 
-    	SortOperator() {}
+    	SortOperator(std::function<bool(T, T)> const& compare = std::less<T>()): compare(compare) {}
 
-    	SortOperator& operator+=(const SortOperator& other) {
-            container.insert(container.end(), other.container.begin(), other.container.end());
-            return *this;
-        }
+    	SortOperator(SortOperator& other): compare(other.compare) {}
 
-        virtual ~SortOperator() {}
-
-        void* svc(void* task) {
-            container.push_back(*((T*)task));
-
-            return (T*)GO_ON;
-        }
-
-        std::vector<T> value() {
-            std::sort (container.begin(), container.end());
-
-            return container;
-        }
-
-    private:
-        std::vector<T> container{};
-    };
-
-
-    template< typename T >
-    class SortOperator<T, true>: public FinalOperator {
-    public:
-    	typedef std::vector<T> Value;
-
-    	SortOperator(std::function<bool(T, T)> const& compare): compare(compare) { }
-
-    	SortOperator(SortOperator& other): compare(other.compare) { }
-
-    	SortOperator(SortOperator&& other) noexcept: compare(std::move(other.compare)) { }
+    	SortOperator(SortOperator&& other) noexcept: compare(std::move(other.compare)) {}
 
     	SortOperator& operator+=(const SortOperator& other) {
             container.insert(container.end(), other.container.begin(), other.container.end());
 
             return *this;
         }
-
+        
         virtual ~SortOperator() {}
 
         void* svc(void* task) {

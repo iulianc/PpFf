@@ -364,21 +364,8 @@ namespace PpFf {
         }
 
         template < typename T >
-        Pipe& sort() {
-            typedef SortOperator<T, false> Sort;
-            
-            Collectors<Sort>* collectors = new Collectors<Sort>();
-            collectors->addOperator(pipe.nbWorkers());
-            pipe.addStage(collectors);
-            pipe.run();
-            
-            std::vector<T> container = collectors->value();
-            return stream<T>(container.begin(), container.end());
-        }
-        
-        template < typename T >
-        Pipe& sort(std::function< bool(T, T) > const& compare) {
-            typedef SortOperator<T, true> Sort;
+        Pipe& sort(std::function< bool(T, T) > const& compare = std::less<T>()) {
+            typedef SortOperator<T> Sort;
             
             Collectors<Sort>* collectors = new Collectors<Sort>();
             collectors->addOperator(pipe.nbWorkers(), compare);
