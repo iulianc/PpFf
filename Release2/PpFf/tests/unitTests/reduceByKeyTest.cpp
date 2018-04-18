@@ -96,8 +96,7 @@ TEST_CASE( "ReduceByAgeCountEmployees", "ReduceByKeyOperator" ) {
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
-        .reduceByKey<Employee, int, int>([](Employee *e) { return &(e->age); }, 
-                                         reducer);
+        .reduceByKey<Employee, int, int>(reducer, [](Employee *e) { return &(e->age); });
 
     std::map<int, int> sortedResult;
     for (auto it = result.begin(); it != result.end(); it++) {
@@ -138,8 +137,7 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalary", "ReduceByKeyOperator" ) {
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
-        .reduceByKey<Employee, std::string, int>([](Employee *e) { return &(e->job_title); }, 
-                                                 reducer);
+        .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
 
     REQUIRE(result.size() == expectedResult.size());
@@ -186,8 +184,7 @@ TEST_CASE( "ReduceByJobTitleEmployeesMaxAge", "ReduceByKeyOperator" ) {
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
-        .reduceByKey<Employee, std::string, int>([](Employee *e) { return &(e->job_title); }, 
-                                                 reducer);
+        .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
 
     REQUIRE(result.size() == expectedResult.size());
@@ -232,8 +229,7 @@ TEST_CASE( "ReduceByJobTitleEmployeesMinAge", "ReduceByKeyOperator" ) {
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
-        .reduceByKey<Employee, std::string, int>([](Employee *e) { return &(e->job_title); }, 
-                                                 reducer);
+        .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
 
     REQUIRE(result.size() == expectedResult.size());
@@ -312,8 +308,7 @@ TEST_CASE( "ReduceByAgeCountEmployeesParallel", "ReduceByKeyOperator" ) {
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .reduceByKey<Employee, int, int>([](Employee *e) { return &(e->age); }, 
-                                         reducer);
+        .reduceByKey<Employee, int, int>(reducer, [](Employee *e) { return &(e->age); });
 
     std::map<int, int> sortedResult;
     for (auto it = result.begin(); it != result.end(); it++) {
@@ -356,8 +351,7 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalaryParallel", "ReduceByKeyOperator" )
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .reduceByKey<Employee, std::string, int>([](Employee *e) { return &(e->job_title); },
-                                                 reducer);
+        .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
     std::map<std::string, int> sortedResult;
     for (auto it = result.begin(); it != result.end(); it++) {
@@ -401,16 +395,15 @@ TEST_CASE( "ReduceByJobTitleEmployeesMaxAgeParallel", "ReduceByKeyOperator" ) {
           {"technician",  30 }
         };
 
-    Reducer< Employee, int > reducer(0, 
-                                     [](int maxAge, Employee e) { return maxAge < e.age ? e.age : maxAge; },
-                                     [](int max, int workerResult) { return max < workerResult ? workerResult : max; } );
+    Reducer<Employee, int> reducer(0, 
+                                   [](int maxAge, Employee e) { return maxAge < e.age ? e.age : maxAge; },
+                                   [](int max, int workerResult) { return max < workerResult ? workerResult : max; } );
 
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .reduceByKey<Employee, std::string, int>([](Employee *e) { return &(e->job_title); },
-                                                 reducer);
+        .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
     std::map<std::string, int> sortedResult;
     for (auto it = result.begin(); it != result.end(); it++) {
@@ -453,16 +446,15 @@ TEST_CASE( "ReduceByJobTitleEmployeesMinAgeParallel", "ReduceByKeyOperator" ) {
           {"technician",  18 }
         };
 
-    Reducer< Employee, int > reducer(1000, 
-                                     [](int minAge, Employee e) { return minAge > e.age ? e.age : minAge; },
-                                     [](int min, int workerResult) { return min > workerResult ? workerResult : min; } );
+    Reducer<Employee, int> reducer(1000, 
+                                   [](int minAge, Employee e) { return minAge > e.age ? e.age : minAge; },
+                                   [](int min, int workerResult) { return min > workerResult ? workerResult : min; });
 
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .reduceByKey<Employee, std::string, int>([](Employee *e) { return &(e->job_title); },
-                                                 reducer);
+        .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
     std::map<std::string, int> sortedResult;
     for (auto it = result.begin(); it != result.end(); it++) {

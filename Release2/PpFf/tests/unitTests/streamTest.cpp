@@ -165,8 +165,7 @@ TEST_CASE( "ReduceByAgeCountEmployeesWithStream", "StreamOperator" ) {
     CONTAINER result =
         Pipe()
         .stream<Employee>(employees.begin(), employees.end())
-        .reduceByKey<Employee, int, int>([](Employee *e) { return &(e->age); },
-                                         reducer);
+        .reduceByKey<Employee, int, int>(reducer, [](Employee *e) { return &(e->age); });
 
     std::map<int, int> sortedResult;
     for (auto it = result.begin(); it != result.end(); it++) {
