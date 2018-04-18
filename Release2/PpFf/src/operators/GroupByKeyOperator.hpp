@@ -14,11 +14,14 @@ namespace PpFf {
         typedef MapContainer Value;
 
         GroupByKeyOperator(std::function< K*(In*) > const& taskFuncOnKey, 
-                           std::function< V*(In*) > const& taskFuncOnValue = identity<In,V>): taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue) { }
+                           std::function< V*(In*) > const& taskFuncOnValue = identity<In,V>): 
+            taskFuncOnKey(taskFuncOnKey), taskFuncOnValue(taskFuncOnValue) {}
 
-        GroupByKeyOperator(const GroupByKeyOperator& other) : taskFuncOnKey(other.taskFuncOnKey), taskFuncOnValue(other.taskFuncOnValue), mapContainer(other.mapContainer) { }
+        GroupByKeyOperator(const GroupByKeyOperator& other) : 
+            taskFuncOnKey(other.taskFuncOnKey), taskFuncOnValue(other.taskFuncOnValue), mapContainer(other.mapContainer) {}
 
-        GroupByKeyOperator(GroupByKeyOperator&& other) noexcept : taskFuncOnKey(std::move(other.taskFuncOnKey)), taskFuncOnValue(std::move(other.taskFuncOnValue)), mapContainer(std::move(other.mapContainer)) { }
+        GroupByKeyOperator(GroupByKeyOperator&& other) noexcept: 
+            taskFuncOnKey(std::move(other.taskFuncOnKey)), taskFuncOnValue(std::move(other.taskFuncOnValue)), mapContainer(std::move(other.mapContainer)) {}
 
         GroupByKeyOperator& operator+= (const GroupByKeyOperator& other) {
             for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
