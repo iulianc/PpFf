@@ -25,6 +25,7 @@
 #include <stages/Collectors.hpp>
 #include <stages/BaseStage.hpp>
 #include <utilities/Debug.hpp>
+#include <utilities/Identity.hpp>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -212,25 +213,11 @@ namespace PpFf {
             return collectors->value();
         }
 
-        template < typename In, 
-                   typename K = In, 
-                   typename V = In,
-                   typename MapType = std::unordered_map<K, std::vector<V>> >
-            MapType groupByKey(std::function< K*(In*)> const& taskFuncOnKey) {
-            typedef GroupByKeyOperator<In, K, V, MapType, false> GroupByKey;
-            
-            Collectors<GroupByKey>* collectors = new Collectors<GroupByKey>();
-            collectors->addOperator(pipe.nbWorkers(), taskFuncOnKey);
-            pipe.addStage(collectors);
-            pipe.run();
-
-            return collectors->value();
-        }
-
         template < typename In, typename K = In, typename V = In,
                    typename MapType = std::unordered_map<K, std::vector<V>> >
-            MapType groupByKey(std::function<K*(In*)> const& taskFuncOnKey, std::function<V*(In*)> const& taskFuncOnValue) {
-            typedef GroupByKeyOperator<In, K, V, MapType, true> GroupByKey;
+            MapType groupByKey(std::function<K*(In*)> const& taskFuncOnKey, 
+                               std::function<V*(In*)> const& taskFuncOnValue = identity<In,V>) {
+            typedef GroupByKeyOperator<In, K, V, MapType> GroupByKey;
             
             Collectors<GroupByKey>* collectors = new Collectors<GroupByKey>();
             collectors->addOperator(pipe.nbWorkers(), taskFuncOnKey, taskFuncOnValue);
