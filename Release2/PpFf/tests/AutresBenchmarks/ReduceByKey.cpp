@@ -58,9 +58,9 @@ int main(int argc, char* argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
 
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        if (expectedResult[it->first] != it->second) {
+        if (expectedResult[it->first] != result[it->first]) {
             printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
-                    it->first, it->second, expectedResult[it->first] );
+                    it->first, result[it->first], expectedResult[it->first] );
         }
         break;
     }
@@ -69,31 +69,23 @@ int main(int argc, char* argv[]) {
 
     /*
     // EXECUTION SEQUENTIELLE.
+    std::unordered_map<int,int> resultSeq;
     begin = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < n; i++) {
-        elems[i] = i; 
+        resultSeq[i] = 0;
     }
-    for (int i = 0; i < n; i++) {
-        elems[i] = *fois10(&elems[i]);
-    }
-    nbResults = 0;
-    for (int i = 0; i < n; i++) {
-        if (divise20(&elems[i])) {
-            elems[nbResults] = elems[i];
-            nbResults += 1;
-        }
-    }
-    for (int i = 0; i < nbResults; i++) {
-        elems[i] = *sommeJusqua(&elems[i]);
-    }
+
     end = std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < nbResults; i++) {
-        if (elems[i] != expectedResult[i]) {
-            printf( "Pas ok pour %d: elems = %d vs. expectedResult = %d\n", i, elems[i], expectedResult[i] );
-            break;
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        if (expectedResult[it->first] != it->second) {
+            printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
+                    it->first, it->second, expectedResult[it->first] );
         }
+        break;
     }
+
+
     duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
     printf( "Temps sequentiel = %ld\n", duration_ms );
     */
