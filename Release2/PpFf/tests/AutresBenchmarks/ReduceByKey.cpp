@@ -67,28 +67,28 @@ int main(int argc, char* argv[]) {
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
     printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
 
-    /*
     // EXECUTION SEQUENTIELLE.
     std::unordered_map<int,int> resultSeq;
     begin = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < n; i++) {
-        resultSeq[i] = 0;
+    for (auto it = elems.begin(); it != elems.end(); it++) {
+        std::unordered_map<int,int>::const_iterator got = resultSeq.find(*it);
+        if (got == resultSeq.end()) {
+            resultSeq[*it] = 0;
+        } 
+        resultSeq[*it] += 1;
     }
-
     end = std::chrono::high_resolution_clock::now();
 
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        if (expectedResult[it->first] != it->second) {
+        if (expectedResult[it->first] != resultSeq[it->first]) {
             printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
-                    it->first, it->second, expectedResult[it->first] );
+                    it->first, resultSeq[it->first], expectedResult[it->first] );
         }
         break;
     }
 
-
     duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
     printf( "Temps sequentiel = %ld\n", duration_ms );
-    */
 
     return 0;
 }
