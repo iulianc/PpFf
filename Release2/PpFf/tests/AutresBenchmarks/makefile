@@ -1,11 +1,17 @@
 .IGNORE:
 
-default:  run_java
+N=10000000
+N=1000000
+N=30000
+N=2000
+
+#default:  run_fmf
+default:  run_rbk
 
 ########################################################
 
 # Specify the final target name
-EXE 		:= MapFilterMap MapFilterMapFastFlow MapFilterMapFastFlowSansMalloc
+EXE 		:= MapFilterMap MapFilterMapFastFlow MapFilterMapFastFlowSansMalloc ReduceByKey
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -36,18 +42,14 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 .SUFFIXES: .cpp 
 
 compile: $(EXE)
-	javac MapFilterMapJava.java
+	@javac MapFilterMapJava.java
 
-N=10000000
-N=1000000
-N=30000
-
-run_java: compile
+run_java_fmf: compile
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
 	@echo ""
 
-run: compile
+run_fmf: compile
 	@echo "*** Execution MapFilterMap *** "
 	@./MapFilterMap $(N) 1
 	@./MapFilterMap $(N) 2
@@ -64,6 +66,24 @@ run: compile
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
 	@echo ""
+
+run_rbk: compile
+	@echo "*** Execution ReduceByKey *** "
+	@./ReduceByKey $(N) 1
+	@./ReduceByKey $(N) 2
+	@./ReduceByKey $(N) 4
+	@#./ReduceByKey $(N) 8
+	@#./ReduceByKey $(N) 16
+	@#echo ""
+	@#echo "*** Execution FastFlow *** "
+	@#./ReduceByKeyFastFlow $(N)
+	@#echo ""
+	@#echo "*** Execution ReduceByKeyFastFlowSansMalloc *** "
+	@#./ReduceByKeyFastFlowSansMalloc $(N)
+	@#echo ""
+	@#echo "*** Execution Java *** "
+	@#java ReduceByKeyJava $(N)
+	@#echo ""
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

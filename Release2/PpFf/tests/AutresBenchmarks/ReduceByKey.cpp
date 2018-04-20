@@ -1,0 +1,102 @@
+#include <iostream>
+#include <ff/pipeline.hpp>
+#include <ff/farm.hpp>
+#include <functional>
+#include <regex>
+#include <chrono>
+#include <ctime>
+#include <ratio>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <string>
+#include <sstream>
+#include<fstream>
+#include <locale>
+#include <Pipe.hpp>
+#include <unordered_map>
+#include <ctype.h>
+
+using namespace PpFf;
+
+static int plus1(int count, int _) {
+    return count + 1;
+};
+
+int main(int argc, char* argv[]) {
+    int n = 10;
+    int nbThreads = 2;
+
+    if (argc >= 2) {
+        n = atoi(argv[1]);
+    }
+    if (argc >= 3) {
+        nbThreads = atoi(argv[2]);
+    }
+    
+    std::vector<int> elems(n * (n+1) / 2);
+    std::unordered_map<int,int> expectedResult;
+    for (int i = 0; i < n; i++) {
+        for (int k = 1; k <= i; k++) {
+            elems.push_back(i);
+        }
+        expectedResult[i] = i;
+    }
+
+    Reducer<int, int> reducer(0, plus1, std::plus<int>());
+
+
+    // EXECUTION PARALLELE.
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    std::unordered_map<int,int> result = 
+        Pipe()
+        .source<int>(elems.begin(), elems.end())
+        .parallel(nbThreads)
+        .reduceByKey<int, int, int>(reducer);
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        if (expectedResult[it->first] != it->second) {
+            printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
+                    it->first, it->second, expectedResult[it->first] );
+        }
+        break;
+    }
+    long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+    printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
+
+    /*
+    // EXECUTION SEQUENTIELLE.
+    begin = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < n; i++) {
+        elems[i] = i; 
+    }
+    for (int i = 0; i < n; i++) {
+        elems[i] = *fois10(&elems[i]);
+    }
+    nbResults = 0;
+    for (int i = 0; i < n; i++) {
+        if (divise20(&elems[i])) {
+            elems[nbResults] = elems[i];
+            nbResults += 1;
+        }
+    }
+    for (int i = 0; i < nbResults; i++) {
+        elems[i] = *sommeJusqua(&elems[i]);
+    }
+    end = std::chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < nbResults; i++) {
+        if (elems[i] != expectedResult[i]) {
+            printf( "Pas ok pour %d: elems = %d vs. expectedResult = %d\n", i, elems[i], expectedResult[i] );
+            break;
+        }
+    }
+    duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+    printf( "Temps sequentiel = %ld\n", duration_ms );
+    */
+
+    return 0;
+}
