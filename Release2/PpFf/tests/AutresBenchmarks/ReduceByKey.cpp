@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
 
     end = std::chrono::high_resolution_clock::now();
 
-    for (auto& it: expectedResult) {
+    for (auto it: expectedResult) {
         if (expectedResult[it.first] != resultPar[it.first]) {
             printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
                     it.first, resultPar[it.first], expectedResult[it.first] );
