@@ -45,6 +45,7 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 compile: $(EXE)
 	@javac MapFilterMapJava.java
+	@javac ReduceByKeyJava.java
 
 run_java_fmf: compile
 	@echo "*** Execution Java *** "
@@ -83,9 +84,9 @@ run_rbk: compile
 	@#echo "*** Execution ReduceByKeyFastFlowSansMalloc *** "
 	@#./ReduceByKeyFastFlowSansMalloc $(N)
 	@#echo ""
-	@#echo "*** Execution Java *** "
-	@#java ReduceByKeyJava $(N)
-	@#echo ""
+	@echo "*** Execution Java *** "
+	@java -enableassertions ReduceByKeyJava $(N)
+	@echo ""
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
