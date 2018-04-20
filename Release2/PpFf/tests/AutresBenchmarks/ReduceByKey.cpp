@@ -24,7 +24,7 @@ static int plus1(int count, int _) {
 };
 
 int main(int argc, char* argv[]) {
-    int n = 10;
+    int n = 100;
     int nbThreads = 2;
 
     if (argc >= 2) {
@@ -33,62 +33,62 @@ int main(int argc, char* argv[]) {
     if (argc >= 3) {
         nbThreads = atoi(argv[2]);
     }
-    
-    std::vector<int> elems(n * (n+1) / 2);
+
+    // On construit les donnees a traiter et le resultat attendu.
+    std::vector<int> elems;
     std::unordered_map<int,int> expectedResult;
-    for (int i = 0; i < n; i++) {
+    for (int i = 1; i <= n; i++) {
         for (int k = 1; k <= i; k++) {
             elems.push_back(i);
         }
         expectedResult[i] = i;
     }
 
-    Reducer<int, int> reducer(0, plus1, std::plus<int>());
+    // EXECUTION SEQUENTIELLE.
+    std::unordered_map<int,int> resultSeq;
+    auto begin = std::chrono::high_resolution_clock::now();
+    for (auto it: elems) {
+        if (resultSeq.find(it) == resultSeq.end()) {
+            resultSeq[it] = 0;
+        } 
+        resultSeq[it] += 1;
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+
+    for (auto it: expectedResult) {
+        if (expectedResult[it.first] != resultSeq[it.first]) {
+            printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
+                    it.first, resultSeq[it.first], expectedResult[it.first] );
+            break;
+        }
+    }
+
+    long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+    printf( "Temps sequentiel = %ld\n", duration_ms );
 
 
     // EXECUTION PARALLELE.
-    auto begin = std::chrono::high_resolution_clock::now();
-
-    std::unordered_map<int,int> result = 
+    Reducer<int, int> reducer(0, plus1, std::plus<int>());
+    begin = std::chrono::high_resolution_clock::now();
+    
+    std::unordered_map<int,int> resultPar = 
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(nbThreads)
         .reduceByKey<int, int, int>(reducer);
 
-    auto end = std::chrono::high_resolution_clock::now();
-
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        if (expectedResult[it->first] != result[it->first]) {
-            printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
-                    it->first, result[it->first], expectedResult[it->first] );
-        }
-        break;
-    }
-    long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
-
-    // EXECUTION SEQUENTIELLE.
-    std::unordered_map<int,int> resultSeq;
-    begin = std::chrono::high_resolution_clock::now();
-    for (auto it = elems.begin(); it != elems.end(); it++) {
-        std::unordered_map<int,int>::const_iterator got = resultSeq.find(*it);
-        if (got == resultSeq.end()) {
-            resultSeq[*it] = 0;
-        } 
-        resultSeq[*it] += 1;
-    }
     end = std::chrono::high_resolution_clock::now();
 
-    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
-        if (expectedResult[it->first] != resultSeq[it->first]) {
+    for (auto& it: expectedResult) {
+        if (expectedResult[it.first] != resultPar[it.first]) {
             printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
-                    it->first, resultSeq[it->first], expectedResult[it->first] );
+                    it.first, resultPar[it.first], expectedResult[it.first] );
+            break;
         }
-        break;
     }
-
     duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    printf( "Temps sequentiel = %ld\n", duration_ms );
+    printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
+    printf( "\n" );
 
     return 0;
 }

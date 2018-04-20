@@ -4,6 +4,8 @@ N=10000000
 N=1000000
 N=30000
 N=2000
+#N=1000
+#N=10
 
 #default:  run_fmf
 default:  run_rbk
@@ -65,7 +67,7 @@ run_fmf: compile
 	@echo ""
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
-	@echo ""
+	@pecho ""
 
 run_rbk: compile
 	@echo "*** Execution ReduceByKey *** "
