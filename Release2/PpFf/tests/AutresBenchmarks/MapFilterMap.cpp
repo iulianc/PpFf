@@ -81,8 +81,8 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < nbResults; i++) {
         if (currentResult[i] != expectedResult[i]) {
             printf( "Pas ok pour %d: currentResult = %d vs. expectedResult = %d\n", i, currentResult[i], expectedResult[i] );
+            break;
         }
-        break;
     }
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
     printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
