@@ -8,7 +8,7 @@ set output 'graphe_acc_$taille.png'
 set logscale x
 set xlabel "Nombre de threads"
 set ylabel "Acceleration"
-set title "Acceleration vs. nb. threads -- $taille elements"
+set title "MapFilterMap: Acceleration vs. nb. threads -- $taille elements"
 set xtics (1, 2, 4, 8, 16, 32, 64)
 plot [0.8:70][0:$max] \
   "$fichier" using 1:(\$2/\$6) title "Seq/PpFf" with linespoints,\

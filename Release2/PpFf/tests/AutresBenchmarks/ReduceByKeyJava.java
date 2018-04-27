@@ -31,9 +31,14 @@ public class ReduceByKeyJava {
 
   public static void main(String[] args) throws IOException {
     int nb = DEFAULT_NB;
+    boolean parallel = true;
 
     if (args.length >= 1) {
       nb = Integer.parseInt(args[0]);
+    }
+
+    if (args.length >= 2) {
+      parallel = Integer.parseInt(args[1]) >= 1;
     }
 
     Integer[] elems = new Integer[nb * (nb+1) / 2];
@@ -47,18 +52,25 @@ public class ReduceByKeyJava {
       expectedResult[i] = i;
     }
 
+    Map<Integer,Integer> result;
+
     long startTime = System.nanoTime();
-        
-    Map<Integer,Integer> result =
-      Arrays.stream(elems)
-      .parallel()
-      .map( val -> new SimpleEntry<Integer,Integer>(val, 1) )
-      .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2) );
-    
+    if (parallel) {
+      result = 
+        Arrays.stream(elems)
+        .parallel()
+        .map( val -> new SimpleEntry<Integer,Integer>(val, 1) )
+        .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2) );
+    } else {
+      result = 
+        Arrays.stream(elems)
+        .map( val -> new SimpleEntry<Integer,Integer>(val, 1) )
+        .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2) );
+    }
     long duration = (System.nanoTime() - startTime);
     
     double milliseconds = (double) duration / 1000000;
-    System.err.println("Temps Java: " + milliseconds + " ms");
+    System.out.println(milliseconds);
 
     for (Map.Entry<Integer, Integer> e : result.entrySet()) {
       if ( !e.getValue().equals(expectedResult[e.getKey()]) ) {

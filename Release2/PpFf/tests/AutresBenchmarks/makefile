@@ -1,15 +1,16 @@
 .IGNORE:
 
-N=10000000
-N=1000000
-N=30000
+N=10
+N=1000
 N=2000
-#N=1000
-#N=10
+#N=30000
+#N=1000000
+#N=10000000
 
 #default:  run_bm_mfm
-#default:  run_rbk
-default: graphes_mfm
+#default:  run_bm_rbk
+#default: graphes_mfm
+default: graphes_rbk
 
 ########################################################
 
@@ -54,12 +55,12 @@ run_java_mfm: compile
 	@echo ""
 
 run_bm_mfm: compile
-	@./run_bm_mfm.rb $(N) > fichier_temps_$(N).txt
+	@./run_bm_mfm.rb $(N) | tee fichier_temps_$(N).txt
 
 
 graphes_mfm: run_bm_mfm
-	./gnuplot-acc.sh $(N) 10
-	./gnuplot-temps.sh $(N)
+	./gnuplot-acc-mfm.sh $(N) 10
+	./gnuplot-temps-mfm.sh $(N)
 
 run_mfm: compile
 	@echo "*** Execution MapFilterMap *** "
@@ -82,21 +83,22 @@ run_mfm: compile
 
 run_rbk: compile
 	@echo "*** Execution ReduceByKey *** "
+	@./ReduceByKey $(N) 0
 	@./ReduceByKey $(N) 1
 	@./ReduceByKey $(N) 2
-	@./ReduceByKey $(N) 4
+	@#./ReduceByKey $(N) 4
 	@#./ReduceByKey $(N) 8
 	@#./ReduceByKey $(N) 16
 	@#echo ""
-	@#echo "*** Execution FastFlow *** "
-	@#./ReduceByKeyFastFlow $(N)
-	@#echo ""
-	@#echo "*** Execution ReduceByKeyFastFlowSansMalloc *** "
-	@#./ReduceByKeyFastFlowSansMalloc $(N)
-	@#echo ""
 	@echo "*** Execution Java *** "
 	@java -enableassertions ReduceByKeyJava $(N)
-	@echo ""
+
+run_bm_rbk: compile
+	@./run_bm_rbk.rb $(N) | tee fichier_temps_$(N).txt
+
+graphes_rbk: run_bm_rbk
+	./gnuplot-acc-rbk.sh $(N) 4
+	./gnuplot-temps-rbk.sh $(N)
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
