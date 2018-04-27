@@ -5,7 +5,7 @@ fichier="fichier_temps_$taille.txt"
 max=$(ruby temps_max.rb <$fichier)
 gnuplot -persist <<EOF
 set terminal png
-set output 'graphe_temps_$taille.png'
+set output 'graphe_temps_MapFilterMap_$taille.png'
 set logscale x
 set xlabel "Nombre de threads"
 set ylabel "Temps d'execution (ms)"

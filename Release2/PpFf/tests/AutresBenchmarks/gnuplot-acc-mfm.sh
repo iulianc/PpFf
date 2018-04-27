@@ -4,7 +4,7 @@ taille=$1 max=$2
 fichier="fichier_temps_$taille.txt"
 gnuplot -persist <<EOF
 set terminal png
-set output 'graphe_acc_$taille.png'
+set output 'graphe_acc_MapFilterMap_$taille.png'
 set logscale x
 set xlabel "Nombre de threads"
 set ylabel "Acceleration"

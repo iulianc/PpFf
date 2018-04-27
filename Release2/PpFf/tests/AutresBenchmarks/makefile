@@ -1,9 +1,10 @@
 .IGNORE:
 
 N=10
-N=1000
-N=2000
-N=5000
+N=100
+#N=1000
+#N=2000
+#N=5000
 #N=1000000
 #N=10000000
 
@@ -59,8 +60,8 @@ run_bm_mfm: compile
 
 
 graphes_mfm: run_bm_mfm
-	./gnuplot-acc-mfm.sh $(N) 10
 	./gnuplot-temps-mfm.sh $(N)
+	./gnuplot-acc-mfm.sh $(N) 10
 
 run_mfm: compile
 	@echo "*** Execution MapFilterMap *** "
@@ -97,8 +98,8 @@ run_bm_rbk: compile
 	@./run_bm_rbk.rb $(N) | tee fichier_temps_$(N).txt
 
 graphes_rbk: run_bm_rbk
-	./gnuplot-acc-rbk.sh $(N) 4
 	./gnuplot-temps-rbk.sh $(N)
+	./gnuplot-acc-rbk.sh $(N) 4
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
