@@ -41,8 +41,9 @@ static int* sommeJusqua(int *in){
 };
 
 int main(int argc, char* argv[]) {
-    int n = 10;
-    int nbThreads = 2;
+    // On definit les parametres d'execution.
+    unsigned int n = 10;
+    unsigned int nbThreads = 0; // Execution sequentielle par defaut.
 
     if (argc >= 2) {
         n = atoi(argv[1]);
@@ -50,73 +51,67 @@ int main(int argc, char* argv[]) {
     if (argc >= 3) {
         nbThreads = atoi(argv[2]);
     }
-    
+
+    // On definit les elements a traiter et le resultat attendu.
     std::vector<int> elems(n);
-    std::vector<int> expectedResult(n);
-    int nbResults = 0;
-    for (int i = 0; i < n; i++) {
+    std::vector<int> attendus;
+    for (unsigned int i = 0; i < n; i++) {
         elems[i] = i;
         if ((10 * i) % 20 == 0) {
             int i10 = 10 * i;
-            expectedResult[nbResults] = *sommeJusqua(&i10);
-            nbResults += 1;
+            attendus.push_back(*sommeJusqua(&i10));
         }
     }
+    
+    std::vector<int> obtenus;
 
-    // EXECUTION PARALLELE.
     auto begin = std::chrono::high_resolution_clock::now();
-
-    std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
-        .parallel(nbThreads)
-        .map<int, int>(fois10)
-        .find<int>(divise20)
-        .map<int, int>(sommeJusqua)
-        .collect<int, std::vector>();
-
+    if (nbThreads == 0) {
+        // EXECUTION SEQUENTIELLE.
+        for (unsigned int i = 0; i < n; i++) {
+            elems[i] = i; 
+        }
+        std::vector<int> elems1;
+        for (unsigned int i = 0; i < n; i++) {
+            elems1.push_back(*fois10(&elems[i]));
+        }
+        std::vector<int> elems2;
+        for (unsigned int i = 0; i < elems1.size(); i++) {
+            if (divise20(&elems1[i])) {
+                elems2.push_back(elems1[i]);
+            }
+        }
+        for (unsigned int i = 0; i < elems2.size(); i++) {
+            obtenus.push_back(*sommeJusqua(&elems2[i]));
+        }
+    } else {
+        // EXECUTION PARALLELE.
+        obtenus = 
+            Pipe()
+            .source<int>(elems.begin(), elems.end())
+            .parallel(nbThreads)
+            .map<int, int>(fois10)
+            .find<int>(divise20)
+            .map<int, int>(sommeJusqua)
+            .collect<int, std::vector>();
+    }
     auto end = std::chrono::high_resolution_clock::now();
+    
+    std::sort(obtenus.begin(), obtenus.end());
+    
+    if (obtenus.size() != attendus.size()) {
+        printf( "Tailles pas ok: obtenus = %lu vs. attendus = %lu\n", 
+                obtenus.size(), attendus.size() );
+    }
 
-    std::sort(currentResult.begin(), currentResult.end());
-    for (int i = 0; i < nbResults; i++) {
-        if (currentResult[i] != expectedResult[i]) {
-            printf( "Pas ok pour %d: currentResult = %d vs. expectedResult = %d\n", i, currentResult[i], expectedResult[i] );
+    for (unsigned int i = 0; i < attendus.size(); i++) {
+        if (obtenus[i] != attendus[i]) {
+            printf( "Pas ok pour %d: obtenus = %d vs. attendus = %d\n", i, obtenus[i], attendus[i] );
             break;
         }
     }
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    printf( "Temps parallele (nbThreads = %d) = %ld\n", nbThreads, duration_ms );
-
-
-
-    // EXECUTION SEQUENTIELLE.
-    begin = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < n; i++) {
-        elems[i] = i; 
-    }
-    for (int i = 0; i < n; i++) {
-        elems[i] = *fois10(&elems[i]);
-    }
-    nbResults = 0;
-    for (int i = 0; i < n; i++) {
-        if (divise20(&elems[i])) {
-            elems[nbResults] = elems[i];
-            nbResults += 1;
-        }
-    }
-    for (int i = 0; i < nbResults; i++) {
-        elems[i] = *sommeJusqua(&elems[i]);
-    }
-    end = std::chrono::high_resolution_clock::now();
-
-    for (int i = 0; i < nbResults; i++) {
-        if (elems[i] != expectedResult[i]) {
-            printf( "Pas ok pour %d: elems = %d vs. expectedResult = %d\n", i, elems[i], expectedResult[i] );
-            break;
-        }
-    }
-    duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    printf( "Temps sequentiel = %ld\n", duration_ms );
+    printf( "%ld\n", duration_ms );
 
     return 0;
 }

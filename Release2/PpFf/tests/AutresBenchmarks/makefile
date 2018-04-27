@@ -7,8 +7,8 @@ N=2000
 #N=1000
 #N=10
 
-#default:  run_fmf
-default:  run_rbk
+default:  run_bm_fmf
+#default:  run_rbk
 
 ########################################################
 
@@ -52,8 +52,12 @@ run_java_fmf: compile
 	java MapFilterMapJava $(N)
 	@echo ""
 
+run_bm_fmf: compile
+	@./run_bm_fmf.rb 1000
+
 run_fmf: compile
 	@echo "*** Execution MapFilterMap *** "
+	@./MapFilterMap $(N) 0
 	@./MapFilterMap $(N) 1
 	@./MapFilterMap $(N) 2
 	@./MapFilterMap $(N) 4
@@ -68,7 +72,7 @@ run_fmf: compile
 	@echo ""
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
-	@pecho ""
+	@echo ""
 
 run_rbk: compile
 	@echo "*** Execution ReduceByKey *** "

@@ -39,9 +39,14 @@ public class MapFilterMapJava {
 
   public static void main(String[] args) throws IOException {
     int nb = DEFAULT_NB;
+    boolean parallel = true;
 
     if (args.length >= 1) {
       nb = Integer.parseInt(args[0]);
+    }
+
+    if (args.length >= 2) {
+      parallel = Integer.parseInt(args[1]) >= 1;
     }
 
     int[] elems = new int[nb];
@@ -51,22 +56,29 @@ public class MapFilterMapJava {
 
     long startTime = System.nanoTime();
         
-    int[] result =
-      Arrays.stream(elems)
-      .parallel()
-      .map( (n) -> n * 10 )
-      .filter( (n) -> n % 20 == 0 )
-      .map( (n) -> sommeJusqua(n) )
-      .toArray();
-    
+    int[] result;
+
+    if (parallel) {
+      result =
+        Arrays.stream(elems)
+        .parallel()
+        .map( (n) -> n * 10 )
+        .filter( (n) -> n % 20 == 0 )
+        .map( (n) -> sommeJusqua(n) )
+        .toArray();
+    } else {
+        result =
+          Arrays.stream(elems)
+          .map( (n) -> n * 10 )
+          .filter( (n) -> n % 20 == 0 )
+          .map( (n) -> sommeJusqua(n) )
+          .toArray();
+    }
+      
     long duration = (System.nanoTime() - startTime);
     
     double milliseconds = (double) duration / 1000000;
-    System.err.println("Temps Java: " + milliseconds + " ms");
-    
-    //for (int i = 0; i < result.length; i++) {
-    //  System.out.println( result[i] );
-    //}
+    System.out.println(milliseconds);
   }
 }
   
