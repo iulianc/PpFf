@@ -100,13 +100,16 @@ int main(int argc, char* argv[]) {
     std::sort(obtenus.begin(), obtenus.end());
     
     if (obtenus.size() != attendus.size()) {
-        printf( "Tailles pas ok: obtenus = %lu vs. attendus = %lu\n", 
-                obtenus.size(), attendus.size() );
+        fprintf( stderr, 
+                 "Tailles pas ok: obtenus = %lu vs. attendus = %lu\n", 
+                 obtenus.size(), attendus.size() );
     }
 
     for (unsigned int i = 0; i < attendus.size(); i++) {
         if (obtenus[i] != attendus[i]) {
-            printf( "Pas ok pour %d: obtenus = %d vs. attendus = %d\n", i, obtenus[i], attendus[i] );
+            fprintf( stderr, 
+                     "Pas ok pour %d: obtenus = %d vs. attendus = %d\n", 
+                     i, obtenus[i], attendus[i] );
             break;
         }
     }

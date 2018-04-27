@@ -74,7 +74,7 @@ public class ReduceByKeyJava {
 
     for (Map.Entry<Integer, Integer> e : result.entrySet()) {
       if ( !e.getValue().equals(expectedResult[e.getKey()]) ) {
-        System.out.println( "*** Result pas ok pour " + e.getKey() + ": " + e.getValue() + " != " + expectedResult[e.getKey()] );
+        System.err.println( "*** Result pas ok pour " + e.getKey() + ": " + e.getValue() + " != " + expectedResult[e.getKey()] );
         break;
       }
     }

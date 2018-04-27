@@ -69,8 +69,9 @@ int main(int argc, char* argv[]) {
 
     for (auto it: expectedResult) {
         if (expectedResult[it.first] != obtenu[it.first]) {
-            printf( "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
-                    it.first, obtenu[it.first], expectedResult[it.first] );
+            fprintf( stderr, 
+                     "Pas ok pour %d: result = %d vs. expectedResult = %d\n", 
+                     it.first, obtenu[it.first], expectedResult[it.first] );
             break;
         }
     }
