@@ -7,8 +7,9 @@ N=2000
 #N=1000
 #N=10
 
-default:  run_bm_fmf
+#default:  run_bm_mfm
 #default:  run_rbk
+default: graphes_mfm
 
 ########################################################
 
@@ -47,15 +48,20 @@ compile: $(EXE)
 	@javac MapFilterMapJava.java
 	@javac ReduceByKeyJava.java
 
-run_java_fmf: compile
+run_java_mfm: compile
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
 	@echo ""
 
-run_bm_fmf: compile
-	@./run_bm_fmf.rb 1000
+run_bm_mfm: compile
+	@./run_bm_mfm.rb $(N) > fichier_temps_$(N).txt
 
-run_fmf: compile
+
+graphes_mfm: run_bm_mfm
+	./gnuplot-acc.sh $(N) 10
+	./gnuplot-temps.sh $(N)
+
+run_mfm: compile
 	@echo "*** Execution MapFilterMap *** "
 	@./MapFilterMap $(N) 0
 	@./MapFilterMap $(N) 1
@@ -99,6 +105,7 @@ clean:
 
 cleanall cleanxtra: clean
 	\rm -f obtenus*txt temps-sh.txt res.txt
+	\rm -f fichier_temps*txt
 
 # Include the dependency
 #-include $(DEP)

@@ -11,7 +11,7 @@ taille = ARGV[0] ? ARGV[0].to_i : 10
 
 puts "# N = #{taille}"
 puts format("\#   %#{LARGEUR}s %#{LARGEUR}s %#{LARGEUR}s %#{LARGEUR}s %#{LARGEUR}s",
-            "Seq", "JavaSeq", "JavaPar", "FastFlow", "Ffpp")
+            "Seq", "JavaSeq", "JavaPar", "FastFlow", "PpFf")
 
 
 def temps_moyen( cmd )
