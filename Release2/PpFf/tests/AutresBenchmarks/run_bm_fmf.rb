@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
 LARGEUR = 8
-MAX_NB_THREADS = `cat /proc/cpuinfo | grep processor | wc -l`.to_i
+
+# Sur japet, plante si plus que 64, donc au plus 32... fois 2 -- voir plus bas.
+MAX_NB_THREADS = [`cat /proc/cpuinfo | grep processor | wc -l`.to_i, 32].min
 
 NB_REPETITIONS = 3
 
@@ -16,7 +18,8 @@ def temps_moyen( cmd )
   temps_tot = 0.0
 
   NB_REPETITIONS.times do
-    temps_tot += %x{#{cmd}}.chomp.to_f
+    temps = %x{#{cmd}}.chomp.to_f
+    temps_tot += temps
   end
 
   (temps_tot / NB_REPETITIONS).to_i
