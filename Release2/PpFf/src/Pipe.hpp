@@ -42,8 +42,9 @@ namespace PpFf {
 
         ~Pipe() {};
 
-        Pipe& parallel(int no_workers = 1) {
+        Pipe& parallel(int no_workers = 1, bool asPipeline = false) {
             pipe.setNbWorkers(no_workers);
+            pipe.asPipeline = asPipeline;
 
             return *this;
         };
@@ -338,8 +339,8 @@ namespace PpFf {
             return stream<T>(container.begin(), container.end());
         }
     
-private:
-        Pipeline pipe;
-};
+	private:
+			Pipeline pipe;
+	};
     
 }

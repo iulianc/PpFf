@@ -11,9 +11,9 @@ namespace PpFf {
         DEF_OUT_BUFF_ENTRIES=(DEF_IN_BUFF_ENTRIES+DEF_IN_OUT_DIFF) 
     };
 
-    class Farm {
+    class OldFarm {
     public:
-        Farm(int no_workers): _no_workers(no_workers) {
+        OldFarm(int no_workers): _no_workers(no_workers) {
             for (unsigned int i = 0 ; i < _no_workers; ++i) {
                 ff_pipeline *pipe = new ff_pipeline();
                 _workers.push_back(pipe);

@@ -79,7 +79,7 @@ TEST_CASE( "FlatCollectionParallel", "FlatMapOperator" ) {
 
     Integers expectedResult = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
-    Integers currentResult = 
+    Integers currentResult =
         Pipe()
         .source<Integers>(collection.begin(), collection.end())
         .parallel(4)
@@ -114,6 +114,7 @@ TEST_CASE( "FlatCollectionApplyingFunction", "FlatMapOperator" ) {
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
 
+
 TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
     std::vector<Employee> employees(3);
     for (unsigned int i = 0; i < employees.size(); i++) {
@@ -128,7 +129,7 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
         {"Arabic", "Chinese", "English", "French", "French", "Portuguese", "Spanish" };
 
 
-    std::vector<std::string> currentResult = 
+    std::vector<std::string> currentResult =
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
@@ -144,6 +145,7 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
 
+
 TEST_CASE( "FlatCollectionGrosNombreElements", "FlatMapOperator" ) {
     int n = 1000;
 
@@ -153,7 +155,7 @@ TEST_CASE( "FlatCollectionGrosNombreElements", "FlatMapOperator" ) {
         employees[i] = employee;
     };
 
-    std::vector<std::string> currentResult = 
+    std::vector<std::string> currentResult =
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)

@@ -10,7 +10,6 @@ namespace PpFf {
     template< typename TOperator >
     class BaseStage: public IStage {
     public:
-        bool const isFinalStage = false;
         std::vector<TOperator*> workers;
 
         ~BaseStage() {
@@ -99,6 +98,13 @@ namespace PpFf {
                 workers.push_back(new TOperator(taskFunc));
             }
         }
+
+        bool isFinal() {
+        	return isFinalStage;
+        }
+
+    protected:
+        bool isFinalStage = false;
     };
 }
 

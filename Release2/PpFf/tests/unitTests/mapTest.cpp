@@ -18,7 +18,7 @@ TEST_CASE( "UpdateElementsCollectionUsingFunction", "MapOperator" ) {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
-    std::vector<int> currentResult = 
+    std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .map<int, int>(Fois3)
@@ -32,7 +32,7 @@ TEST_CASE("UpdateElementsCollectionUsingLambdaFunction", "MapOperator") {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
-    std::vector<int> currentResult = 
+    std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
@@ -53,7 +53,7 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
         elems.push_back(employee);
     };
 
-    std::vector<std::string> currentResult = 
+    std::vector<std::string> currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .map<Employee, std::string>(([](Employee *e)->std::string* { return &(e->name); }))
@@ -66,7 +66,7 @@ TEST_CASE("UpdateElementsCollectionParallel", "MapOperator") {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
-    std::vector<int> currentResult = 
+    std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
@@ -86,7 +86,7 @@ TEST_CASE("UpdateElementsCollectionParallel Large number of elements", "MapOpera
         expectedResult[i] = *(Fois3(new int(i)));
     }
 
-    std::vector<int> currentResult = 
+    std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
