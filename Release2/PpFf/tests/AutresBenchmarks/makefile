@@ -1,14 +1,17 @@
 .IGNORE:
 
-N=10000000
-N=1000000
-N=30000
-N=2000
+N=10
+N=100
 #N=1000
-#N=10
+#N=2000
+#N=5000
+#N=1000000
+#N=10000000
 
-#default:  run_fmf
-default:  run_rbk
+#default:  run_bm_mfm
+#default:  run_bm_rbk
+#default: graphes_mfm
+default: graphes_rbk
 
 ########################################################
 
@@ -47,13 +50,22 @@ compile: $(EXE)
 	@javac MapFilterMapJava.java
 	@javac ReduceByKeyJava.java
 
-run_java_fmf: compile
+run_java_mfm: compile
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
 	@echo ""
 
-run_fmf: compile
+run_bm_mfm: compile
+	@./run_bm_mfm.rb $(N) | tee fichier_temps_$(N).txt
+
+
+graphes_mfm: run_bm_mfm
+	./gnuplot-temps-mfm.sh $(N)
+	./gnuplot-acc-mfm.sh $(N) 10
+
+run_mfm: compile
 	@echo "*** Execution MapFilterMap *** "
+	@./MapFilterMap $(N) 0
 	@./MapFilterMap $(N) 1
 	@./MapFilterMap $(N) 2
 	@./MapFilterMap $(N) 4
@@ -68,25 +80,26 @@ run_fmf: compile
 	@echo ""
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
-	@pecho ""
+	@echo ""
 
 run_rbk: compile
 	@echo "*** Execution ReduceByKey *** "
+	@./ReduceByKey $(N) 0
 	@./ReduceByKey $(N) 1
 	@./ReduceByKey $(N) 2
-	@./ReduceByKey $(N) 4
+	@#./ReduceByKey $(N) 4
 	@#./ReduceByKey $(N) 8
 	@#./ReduceByKey $(N) 16
 	@#echo ""
-	@#echo "*** Execution FastFlow *** "
-	@#./ReduceByKeyFastFlow $(N)
-	@#echo ""
-	@#echo "*** Execution ReduceByKeyFastFlowSansMalloc *** "
-	@#./ReduceByKeyFastFlowSansMalloc $(N)
-	@#echo ""
 	@echo "*** Execution Java *** "
 	@java -enableassertions ReduceByKeyJava $(N)
-	@echo ""
+
+run_bm_rbk: compile
+	@./run_bm_rbk.rb $(N) | tee fichier_temps_$(N).txt
+
+graphes_rbk: run_bm_rbk
+	./gnuplot-temps-rbk.sh $(N)
+	./gnuplot-acc-rbk.sh $(N) 4
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
@@ -95,6 +108,7 @@ clean:
 
 cleanall cleanxtra: clean
 	\rm -f obtenus*txt temps-sh.txt res.txt
+	\rm -f fichier_temps*txt
 
 # Include the dependency
 #-include $(DEP)

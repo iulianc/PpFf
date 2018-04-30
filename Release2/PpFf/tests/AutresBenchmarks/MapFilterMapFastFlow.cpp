@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     if (ffp.run_and_wait_end()<0) error("running pipe");
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    printf( "Temps fastflow = %ld\n", duration_ms );
+    printf( "%ld\n", duration_ms );
 
     /*
     printf( "\n" );
