@@ -83,9 +83,9 @@ TEST_CASE( "ChangingThreadNumber", "ParallelTest" ) {
         .parallel(4)
         .map<int, int>(fois10)
         .find<int>(divise20)
-		.parallel(2)
+        .parallel(2)
         .map<int, int>(sommeJusqua)
-		.parallel(1)
+        .parallel(1)
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -152,7 +152,7 @@ TEST_CASE( "ParalleWithPipelineAndFarmForEachNode", "ParallelTest" ) {
         .source<int>(elems.begin(), elems.end())
         .parallel(4)	//Farm for each Node
         .map<int, int>(fois10)
-		.parallel(2, true)	//Pipeline
+        .parallel(2, true)	//Pipeline
         .find<int>(divise20)
         .map<int, int>(sommeJusqua)
         .collect<int, std::vector>();
@@ -187,10 +187,10 @@ TEST_CASE( "ParalleSerialParallel", "ParallelTest" ) {
         .source<int>(elems.begin(), elems.end())
         .parallel(4)	//Farm for each Node
         .map<int, int>(fois10)
-		.parallel(1)	//Pipeline
+        .parallel(1)	//Pipeline
         .find<int>(divise20)
         .map<int, int>(sommeJusqua)
-		.parallel(2, true)	//Pipeline
+        .parallel(2, true)	//Pipeline
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
