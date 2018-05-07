@@ -1,3 +1,5 @@
+#ifndef COLLECTORS_HPP
+#define COLLECTORS_HPP
 
 #include <stages/BaseCollectors.hpp>
 
@@ -26,3 +28,5 @@ namespace PpFf {
     };
 
 }
+
+#endif

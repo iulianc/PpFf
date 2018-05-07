@@ -20,6 +20,7 @@
 #include <operators/LimitOperator.hpp>
 #include <operators/SkipOperator.hpp>
 #include <operators/SortOperator.hpp>
+#include <collections/Collection.hpp>
 #include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
@@ -61,24 +62,24 @@ namespace PpFf {
             return *this;
         }
 
-        template < typename T, typename Iterator >
-        Pipe& source(Iterator &begin, Iterator &end, bool Preserve) {
-            typedef SourceOperator<T, Iterator, true> Source;
-
-            Stage<Source>* stage = new Stage<Source>();
-            stage->addOperator(pipe.nbWorkers(), begin, end);
-            pipe.addStage(stage);
-
-            return *this;
-        }
-
-        template < typename T, typename Iterator >
-        Pipe& stream(Iterator begin, Iterator end) {
-            Pipe* pipe = new Pipe();
-            pipe->source<T>(begin, end, true);
-
-            return *pipe;
-        }
+//        template < typename T, typename Iterator >
+//        Pipe& source(Iterator &begin, Iterator &end, bool Preserve) {
+//            typedef SourceOperator<T, Iterator, true> Source;
+//
+//            Stage<Source>* stage = new Stage<Source>();
+//            stage->addOperator(pipe.nbWorkers(), begin, end);
+//            pipe.addStage(stage);
+//
+//            return *this;
+//        }
+//
+//        template < typename T, typename Iterator >
+//        Pipe& stream(Iterator begin, Iterator end) {
+//            Pipe* pipe = new Pipe();
+//            pipe->source<T>(begin, end, true);
+//
+//            return *pipe;
+//        }
 
         Pipe& linesFromFile(const std::string& path) {
             typedef LinesFromFileOperator LinesFromFile;
@@ -125,6 +126,21 @@ namespace PpFf {
             pipe.run();
 
             return collectors->value();
+        }
+
+        template < typename T,
+                   template < typename ELEM, class ALLOC = std::allocator<ELEM>>
+                   class TContainer >
+        Collection< T, TContainer, Pipe > intermediateCollect() {
+            typedef CollectorOperator<T, TContainer<T>> Collector;
+
+            Collectors<Collector>* collectors = new Collectors<Collector>();
+            collectors->addOperator(pipe.nbWorkers());
+            pipe.addStage(collectors);
+            pipe.run();
+
+            Collection< T, TContainer, Pipe > Collection(collectors->value());
+            return Collection;
         }
 
         template < typename In, typename Out >
@@ -327,16 +343,18 @@ namespace PpFf {
         }
 
         template < typename T >
-        Pipe& sort(std::function< bool(T, T) > const& compare = std::less<T>()) {
+        Collection< T, std::vector, Pipe > sort(std::function< bool(T, T) > const& compare = std::less<T>()) {
             typedef SortOperator<T> Sort;
-            
+
             Collectors<Sort>* collectors = new Collectors<Sort>();
             collectors->addOperator(pipe.nbWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();
-            
-            std::vector<T> container = collectors->value();
-            return stream<T>(container.begin(), container.end());
+
+//            std::vector<T> container = collectors->value();
+//            return stream<T>(container.begin(), container.end());
+            Collection< T, std::vector, Pipe > Collection(collectors->value());
+            return Collection;
         }
     
 	private:

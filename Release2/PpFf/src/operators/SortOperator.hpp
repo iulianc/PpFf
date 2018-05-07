@@ -4,6 +4,7 @@
 #include <functional>
 #include <algorithm>
 #include <operators/FinalOperator.hpp>
+//#include <collections/Collection.hpp>
 
 using namespace ff;
 
@@ -34,7 +35,7 @@ namespace PpFf {
             return (T*)GO_ON;
         }
 
-        std::vector<T> value() {
+        std::vector< T > value() {
             std::sort (container.begin(), container.end(), compare);
 
             return container;
@@ -42,7 +43,7 @@ namespace PpFf {
 
     private:
         std::function<bool(T, T)> const& compare;
-        std::vector<T> container{};
+		std::vector<T> container{};
     };
 
 }

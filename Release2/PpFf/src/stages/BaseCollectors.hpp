@@ -1,3 +1,6 @@
+#ifndef BASECOLLECTORS_HPP
+#define BASECOLLECTORS_HPP
+
 #include <stages/BaseStage.hpp>
 
 namespace PpFf {
@@ -11,3 +14,5 @@ namespace PpFf {
     };
 
 }
+
+#endif

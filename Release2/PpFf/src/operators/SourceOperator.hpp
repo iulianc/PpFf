@@ -62,60 +62,66 @@ namespace PpFf {
     };
 
 
-    template< typename T, typename It >
-    class SourceOperator< T, It, true >: public BaseOperator {
-    public:
-        SourceOperator(It &_begin, It &_end) {
-            for (; _begin != _end; _begin++) {
-                container.push_back(*_begin);
-            }
-        }
-
-        SourceOperator(const SourceOperator& other): container(other.container) {}
-
-        SourceOperator(SourceOperator&& other) noexcept: container(std::move(other.container)) {}
-
-        virtual ~SourceOperator() {}
-
-        void* svc(void* task) {
-            for(T &val: container){
-                this->ff_send_out (&val);
-            }
-
-            return EOS;
-        }
-
-    private:
-        std::vector<T> container {};
-    };
 
 
-    template< typename T, typename It >
-    class SourceOperator< T*, It, true >: public BaseOperator {
-    public:
-        SourceOperator(It &_begin, It &_end) {
-            for (; _begin != _end; _begin++) {
-                container.push_back(*_begin);
-            }
-        }
 
-        SourceOperator(const SourceOperator& other): container(other.container) {}
 
-        SourceOperator(SourceOperator&& other) noexcept: container(std::move(other.container)) {}
 
-        ~SourceOperator() {}
-
-        void* svc(void* task) {
-            for(T* val: container){
-                this->ff_send_out (val);
-            }
-
-            return EOS;
-        }
-
-    private:
-        std::vector< T* > container {};
-    };
+//
+//    template< typename T, typename It >
+//    class SourceOperator< T, It, true >: public BaseOperator {
+//    public:
+//        SourceOperator(It &_begin, It &_end) {
+//            for (; _begin != _end; _begin++) {
+//                container.push_back(*_begin);
+//            }
+//        }
+//
+//        SourceOperator(const SourceOperator& other): container(other.container) {}
+//
+//        SourceOperator(SourceOperator&& other) noexcept: container(std::move(other.container)) {}
+//
+//        virtual ~SourceOperator() {}
+//
+//        void* svc(void* task) {
+//            for(T &val: container){
+//                this->ff_send_out (&val);
+//            }
+//
+//            return EOS;
+//        }
+//
+//    private:
+//        std::vector<T> container {};
+//    };
+//
+//
+//    template< typename T, typename It >
+//    class SourceOperator< T*, It, true >: public BaseOperator {
+//    public:
+//        SourceOperator(It &_begin, It &_end) {
+//            for (; _begin != _end; _begin++) {
+//                container.push_back(*_begin);
+//            }
+//        }
+//
+//        SourceOperator(const SourceOperator& other): container(other.container) {}
+//
+//        SourceOperator(SourceOperator&& other) noexcept: container(std::move(other.container)) {}
+//
+//        ~SourceOperator() {}
+//
+//        void* svc(void* task) {
+//            for(T* val: container){
+//                this->ff_send_out (val);
+//            }
+//
+//            return EOS;
+//        }
+//
+//    private:
+//        std::vector< T* > container {};
+//    };
 
 
 

@@ -1,4 +1,5 @@
-
+#ifndef STAGE_HPP
+#define STAGE_HPP
 
 #include <stages/BaseStage.hpp>
 
@@ -10,3 +11,5 @@ namespace PpFf {
         bool const isFinalStage = false;
     };
 }
+
+#endif
