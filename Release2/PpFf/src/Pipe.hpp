@@ -21,7 +21,6 @@
 #include <operators/SkipOperator.hpp>
 #include <operators/SortOperator.hpp>
 #include <collections/Collection.hpp>
-#include <pipeline/Pipeline.hpp>
 #include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
 #include <stages/BaseStage.hpp>
@@ -32,6 +31,7 @@
 #include <unordered_map>
 
 #include <operators/ReduceByKeyOperator2.hpp>
+#include <pipeline/PipeManager.hpp>
 
 using namespace PpFf;
 
@@ -43,9 +43,8 @@ namespace PpFf {
 
         ~Pipe() {};
 
-        Pipe& parallel(int no_workers = 1, bool asPipeline = false) {
+        Pipe& parallel(int no_workers = 1) {
             pipe.setNbWorkers(no_workers);
-            pipe.asPipeline = asPipeline;
 
             return *this;
         };
@@ -358,7 +357,7 @@ namespace PpFf {
         }
     
 	private:
-			Pipeline pipe;
+		PipeManager pipe;
 	};
     
 }

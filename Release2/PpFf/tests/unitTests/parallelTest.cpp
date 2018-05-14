@@ -46,7 +46,7 @@ TEST_CASE( "ParallelWithPipeline", "ParallelTest" ) {
     std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .parallel(4, true)	//pipeline
+        .parallel(4)
         .map<int, int>(fois10)
         .find<int>(divise20)
         .map<int, int>(sommeJusqua)
@@ -118,8 +118,11 @@ TEST_CASE( "ParalleWithFarmForEachNode", "ParallelTest" ) {
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(fois10)
+		.parallel(2)
         .find<int>(divise20)
+		.parallel(4)
         .map<int, int>(sommeJusqua)
+		.parallel(2)
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -150,11 +153,13 @@ TEST_CASE( "ParalleWithPipelineAndFarmForEachNode", "ParallelTest" ) {
     std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .parallel(4)	//Farm for each Node
+        .parallel(4)
         .map<int, int>(fois10)
-		.parallel(2, true)	//Pipeline
+		.parallel(1)
         .find<int>(divise20)
+		.parallel(4)
         .map<int, int>(sommeJusqua)
+		.parallel(2)
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -185,12 +190,12 @@ TEST_CASE( "ParalleSerialParallel", "ParallelTest" ) {
     std::vector<int> currentResult =
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .parallel(4)	//Farm for each Node
+        .parallel(4)
         .map<int, int>(fois10)
-		.parallel(1)	//Pipeline
+		.parallel(1)
         .find<int>(divise20)
         .map<int, int>(sommeJusqua)
-		.parallel(2, true)	//Pipeline
+		.parallel(2)
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
