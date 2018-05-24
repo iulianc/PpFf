@@ -61,25 +61,6 @@ namespace PpFf {
             return *this;
         }
 
-//        template < typename T, typename Iterator >
-//        Pipe& source(Iterator &begin, Iterator &end, bool Preserve) {
-//            typedef SourceOperator<T, Iterator, true> Source;
-//
-//            Stage<Source>* stage = new Stage<Source>();
-//            stage->addOperator(pipe.nbWorkers(), begin, end);
-//            pipe.addStage(stage);
-//
-//            return *this;
-//        }
-//
-//        template < typename T, typename Iterator >
-//        Pipe& stream(Iterator begin, Iterator end) {
-//            Pipe* pipe = new Pipe();
-//            pipe->source<T>(begin, end, true);
-//
-//            return *pipe;
-//        }
-
         Pipe& linesFromFile(const std::string& path) {
             typedef LinesFromFileOperator LinesFromFile;
 
@@ -114,7 +95,7 @@ namespace PpFf {
         }
 
         template < typename T,
-                   template < typename ELEM, class ALLOC = std::allocator<ELEM>>
+                   template <typename ELEM, class ALLOC = std::allocator<ELEM>>
                    class TContainer >
             TContainer<T> collect() {
             typedef CollectorOperator<T, TContainer<T>> Collector;
@@ -128,22 +109,28 @@ namespace PpFf {
         }
 
         template < typename T,
-                   template < typename ELEM, class ALLOC = std::allocator<ELEM>>
+                   template <typename ELEM, class ALLOC = std::allocator<ELEM>>
                    class TContainer >
-        Collection< T, TContainer, Pipe > intermediateCollect() {
+            Collection<T, TContainer, Pipe> intermediateCollect() {
             typedef CollectorOperator<T, TContainer<T>> Collector;
-
             Collectors<Collector>* collectors = new Collectors<Collector>();
             collectors->addOperator(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
 
-            Collection< T, TContainer, Pipe > Collection(collectors->value());
+            // Je trouve louche les deux instructions qui suivent --
+            // si je comprends bien le modele d'allocation memoire de
+            // C++.  L'objet Collection que tu definis est alloue sur
+            // la pile. Tu retournes ensuite cet objet comme resultat
+            // de la fonction.  Mais comme il a ete alloue sur la
+            // pile, il pourrait ulterieurement etre ecrase, non?
+
+            Collection<T, TContainer, Pipe> Collection(collectors->value());
             return Collection;
         }
 
         template < typename In, typename Out >
-        Pipe& map(std::function< Out*(In*) > const& taskFunc) {
+        Pipe& map(std::function<Out*(In*)> const& taskFunc) {
             typedef MapOperator<In, Out> Map;
 
             BaseStage<Map>* stage = new BaseStage<Map>();
@@ -154,7 +141,7 @@ namespace PpFf {
         }
 
         template < typename In >
-        Pipe& find(std::function< bool(In*) > const& taskFunc) {
+        Pipe& find(std::function<bool(In*)> const& taskFunc) {
             typedef FindOperator<In> Find;
             
             BaseStage<Find>* stage = new BaseStage<Find>();
@@ -165,7 +152,7 @@ namespace PpFf {
         }
 
         template< typename In, typename Out, typename OutContainer >
-        Pipe& flatMap(std::function< OutContainer*(In*) > const& taskFunc) {
+        Pipe& flatMap(std::function<OutContainer*(In*)> const& taskFunc) {
             typedef MapOperator<In, OutContainer> Map;
             typedef FlatOperator<OutContainer, Out> Flat;
 
@@ -193,7 +180,7 @@ namespace PpFf {
         };
 
         template < typename In >
-        Pipe& peek(std::function< void(In*) > const& taskFunc) {
+        Pipe& peek(std::function<void(In*)> const& taskFunc) {
             typedef PeekOperator<In> Peek;
             
             BaseStage<Peek>* stage = new BaseStage<Peek>();
@@ -258,7 +245,7 @@ namespace PpFf {
         }
 
         template < typename T >
-        T min(std::function< void(T*, T*) > compare = ([](T* a, T* b) { if (*a> *b) *a = *b;})) {
+        T min(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a > *b) *a = *b; })) {
             typedef MinOperator<T> Min;
             
             Collectors<Min>* collectors = new Collectors<Min>();
@@ -270,7 +257,7 @@ namespace PpFf {
         }
 
         template < typename T >
-        T max(std::function< void(T*, T*) > compare = ([](T* a, T* b) { if (*a <*b) *a = *b;})) {
+        T max(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a < *b) *a = *b; })) {
             typedef MaxOperator<T> Max;
             
             Collectors<Max>* collectors = new Collectors<Max>();
@@ -282,7 +269,7 @@ namespace PpFf {
         }
 
         template < typename T >
-        bool anyMatch(std::function< bool(T*) > predicate) {
+        bool anyMatch(std::function<bool(T*)> predicate) {
             typedef AnyMatchOperator<T> AnyMatch;
             
             Collectors<AnyMatch>* collectors = new Collectors<AnyMatch>();
@@ -294,7 +281,7 @@ namespace PpFf {
         }
 
         template < typename T >
-        bool noneMatch(std::function< bool(T*) > predicate) {
+        bool noneMatch(std::function<bool(T*)> predicate) {
             typedef NoneMatchOperator<T> NoneMatch;
             
             Collectors<NoneMatch>* collectors = new Collectors<NoneMatch>();
@@ -307,7 +294,7 @@ namespace PpFf {
 
 
         template < typename T >
-        bool allMatch(std::function< bool(T*) > predicate) {
+        bool allMatch(std::function<bool(T*)> predicate) {
             typedef AllMatchOperator<T> AllMatch;
             
             Collectors<AllMatch>* collectors = new Collectors<AllMatch>();
@@ -342,7 +329,7 @@ namespace PpFf {
         }
 
         template < typename T >
-        Collection< T, std::vector, Pipe > sort(std::function< bool(T, T) > const& compare = std::less<T>()) {
+        Collection<T, std::vector, Pipe> sort(std::function<bool(T, T)> const& compare = std::less<T>()) {
             typedef SortOperator<T> Sort;
 
             Collectors<Sort>* collectors = new Collectors<Sort>();
@@ -350,14 +337,12 @@ namespace PpFf {
             pipe.addStage(collectors);
             pipe.run();
 
-//            std::vector<T> container = collectors->value();
-//            return stream<T>(container.begin(), container.end());
             Collection< T, std::vector, Pipe > Collection(collectors->value());
             return Collection;
         }
     
-	private:
-		PipeManager pipe;
-	};
+    private:
+        PipeManager pipe;
+    };
     
 }

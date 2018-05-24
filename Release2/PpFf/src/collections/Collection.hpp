@@ -10,122 +10,113 @@ using namespace PpFf;
 
 namespace PpFf {
 
-	template < typename T,
-			  template < typename ELEM,
-						class ALLOC = std::allocator<ELEM> >
-						class CONT, typename P = NULL_TYPE >
-	class Collection {
-	  public:
-		typedef CONT< T > Container;
-		typedef typename CONT< T >::iterator iterator;
+    template < typename T,
+               template <typename ELEM, class ALLOC = std::allocator<ELEM>>
+               class CONT, 
+               typename P = NULL_TYPE >
 
-		Collection() { };
-		Collection(Container && container):container(std::move(container)) { };
-//        SourceOperator(It &_begin, It &_end) {
-//            for (; _begin != _end; _begin++) {
-//                container.push_back(*_begin);
-//            }
-//        }
+    class Collection {
+    public:
+        typedef CONT<T> Container;
+        typedef typename CONT<T>::iterator iterator;
 
-//	    test(vector<double>&& v):oneVector(std::move(v)){
-//	    }
+        Collection() {};
+        Collection(Container && container):container(std::move(container)) {};
 
-		Collection(unsigned int n) { container.resize(n); };
-		~Collection() { };
+        Collection(unsigned int n) { container.resize(n); };
+        ~Collection() {};
 
-//		void operator=(const Collection< T, CONT > &cont){
-//			container = cont;
-//		}
+        T& operator[] (unsigned int i) {
+            if (i >= container.size()) {
+                throw std::out_of_range("error:operator[]");
+            }
 
-		T& operator[] (unsigned int i) {
-			if (i >= container.size()) {
-				throw std::out_of_range("error:operator[]");
-			}
+            return container[i];
+        }
 
-			return container[i];
-		}
+        template< typename T2,
+                  template< typename ELEM2, 
+                            typename = std::allocator<ELEM2>> class CONT2, 
+                  typename P2 >
+        Collection<T, CONT, P>& operator= (Collection<T2, CONT2, P2> const& op2) {
+            if ((void*) this == (void*) &op2) {
+                return *this;
+            }
 
-		template< typename T2,
-				 template< typename ELEM2,
-						  typename = std::allocator< ELEM2 >
-						 >class CONT2, typename P2 >
-		Collection< T, CONT, P >& operator= (Collection< T2, CONT2, P2 > const& op2) {
-			if ((void*)this == (void*)&op2) {
-				return *this;
-			}
+            Collection<T2, CONT2, P2> tmp(op2);
+            container.clear();
+            while (!tmp.empty()) {
+                container.push_front(tmp.top());
+                tmp.pop();
+            }
 
-			Collection< T2, CONT2, P2 > tmp(op2);
+            return *this;
+        }
 
-			container.clear();
-			while (!tmp.empty()) {
-				container.push_front(tmp.top());
-				tmp.pop();
-			}
-			return *this;
-		}
+        iterator begin() {
+            return container.begin();
+        }
 
-	    iterator begin() {
-	        return container.begin();
-	    }
+        iterator end() {
+            return container.end();
+        }
 
-	    iterator end() {
-	        return container.end();
-	    }
+        void push_back(T const& elem) {
+            container.push_back(elem);
+        }
 
-		void push_back (T const& elem) {
-			container.push_back(elem);
-		}
+        T back() const {
+            if (container.empty()) {
+                throw std::out_of_range("Collection<>::back(): empty Container");
+            }
 
-		T back() const {
-			if (container.empty()) {
-				throw std::out_of_range("Collection<>::back(): empty Container");
-			}
-			return container.back();
-		}
+            return container.back();
+        }
 
-		T at(unsigned int i) {
-			if (i >= container.size()) {
-				throw std::out_of_range("error:Collection<>::at()");
-			}
-			return container.at(i);
-		}
+        T at(unsigned int i) {
+            if (i >= container.size()) {
+                throw std::out_of_range("error:Collection<>::at()");
+            }
 
-		Container value() {
-			return container;
-		}
+            return container.at(i);
+        }
 
-		unsigned int size() {
-			return container.size();
-		}
+        Container value() {
+            return container;
+        }
 
-		void pop_back() {
-			if (container.empty()) {
-				throw std::out_of_range("Collection<>::pop_back(): empty Container");
-			}
-			container.pop_back();
-		}
+        unsigned int size() {
+            return container.size();
+        }
 
-		bool empty() const {
-			return container.empty();
-		}
+        void pop_back() {
+            if (container.empty()) {
+                throw std::out_of_range("Collection<>::pop_back(): empty Container");
+            }
+            container.pop_back();
+        }
+
+        bool empty() const {
+            return container.empty();
+        }
 
 
-		T top() const {
-			return container.empty();
-		}
+        T top() const {
+            return container.empty();
+        }
 
-		void insert (iterator beginInsert, iterator beginContainer, iterator endContainer) {
-			container.insert(beginInsert, beginContainer, endContainer);
-		}
+        void insert(iterator beginInsert, iterator beginContainer, iterator endContainer) {
+            container.insert(beginInsert, beginContainer, endContainer);
+        }
 
-		P& stream() {
-			return pipe.template source<T>(container.begin(), container.end());
-		}
+        P& stream() {
+            return pipe.template source<T>(container.begin(), container.end());
+        }
 
-	  private:
-		Container container;
-		P pipe{};
-	};
+    private:
+        Container container;
+        P pipe{};
+    };
 
 }
 

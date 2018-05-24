@@ -36,14 +36,14 @@ namespace PpFf {
         }
 
         std::vector< T > value() {
-            std::sort (container.begin(), container.end(), compare);
+            std::sort(container.begin(), container.end(), compare);
 
             return container;
         }
 
     private:
         std::function<bool(T, T)> const& compare;
-		std::vector<T> container{};
+        std::vector<T> container{};
     };
 
 }
