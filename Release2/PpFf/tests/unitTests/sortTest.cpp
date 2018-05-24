@@ -17,7 +17,7 @@ TEST_CASE( "SortElementsCollection", "SortOperator" ) {
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .sort<int>()
-		.stream()
+        .stream()
         .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -32,7 +32,7 @@ TEST_CASE( "SortElementsCollectionParallel", "SortOperator" ) {
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .sort<int>()
-		.stream()
+        .stream()
     	.collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -54,7 +54,7 @@ TEST_CASE("SortElementsCollectionLargeNumberElements", "SortOperator") {
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
         .sort<int>()
-		.stream()
+        .stream()
         .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -77,12 +77,12 @@ TEST_CASE("SortEmployeesCollectionByAge", "SortOperator") {
     std::vector<Employee> currentResult =
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
-        .sort<Employee>(([](Employee e1, Employee e2) { return e1.age < e2.age; } ))
-		.stream()
+        .sort<Employee>( [](Employee e1, Employee e2) { return e1.age < e2.age; } )
+        .stream()
     	.collect<Employee, std::vector>();
 
     for (unsigned int i = 0; i < noEmployees; i++) {
-    	REQUIRE(currentResult[i].name == expectedResult[i].name);
+    	REQUIRE( currentResult[i].name == expectedResult[i].name );
     }
 }
 
@@ -103,12 +103,12 @@ TEST_CASE("SortEmployeesCollectionByAgeParallel", "SortOperator") {
         Pipe()
         .source<Employee>(elems.begin(), elems.end())
         .parallel(4)
-        .sort<Employee>(([](Employee e1, Employee e2 ) { return e1.age < e2.age; }))
-		.stream()
+        .sort<Employee>( [](Employee e1, Employee e2) { return e1.age < e2.age; } )
+        .stream()
     	.collect<Employee, std::vector>();
 
     for (unsigned int i = 0; i < noEmployees; i++) {
-    	REQUIRE(currentResult[i].name == expectedResult[i].name);
+    	REQUIRE( currentResult[i].name == expectedResult[i].name );
     }
 }
 
