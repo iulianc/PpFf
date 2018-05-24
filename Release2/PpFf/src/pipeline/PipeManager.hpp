@@ -23,7 +23,6 @@ namespace PpFf {
             for (unsigned int i = 0; i < stages.size(); i++) {
                 delete (stages[i]);
             }
-
             stages.clear();
         }
 
@@ -36,44 +35,40 @@ namespace PpFf {
 
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
             if (!isParallel()) {
-            	if(currentNode != NULL && currentNode->Type() == NodeTypeFarm) {
-            		ff_farm<> *ffFarm = (ff_farm<>*)currentNode->getNode();
-            		ffFarm->add_collector(new Empty());
-					pipeline.addStage(ffFarm);
+            	if (currentNode != NULL && currentNode->Type() == NodeTypeFarm) {
+                    ff_farm<> *ffFarm = (ff_farm<>*) currentNode->getNode();
+                    ffFarm->add_collector(new Empty());
+                    pipeline.addStage(ffFarm);
             	}
-
                 pipeline.addStage(stage->workers[0]);
                 currentNode = NULL;
             } else {
             	Farm *farm;
-
-            	if(currentNode == NULL || currentNode->Type() != NodeTypeFarm) {
-        			farm = new Farm(no_workers);
-        			currentNode = farm;
+            	if (currentNode == NULL || currentNode->Type() != NodeTypeFarm) {
+                    farm = new Farm(no_workers);
+                    currentNode = farm;
             	} else {
-            		farm = (Farm*)currentNode;
+                    farm = (Farm*) currentNode;
+                    if (farm->nbWorkers() != no_workers) {
+                        ff_farm<> *ffFarm = (ff_farm<>*) farm->getNode();
+                        ffFarm->add_collector(new Empty());
+                        pipeline.addStage(ffFarm);
 
-                	if(farm->nbWorkers() != no_workers) {
-                		ff_farm<> *ffFarm = (ff_farm<>*)farm->getNode();
-                		ffFarm->add_collector(new Empty());
-                		pipeline.addStage(ffFarm);
-
-            			farm = new Farm(no_workers);
-            			currentNode = farm;
-                	}
+                        farm = new Farm(no_workers);
+                        currentNode = farm;
+                    }
             	}
 
-            	std::vector< ff_node* > stages;
-    			for(unsigned int i = 0; i < no_workers; i++) {
-    				stages.push_back(stage->workers[i]);
-    			}
-
+            	std::vector<ff_node*> stages;
+                for (unsigned int i = 0; i < no_workers; i++) {
+                    stages.push_back(stage->workers[i]);
+                }
             	farm->addStage(stages);
 
-            	if(stage->isFinal()) {
-            		ff_farm<> *ffFarm = (ff_farm<>*)farm->getNode();
-            		ffFarm->remove_collector();
-            		pipeline.addStage(ffFarm);
+            	if (stage->isFinal()) {
+                    ff_farm<> *ffFarm = (ff_farm<>*)farm->getNode();
+                    ffFarm->remove_collector();
+                    pipeline.addStage(ffFarm);
             	}
             }
         }
