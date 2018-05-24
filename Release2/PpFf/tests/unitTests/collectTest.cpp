@@ -21,7 +21,7 @@ TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
     std::vector<int> currentResult = 
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
+        .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -40,7 +40,7 @@ TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
     std::deque<int> currentResult = 
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int *in) ->int* { *in = *in * 2; return in; } )
+        .map<int, int>( [](int *in) { *in *= 2; return in; } )
         .collect<int, std::deque>();
 
     for (unsigned int i = 0; i < expectedResult.size(); i++) {
@@ -62,7 +62,7 @@ TEST_CASE("ReturnCollectionTypeList", "CollectOperator") {
     std::list<int> currentResult = 
         Pipe()
         .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int *in) ->int* { *in = *in + 1; return in; } )
+        .map<int, int>( [](int *in) { *in += 1; return in; } )
         .collect<int, std::list>();
 
     std::list<int>::iterator currentIterator = currentResult.begin();
@@ -87,7 +87,7 @@ TEST_CASE("CollectElementsParallel", "CollectOperator") {
         Pipe()
         .source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
+        .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -102,7 +102,6 @@ TEST_CASE("CollectObjects", "CollectOperator") {
 
     for (unsigned int i = 0; i <noEmployees; i++) {
         Employee employee(i + 1, "Employee" + ConvertNumberToString(i), 25000);
-
         elems.push_back(employee);
         expectedResult.push_back(employee);
     };
