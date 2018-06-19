@@ -1,0 +1,11 @@
+Nouvelle version avec le modele UQAM et avec les accents UTF8 qui
+fonctionnent sous Linux -- mais probablement pas sous Solaris :(
+
+Le makefile est aussi concu en supposant l'utilisation de figures
+"*.eps".
+
+Toutefois, si des figures d'un autre type sont utilisees, alors on
+peut/doit utiliser pdflatex.
+
+
+

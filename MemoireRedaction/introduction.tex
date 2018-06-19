@@ -1,0 +1,34 @@
+
+\chapter{Introduction}
+
+\label{introduction.chap}
+
+
+
+Blah blah \ldots
+
+
+Signalons que l'utilisation du package \TT{inputenc} permet d'utiliser
+des caractères accentués normaux, plutôt que des caractères accentués
+dans l'ancien style (commandes pour les accents).\footnote{Le même
+texte écrit avec les accents en commande serait alors le suivant~:
+<<Signalons que l'utilisation du package \TT{fontenc} permet
+d'utiliser des caract\`eres accentu\'es normaux, plut\^ot que des
+caract\`eres accentu\'es dans l'ancien style (commandes pour les
+accents).>>}
+
+On remarquera aussi, dans la note en bas de page, l'utilisation des
+guillemets français, appelés aussi parfois des <<chevrons>>, qu'on
+doit utiliser plutôt que les ``guillemets anglais''.  Ces guillemets
+français s'obtiennent à l'aide des caractères
+\TT{<}\TT{<}\ldots\TT{>}\TT{>}.
+
+Une autre façon est de définir la macro suivante, puisqu'avec certains
+\emph{packages}, les caract\`eres \TT{<}\TT{<}\ldots\TT{>}\TT{>} ne
+semblent pas fonctionner~:
+{\small
+\begin{verbatim}
+  \newcommand{\QUOTE}[1]{\og #1 \fg{}}
+\end{verbatim}
+} 
+

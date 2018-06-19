@@ -1,0 +1,127 @@
+% Je crois que le nouveau guide dit qu'il faut soumettre en 12 points!
+
+\documentclass[12pt,twoside]{memoireuqam1.3}
+
+%\documentclass[11pt,twoside]{memoireuqam1.3}
+
+\usepackage{graphicx}% Pour les figures
+\usepackage[french]{babel}
+
+\usepackage[T1]{fontenc}
+
+\usepackage[utf8]{inputenc} % Pour utiliser les caractères Unicode, notaamment sous Linux
+%%%%%%%%%%%%%%%%%%%
+% ou
+% \usepackage[latin1]{inputenc} % Pour utiliser les accents sous Solaris (?)
+% \usepackage[ansinew]{inputenc} % Pour utiliser les caractères accentués sous Windows
+% \usepackage[applemac]{inputenc} % Pour utiliser les caractères accentués sous MacOS
+%%%%%%%%%%%%%%%%%%%
+
+% Ajouts par Guy T.
+% Autres packages souvent utiles
+\usepackage{epsfig}
+\usepackage{float}
+\usepackage{alltt}
+\usepackage{graphicx}
+\usepackage{url}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ajouts par Iulian
+% \usepackage{booktabs}	% Pour utiliser entête du tableau (commande \midrule)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{macros}  % Pour les définitions personnelles
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%
+% Pour la page titre
+%%%%%%%%%%%%%%%%%%%%
+\title{TRAITEMENT EFFICACE DE FLUX DE DONN\'EES SUR MACHINES MULTI-C\OE{}URS \`A L'AIDE DE FASTFLOW}
+\author{Iulian Ciobanu}
+\degreemonth{mois du d\'ep\^ot}
+\degreeyear{annee du d\'ep\^ot}
+\uqammemoire   %% Pour la page titre d'un mémoire
+% ou
+% \uqamthese   %% Pour la page titre d'une thèse
+% ou
+% \uqamrapport %% Pour la page titre d'un rapport
+
+
+\thispagestyle{empty}        % La page titre n'est pas numérotée
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%
+% Page préliminaires
+%%%%%%%%%%%%%%%%%%%%
+%\renewcommand \bibname{R\'EF\'ERENCES}% FACULTATIF
+%Enlever le commentaire, si vous voulez qu'apparaisse le titre RÉFÉRENCES
+% plutôt que BIBLIOGRAPHIE
+
+\renewcommand \listfigurename{LISTE DES FIGURES}
+\renewcommand \appendixname{APPENDICE}
+\renewcommand \figurename{Figure}
+\renewcommand \tablename{Tableau}
+
+\pagenumbering{roman} % numérotation des pages en chiffres romains
+\addtocounter{page}{1} % Pour que les remerciements commencent à la page ii
+\include{remerciements}
+
+\pagenumbering{arabic}
+\tableofcontents % Pour générer la table des matières
+\listoffigures % Pour générer la liste des figures
+\listoftables % Pour générer la liste des tableaux
+
+\include{resume}
+% Utilisez l'environnement  abstract pour rédiger votre résumé
+
+
+%%%%%%%%%%%%%%%%%%%%
+% Document principal
+%%%%%%%%%%%%%%%%%%%%
+
+%
+% J'ai mis des "input" plutot que "include" pour eviter les pages blanches.
+%
+
+\parindent=0ex % Facultatif
+% pour qu'il n'y ait pas  de renfoncement à chaque alinéa
+
+
+\input{introduction}
+
+% Utilisez l'environnement  introduction pour rédiger votre introduction
+
+% NOTE IMPORTANTE (GT): Il vaut mieux utiliser un autre nom que
+% "chapitre1", un nom plus significatif/approprie pour le contenu du
+% chapitre!
+
+\input{outils_connus}
+
+\input{description}
+
+\input{implementation}
+
+\input{experiences}
+
+\input{conclusion}
+% Utilisez l'environnement  conclusion pour rédiger votre conclusion
+
+%%%%%%%%%%%%%%%%%%%%
+% Page liminaires
+%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\input{appendice1}
+\input{appendice2}
+
+% ou               %% avec BibTeX
+\bibliographystyle{theseuqam2} % non compatible avec le package natbib
+\bibliography{biblio-locale}
+
+% ou               %% avec BibTeX
+% \bibliographystyle{theseuqam2-natbib} % compatible  natbib
+% \bibliography{stat,jeux}
+
+\end{document}

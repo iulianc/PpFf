@@ -1,0 +1,152 @@
+ 
+\chapter{Un chapitre}
+\label{un-chap.chap}
+
+\section{Premi\`erement: Tableaux et figures}
+
+fdsfsdfds fdsf
+
+Les travaux de Culler et Sing~\cite{CullerSin99} \ldots (la citation se fait automatiquement avec
+{\tt bibtex}). Et voici d'autres
+citations~\cite{AndersonEtAl95,Andrews00,AppelbeEtAl96}.
+
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|l|}\hline
+x & y \\\hline
+y & x \\\hline
+\end{tabular}
+\end{center}
+\caption{L\'egende pour un tableau.}
+\label{table.tab}
+\end{table}
+
+Un tableau est pr\'esent\'e (Table~\ref{table.tab}).
+
+
+
+\begin{figure}[htbp]
+
+\epsffile{Figures/cache.eps}
+
+\caption{L\'egende pour une figure.}
+\label{figure-1.fig}
+\end{figure}
+Comme on le voit \`a la Fig.~\ref{figure-1.fig}, la figure n'est pas
+centr\'ee et la taille est d\'etermin\'ee par la taille de la figure
+telle que d\'efinie dans le fichier postscript.
+
+
+\begin{figure}[htbp]
+
+\centerline{\epsfxsize=4cm \epsfbox{Figures/cache.eps}}
+
+
+\caption{L\'egende pour une autre figure.}
+\label{figure-2.fig}
+\end{figure}
+
+Par contre, \`a la Fig.~\ref{figure-2.fig}, la figure est centr\'ee et
+on peut faire varier sa taille en changeant le param\`etre de {\tt
+epsfxsize}.
+
+
+
+
+\section{Deuxi\`emement: macros}
+
+
+Pour mettre en mode {\tt teletype} = \TT{teletype}.
+
+Pour me faire une note de quelque chose\ACOMPLETER.
+
+Pour me faire une note plus g\'en\'erale\AVERIFIER{V\'erifier cette
+partie}
+
+Quelques macros que j'ai d\'efini et que j'utilise r\'eguli\`erement.
+
+S\'erie d'items moins tass\'es:
+\begin{itemize}
+\item aaa
+\item bbb
+\item cc
+\end{itemize}
+
+S\'erie d'items plus tass\'es --- la diff\'erence est souvent
+l\'eg\`ere mais parfois utile lorsqu'il y a une longue s\'erie
+d'items:
+\begin{Items}
+\item aaa
+\item bbb
+\item cc
+\end{Items}
+
+Similaire pour des \'enumerations:
+\begin{enumerate}
+\item aaa
+\item bbb
+\item cc
+\end{enumerate}
+
+S\'erie d'items plus tass\'es:
+\begin{Enum}
+\item aaa
+\item bbb
+\item cc
+\end{Enum}
+
+
+\section{R\'ef\'erences bibliographiques}
+
+Dans un de mes r\'epertoires, qui est public, j'ai toute une s\'erie
+de r\'ef\'erences en format \TT{bibtex}, que vous pouvez utiliser. Les
+liens sont d\'ej\`a cr\'e\'es dans le fichier \TT{memoire.tex} \`a
+l'aide de la commande suivante:
+\begin{verbatim}
+\bibliography{%
+/home/tremblay/biblio/fp,%
+/home/tremblay/biblio/mf,%
+/home/tremblay/biblio/Tremblay,%
+/home/tremblay/biblio/arch+pp,%
+biblio-locale
+}
+\end{verbatim}
+
+Le fichier \TT{biblio-locale} peut \^etre utilis\'e pour ajouter
+d'autres r\'ef\'erences qui ne sont pas dans mes bases de donn\'ees.
+
+Toutefois, ces liens ne fonctionneront que si vous utilisez un compte
+fonctionnant sour la machine \TT{arabica}.  Si vous n'utilisez pas
+\TT{arabica}, vous n'avez qu'\`a mettre ces lignes en commentaire et
+\`a ne conserver que la ligne avec \TT{biblio-locale}.
+
+Pour mettre des r\'ef\'erences, on utilise la commande
+\TT{cite}. Lorsqu'on met une r\'ef\'erence, ce qui est entre
+parenth\`eses ne devrait pas \^etre utilis\'e comme sujet. En d'autres
+mots, si on omet ce qui apparait dans les parenth\`eses, la phrase
+devrait pouvoir continuer \`a \^etre lisible.
+
+Exemple~: 
+\begin{itemize}
+\item Les travaux de Lalonde~\cite{Lalonde06url} ont montr\'e que
+l'approche par automates cellulaires \'etait int\'eressante.
+\end{itemize}
+
+Contre-exemple~: 
+\begin{itemize}
+\item Les travaux de~\cite{Lalonde06url} ont montr\'e que l'approche
+par automates cellulaires \'etait int\'eressante.
+\end{itemize}
+
+
+
+\section{D\'efinitions}
+
+\begin{definition}
+Une d\'efinition importante.
+\end{definition}
+
+\begin{definition}[Titre auxiliaire de la d\'efinition]
+Une autre d\'efinition importante.
+\end{definition}

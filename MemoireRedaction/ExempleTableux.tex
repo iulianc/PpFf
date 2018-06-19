@@ -1,0 +1,57 @@
+
+\documentclass[12pt,twoside]{memoireuqam1.3}
+
+%\documentclass[11pt,twoside]{memoireuqam1.3}
+
+\usepackage{graphicx}% Pour les figures
+\usepackage[french]{babel}
+
+\usepackage[T1]{fontenc}
+
+\usepackage[utf8]{inputenc}
+
+
+\usepackage{epsfig}
+\usepackage{float}
+\usepackage{alltt}
+\usepackage{graphicx}
+\usepackage{url}
+
+\begin{document}
+
+\begin{figure}[h]
+\centering
+
+\resizebox{\textwidth}{!}{%
+
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{M\'ethods} & \textbf{Retourn type} & \textbf{Description}\\
+\hline
+
+$\begin{array}{l}
+\textrm{template<typename T>} \\
+\textrm{allMatch(std::function<bool(T*)> predicate)}
+\end{array}$ & bool & $\begin{array}{l}
+\textrm{Retourne vrais si tous les \'el\'ements} \\ 
+\textrm{de ce flux correspondent au pr\'edicat} \\
+\textrm{fourni.}
+\end{array}$\\
+\hline
+$\begin{array}{l}
+\textrm{template<typename T>} \\
+\textrm{anyMatch(std::function<bool(T*)> predicate)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{array}$ & bool & $\begin{array}{l}
+\textrm{Retourne vrais si au moins un} \\ 
+\textrm{\'el\'ement de ce flux correspondent} \\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+\textrm{au pr\'edicat fourni.}
+\end{array}$\\
+\hline
+\end{tabular}
+}
+\end{figure}
+
+
+\end{document}
