@@ -67,9 +67,9 @@
 
 \pagenumbering{roman} % numérotation des pages en chiffres romains
 \addtocounter{page}{1} % Pour que les remerciements commencent à la page ii
+\thispagestyle{empty}
 \include{remerciements}
 
-\pagenumbering{arabic}
 \tableofcontents % Pour générer la table des matières
 \listoffigures % Pour générer la liste des figures
 \listoftables % Pour générer la liste des tableaux
@@ -82,6 +82,7 @@
 % Document principal
 %%%%%%%%%%%%%%%%%%%%
 
+\pagenumbering{arabic}
 %
 % J'ai mis des "input" plutot que "include" pour eviter les pages blanches.
 %
