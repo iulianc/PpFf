@@ -30,6 +30,11 @@ quelques lignes d'introduction, qui donnent une vue d'ensemble de ce
 qui suit. Pas toujours, mais ici, avec le diagramme de classes, \c{c}a
 ferait l'affaire.}
 
+\IC{Mon plan initial \'etait de d\'ecrire les composants dans le chapitre 2 (Description de l'API de PpFf) et de pr\'esenter la partie technique dans le chapitre 3 (Impl\'ementation). Dans la premi\`ere partie du chapitre 2 j'ai choisi de d\'ecrire les composants principaux de l'API et dans la deuxi\`eme partie de ce chapitre de pr\'esenter quelques m\'ethodes avec des exemples. 
+Dans le chapitre 3 j'ai eu l'intention d'introduire un diagramme de classe UML en expliquant les classes qui compose l'API. } 
+
+\IC{Qu'est-ce que vous en pensez ? Est-ce que je dois introduire le diagramme dans le chapitre 2 ? Je ne suis pas sûr que je fasse la différence entre la description et implémentation de l’API.
+}
 
 \subsection{Interface}
 
@@ -50,18 +55,33 @@ tr\`es difficile \`a comprendre pour les m\'ethodes plus complexes. Il
 faudra qu'on r\'efl\'echisse \`a une fa\c{c}on plus claire de
 pr\'esenter la signaure des m\'ethodes.}
 
-\begin{table}[h]
-\centering
+\IC{J'ai ajout\'e toutes les m\'ethodes d\'efinies dans l'interface de l'API dans ce tableau et j'ai \'et\'e oblig\'e d'utiliser le paquet longtable parce qu'elle s'\'etendait sur plusieurs pages. J'ai essay\'e de pr\'esenter la signature des m\'ethodes dans un format plus concis. Par exemple le paramètre std ::fonction a \'et\'e remplac\'e pour Func; j'ai enlev\'e les mots typename de chaque d\'eclaration de template; le param\`etre <typename ELEM, class ALLOC = std ::allocator<ELEM class TContainer >> a \'et\'e remplac\'e pour Container. De plus je n'ai pas pu r\'eutiliser la fonction qui redimensionne le tableau resizebox(textwidth). J'ai utilis\'e une police de caract\`ere plus petite (tiny) pour pouvoir encadrer le tableau dans la page.
+}
 
-\resizebox{\textwidth}{!}{%
+\IC{J'ai reformul\'e la description pour le r\'esultat de la fonction flatMap}
 
-\begin{tabular}{|l|l|p{8cm}|}
+\begin{center}
+\tiny
+\begin{longtable}{|l|l|p{5cm}|}
+\caption{Les m\'ethodes expos\'ees aux utilisateurs par l'API de \ppff.}\\
 \hline
 \textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
 \hline
+\endfirsthead
+\multicolumn{3}{c}%
+{\tablename\ \thetable\ -- \textit{Suite de la page pr\'ec\'edente}} \\
+\hline
+\textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
+\hline
+\endhead
+\hline \multicolumn{3}{r}{\textit{Suite \`a la page suivante}} \\
+\endfoot
+\hline
+\endlastfoot
+\hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<typename T> \\
-	\tt allMatch(std::function<bool(T*)> predicate)
+	\tt template<T> \\
+	\tt allMatch(Func<bool(T*)> predicate)
 	\end{tabular} &
   	\texttt{bool} &
     Retourne \texttt{true} si tous les \'el\'ements
@@ -70,8 +90,8 @@ pr\'esenter la signaure des m\'ethodes.}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<typename T> \\
-	\tt anyMatch(std::function<bool(T*)> predicate)
+	\tt template<T> \\
+	\tt anyMatch(Func<bool(T*)> predicate)
 	\end{tabular} &
   	\texttt{bool} & 
     Retourne \texttt{true} si au moins un  
@@ -80,12 +100,10 @@ pr\'esenter la signaure des m\'ethodes.}
 \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template <typename T, template \\
-	\tt <typename ELEM, class ALLOC = \\
-	\tt std::allocator<ELEM>{}> class TContainer>\\
+	\tt template<T, Container<T>>\\
 	\tt collect()
 	\end{tabular} &
-  	\texttt{TContainer<T>} &
+  	\texttt{Container<T>} &
     Retourne un conteneur de type
     STL contenant les \'el\'ements de ce flux.
     \\
@@ -99,8 +117,8 @@ pr\'esenter la signaure des m\'ethodes.}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<typename In> \\
-	\tt find(std::function<bool(In*)> const\& taskFunc)
+	\tt template<In> \\
+	\tt find(Func<bool(In*)> const\& taskFunc)
 	\end{tabular} &
   	\texttt{Pipe\&} &
     Retourne tous les
@@ -109,10 +127,8 @@ pr\'esenter la signaure des m\'ethodes.}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<typename In, typename Out, \\
-    \tt typename OutContainer> \\
-	\tt flatMap(std::function<OutContainer*(In*)> \\
-    \tt const\& taskFunc)
+	\tt template<In, Out, Container> \\
+	\tt flatMap(Func<Container*(In*)> const\& taskFunc)
 	\end{tabular} &
   	\texttt{Pipe\&} & 
     Applique la fonction fournie en argument
@@ -120,75 +136,395 @@ pr\'esenter la signaure des m\'ethodes.}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<typename In, typename Out, \\
-    \tt typename OutContainer = In> \\
+	\tt template<In, Out, Container=In> \\
 	\tt flatMap()
 	\end{tabular} &
   	\texttt{Pipe\&} &
-    \GT{Reformuler: je ne comprends pas la diff\'erence avec le pr\'ec\'edent}    
+    \IC{J'ai reformul\'e la description}
+    Renvoie dans le flux les \'el\'ements du conteneur Container.  
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<typename In, typename K = In, \\
-    \tt typename V = In, typename MapType> \\
-	\tt groupByKey(std::function<K*(In*)> const\& \\
-    \tt taskFuncOnKey, std::function<V*(In*)> \\
-    \tt const\& taskFuncOnValue = identity<In,V>)
+	\tt template<In, K=In, V=In, MapType> \\
+	\tt groupByKey(Func<K*(In*)> fk, Func<V*(In*)> fv)
 	\end{tabular} &
   	\texttt{MapType} &
     Retourne un dictionnaire (\emph{map}) avec les \'el\'ements
     du flux regroupés par cl\'e.
    \\
 \hline
-%	\begin{tabular}{@{}l@{}}
-%	template < typename T, \\
-%    template <typename ELEM, class \\
-%    ALLOC = std::allocator<ELEM>> \\
-%    class TContainer > \\
-%	intermediateCollect()
-%	\end{tabular} &
-%	Collection<T, TContainer, Pipe> & \begin{tabular}{@{}l@{}}
-%    Retourne une collection avec les \\
-%    \'el\'ements de ce flux.
-%    \end{tabular}\\ 
-%\hline
-%	\begin{tabular}{@{}l@{}}
-%	template<typename T> \\
-%	limit (int n)
-%	\end{tabular} &
-%	Pipe\& & \begin{tabular}{@{}l@{}}
-%    Renvoie dans le flux seulement \\
-%    les n premiers \'el\'ements de \\
-%    ce flux.
-%    \end{tabular}\\
-%\hline
-%	\begin{tabular}{@{}l@{}}
-%	linesFromFile(const std::string\& path)
-%	\end{tabular} &
-%	Pipe\& & \begin{tabular}{@{}l@{}}
-%    Renvoie dans le flux les lignes \\
-%    contenues dans un fichier.
-%    \end{tabular}\\
-%\hline
-%	\begin{tabular}{@{}l@{}}
-%	template<typename In, typename Out> \\
-%	map(std::function<Out*(In*)> const\& \\ 
-%    taskFunc)m	
-%	\end{tabular} &
-%	Pipe\& & \begin{tabular}{@{}l@{}}
-%    Renvoie dans le flux les \\
-%    r\'esultats constitu\'es de \\
-%    l'application d'une fonction \\
-%    fournie en param\`etre aux \\
-%    \'el\'ements de ce flux.
-%    \end{tabular}\\
-%\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T, Container> \\
+	\tt intermediateCollect()
+	\end{tabular} &
+	\texttt{Collection<T, Container>} &
+    Retourne une collection avec les
+    \'el\'ements de ce flux.
+    \\ 
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt limit (int n)
+	\end{tabular} &
+	Pipe\& & 
+    Renvoie dans le flux seulement
+    les n premiers \'el\'ements de
+    ce flux.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt linesFromFile(string\& path)
+	\end{tabular} &
+	Pipe\& & 
+    Renvoie dans le flux les lignes
+    contenues dans un fichier.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Out> \\
+	\tt map(Func<Out*(In*)> const\& taskFunc)
+	\end{tabular} &
+	Pipe\& &
+    Renvoie dans le flux les
+    r\'esultats constitu\'es de 
+    l'application d'une fonction 
+    fournie en param\`etre aux 
+    \'el\'ements de ce flux.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt max(Func<void(T*, T*)> compare)
+	\end{tabular} &
+	\texttt{T} &
+	Retourne l'\'el\'ement maximum de ce flux en fonction du comparateur fourni en param\`etre.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt min(Func<void(T*, T*)> compare)
+	\end{tabular} &
+	\texttt{T} &
+	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt noneMatch(Func<bool(T*)> predicate)
+	\end{tabular} &
+	\texttt{bool} &
+	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt parallel(int workers = 1)
+	\end{tabular} &
+	Pipe\& &
+	D\'efinis le nombre de travailleurs fourni en param\`etre.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In> \\
+	\tt peek(Func<void(In*)> const\& taskFunc)
+	\end{tabular} &
+	Pipe\& &
+	M\'ethode utilis\'ee pour d\'ebogage. Applique une fonction sur les \'el\'ements de ce flux sans modifier leur valeur.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Out=In> \\
+	\tt reduce(Reducer<In, Out> const\& reducer)
+	\end{tabular} &
+	\texttt{Out} &
+	reduce description.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Out=In> \\
+	\tt reduce(Out init, Func<Out(In, Out)> acc)
+	\end{tabular} &
+	\texttt{Out} &
+	reduce description.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, K=In, V=In, MapType> \\
+	\tt reduceByKey(Reducer<In, V> r, Func<K*(In*)> fk)
+	\end{tabular} &
+	\texttt{MapType} &
+	reduceByKey description.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt skip(int n)
+	\end{tabular} &
+	Pipe\& &
+	skip description.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt sort(Func<bool(T, T)> const\& compare)
+	\end{tabular} &
+	\texttt{Collection<T, Container>} &
+	sort description.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T, Iterator> \\
+	\tt source(Iterator  begin, Iterator end)
+	\end{tabular} &
+	Pipe\& &
+	source description.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt sum()
+	\end{tabular} &
+	\texttt{T} &
+	sum description.
+    \\
+\hline
 
-\end{tabular}
-}
-\caption{Les m\'ethodes expos\'ees aux utilisateurs par l'API de \ppff.}
+\end{longtable}
+\normalsize
 \label{methodes_api.tab}
-\end{table}
+\end{center}
+
+
+
+
+
+
+
+%\begin{table}[h]
+%\centering
+%
+%\resizebox{\textwidth}{!}{%
+%
+%\begin{tabular}{|l|l|p{8cm}|}
+%\hline
+%\textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt allMatch(Func<bool(T*)> predicate)
+%	\end{tabular} &
+%  	\texttt{bool} &
+%    Retourne \texttt{true} si tous les \'el\'ements
+%    de ce flux correspondent au pr\'edicat
+%    fourni, sinon \texttt{false}.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt anyMatch(Func<bool(T*)> predicate)
+%	\end{tabular} &
+%  	\texttt{bool} & 
+%    Retourne \texttt{true} si au moins un  
+%    \'el\'ement de ce flux correspondent
+%    au pr\'edicat fourni, sinon \texttt{false}.
+%\\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T, Container<T>>\\
+%	\tt collect()
+%	\end{tabular} &
+%  	\texttt{Container<T>} &
+%    Retourne un conteneur de type
+%    STL contenant les \'el\'ements de ce flux.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt count()\\
+%	\end{tabular} &
+%  	\texttt{unsigned int} & 
+%    Retourne le nombre d'\'el\'ements
+%    dans ce flux.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In> \\
+%	\tt find(Func<bool(In*)> const\& taskFunc)
+%	\end{tabular} &
+%  	\texttt{Pipe\&} &
+%    Retourne tous les
+%    \'el\'ements du flux qui satisfont la 
+%    fournie en argument.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In, Out, Container> \\
+%	\tt flatMap(Func<Container*(In*)> const\& taskFunc)
+%	\end{tabular} &
+%  	\texttt{Pipe\&} & 
+%    Applique la fonction fournie en argument
+%    \`a chaque \'el\'ement du flux.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In, Out, Container=In> \\
+%	\tt flatMap()
+%	\end{tabular} &
+%  	\texttt{Pipe\&} &
+%    \GT{Reformuler: je ne comprends pas la diff\'erence avec le pr\'ec\'edent}    
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In, K=In, V=In, MapType> \\
+%	\tt groupByKey(Func<K*(In*)> fk, Func<V*(In*)> fv)
+%	\end{tabular} &
+%  	\texttt{MapType} &
+%    Retourne un dictionnaire (\emph{map}) avec les \'el\'ements
+%    du flux regroupés par cl\'e.
+%   \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T, Container> \\
+%	\tt intermediateCollect()
+%	\end{tabular} &
+%	\texttt{Collection<T, Container>} &
+%    Retourne une collection avec les
+%    \'el\'ements de ce flux.
+%    \\ 
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt limit (int n)
+%	\end{tabular} &
+%	Pipe\& & 
+%    Renvoie dans le flux seulement
+%    les n premiers \'el\'ements de
+%    ce flux.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt linesFromFile(string\& path)
+%	\end{tabular} &
+%	Pipe\& & 
+%    Renvoie dans le flux les lignes
+%    contenues dans un fichier.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In, Out> \\
+%	\tt map(Func<Out*(In*)> const\& taskFunc)
+%	\end{tabular} &
+%	Pipe\& &
+%    Renvoie dans le flux les
+%    r\'esultats constitu\'es de 
+%    l'application d'une fonction 
+%    fournie en param\`etre aux 
+%    \'el\'ements de ce flux.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt max(Func<void(T*, T*)> compare)
+%	\end{tabular} &
+%	\texttt{T} &
+%	Retourne l'\'el\'ement maximum de ce flux en fonction du comparateur fourni en param\`etre.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt min(Func<void(T*, T*)> compare)
+%	\end{tabular} &
+%	\texttt{T} &
+%	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt noneMatch(Func<bool(T*)> predicate)
+%	\end{tabular} &
+%	\texttt{bool} &
+%	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt parallel(int workers = 1)
+%	\end{tabular} &
+%	Pipe\& &
+%	D\'efinis le nombre de travailleurs fourni en param\`etre.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In> \\
+%	\tt peek(Func<void(In*)> const\& taskFunc)
+%	\end{tabular} &
+%	Pipe\& &
+%	M\'ethode utilis\'ee pour d\'ebogage. Applique une fonction sur les \'el\'ements de ce flux sans modifier leur valeur.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In, Out=In> \\
+%	\tt reduce(Reducer<In, Out> const\& reducer)
+%	\end{tabular} &
+%	\texttt{Out} &
+%	reduce description.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In, Out=In> \\
+%	\tt reduce(Out init, Func<Out(In, Out)> acc)
+%	\end{tabular} &
+%	\texttt{Out} &
+%	reduce description.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<In, K=In, V=In, MapType> \\
+%	\tt reduceByKey(Reducer<In, V> r, Func<K*(In*)> fk)
+%	\end{tabular} &
+%	\texttt{MapType} &
+%	reduceByKey description.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt skip(int n)
+%	\end{tabular} &
+%	Pipe\& &
+%	skip description.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt sort(Func<bool(T, T)> const\& compare)
+%	\end{tabular} &
+%	\texttt{Collection<T, Container>} &
+%	sort description.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T, Iterator> \\
+%	\tt source(Iterator  begin, Iterator end)
+%	\end{tabular} &
+%	Pipe\& &
+%	source description.
+%    \\
+%\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T> \\
+%	\tt sum()
+%	\end{tabular} &
+%	\texttt{T} &
+%	sum description.
+%    \\
+%\hline
+%
+%
+%\end{tabular}
+%}
+%\caption{Les m\'ethodes expos\'ees aux utilisateurs par l'API de \ppff.}
+%\label{methodes_api.tab}
+%\end{table}
+
+
+
 
 Comme on peut le voir dans le tableau~\ref{methodes_api.tab}, la d\'eclaration des m\'ethodes utilise la programmation g\'en\'erique de C++, c'est-\`a-dire les \emph{templates}. Cela permet aux utilisateurs d'avoir une interface unique, de sorte qu'une m\'ethode peut \^etre r\'eutilis\'ee pour n'importe quel type de donn\'ees.
 
@@ -228,17 +564,20 @@ Les op\'erateurs (\texttt{Operator}s) sont la base de notre syst\`eme. L'API fou
 
 Les \emph{op\'erateurs sans \'etat} sont ceux qui ne disposent pas d'informations sur l'it\'eration en cours et ne transmettent pas les informations interm\'ediaires des \'etapes de traitement pr\'ec\'edentes. Si on prend comme exemple le filtre repr\'esent\'e par la m\'ethode \texttt{find} du tableau~\ref{methodes_api.tab}, il traite le flux de donn\'ees \'el\'ement par \'el\'ement. 
 %
-Lorsque la fonction (lambda-expression) fournie en argument \`a la m\'ethode \texttt{find} ne satisfait pas la condition lorqu'appliqu\'ee \`a un \'el\'ement du flux, le filtre ne retourne rien. Un op\'erateur sans \'etat, par contre, peut utiliser des donn\'ees historiques stock\'ees dans la m\'emoire locale ou sur le disque.
+Lorsque la fonction (lambda-expression) fournie en argument \`a la m\'ethode \texttt{find} ne satisfait pas la condition lorqu'appliqu\'ee \`a un \'el\'ement du flux, le filtre ne retourne rien. 
 
 \GT{Je ne comprends pas cette derni\`ere phrase.  Si l'op\'erateur est
 <<sans \'etat>>, alors il ne devrait pas non plus utiliser des
 donn\'ees de la m\'emoire.  Peut-\^etre est-ce le terme <<sans
 \'etat>> qui est mal chosi?}
 
+\IC{J'ai enlev\'e la phrase : Un op\'erateur sans \'etat, par contre, peut utiliser des donn\'ees historiques stock\'ees dans la m\'emoire locale ou sur le disque. Initialement, j'ai voulu dire que l'op\'erateur peut utiliser les donn\'ees de la m\'emoire d'ordinateur par interm\`ede de lambda-expression (les donn\'ees qui sont envoy\'ees par r\'ef\'erence))}
+
 \GT{Dans le prochain paragraphe: historique des <<op\'erations
 pass\'ees>> ou des <<\'el\'ements pass\'es du flux>>?}
+\IC{Oui ce sont des \'el\'ements pass\'es du flux}
 
-Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de donn\'ees interne, qui repr\'esente l'\'etat. Cette structure pr\'eserve l'historique des op\'erations pass\'ees et affecte la logique de traitement dans les calculs ult\'erieurs. Par exemple, l'op\'erateur \texttt{Sum} calcule la somme des \'el\'ements du flux. Son \'etat contient la valeur de l'\'el\'ement en cours et la valeur de la somme de tous les \'el\'ements pr\'ec\'edents celui-ci. 
+Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de donn\'ees interne, qui repr\'esente l'\'etat. Cette structure pr\'eserve l'historique des \'el\'ements pass\'es du flux et affecte la logique de traitement dans les calculs ult\'erieurs. Par exemple, l'op\'erateur \texttt{Sum} calcule la somme des \'el\'ements du flux. Son \'etat contient la valeur de l'\'el\'ement en cours et la valeur de la somme de tous les \'el\'ements pr\'ec\'edents celui-ci. 
 
 
 \subsection{Stages}

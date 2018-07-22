@@ -30,6 +30,7 @@
 
 % Ajouts par Iulian
 % \usepackage{booktabs}	% Pour utiliser entête du tableau (commande \midrule)
+\usepackage{longtable} % Pour utiliser les tables sur plusieurs pages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input{macros}  % Pour les définitions personnelles
@@ -67,12 +68,13 @@
 
 \pagenumbering{roman} % numérotation des pages en chiffres romains
 \addtocounter{page}{1} % Pour que les remerciements commencent à la page ii
-\thispagestyle{empty}
+%\thispagestyle{empty}
 \include{remerciements}
 
 \tableofcontents % Pour générer la table des matières
 \listoffigures % Pour générer la liste des figures
 \listoftables % Pour générer la liste des tableaux
+
 
 \include{resume}
 % Utilisez l'environnement  abstract pour rédiger votre résumé
@@ -82,7 +84,6 @@
 % Document principal
 %%%%%%%%%%%%%%%%%%%%
 
-\pagenumbering{arabic}
 %
 % J'ai mis des "input" plutot que "include" pour eviter les pages blanches.
 %
@@ -90,14 +91,17 @@
 \parindent=0ex % Facultatif
 % pour qu'il n'y ait pas  de renfoncement à chaque alinéa
 
+\pagenumbering{arabic}
 
-\input{introduction}
+\include{introduction}
 
 % Utilisez l'environnement  introduction pour rédiger votre introduction
 
 % NOTE IMPORTANTE (GT): Il vaut mieux utiliser un autre nom que
 % "chapitre1", un nom plus significatif/approprie pour le contenu du
 % chapitre!
+
+%\pagenumbering{arabic}
 
 \input{outils_connus}
 
