@@ -2,11 +2,11 @@
 \chapter{Description de l'API de \PpFf}
 \label{description.chap}
 
-\GT{Pour \'eviter la confusion, tu dois utiliser les m\^emes termes
+\gt{Pour \'eviter la confusion, tu dois utiliser les m\^emes termes
 que dans l'API, m\^eme si ces termes sont en anglais. Mais tu les mets
 dans la police courrier, avec texttt.}
 
-Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble de l'architecture du syst\`eme. L'API est compos\'ee de quatre \'el\'ements principaux: l'Interface avec laquelle le d\'eveloppeur interagit, les \texttt{Pipeline}s --- qui sont le coeur de l'API ---, les \texttt{Stage}s et les \texttt{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les plus importantes m\'ethodes disponibles dans l'interface.
+Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble de l'architecture du syst\`eme. L'API est compos\'ee de quatre \'el\'ements principaux: l'Interface avec laquelle le d\'eveloppeur interagit, les \texttt{Pipeline}s --- qui sont le coeur de l'API ---, les \texttt{Stage}s et les \texttt{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les principales m\'ethodes de l'interface.
 
 
 
@@ -36,6 +36,21 @@ Dans le chapitre 3 j'ai eu l'intention d'introduire un diagramme de classe UML e
 \IC{Qu'est-ce que vous en pensez ? Est-ce que je dois introduire le diagramme dans le chapitre 2 ? Je ne suis pas sûr que je fasse la différence entre la description et implémentation de l’API.
 }
 
+
+\GT{La description est tout ce qu'un programmeur doit savoir/connaitre
+pour \underline{utiliser} ton API --- de l'ext\'erieur, comme une
+boite noire. L'impl\'ementation d\'ecrit les <<d\'etails>>
+n\'ecessaires pour comprendre \underline{comment fonctionne} l'API,
+par exemple, ce qu'un mainteneur devrait comprendre/connaitre s'il
+voulait modifier, corriger ou \'etendre ton API.}
+
+\GT{En lien avec le diagramme de classes, si l'utilisateur de l'API
+utilise ou manipule diff\'erents concepts et classes dans son
+programme, que ces concepts/classes sont utiles pour pouvoir utiliser
+correctement l'API --- avec la bonne syntaxe et la bonne s\'emantique
+--- alors ces concepts devraient \^etre d\'ecrits, par un diagramme de
+classes par exemple.}
+
 \subsection{Interface}
 
 L'interface propos\'ee en PpFf consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`es celle introduite pour les \emph{Streams} de Java~8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes impl\'ement\'ees dans l'API.
@@ -60,21 +75,24 @@ pr\'esenter la signaure des m\'ethodes.}
 
 \IC{J'ai reformul\'e la description pour le r\'esultat de la fonction flatMap}
 
+
+\begin{landscape}
+
 \begin{center}
-\tiny
+\footnotesize
 \begin{longtable}{|l|l|p{5cm}|}
-\caption{Les m\'ethodes expos\'ees aux utilisateurs par l'API de \ppff.}\\
+\caption{Les m\'ethodes expos\'ees aux utilisateurs par l'API de~\ppff.\label{methodes_api.tab}}\\
 \hline
 \textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
 \hline
 \endfirsthead
 \multicolumn{3}{c}%
-{\tablename\ \thetable\ -- \textit{Suite de la page pr\'ec\'edente}} \\
+{\tablename\ \thetable\ (\textit{suite})} \\
 \hline
 \textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
 \hline
 \endhead
-\hline \multicolumn{3}{r}{\textit{Suite \`a la page suivante}} \\
+\hline \multicolumn{3}{r}{\textit{Suite page suivante}} \\
 \endfoot
 \hline
 \endlastfoot
@@ -85,8 +103,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\end{tabular} &
   	\texttt{bool} &
     Retourne \texttt{true} si tous les \'el\'ements
-    de ce flux correspondent au pr\'edicat
-    fourni, sinon \texttt{false}.
+    du flux satisfont \texttt{predicate}, sinon \texttt{false}.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -95,17 +112,16 @@ pr\'esenter la signaure des m\'ethodes.}
 	\end{tabular} &
   	\texttt{bool} & 
     Retourne \texttt{true} si au moins un  
-    \'el\'ement de ce flux correspondent
-    au pr\'edicat fourni, sinon \texttt{false}.
+    \'el\'ement du flux satisfait \texttt{predicate}, sinon \texttt{false}.
 \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<T, Container<T>>\\
+	\tt template<T, Container<T>{>}\\
 	\tt collect()
 	\end{tabular} &
   	\texttt{Container<T>} &
-    Retourne un conteneur de type
-    STL contenant les \'el\'ements de ce flux.
+    Retourne un conteneur
+    STL avec tous les \'el\'ements du flux.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -113,17 +129,16 @@ pr\'esenter la signaure des m\'ethodes.}
 	\end{tabular} &
   	\texttt{unsigned int} & 
     Retourne le nombre d'\'el\'ements
-    dans ce flux.
+    du flux.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<In> \\
-	\tt find(Func<bool(In*)> const\& taskFunc)
+	\tt find(Func<bool(In*)> const\& predicate)
 	\end{tabular} &
   	\texttt{Pipe\&} &
-    Retourne tous les
-    \'el\'ements du flux qui satisfont la 
-    fournie en argument.
+    Retourne les
+    \'el\'ements du flux qui satisfont \texttt{predicate}.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -132,7 +147,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\end{tabular} &
   	\texttt{Pipe\&} & 
     Applique la fonction fournie en argument
-    \`a chaque \'el\'ement du flux.
+    \`a chaque \'el\'ement du flux et concat\`ene ces \'el\'ements lorsque plusieurs sont produits par la fonction.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -140,8 +155,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt flatMap()
 	\end{tabular} &
   	\texttt{Pipe\&} &
-    \IC{J'ai reformul\'e la description}
-    Renvoie dans le flux les \'el\'ements du conteneur Container.  
+    Produit un flux avec les \'el\'ements du conteneur.  
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -159,37 +173,34 @@ pr\'esenter la signaure des m\'ethodes.}
 	\end{tabular} &
 	\texttt{Collection<T, Container>} &
     Retourne une collection avec les
-    \'el\'ements de ce flux.
+    \'el\'ements du flux. \GT{Est-ce utile de mentionner cette m\'ethode?}
     \\ 
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<T> \\
-	\tt limit (int n)
+	\tt limit(int n)
 	\end{tabular} &
-	Pipe\& & 
-    Renvoie dans le flux seulement
-    les n premiers \'el\'ements de
-    ce flux.
+	\texttt{Pipe\&} & 
+    Retourne un flux compos\'e des \texttt{n}~premiers \'el\'ements du flux d'entr\'ee.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt linesFromFile(string\& path)
 	\end{tabular} &
-	Pipe\& & 
-    Renvoie dans le flux les lignes
-    contenues dans un fichier.
+	\texttt{Pipe\&} & 
+    Retourne un flux avec les lignes
+    contenues dans le fichier indiqu\'e par \texttt{path}.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<In, Out> \\
 	\tt map(Func<Out*(In*)> const\& taskFunc)
 	\end{tabular} &
-	Pipe\& &
-    Renvoie dans le flux les
-    r\'esultats constitu\'es de 
-    l'application d'une fonction 
-    fournie en param\`etre aux 
-    \'el\'ements de ce flux.
+	\texttt{Pipe\&} & 
+    Retourne un flux compos\'e de
+    l'application de \texttt{taskFunc}
+    \`a chacun des
+    \'el\'ements du flux.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -197,7 +208,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt max(Func<void(T*, T*)> compare)
 	\end{tabular} &
 	\texttt{T} &
-	Retourne l'\'el\'ement maximum de ce flux en fonction du comparateur fourni en param\`etre.
+	Retourne l'\'el\'ement maximum du flux en fonction du comparateur.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -205,7 +216,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt min(Func<void(T*, T*)> compare)
 	\end{tabular} &
 	\texttt{T} &
-	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+	Retourne l'\'el\'ement minimum du flux en fonction du comparateur.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -213,22 +224,24 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt noneMatch(Func<bool(T*)> predicate)
 	\end{tabular} &
 	\texttt{bool} &
-	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+    Retourne \texttt{true} si aucun des \'el\'ements
+    du flux ne satisfait \texttt{predicate},
+    sinon \texttt{false}.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt parallel(int workers = 1)
 	\end{tabular} &
-	Pipe\& &
-	D\'efinis le nombre de travailleurs fourni en param\`etre.
+	\texttt{Pipe\&} &
+	Sp\'ecifie le nombre de travailleurs \`a utiliser pour traiter les \'el\'ements du flux.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<In> \\
 	\tt peek(Func<void(In*)> const\& taskFunc)
 	\end{tabular} &
-	Pipe\& &
-	M\'ethode utilis\'ee pour d\'ebogage. Applique une fonction sur les \'el\'ements de ce flux sans modifier leur valeur.
+	\texttt{Pipe\&} &
+	Applique la fonction \texttt{taskFunc} \`a chaque \'el\'ement du flux et r\'e\'emet l'\'el\'ement (sans le modifier) sur le flux de sortie. Note: Utile pour le d\'ebogage.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -236,7 +249,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt reduce(Reducer<In, Out> const\& reducer)
 	\end{tabular} &
 	\texttt{Out} &
-	reduce description.
+	Effectue une r\'eduction sur les \'el\'ements du flux. Voir la notion de \texttt{reducer}, p.~\pageref{reducer.sect}. \GT{Il faut expliquer bri\`evement comment fonctionne le reducer.}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -244,7 +257,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt reduce(Out init, Func<Out(In, Out)> acc)
 	\end{tabular} &
 	\texttt{Out} &
-	reduce description.
+	Effectue une r\'eduction des \'el\'ements du flux, en utilisant \texttt{init} comme valeur initiale et \texttt{acc} comme fonction d'accumulation.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -252,15 +265,15 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt reduceByKey(Reducer<In, V> r, Func<K*(In*)> fk)
 	\end{tabular} &
 	\texttt{MapType} &
-	reduceByKey description.
+    \IC{reduceByKey description.}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<T> \\
 	\tt skip(int n)
 	\end{tabular} &
-	Pipe\& &
-	skip description.
+	\texttt{Pipe\&} &
+    Retourne un flux compos\'e des \'el\'ements du flux d'entr\'ee, mais en omettant les \texttt{n} premiers \'el\'ements.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -268,15 +281,15 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt sort(Func<bool(T, T)> const\& compare)
 	\end{tabular} &
 	\texttt{Collection<T, Container>} &
-	sort description.
+	Effectue le tri des \'el\'ements du flux, selon l'ordre sp\'ecifi\'e par \texttt{compare}. Note: Le premier \'el\'ement du flux de sortie n'est \'emis \emph{qu'apr\`es que la fin de flux ait \'et\'e rencontr\'ee}.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<T, Iterator> \\
 	\tt source(Iterator  begin, Iterator end)
 	\end{tabular} &
-	Pipe\& &
-	source description.
+	\texttt{Pipe\&} &
+	\IC{source description.}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -284,14 +297,18 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt sum()
 	\end{tabular} &
 	\texttt{T} &
-	sum description.
+	Retourne la somme des \'el\'ements du flux.
     \\
 \hline
-
+%\label{methodes_api.tab}
 \end{longtable}
 \normalsize
-\label{methodes_api.tab}
 \end{center}
+
+
+
+
+\end{landscape}
 
 
 
@@ -314,7 +331,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\end{tabular} &
 %  	\texttt{bool} &
 %    Retourne \texttt{true} si tous les \'el\'ements
-%    de ce flux correspondent au pr\'edicat
+%    du flux correspondent au pr\'edicat
 %    fourni, sinon \texttt{false}.
 %    \\
 %\hline
@@ -324,7 +341,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\end{tabular} &
 %  	\texttt{bool} & 
 %    Retourne \texttt{true} si au moins un  
-%    \'el\'ement de ce flux correspondent
+%    \'el\'ement du flux correspondent
 %    au pr\'edicat fourni, sinon \texttt{false}.
 %\\
 %\hline
@@ -334,7 +351,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\end{tabular} &
 %  	\texttt{Container<T>} &
 %    Retourne un conteneur de type
-%    STL contenant les \'el\'ements de ce flux.
+%    STL contenant les \'el\'ements du flux.
 %    \\
 %\hline
 %	\begin{tabular}{@{}l@{}}
@@ -387,7 +404,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\end{tabular} &
 %	\texttt{Collection<T, Container>} &
 %    Retourne une collection avec les
-%    \'el\'ements de ce flux.
+%    \'el\'ements du flux.
 %    \\ 
 %\hline
 %	\begin{tabular}{@{}l@{}}
@@ -417,7 +434,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %    r\'esultats constitu\'es de 
 %    l'application d'une fonction 
 %    fournie en param\`etre aux 
-%    \'el\'ements de ce flux.
+%    \'el\'ements du flux.
 %    \\
 %\hline
 %	\begin{tabular}{@{}l@{}}
@@ -425,7 +442,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\tt max(Func<void(T*, T*)> compare)
 %	\end{tabular} &
 %	\texttt{T} &
-%	Retourne l'\'el\'ement maximum de ce flux en fonction du comparateur fourni en param\`etre.
+%	Retourne l'\'el\'ement maximum du flux en fonction du comparateur fourni en param\`etre.
 %    \\
 %\hline
 %	\begin{tabular}{@{}l@{}}
@@ -433,7 +450,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\tt min(Func<void(T*, T*)> compare)
 %	\end{tabular} &
 %	\texttt{T} &
-%	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+%	Retourne l'\'el\'ement minimum du flux en fonction du comparateur fourni en param\`etre.
 %    \\
 %\hline
 %	\begin{tabular}{@{}l@{}}
@@ -441,7 +458,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\tt noneMatch(Func<bool(T*)> predicate)
 %	\end{tabular} &
 %	\texttt{bool} &
-%	Retourne l'\'el\'ement minimum de ce flux en fonction du comparateur fourni en param\`etre.
+%	Retourne l'\'el\'ement minimum du flux en fonction du comparateur fourni en param\`etre.
 %    \\
 %\hline
 %	\begin{tabular}{@{}l@{}}
@@ -456,7 +473,7 @@ pr\'esenter la signaure des m\'ethodes.}
 %	\tt peek(Func<void(In*)> const\& taskFunc)
 %	\end{tabular} &
 %	Pipe\& &
-%	M\'ethode utilis\'ee pour d\'ebogage. Applique une fonction sur les \'el\'ements de ce flux sans modifier leur valeur.
+%	M\'ethode utilis\'ee pour d\'ebogage. Applique une fonction sur les \'el\'ements du flux sans modifier leur valeur.
 %    \\
 %\hline
 %	\begin{tabular}{@{}l@{}}
@@ -526,14 +543,14 @@ pr\'esenter la signaure des m\'ethodes.}
 
 
 
-Comme on peut le voir dans le tableau~\ref{methodes_api.tab}, la d\'eclaration des m\'ethodes utilise la programmation g\'en\'erique de C++, c'est-\`a-dire les \emph{templates}. Cela permet aux utilisateurs d'avoir une interface unique, de sorte qu'une m\'ethode peut \^etre r\'eutilis\'ee pour n'importe quel type de donn\'ees.
+Comme on peut le voir dans le tableau~\ref{methodes_api.tab}, la d\'eclaration des m\'ethodes utilise la programmation g\'en\'erique de C++, c'est-\`a-dire les \emph{templates}. Cela permet aux utilisateurs d'avoir une interface g\'en\'erique unique, de sorte qu'une m\'ethode peut \^etre r\'eutilis\'ee pour n'importe quel type de donn\'ees.
 
 
 Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant sa conception d\'etaill\'ee, nous nous \'etions donn\'es comme objectif de fournir un syst\`eme suffisamment intuitif et expressif pour le traitement de flux de donn\'ees. 
 
-\GT{Lorsque dans le texte tu indiques des identificateurs qui viennent du code --- find, collect, etc. --- alors il faut les mettre en police tt, donc \texttt{find}, \texttt{collect}, etc.}
+\gt{Lorsque dans le texte tu indiques des identificateurs qui viennent du code --- find, collect, etc. --- alors il faut les mettre en police tt, donc \texttt{find}, \texttt{collect}, etc.}
 
-Le pseudocode~\ref{expressivite_api.pseudo} pr\'esente un extrait de code C++ qui donne un premier aper\c{c}u de l'expressivit\'e de l'interface --- d'autres exemples seront pr\'esent\'es plus loin. Dans cet exemple, on s\'electionne les employ\'es qui ont un salaire plus grand que 35~K\$. Les employ\'es sont initialement dans un conteneur STL et sont filtr\'es en chainant trois op\'erations : $i)$ \texttt{source} qui permet d'envoyer dans le flux des objets de type \texttt{Employe}; $ii$) \texttt{find} qui s\'electionne les employ\'es selon la condition fournie en param\`etre (une lambda-expression); $iii)$ \texttt{collect} qui met les employ\'es s\'electionn\'es dans un conteneur STL. Ici, les employ\'es s\'electionn\'es sont mis dans un conteneur de type \texttt{std::vector} --- le type de conteneur est donn\'e par le type fourni en argument (g\'en\'erique) de la m\'ethode \texttt{collect}.
+Le pseudocode~\ref{expressivite_api.pseudo} pr\'esente un extrait de code C++ qui donne un premier aper\c{c}u de l'expressivit\'e de l'interface --- d'autres exemples seront pr\'esent\'es plus loin. Dans cet exemple, on s\'electionne les employ\'es qui ont un salaire plus grand que 35~K\$. Les employ\'es sont initialement dans un conteneur STL et sont filtr\'es en chainant trois op\'erations : $i)$ \texttt{source} qui permet d'envoyer dans le flux des objets de type~\texttt{Employe}; $ii$) \texttt{find} qui s\'electionne les employ\'es selon la condition fournie en param\`etre (une lambda-expression); $iii)$ \texttt{collect} qui met les employ\'es s\'electionn\'es dans un conteneur STL. Ici, les employ\'es s\'electionn\'es sont mis dans un conteneur de type \texttt{std::vector} --- le type de conteneur est donn\'e par le type fourni en argument (g\'en\'erique) de la m\'ethode \texttt{collect}.
 
 
 \begin{pseudocode}
@@ -560,24 +577,19 @@ std::vector<Employe> result =
 
 \subsection{Op\'erateurs}
 
-Les op\'erateurs (\texttt{Operator}s) sont la base de notre syst\`eme. L'API fournit un ensemble d'op\'erateurs qui facilitent la t\^ache de l'utilisateur. Les op\'erateurs sont structur\'es en deux cat\'egories : les op\'erateurs sans \'etat et les op\'erateurs avec \'etat.
+Les op\'erateurs (classe \texttt{Operator}) sont la base de notre syst\`eme. L'API fournit un ensemble d'op\'erateurs qui facilitent la t\^ache de l'utilisateur. Les op\'erateurs sont structur\'es en deux cat\'egories : les op\'erateurs sans \'etat et les op\'erateurs avec \'etat.
 
 Les \emph{op\'erateurs sans \'etat} sont ceux qui ne disposent pas d'informations sur l'it\'eration en cours et ne transmettent pas les informations interm\'ediaires des \'etapes de traitement pr\'ec\'edentes. Si on prend comme exemple le filtre repr\'esent\'e par la m\'ethode \texttt{find} du tableau~\ref{methodes_api.tab}, il traite le flux de donn\'ees \'el\'ement par \'el\'ement. 
 %
-Lorsque la fonction (lambda-expression) fournie en argument \`a la m\'ethode \texttt{find} ne satisfait pas la condition lorqu'appliqu\'ee \`a un \'el\'ement du flux, le filtre ne retourne rien. 
+Lorsque la fonction (lambda-expression) fournie en argument \`a la m\'ethode \texttt{find} ne satisfait pas la condition lorsqu'appliqu\'ee \`a un \'el\'ement du flux, le filtre ne retourne rien. 
 
-\GT{Je ne comprends pas cette derni\`ere phrase.  Si l'op\'erateur est
-<<sans \'etat>>, alors il ne devrait pas non plus utiliser des
-donn\'ees de la m\'emoire.  Peut-\^etre est-ce le terme <<sans
-\'etat>> qui est mal chosi?}
+Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de donn\'ees interne, qui repr\'esente l'\'etat. Cette structure repr\'esente ou synth\'etise l'historique des \'el\'ements pass\'es au flux et affecte la logique de traitement dans les calculs ult\'erieurs. Par exemple, l'op\'erateur \texttt{Sum} calcule la somme des \'el\'ements du flux. Son \'etat contient la valeur de la somme de tous les \'el\'ements qui pr\'ec\'edent celui en cours de traitement. 
 
-\IC{J'ai enlev\'e la phrase : Un op\'erateur sans \'etat, par contre, peut utiliser des donn\'ees historiques stock\'ees dans la m\'emoire locale ou sur le disque. Initialement, j'ai voulu dire que l'op\'erateur peut utiliser les donn\'ees de la m\'emoire d'ordinateur par interm\`ede de lambda-expression (les donn\'ees qui sont envoy\'ees par r\'ef\'erence))}
+\subsection*{Op\'erateurs de r\'eduction}
 
-\GT{Dans le prochain paragraphe: historique des <<op\'erations
-pass\'ees>> ou des <<\'el\'ements pass\'es du flux>>?}
-\IC{Oui ce sont des \'el\'ements pass\'es du flux}
+\label{reducer.sect}
 
-Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de donn\'ees interne, qui repr\'esente l'\'etat. Cette structure pr\'eserve l'historique des \'el\'ements pass\'es du flux et affecte la logique de traitement dans les calculs ult\'erieurs. Par exemple, l'op\'erateur \texttt{Sum} calcule la somme des \'el\'ements du flux. Son \'etat contient la valeur de l'\'el\'ement en cours et la valeur de la somme de tous les \'el\'ements pr\'ec\'edents celui-ci. 
+\GT{Il faut expliquer bri\`evement la notion de \TT{reducer}!}
 
 
 \subsection{Stages}
@@ -585,14 +597,20 @@ Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de 
 Le traitement du flux de donn\'ees est mod\'elis\'e en utilisant une cha\^{\i}ne d'\'etapes. Dans notre API, une \'etape est repr\'esent\'ee par un \texttt{Stage}, et chaque \texttt{Stage} est compos\'e d'un ou plusieurs op\'erateurs. Notons toutefois que ce module n'est pas visible \`a l'utilisateur. 
 
 
+\GT{Donc, en lien avec ma remarque pr\'esent\'ee plus haut: si la
+notion de Stage n'est pas visible \`a l'utilisateur, elle ne devrait
+donc pas faire partie de la pr\'esentation de l'API. Elle devrait
+plut\^ot \^etre trait\'ee dans la partie Mise en oeuvre
+(impl\'ementation).}
+
 
 \subsection{Pipeline}
 
-Le \texttt{Pipeline} est le composant principal de notre API. Un \texttt{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \texttt{Operator}s regroup\'es dans des \texttt{Stages}. La figure~\ref{Quelle figure?} montre une vue d\'etaill\'ee d'un \texttt{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \texttt{P} avec $n$ \'etapes peut \^etre formellement d\'efini comme suit:
+Le \texttt{Pipeline} est le composant principal de notre API. Un \texttt{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \texttt{Operator}s regroup\'es dans des \texttt{Stages}. La figure~\ref{Quelle figure?} montre une vue d\'etaill\'ee d'un \texttt{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \texttt{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
 
 
 \[
-	\texttt{P} = O_1 + O_2 + O_3 + \ldots + O_n;
+	\texttt{P} = O_1 +  \ldots + O_k + \ldots + O_n;
 \]
 
 
