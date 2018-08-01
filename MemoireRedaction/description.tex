@@ -20,63 +20,78 @@ Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de 
 
 \section{Les composants de l'API de \ppff}
 
-\GT{Probablement qu'un diagramme de classe UML serait int\'eressant et
-utile.  Il pourrait \^etre introduit ici, puis expliqu\'e dans les
-sous-sections qui suivent.}
+L'\texttt{API} de \texttt{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \texttt{FastFlow}. Les mod\`eles \texttt{Pipeline} et \texttt{Farm} fournis par cette biblioth\`eque sont utilis\'es comme bloc de construction pour rendre les fonctionnalit\'es de notre \texttt{API}. Cette section d\'ecrit le r\^ole de chaque composant de \texttt{PpFf} et leur mappage aux mod\`eles de \texttt{FastFlow}. La figure~\ref{fig:ClassDiagramme} pr\'esente une vue d'ensemble des classes qui compose l'\texttt{API}. 
 
-\GT{Note que de fa\c{c}on g\'en\'erale, lorsqu'on d\'ebute une section
-qui contient plusieurs sous-sections, il est pr\'ef\'erable d'avoir
-quelques lignes d'introduction, qui donnent une vue d'ensemble de ce
-qui suit. Pas toujours, mais ici, avec le diagramme de classes, \c{c}a
-ferait l'affaire.}
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/ClassDiagramme.jpg}
+      \caption{Les classes qui compose l'\texttt{API}.}
+       \label{fig:ClassDiagramme}
+\end{figure}
+%
+%\GT{Probablement qu'un diagramme de classe UML serait int\'eressant et
+%utile.  Il pourrait \^etre introduit ici, puis expliqu\'e dans les
+%sous-sections qui suivent.}
+%
+%\GT{Note que de fa\c{c}on g\'en\'erale, lorsqu'on d\'ebute une section
+%qui contient plusieurs sous-sections, il est pr\'ef\'erable d'avoir
+%quelques lignes d'introduction, qui donnent une vue d'ensemble de ce
+%qui suit. Pas toujours, mais ici, avec le diagramme de classes, \c{c}a
+%ferait l'affaire.}
+%
+%\IC{Mon plan initial \'etait de d\'ecrire les composants dans le chapitre 2 (Description de l'API de PpFf) et de pr\'esenter la partie technique dans le chapitre 3 (Impl\'ementation). Dans la premi\`ere partie du chapitre 2 j'ai choisi de d\'ecrire les composants principaux de l'API et dans la deuxi\`eme partie de ce chapitre de pr\'esenter quelques m\'ethodes avec des exemples. 
+%Dans le chapitre 3 j'ai eu l'intention d'introduire un diagramme de classe UML en expliquant les classes qui compose l'API. } 
+%
+%\IC{Qu'est-ce que vous en pensez ? Est-ce que je dois introduire le diagramme dans le chapitre 2 ? Je ne suis pas sûr que je fasse la différence entre la description et implémentation de l’API.
+%}
 
-\IC{Mon plan initial \'etait de d\'ecrire les composants dans le chapitre 2 (Description de l'API de PpFf) et de pr\'esenter la partie technique dans le chapitre 3 (Impl\'ementation). Dans la premi\`ere partie du chapitre 2 j'ai choisi de d\'ecrire les composants principaux de l'API et dans la deuxi\`eme partie de ce chapitre de pr\'esenter quelques m\'ethodes avec des exemples. 
-Dans le chapitre 3 j'ai eu l'intention d'introduire un diagramme de classe UML en expliquant les classes qui compose l'API. } 
 
-\IC{Qu'est-ce que vous en pensez ? Est-ce que je dois introduire le diagramme dans le chapitre 2 ? Je ne suis pas sûr que je fasse la différence entre la description et implémentation de l’API.
-}
-
-
-\GT{La description est tout ce qu'un programmeur doit savoir/connaitre
-pour \underline{utiliser} ton API --- de l'ext\'erieur, comme une
-boite noire. L'impl\'ementation d\'ecrit les <<d\'etails>>
-n\'ecessaires pour comprendre \underline{comment fonctionne} l'API,
-par exemple, ce qu'un mainteneur devrait comprendre/connaitre s'il
-voulait modifier, corriger ou \'etendre ton API.}
-
-\GT{En lien avec le diagramme de classes, si l'utilisateur de l'API
-utilise ou manipule diff\'erents concepts et classes dans son
-programme, que ces concepts/classes sont utiles pour pouvoir utiliser
-correctement l'API --- avec la bonne syntaxe et la bonne s\'emantique
---- alors ces concepts devraient \^etre d\'ecrits, par un diagramme de
-classes par exemple.}
+%\GT{La description est tout ce qu'un programmeur doit savoir/connaitre
+%pour \underline{utiliser} ton API --- de l'ext\'erieur, comme une
+%boite noire. L'impl\'ementation d\'ecrit les <<d\'etails>>
+%n\'ecessaires pour comprendre \underline{comment fonctionne} l'API,
+%par exemple, ce qu'un mainteneur devrait comprendre/connaitre s'il
+%voulait modifier, corriger ou \'etendre ton API.}
+%
+%\GT{En lien avec le diagramme de classes, si l'utilisateur de l'API
+%utilise ou manipule diff\'erents concepts et classes dans son
+%programme, que ces concepts/classes sont utiles pour pouvoir utiliser
+%correctement l'API --- avec la bonne syntaxe et la bonne s\'emantique
+%--- alors ces concepts devraient \^etre d\'ecrits, par un diagramme de
+%classes par exemple.}
 
 \subsection{Interface}
 
 L'interface propos\'ee en PpFf consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`es celle introduite pour les \emph{Streams} de Java~8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes impl\'ement\'ees dans l'API.
 
 
-\GT{Dans un tabular, pour mettre du texte, on utilise p avec une
-largeur. Ceci \'evite de mettre des sauts de lignes explicites, ce qui
-n'est jamais une bonne id\'ee.}
-
-\GT{Il faut mettre le code avec police tt. Par contre, j'ai essay\'e
-que le code soit mis par d\'efaut ainsi, mais cela n'a pas
-fonctionn\'e, d'o\`u les commandes tt ins\'er\'ees en d\'ebut de
-chaque ligne~:(}
-
-\GT{Par contre, le d\'efaut avec la solution actuelle, c'est que c'est
-tr\`es difficile \`a comprendre pour les m\'ethodes plus complexes. Il
-faudra qu'on r\'efl\'echisse \`a une fa\c{c}on plus claire de
-pr\'esenter la signaure des m\'ethodes.}
-
-\IC{J'ai ajout\'e toutes les m\'ethodes d\'efinies dans l'interface de l'API dans ce tableau et j'ai \'et\'e oblig\'e d'utiliser le paquet longtable parce qu'elle s'\'etendait sur plusieurs pages. J'ai essay\'e de pr\'esenter la signature des m\'ethodes dans un format plus concis. Par exemple le paramètre std ::fonction a \'et\'e remplac\'e pour Func; j'ai enlev\'e les mots typename de chaque d\'eclaration de template; le param\`etre <typename ELEM, class ALLOC = std ::allocator<ELEM class TContainer >> a \'et\'e remplac\'e pour Container. De plus je n'ai pas pu r\'eutiliser la fonction qui redimensionne le tableau resizebox(textwidth). J'ai utilis\'e une police de caract\`ere plus petite (tiny) pour pouvoir encadrer le tableau dans la page.
-}
-
-\IC{J'ai reformul\'e la description pour le r\'esultat de la fonction flatMap}
 
 
-\begin{landscape}
+%\GT{Dans un tabular, pour mettre du texte, on utilise p avec une
+%largeur. Ceci \'evite de mettre des sauts de lignes explicites, ce qui
+%n'est jamais une bonne id\'ee.}
+
+%\GT{Il faut mettre le code avec police tt. Par contre, j'ai essay\'e
+%que le code soit mis par d\'efaut ainsi, mais cela n'a pas
+%fonctionn\'e, d'o\`u les commandes tt ins\'er\'ees en d\'ebut de
+%chaque ligne~:(}
+%
+%\GT{Par contre, le d\'efaut avec la solution actuelle, c'est que c'est
+%tr\`es difficile \`a comprendre pour les m\'ethodes plus complexes. Il
+%faudra qu'on r\'efl\'echisse \`a une fa\c{c}on plus claire de
+%pr\'esenter la signaure des m\'ethodes.}
+%
+%\IC{J'ai ajout\'e toutes les m\'ethodes d\'efinies dans l'interface de l'API dans ce tableau et j'ai \'et\'e oblig\'e d'utiliser le paquet longtable parce qu'elle s'\'etendait sur plusieurs pages. J'ai essay\'e de pr\'esenter la signature des m\'ethodes dans un format plus concis. Par exemple le paramètre std ::fonction a \'et\'e remplac\'e pour Func; j'ai enlev\'e les mots typename de chaque d\'eclaration de template; le param\`etre <typename ELEM, class ALLOC = std ::allocator<ELEM class TContainer >> a \'et\'e remplac\'e pour Container. De plus je n'ai pas pu r\'eutiliser la fonction qui redimensionne le tableau resizebox(textwidth). J'ai utilis\'e une police de caract\`ere plus petite (tiny) pour pouvoir encadrer le tableau dans la page.
+%}
+%
+%\IC{J'ai reformul\'e la description pour le r\'esultat de la fonction flatMap}
+
+
+%\begin{landscape}
+\newpage
+\KOMAoptions{paper=landscape,pagesize}
+\recalctypearea
+
 
 \begin{center}
 \footnotesize
@@ -167,15 +182,15 @@ pr\'esenter la signaure des m\'ethodes.}
     du flux regroupés par cl\'e.
    \\
 \hline
-	\begin{tabular}{@{}l@{}}
-	\tt template<T, Container> \\
-	\tt intermediateCollect()
-	\end{tabular} &
-	\texttt{Collection<T, Container>} &
-    Retourne une collection avec les
-    \'el\'ements du flux. \GT{Est-ce utile de mentionner cette m\'ethode?}
-    \\ 
-\hline
+%	\begin{tabular}{@{}l@{}}
+%	\tt template<T, Container> \\
+%	\tt intermediateCollect()
+%	\end{tabular} &
+%	\texttt{Collection<T, Container>} &
+%    Retourne une collection avec les
+%    \'el\'ements du flux. \GT{Est-ce utile de mentionner cette m\'ethode?}
+%    \\ 
+%\hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<T> \\
 	\tt limit(int n)
@@ -249,7 +264,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt reduce(Reducer<In, Out> const\& reducer)
 	\end{tabular} &
 	\texttt{Out} &
-	Effectue une r\'eduction sur les \'el\'ements du flux. Voir la notion de \texttt{reducer}, p.~\pageref{reducer.sect}. \GT{Il faut expliquer bri\`evement comment fonctionne le reducer.}
+	Effectue une r\'eduction sur les \'el\'ements du flux. Voir la notion de \texttt{reducer}, p.~\pageref{reducer.sect}.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -265,7 +280,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt reduceByKey(Reducer<In, V> r, Func<K*(In*)> fk)
 	\end{tabular} &
 	\texttt{MapType} &
-    \IC{reduceByKey description.}
+    Effectue une r\'eduction sur les valeurs de chaque cl\'e à l'aide d'op\'erateur \texttt{Reducer}. Voir la notion de \texttt{Reducer}, p.~\pageref{reducer.sect}.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -289,7 +304,7 @@ pr\'esenter la signaure des m\'ethodes.}
 	\tt source(Iterator  begin, Iterator end)
 	\end{tabular} &
 	\texttt{Pipe\&} &
-	\IC{source description.}
+	Convertit un conteneur de type \texttt{STL} en flux.
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -300,7 +315,6 @@ pr\'esenter la signaure des m\'ethodes.}
 	Retourne la somme des \'el\'ements du flux.
     \\
 \hline
-%\label{methodes_api.tab}
 \end{longtable}
 \normalsize
 \end{center}
@@ -308,7 +322,10 @@ pr\'esenter la signaure des m\'ethodes.}
 
 
 
-\end{landscape}
+%\end{landscape}
+\newpage
+\KOMAoptions{paper=portrait,pagesize}
+\recalctypearea
 
 
 
@@ -585,28 +602,42 @@ Lorsque la fonction (lambda-expression) fournie en argument \`a la m\'ethode \te
 
 Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de donn\'ees interne, qui repr\'esente l'\'etat. Cette structure repr\'esente ou synth\'etise l'historique des \'el\'ements pass\'es au flux et affecte la logique de traitement dans les calculs ult\'erieurs. Par exemple, l'op\'erateur \texttt{Sum} calcule la somme des \'el\'ements du flux. Son \'etat contient la valeur de la somme de tous les \'el\'ements qui pr\'ec\'edent celui en cours de traitement. 
 
-\subsection*{Op\'erateurs de r\'eduction}
+\subsection{Op\'erateurs de r\'eduction}
 
 \label{reducer.sect}
 
+L'op\'erateur \texttt{Reducer} est utilis\'e pour r\'eduire les \'el\'ements du flux \`a une valeur unique. Le pseudocode~\ref{reducer.pseudo} montre la signature de \texttt{Reducer}. Il est construit avec une valeur initiale, la fonction \texttt{accumulator} et la fonction \texttt{combiner}. La valeur initiale et la fonction \texttt{combiner} sont optionnelles gr\^ace \`a la surcharge du constructeur. Lorsque ces arguments sont omis, la valeur initiale est initialis\'ee \`a la valeur par d\'efaut du type de cette valeur et la fonction \texttt{combiner} est remplac\'ee par la fonction \texttt{accumulator}. La fonction \texttt{combiner} est utilis\'ee lorsque le flux est trait\'e en parall\`ele. Dans un tel cas, le flux est divis\'e en sous-flux qui sont r\'eduits en parall\`ele par la fonction \texttt{accumulator}. Les r\'esultats partiels sont ensuite combin\'es par la fonction \texttt{combiner}. 
+
 \GT{Il faut expliquer bri\`evement la notion de \TT{reducer}!}
 
+\begin{pseudocode}
+{\samepage\small
+\begin{alltt}
+ template< typename In, typename Out >
+ class Reducer{
+       Reducer(Out init, 
+                Func<Out(Out, In)> const& accumulator,
+                Func<Out(Out, Out)> const& combiner)
 
-\subsection{Stages}
+       Reducer(Func<Out(Out, In)> const& accumulator,
+                Func<Out(Out, Out)> const& combiner)
 
-Le traitement du flux de donn\'ees est mod\'elis\'e en utilisant une cha\^{\i}ne d'\'etapes. Dans notre API, une \'etape est repr\'esent\'ee par un \texttt{Stage}, et chaque \texttt{Stage} est compos\'e d'un ou plusieurs op\'erateurs. Notons toutefois que ce module n'est pas visible \`a l'utilisateur. 
+       Reducer(Out init, 
+                Func<Out(Out, In)> const& accumulator)
+ }
+
+\end{alltt}
+}
+\caption{La signature pour l'op\'erateur \texttt{Reducer}.}
+\label{reducer.pseudo}
+\end{pseudocode}
 
 
-\GT{Donc, en lien avec ma remarque pr\'esent\'ee plus haut: si la
-notion de Stage n'est pas visible \`a l'utilisateur, elle ne devrait
-donc pas faire partie de la pr\'esentation de l'API. Elle devrait
-plut\^ot \^etre trait\'ee dans la partie Mise en oeuvre
-(impl\'ementation).}
 
 
 \subsection{Pipeline}
 
-Le \texttt{Pipeline} est le composant principal de notre API. Un \texttt{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \texttt{Operator}s regroup\'es dans des \texttt{Stages}. La figure~\ref{Quelle figure?} montre une vue d\'etaill\'ee d'un \texttt{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \texttt{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
+Le \texttt{Pipeline} est le composant principal de notre \texttt{API}. Un \texttt{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \texttt{Operator}s regroup\'es dans des \texttt{Stages}. La figure~\ref{Quelle figure?} montre une vue d\'etaill\'ee d'un \texttt{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \texttt{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
 
 
 \[
