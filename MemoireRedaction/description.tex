@@ -6,28 +6,35 @@
 que dans l'API, m\^eme si ces termes sont en anglais. Mais tu les mets
 dans la police courrier, avec texttt.}
 
-Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble de l'architecture du syst\`eme. L'API est compos\'ee de quatre \'el\'ements principaux: l'Interface avec laquelle le d\'eveloppeur interagit, les \texttt{Pipeline}s --- qui sont le coeur de l'API ---, les \texttt{Stage}s et les \texttt{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les principales m\'ethodes de l'interface.
-
-
-
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ComponentsAPI.jpg}
-      \caption{Composants de l'API de \ppff.}
+      \caption{Les composants de l'API de \ppff.}
        \label{ComponentsAPI.fig}
 \end{figure}
 
 
-\section{Les composants de l'API de \ppff}
+\GT{Pour ce premier diagramme de classes: il ne faudrait mettre que
+les classes qui sont visibles aux utilisateurs, donc les <<concepts>>
+qui sont utiles pour utiliser l'API et \^etre capable de s'en
+servir. Les autres classes de plus bas niveau (en lien avec FastFlow
+par exemple), pourront \^etre pr\'esent\'ees dans le prochain
+chapitre.}
 
-L'\texttt{API} de \texttt{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \texttt{FastFlow}. Les mod\`eles \texttt{Pipeline} et \texttt{Farm} fournis par cette biblioth\`eque sont utilis\'es comme bloc de construction pour rendre les fonctionnalit\'es de notre \texttt{API}. Cette section d\'ecrit le r\^ole de chaque composant de \texttt{PpFf} et leur mappage aux mod\`eles de \texttt{FastFlow}. La figure~\ref{fig:ClassDiagramme} pr\'esente une vue d'ensemble des classes qui compose l'\texttt{API}. 
 
-\begin{figure}[ht]
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/ClassDiagramme.jpg}
-      \caption{Les classes qui compose l'\texttt{API}.}
-       \label{fig:ClassDiagramme}
-\end{figure}
+Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble de l'architecture de \ppff. L'API est compos\'ee de quatre \'el\'ements principaux: l'Interface avec laquelle le d\'eveloppeur interagit, les \texttt{Pipeline}s --- qui sont le coeur de l'API ---, les \texttt{Stage}s et les \texttt{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les principales m\'ethodes de l'interface.
+
+
+
+L'\texttt{API} de \texttt{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \texttt{FastFlow}, impl\'ementation qui sera d\'ecrite au prochain chapitre.
+
+Le pr\'esent chapitre d\'ecrit le r\^ole de chaque composant de
+\texttt{PpFf}. La figure~\ref{fig:ClassDiagramme} pr\'esente une vue
+d'ensemble des classes qui composent l'\texttt{API}.
+
+\GT{<<et leur mappage aux mod\`eles de \texttt{FastFlow}>>: Non, dans
+le prochain chapitre, pas dans celui-ci!}
+
 %
 %\GT{Probablement qu'un diagramme de classe UML serait int\'eressant et
 %utile.  Il pourrait \^etre introduit ici, puis expliqu\'e dans les
@@ -60,7 +67,15 @@ L'\texttt{API} de \texttt{PpFf} est impl\'ement\'e au-dessus de la biblioth\`equ
 %--- alors ces concepts devraient \^etre d\'ecrits, par un diagramme de
 %classes par exemple.}
 
-\subsection{Interface}
+\section{Interface}
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/ClassDiagramme.jpg}
+      \caption{Les classes qui composent l'\texttt{API}.}
+       \label{fig:ClassDiagramme}
+\end{figure}
+
 
 L'interface propos\'ee en PpFf consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`es celle introduite pour les \emph{Streams} de Java~8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes impl\'ement\'ees dans l'API.
 
@@ -96,13 +111,13 @@ L'interface propos\'ee en PpFf consiste en un ensemble de m\'ethodes qui permett
 \begin{center}
 \footnotesize
 \begin{longtable}{|l|l|p{5cm}|}
-\caption{Les m\'ethodes expos\'ees aux utilisateurs par l'API de~\ppff.\label{methodes_api.tab}}\\
+\caption{Les m\'ethodes publiques de l'API de~\ppff.\label{methodes_api.tab}}\\
 \hline
 \textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
 \hline
 \endfirsthead
 \multicolumn{3}{c}%
-{\tablename\ \thetable\ (\textit{suite})} \\
+{\tablename\ \thetable\ Méthodes publiques de l'API (\textit{suite})} \\
 \hline
 \textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
 \hline
@@ -567,32 +582,33 @@ Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant s
 
 \gt{Lorsque dans le texte tu indiques des identificateurs qui viennent du code --- find, collect, etc. --- alors il faut les mettre en police tt, donc \texttt{find}, \texttt{collect}, etc.}
 
-Le pseudocode~\ref{expressivite_api.pseudo} pr\'esente un extrait de code C++ qui donne un premier aper\c{c}u de l'expressivit\'e de l'interface --- d'autres exemples seront pr\'esent\'es plus loin. Dans cet exemple, on s\'electionne les employ\'es qui ont un salaire plus grand que 35~K\$. Les employ\'es sont initialement dans un conteneur STL et sont filtr\'es en chainant trois op\'erations : $i)$ \texttt{source} qui permet d'envoyer dans le flux des objets de type~\texttt{Employe}; $ii$) \texttt{find} qui s\'electionne les employ\'es selon la condition fournie en param\`etre (une lambda-expression); $iii)$ \texttt{collect} qui met les employ\'es s\'electionn\'es dans un conteneur STL. Ici, les employ\'es s\'electionn\'es sont mis dans un conteneur de type \texttt{std::vector} --- le type de conteneur est donn\'e par le type fourni en argument (g\'en\'erique) de la m\'ethode \texttt{collect}.
 
-
-\begin{pseudocode}
+\begin{Listing}
 {\small
-\begin{alltt}
+\begin{lstlisting}
 // Definition (omise) d'un vecteur d'objets Employe.
 std::vector<Employe> sourceEmployes;
 ...
 
 std::vector<Employe> result = 
-        Pipe()
-        .source<Employe>(sourceEmployes.begin(), sourceEmployes.end())
-        .find<Employe>([](Employe *e) -> bool \{ return e->salary > 35000; \})
-        .collect<Employe, std::vector>();
-
-\end{alltt}
+   Pipe()
+   .source<Employe>(sourceEmployes.begin(), sourceEmployes.end())
+   .find<Employe>([](Employe *e) { return e->salary > 35000; })
+   .collect<Employe, std::vector>();
+\end{lstlisting}
 }
 \caption{Un exemple illustrant l'\'expressivit\'e de l'API de \ppff.}
-\label{expressivite_api.pseudo}
-\end{pseudocode}
+\label{expressivite_api.c++}
+\end{Listing}
+
+\GT{Voir note plus bas sur position des listings et des references.}
+
+Le listing~\ref{expressivite_api.c++} pr\'esente un extrait de code C++ qui donne un premier aper\c{c}u de l'expressivit\'e de l'interface --- d'autres exemples seront pr\'esent\'es plus loin. Dans cet exemple, on s\'electionne les employ\'es qui ont un salaire plus grand que 35~K\$. Les employ\'es sont initialement dans un conteneur STL et sont filtr\'es en chainant trois op\'erations : $i)$ \texttt{source} qui permet d'envoyer dans le flux des objets de type~\texttt{Employe}; $ii$) \texttt{find} qui s\'electionne les employ\'es selon la condition fournie en param\`etre (une lambda-expression); $iii)$ \texttt{collect} qui met les employ\'es s\'electionn\'es dans un conteneur STL. Ici, les employ\'es s\'electionn\'es sont mis dans un conteneur de type \texttt{std::vector} --- le type de conteneur est donn\'e par le type fourni en argument (g\'en\'erique) de la m\'ethode \texttt{collect}.
 
 
 
 
-\subsection{Op\'erateurs}
+\section{Op\'erateurs}
 
 Les op\'erateurs (classe \texttt{Operator}) sont la base de notre syst\`eme. L'API fournit un ensemble d'op\'erateurs qui facilitent la t\^ache de l'utilisateur. Les op\'erateurs sont structur\'es en deux cat\'egories : les op\'erateurs sans \'etat et les op\'erateurs avec \'etat.
 
@@ -602,40 +618,52 @@ Lorsque la fonction (lambda-expression) fournie en argument \`a la m\'ethode \te
 
 Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de donn\'ees interne, qui repr\'esente l'\'etat. Cette structure repr\'esente ou synth\'etise l'historique des \'el\'ements pass\'es au flux et affecte la logique de traitement dans les calculs ult\'erieurs. Par exemple, l'op\'erateur \texttt{Sum} calcule la somme des \'el\'ements du flux. Son \'etat contient la valeur de la somme de tous les \'el\'ements qui pr\'ec\'edent celui en cours de traitement. 
 
-\subsection{Op\'erateurs de r\'eduction}
+\subsection*{Op\'erateurs de r\'eduction}
 
 \label{reducer.sect}
 
-L'op\'erateur \texttt{Reducer} est utilis\'e pour r\'eduire les \'el\'ements du flux \`a une valeur unique. Le pseudocode~\ref{reducer.pseudo} montre la signature de \texttt{Reducer}. Il est construit avec une valeur initiale, la fonction \texttt{accumulator} et la fonction \texttt{combiner}. La valeur initiale et la fonction \texttt{combiner} sont optionnelles gr\^ace \`a la surcharge du constructeur. Lorsque ces arguments sont omis, la valeur initiale est initialis\'ee \`a la valeur par d\'efaut du type de cette valeur et la fonction \texttt{combiner} est remplac\'ee par la fonction \texttt{accumulator}. La fonction \texttt{combiner} est utilis\'ee lorsque le flux est trait\'e en parall\`ele. Dans un tel cas, le flux est divis\'e en sous-flux qui sont r\'eduits en parall\`ele par la fonction \texttt{accumulator}. Les r\'esultats partiels sont ensuite combin\'es par la fonction \texttt{combiner}. 
-
-\GT{Il faut expliquer bri\`evement la notion de \TT{reducer}!}
-
-\begin{pseudocode}
-{\samepage\small
-\begin{alltt}
+\begin{Listing}[tbp]
+\begin{lstlisting}
  template< typename In, typename Out >
  class Reducer{
        Reducer(Out init, 
-                Func<Out(Out, In)> const& accumulator,
-                Func<Out(Out, Out)> const& combiner)
+               Func<Out(Out, In)> const& accumulator,
+               Func<Out(Out, Out)> const& combiner)
 
        Reducer(Func<Out(Out, In)> const& accumulator,
-                Func<Out(Out, Out)> const& combiner)
+               Func<Out(Out, Out)> const& combiner)
 
        Reducer(Out init, 
-                Func<Out(Out, In)> const& accumulator)
+               Func<Out(Out, In)> const& accumulator)
  }
-
-\end{alltt}
-}
+\end{lstlisting}
 \caption{La signature pour l'op\'erateur \texttt{Reducer}.}
-\label{reducer.pseudo}
-\end{pseudocode}
+\label{reducer.c++}
+\end{Listing}
+
+\GT{Une règle utile à savoir pour \LaTeX: lorsqu'on met un élément
+flottant (avec caption/label, e.g., figure, table, pseudocode,
+listing), il est préférable de mettre cet élément \underline{avant} la
+première référence (et non pas après).  La position du flottant par
+rapport au texte qui y réfère est alors meilleure.}
+
+\GT{Pour les exemples de code, il est préférable d'utiliser Listing
+(définie dans macros.tex) et lstlisting (package \LaTeX) plutot que
+alltt --- ce qui évite d'avoir à mettre un backslash devant une
+accolade. J'ai configure pour que par defaut ce soit avec le langage
+C++ (on peut faire de la coloration syntaxique, mais pas utile dans un
+mémoire.  On peut aussi spécifier un autre langage, avec une mise en
+forme différente.}
+
+L'op\'erateur de classe \texttt{Reducer} est utilis\'e pour r\'eduire les \'el\'ements du flux \`a une valeur unique. Le listing~\ref{reducer.c++} présente la spécification  de la classe \texttt{Reducer} avec les signatures des fonctions associées. 
+
+Un \texttt{Reducer} est construit avec une valeur initiale, une fonction \texttt{accumulator} et une fonction \texttt{combiner}. La valeur initiale et la fonction \texttt{combiner} sont optionnelles gr\^ace \`a la surcharge du constructeur. Lorsque ces arguments sont omis, la valeur initiale est initialis\'ee \`a la valeur par d\'efaut du type de cette valeur et la fonction \texttt{combiner} est remplac\'ee par la fonction \texttt{accumulator}. La fonction \texttt{combiner} est utilis\'ee lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \texttt{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \texttt{combiner}. 
 
 
 
 
-\subsection{Pipeline}
+
+\section{Pipeline}
 
 Le \texttt{Pipeline} est le composant principal de notre \texttt{API}. Un \texttt{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \texttt{Operator}s regroup\'es dans des \texttt{Stages}. La figure~\ref{Quelle figure?} montre une vue d\'etaill\'ee d'un \texttt{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \texttt{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
 

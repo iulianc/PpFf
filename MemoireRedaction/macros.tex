@@ -25,6 +25,10 @@
 \newfloat{pseudocode}{htbp}{lop}
 \floatname{pseudocode}{Pseudocode}
 
+\floatstyle{boxed}
+\newfloat{Listing}{htbp}{lop}
+\floatname{Listing}{Listing}
+
 \newcommand{\ppff}{\texttt{PpFf}}
 \newcommand{\PpFf}{\ppff}
 
@@ -33,3 +37,24 @@
 
 \newcommand{\IC}[1]{{\textcolor{blue}{\footnotesize [[(Iulian C.) #1]]}}}
 \newcommand{\ic}[1]{}
+
+\lstset{
+    language=C++,
+    inputencoding=utf8,
+    basicstyle=\small\ttfamily,
+    frame=none,
+    numberstyle=\footnotesize,
+    numbersep=5pt,
+    tabsize=4,
+    literate=
+    {?}{{\,c}}1
+    {?}{{\^u}}1
+    {?}{{\'e}}1
+    {?}{{\`e}}1
+    {?}{{\^e}}1
+    {?}{{\`a}}1
+    {?}{{\'E}}1
+    {?}{{\`E}}1
+    {?}{{\`A}}1
+    {`}{{\`{}}}1,
+}
