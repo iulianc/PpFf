@@ -10,3 +10,5 @@
 *.dvi
 *.bak
 *.pdf
+*.lot
+*.loc
