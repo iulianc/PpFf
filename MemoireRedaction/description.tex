@@ -73,7 +73,7 @@ le prochain chapitre, pas dans celui-ci!}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ClassDiagramme.jpg}
       \caption{Les classes qui composent l'\texttt{API}.}
-       \label{fig:ClassDiagramme}
+       \label{ClassDiagramme.fig}
 \end{figure}
 
 
@@ -678,3 +678,98 @@ Dans l'expression ci-dessus, $O_k$ d\'enote le $k^e$ op\'erateur dans le pipelin
 L'utilisation de \texttt{Pipeline} introduit une couche d'abstraction sur une cha\^{\i}ne complexe d'op\'erateurs. De plus, un \texttt{Pipeline} n'expose à l'ext\'erieur que ses entr\'ees et ses sorties. Une telle conception modulaire permet une flexibilit\'e au syst\`eme tout en simplifiant la mise en œuvre. Par exemple, le parall\'elisme du flux pourrait \^etre facilement r\'ealis\'e en ayant plusieurs \texttt{Pipeline}s identiques connect\'es \`a la m\^eme entr\'ee et sortie respectivement.
 
 
+\section{Travailler avec le flux}
+
+Cette section fournit une description compl\`ete de quelques m\'ethodes impl\'ement\'ees dans PpFf. La section pr\'esente \'egalement le code source d'un petit exemple (WordCount) pour illustrer l'utilisation et l'effet des diverses op\'erations. 
+
+En travaillant avec des flux dans \texttt{PpFf} implique trois \'el\'ements : 
+\begin{itemize}
+	\item Une source de donn\'ees--par exemple une collection--pour effectuer une requ\^ete.
+	\item Une cha\^ine d'op\'erations sans \'etat qui forment un pipeline de flux et
+	\item Une op\'eration avec l'\'etat qui d\'eclenche le traitement du flux et produit un r\'esultat.
+\end{itemize}
+
+Pour illustrer un flux dans \texttt{PpFf}, le listage~\ref{wordcount.fig} montre le code source d'une petite application de compte de mots. Le programme examine la fr\'equence de mots dans un fichier texte. Une telle application est compos\'ee de plusieurs \'etapes. 
+
+Tout d'abord, la m\'ethode \texttt{linesFromFile(path)}  retourne un flux avec les lignes contenues dans le fichier indiqu\'e par \texttt{path}. Ensuite, l'appel \`a parallel marque le flux en tant que flux parall\`ele, ce qui permet de partitionner et d'ex\'ecuter le pipeline en parall\'ele.
+
+Le pipeline actuel effectue les op\'erations suivantes :
+\begin{itemize}
+	\item L'op\'eration \texttt{flatMap} brise chaque ligne en mots individuels qui sont ensuite transmis dans le flux en tant qu'\'el\'ements de donn\'ees individuelles.
+	\item L'op\'eration \texttt{map} transforme les lettres majuscules du mot en lettres minuscules.
+	\item L'op\'eration \texttt{find} retourne dans le flux seulement les mots qui ne sont pas vides.
+	\item La derni\`ere op\'eration--reduceByKey--consiste \`a regrouper les mots similaires ensemble et ensuite compter chaque mot. La valeur ainsi obtenue repr\'esente l'occurrence de mot dans le texte. 
+\end{itemize}
+
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+typedef std::vector<std::string> Words;
+
+bool notEmpty(std::string* s) {
+    return s->size() > 0;
+}
+
+int main(int argc, char* argv[]) {
+    Reducer<std::string, int> reducer(0, 
+    	[](int count, std::string _) { return count + 1; },
+        std::plus<int>{} );
+
+   	std::string path = /home/Words.txt; 
+	std::unordered_map<std::string, int> currentResult;
+
+	currentResult = 
+		Pipe()
+			.linesFromFile(path) 
+			.parallel(4)
+			.flatMap<std::string, std::string, Words>(splitInWords)
+			.map<std::string, std::string>(toLowercaseLetters)
+			.find<std::string>(notEmpty)
+			.reduceByKey<std::string, std::string, int>(reducer);
+}
+\end{lstlisting}
+\caption{Le code source d'une application de compte de mots.}
+\label{wordcount.c++}
+\end{Listing}
+
+
+\subsection{Le flux}
+
+Un programme PpFf est un ensemble d'objets de type op\'erateur compos\'e dans un objet de type flux. Au niveau d'utilisateur, le flux est repr\'esent\'e par la classe \texttt{Pipe} de la figure~\ref{ClassDiagramme.fig}. Une Pipe peut \^etre cr\'e\'ee sur heap ou sur stack. Le listage~\ref{instanciationsPipe.c++} montre les deux types d'instanciations d'une Pipe.
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+Pipe pipe = new Pipe()
+ou
+Pipe()
+\end{lstlisting}
+\caption{Les instanciations d'une Pipe.}
+\label{instanciationsPipe.c++}
+\end{Listing}
+
+Un flux est ex\'ecut\'e en parall\`ele lorsque la m\'ethode parallel est ajout\'ee dans la chaine d'op\'erations. Le param\`etre optionnel de cette m\'ethode d\'efinit le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Par exemple la m\'ethode parallel(4) dans le programme de compte de mots du listage~\ref{wordcount.c++} renseigne le flux qu'il faut ex\'ecuter en parall\`ele toutes les op\'erations suivant cette m\'ethode. Le nombre de travailleurs utilis\'es dans ce cas est quatre. Si ce param\`etre n'est pas renseign\'e, l'interface prend un seul travailleur qui est d\'efini par d\'efaut. PpFf est assez flexible en permettant l'ex\'ecution des op\'erations en parall\`ele avec un nombre diff\'erent de travailleurs. Si par exemple on reprend le programme de compte de mots, dans le listage 2.4 l’opération flatMap est exécutée avec un seul travailleur, les opérations map et find sont exécutées avec 4 travailleurs et la dernière opération reduceByKey avec deux travailleurs. 
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+	Pipe()
+		.linesFromFile(path) 
+		.flatMap<std::string, std::string, Words>(splitInWords)
+		.parallel(4)
+		.map<std::string, std::string>(toLowercaseLetters)
+		.find<std::string>(notEmpty)
+		.parallel(2)
+		.reduceByKey<std::string, std::string, int>(reducer);
+\end{lstlisting}
+\caption{Le code source d'une application de compte de mots avec un nombre diff\'erent de travailleurs.}
+\label{wordcountParallel.c++}
+\end{Listing}
+
+Les op\'erateurs sont ajout\'es dans le flux simplement en encha\^inant les m\'ethodes ad\'equates. Par exemple dans le listage~\ref{wordcountParallel.c++} la m\'ethode \texttt{map} ajoute l'opérateur \texttt{Map} et la m\'ethode \texttt{find} ajoute l'op\'erateur \texttt{Find}. Les sous-sections suivantes fournissent une description compl\`ete de quelques m\'ethodes impl\'ement\'ees dans l'interface.
+
+\subsection{Source}
+
+\subsection{Find}
+
+\subsection{Map}
+
+\subsection{Collectors}
