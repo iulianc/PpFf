@@ -768,6 +768,9 @@ Les op\'erateurs sont ajout\'es dans le flux simplement en encha\^inant les m\'e
 
 \subsection{Source}
 
+La source de donn\'ees est le premier op\'erateur ajout\'e dans le flux. Sans un tel op\'erateur, un flux ne peut pas \^etre ex\'ecut\'e. L'API fournit les m\'ethodes pour consumer les donn\'ees \`a partir d'une source de donn\'ees, telles que des collections ou des ressources d'entrer / sortir. Les travaux futurs de cette th\`ese peuvent \'etendre l'interface pour prendre en charge plus des sources de donn\'ees. Les signatures pour les deux m\'ethodes sont donn\'ees dans le tableau~\ref{methodes_api.tab}. La premi\`ere m\'ethode \texttt{ligneFromFile} consume les donn\'ees \`a partir d'un fichier.  Par exemple dans le listage~\ref{wordcount.fig} chaque ligne du fichier \texttt{Words.txt} est envoy\'ee dans le flux. Le param\`etre \texttt{path} sp\'ecifie le chemin o\`u se trouve le fichier. La deuxi\`eme m\'ethode source consume les donn\'ees \`a partir d'un conteneur STL. Les donn\'ees de type T sont envoy\'ees dans le flux en fournissant l'it\'erateur du d\'ebut et l'it\'erateur de la fin du conteneur. Notez que la g\'en\'eration d'un flux \`a partir d'une collection ordonn\'ee pr\'eserve l'ordre. Les \'el\'ements d'un flux provenant d'une liste auront le m\^eme ordre que la liste.
+
+
 \subsection{Find}
 
 \subsection{Map}
