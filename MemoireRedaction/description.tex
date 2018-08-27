@@ -766,13 +766,29 @@ Un flux est ex\'ecut\'e en parall\`ele lorsque la m\'ethode parallel est ajout\'
 
 Les op\'erateurs sont ajout\'es dans le flux simplement en encha\^inant les m\'ethodes ad\'equates. Par exemple dans le listage~\ref{wordcountParallel.c++} la m\'ethode \texttt{map} ajoute l'opérateur \texttt{Map} et la m\'ethode \texttt{find} ajoute l'op\'erateur \texttt{Find}. Les sous-sections suivantes fournissent une description compl\`ete de quelques m\'ethodes impl\'ement\'ees dans l'interface.
 
+
 \subsection{Source}
 
 La source de donn\'ees est le premier op\'erateur ajout\'e dans le flux. Sans un tel op\'erateur, un flux ne peut pas \^etre ex\'ecut\'e. L'API fournit les m\'ethodes pour consumer les donn\'ees \`a partir d'une source de donn\'ees, telles que des collections ou des ressources d'entrer / sortir. Les travaux futurs de cette th\`ese peuvent \'etendre l'interface pour prendre en charge plus des sources de donn\'ees. Les signatures pour les deux m\'ethodes sont donn\'ees dans le tableau~\ref{methodes_api.tab}. La premi\`ere m\'ethode \texttt{ligneFromFile} consume les donn\'ees \`a partir d'un fichier.  Par exemple dans le listage~\ref{wordcount.fig} chaque ligne du fichier \texttt{Words.txt} est envoy\'ee dans le flux. Le param\`etre \texttt{path} sp\'ecifie le chemin o\`u se trouve le fichier. La deuxi\`eme m\'ethode source consume les donn\'ees \`a partir d'un conteneur STL. Les donn\'ees de type T sont envoy\'ees dans le flux en fournissant l'it\'erateur du d\'ebut et l'it\'erateur de la fin du conteneur. Notez que la g\'en\'eration d'un flux \`a partir d'une collection ordonn\'ee pr\'eserve l'ordre. Les \'el\'ements d'un flux provenant d'une liste auront le m\^eme ordre que la liste.
 
 
-\subsection{Find}
-
 \subsection{Map}
+
+Assez souvent le traitement de donn\'ees consiste \`a s\'electionner des informations \`a partir de certains objets. Par exemple, en \texttt{SQL}, nous pouvons s\'electionner une colonne particuli\`ere dans une table. L'API fournit une fonctionnalit\'e similaire via la m\'ethode \texttt{map} d\'efinit dans le tableau~\ref{methodes_api.tab}. Cette m\'ethode prend une fonction en argument qui est appliqu\'ee \`a chaque \'el\'ement du flux. Par exemple dans le listage~\ref{mapExample.c++} la m\'ethode \texttt{e->getName()} est pass\'ee en r\'ef\'erence \`a la m\'ethode \texttt{map} pour extraire  les noms d'employ\'ees. Le type des \'el\'ements du flux avant d'appliquer la m\'ethode \texttt{map} est de type \texttt{Employee} et le type des \'el\'ements du flux apr\`es le traitement de \texttt{map} est de type \texttt{string}. Autrement dit, la m\'ethode map est utilis\'ee pour transformer un objet en un autre en appliquant une fonction. Un autre exemple l\'eg\`erement diff\'erent est donn\'e dans le listage~\ref{wordcount.c++}. La fonction \texttt{toLowercaseLetters} est pass\'ee en argument \`a la m\'ethode map pour convertir les mots en lettres minuscules. 
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+std::vector<std::string> result =
+	Pipe()
+	.source<Employee>(elems.begin(), elems.end())
+	.map<Employee, std::string>(([](Employee *e)->std::string* 
+        						{ return &(e->getName()); }))
+	.collect<std::string, std::vector>();
+\end{lstlisting}
+\caption{Sàèelection d'une propri\'et\'e d'un objet \`a l'aide de map.}
+\label{mapExample.c++}
+\end{Listing}
+
+\subsection{Find}
 
 \subsection{Collectors}
