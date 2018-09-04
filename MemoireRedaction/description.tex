@@ -747,7 +747,7 @@ Pipe()
 \label{instanciationsPipe.c++}
 \end{Listing}
 
-Un flux est ex\'ecut\'e en parall\`ele lorsque la m\'ethode parallel est ajout\'ee dans la chaine d'op\'erations. Le param\`etre optionnel de cette m\'ethode d\'efinit le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Par exemple la m\'ethode parallel(4) dans le programme de compte de mots du listage~\ref{wordcount.c++} renseigne le flux qu'il faut ex\'ecuter en parall\`ele toutes les op\'erations suivant cette m\'ethode. Le nombre de travailleurs utilis\'es dans ce cas est quatre. Si ce param\`etre n'est pas renseign\'e, l'interface prend un seul travailleur qui est d\'efini par d\'efaut. PpFf est assez flexible en permettant l'ex\'ecution des op\'erations en parall\`ele avec un nombre diff\'erent de travailleurs. Si par exemple on reprend le programme de compte de mots, dans le listage 2.4 l’opération flatMap est exécutée avec un seul travailleur, les opérations map et find sont exécutées avec 4 travailleurs et la dernière opération reduceByKey avec deux travailleurs. 
+Un flux est ex\'ecut\'e en parall\`ele lorsque la m\'ethode parallel est ajout\'ee dans la chaine d'op\'erations. Le param\`etre optionnel de cette m\'ethode d\'efinit le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Par exemple la m\'ethode parallel(4) dans le programme de compte de mots du listage~\ref{wordcount.c++} renseigne le flux qu'il faut ex\'ecuter en parall\`ele toutes les op\'erations suivant cette m\'ethode. Le nombre de travailleurs utilis\'es dans ce cas est quatre. Si ce param\`etre n'est pas renseign\'e, l'interface prend un seul travailleur qui est d\'efini par d\'efaut. PpFf est assez flexible en permettant l'ex\'ecution des op\'erations en parall\`ele avec un nombre diff\'erent de travailleurs. Si par exemple on reprend le programme de compte de mots, dans le listage~\ref{wordcount.fig} l’opération flatMap est exécutée avec un seul travailleur, les opérations map et find sont exécutées avec 4 travailleurs et la dernière opération reduceByKey avec deux travailleurs. 
 
 \begin{Listing}[tbp]
 \begin{lstlisting}
@@ -788,6 +788,11 @@ std::vector<std::string> result =
 \caption{Sàèelection d'une propri\'et\'e d'un objet \`a l'aide de map.}
 \label{mapExample.c++}
 \end{Listing}
+
+
+\subsection{FlatMap}
+
+L'interface pour le mod\`ele FlatMap nous permet d'aplanir un flux multiniveaux en mappant chaque \'el\'ement du flux d'entr\'ee sur un conteneur de type STL, puis en cr\'ent un flux unique \`a partir de ce conteneur de conteneurs. \`A l'int\'erieur, la m\'ethode \texttt{flatMap()} fait des appels aux op\'erateurs \texttt{map} et \texttt{flat}. Les deux signatures pour cette m\'ethode sont pr\'esent\'ees dans le tableau~\ref{methodes_api.tab}. Le type du flux avant d'appliquer l'op\'erateur flatMap est \texttt{In} et \texttt{Out} est le type du flux apr\`es le traitement de l'op\'erateur sur le flux. Le type \texttt{OutConainer} est le type interm\`ediaire r\'esultant de l'application de l'op\'erateur map sur le flux. Par exemple dans le listage~\ref{wordcount.fig} \texttt{OutConainer} est de type \texttt{Words}. Dans cet exemple les lignes d'un fichier divis\'ees en mots sont accumul\'ees dans un conteneur et ensuite le contenu du conteneur est renvoy\'e dans le flux.
 
 \subsection{Find}
 
