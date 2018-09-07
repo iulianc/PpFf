@@ -68,6 +68,7 @@
 % plutôt que BIBLIOGRAPHIE
 
 \renewcommand \listfigurename{LISTE DES FIGURES}
+\renewcommand \lstlistlistingname{LISTE DES LISTINGS}
 \renewcommand \appendixname{APPENDICE}
 \renewcommand \figurename{Figure}
 \renewcommand \tablename{Tableau}
@@ -81,6 +82,9 @@
 \listoffigures % Pour générer la liste des figures
 \listoftables % Pour générer la liste des tableaux
 
+\lstlistoflistings
+\addtocontents{toc}{\protect\vspace{1.5ex}}
+\addcontentsline{toc}{chapter}{LISTE DES LISTINGS}
 
 \include{resume}
 % Utilisez l'environnement  abstract pour rédiger votre résumé
