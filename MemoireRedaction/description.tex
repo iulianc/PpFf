@@ -859,10 +859,61 @@ La derni\`ere \'etape dans le traitement d'un flux c'est le ramassage du r\'esul
 
 \subsubsection{Collecter les \'el\'ements du flux dans un conteneur}
 
+Afin de collecter les \'el\'ements d'un flux dans un conteneur, l'\TT{API} fournit la m\'ethode collect d\'ecrite dans le tableau~\ref{methodes_api.tab}. Cette m\'ethode retourne un conteneur \TT{STL}. Le type pour les \'el\'ements du conteneur et le type du conteneur sont donn\'es par les types de param\`etres \TT{template} de la m\'ethode \TT{collect}. Par exemple dans l'exemple du listage~\ref{employeeNamesExample.c++} les param\`etres \TT{template} de la m\'ethode \TT{collect} sont de type \TT{string} et respectivement \TT{list}. Donc, dans notre exemple la m\'ehode \TT{collect} va retourner une liste de type \TT{string} avec les noms d'employ\`ees.
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+    std::list<std::string> currentResult = 
+        Pipe()
+        .source<Employee>(elems.begin(), elems.end())
+        .map<Employee, std::string>( [](Employee *e) ->std::string* { return &(e->name); } )
+        .collect<std::string, std::list>();
+
+\end{lstlisting}
+\caption{Extraire les noms d'employ\'ees.}
+\label{employeeNamesExample.c++}
+\end{Listing}
+
+
 \subsubsection{R\'eduire les \'el\'ements de flux en une seule valeur}
 
+Consiste \`a combiner tous les \'el\'ements du flux en un seul r\'esultat. La m\'ethode \TT{max} d\'ecrite dans le tableau~\ref{methodes_api.tab} est l'une des m\'ethodes offertes par l'\TT{API} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. Le listage~\ref{olderEmployeeExample.c++} montre un exemple ou les \'el\'ements de type \TT{Employee} d'un flux sont compar\'es afin de trouver l'employ\'ee le plus \^ag\'ee.
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+    Employee currentResult = 
+        Pipe()
+        .source<Employee>(employees.begin(), employees.end())
+        .parallel(4)
+        .max<Employee>( [](Employee *older, Employee *e) 
+        		{ if(older->age < e->age) *older = *e;} );
+
+\end{lstlisting}
+\caption{Le plus \^ag\'ee employ\'ee.}
+\label{olderEmployeeExample.c++}
+\end{Listing}
+
+L'\TT{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \`a une seule valeur. Les plus utilis\'ees sont : \TT{count}, \TT{min} ou \TT{sum}. D\'ecrites dans le tableau~\ref{methodes_api.tab}, ces m\'ethodes sont de m\'ethodes sp\'ecifiques. Autrement dit, en utilisant la m\'ethode \TT{max} on peut trouver seulement l'\'el\'ement maximum du flux. Une autre m\'ethode plus g\'en\'erale fournie par l'\TT{API} est \TT{reduce}. D\'ecrite dans le m\^eme tableau~\ref{methodes_api.tab}, la m\'ehode \TT{reduce} r\'eduit les \'el\'ements du flux en utilisant l'op\'erateur \TT{Reducer} p.~\pageref{reducer.sect} comme argument. Le listage~\ref{olderEmployeeExample.c++} montre l'exemple du listage~\ref{olderEmployeeExample.c++}) r\'e\'ecrit avec la m\'ethode \TT{reduce}.
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+    Reducer<Employee, Employee> reducer([](Employee e1, Employee e2) 
+    						{ return e1.age > e2.age ? e1 : e2; });
+
+    Employee currentResult =
+        Pipe()
+        .source<Employee>(employees.begin(), employees.end())
+        .reduce<Employee, Employee>(reducer);
+
+\end{lstlisting}
+\caption{Le plus \^ag\'ee employ\'ee.}
+\label{olderEmployeeWithReduceExample.c++}
+\end{Listing}
+
+
 \subsubsection{Regroupement d'\'el\'ements}
-Assez souvent une op\'eration de la base de donn\'ees consiste à regrouper ses \'el\'ements dans un ensemble en fonction d'une ou de plusieurs propri\'et\'es. L'\TT{API} fournit une fonctionnalit\'e similaire via la m\'ethode \TT{groupByKey} d\'efinie dans le tableau~\ref{methodes_api.tab}. Le listage~\ref{groupByKeyExample.c++} montre un exemple ou les employ\'ees sont group\'ees par leurs \^ages.
+
+Assez souvent une op\'eration de la base de donn\'ees consiste \`a regrouper ses \'el\'ements dans un ensemble en fonction d'une ou de plusieurs propri\'et\'es. L'\TT{API} fournit une fonctionnalit\'e similaire via la m\'ethode \TT{groupByKey} d\'efinie dans le tableau~\ref{methodes_api.tab}. Le listage~\ref{groupByKeyExample.c++} montre un exemple ou les employ\'ees sont group\'ees par leurs \^ages.
 
 \begin{Listing}[tbp]
 \begin{lstlisting}
@@ -880,4 +931,7 @@ Assez souvent une op\'eration de la base de donn\'ees consiste à regrouper ses 
 \label{groupByKeyExample.c++}
 \end{Listing}
 
+
 \subsubsection{Regroupement et r\'eduction d'\'el\'ements}
+
+Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee avec un style imp\'eratif. L'\TT{API} fournit une op\'eration similaire dans un style plus fonctionnel. La m\'ethode \TT{reduceByKey} d\'ecrite dans le tableau~\ref{methodes_api.tab} combine une op\'eration de regroupement et une op\'eration de r\'eduction dans le m\^eme temps. Le programme compte de mots du listage~\ref{wordcount.fig} montre un exemple ou une telle fonctionnalit\'e est tr\`es utile. Les \'el\'ements du flux qui sont les mots contenus dans un fichier sont regroup\'es par mot, puis une op\'eration de r\'eduction est appliqu\'ee \`a l'ensemble de mots au pr\'ealable group\'e. L'op\'eration de r\'eduction \TT{Reducer} p.~\pageref{reducer.sect} est repr\'esent\'ee par l'argument de la m\'ethode. Dans ce cas particulier, elle a le r\^ole de compter l'occurrence de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} c'est un \TT{map} de type cl\'e valeur. La cl\'e repr\'esente chaque mot distinct du fichier et la valeur repr\'esente l'occurrence du mot dans le fichier.
