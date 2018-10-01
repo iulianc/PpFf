@@ -26,6 +26,37 @@ Dans ce cas, la parall\'elisation est repr\'esent\'ee par un graphique lin\'eair
 \end{figure}
 
 
+\subsubsection{Task-Farm}
+
+Le mod\`ele \TT{Task-Farm} impl\'ement\'e dans \TT{PpFf}  consiste \`a r\'epliquer un op\'erateur parmi un ensemble de travailleurs identiques. Autrement dit, il vise \'a effectuer un traitement identique sur un ensemble de donn\'ees ind\'ependantes les unes des autres. \TT{Task-Farm} est compos\'e de trois principales entit\'es : \TT{Emitter}, \TT{Collector} et multiple travailleurs. L'\TT{Emitter} distribue les \'el\'ements d'entr\'ee aux travailleurs selon une certaine politique d'ordonnancement afin d'\'equilibrer la charge des travailleurs. La figure~\ref{ParallelismeTaskFarm.fig} montre le mod\`ele \TT{TaskFat} impl\'ement\'e dans \TT{PpFf}. Les \'el\'ements sont repartis aux travailleurs selon le mod\`ele \TT{round robin}. Les travailleurs re\c coivent les \'el\'ements d'entr\'ee et appliquent sur chacun d'eux l'op\'erateur d\'efini au pr\'ealable par l'utilisateur. Les r\'esultats sont envoy\'es vers le collecteur charg\'e de les collecter et de les transmettre au flux de sortie.
+
+L'impl\'ementation parall\`ele de ce mod\`ele peut \^etre formellement exprim\'ee sous la forme d'un ensemble de travailleurs 
+
+\[
+	{W_1, W_2,\ldots, W_n}
+\]
+
+qui applique l'op\'erateur 
+
+\[
+	O : X -> Y
+\]
+
+sur les \'el\'ements Xn apparaissant dans le flux d'entr\'ee. Le r\'esultat Yi est g\'en\'er\'e en appliquant l'op\'erateur O sur l'\'el\'ement Xi. L'op\'eration sera ex\'ecut\'ee en parall\`ele par les diff\'erents travailleurs. Dans ce cas, la structure du mod\`ele d'ex\'ecution peut \'eventuellement recevoir, en param\`etre, le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Si ce param\`etre n'est pas renseign\'e, l'interface prend un seul travailleur d\'efini par d\'efaut. Cette solution est capable d'augmenter le d\'eit du traitement des donn\'ees, c'est \`a dire le nombre de donn\'ees qui peuvent \^etre trait\'ees en un temps donn\'e.
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/ParallelismeTaskFarm.jpg}
+      \caption{Task Farm}
+       \label{ParallelismeTaskFarm.fig}
+\end{figure}
+
+
+
+
+
+
+
 
 \subsection{Stages}
 
