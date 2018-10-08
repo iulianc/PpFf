@@ -2,6 +2,21 @@
 \chapter{La mise en \oe{}uvre de l'API}
 \label{implementation.chap}
 
+\subsection{Pipeline}
+
+Mentionn\'e au chapitre ant\'erieur, le pipeline est compos\'e d'une cha\^ine de traitement appel\'e \TT{Pipe}. Un \TT{Pipe} est repr\'esent\'ee essentiellement par une s\'erie d'op\'erateurs d\'efinis par l'utilisateur qui sont appliqu\'es aux \'el\'ements d'un flux. \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \TT{FastFlow}, de sorte que nous utilisons \TT{ff\_node}, \TT{ff\_pipeline} et \TT{ff\_farm} comme fournisseur pour l'ex\'ecution de \TT{PpFf}. 
+
+D\'ecrits dans le chapitre pr\'ec\`edent, les op\'erateurs qui composent un \TT{Pipe} sont de deux types : les op\'erateurs sans \'etat et les op\'erateurs avec l'\'etat. Comme nous pouvons le voir dans la figure~\ref{MapToFastFlow.fig} un op\'erateur h\'erite de la class \TT{ff\_node} de \TT{FastFlow}. Le \TT{Pipe} contient un ou plusieurs op\'erateurs sans \'etat et un seul op\'erateur avec \'etat. Lorsque ce dernier est ajout\'e dans le \TT{pipeline}, la m\'ethode \TT{run()} est appel\'ee. \`A ce stade, un objet de type \TT{ff\_pipeline} correspondant au \TT{Pipe} est cr\'e\'e. Ensuite, chaque op\'erateur d\'efini par l'utilisateur est visit\'e et en fonction de la configuration \'etablie, des objets de type \TT{ff\_node} ou \TT{ff\_farm} sont ajout\'es comme stage au \TT{ff\_pipeline}. Chaque nœud ainsi ajout\'e dans \TT{ff\_pipeline}, sera ex\'ecut\'e dans un fil d'ex\'ecution.
+La cr\'eation de \TT{Pipe} est r\'ealis\'ee \`a l'aide de \TT{PipeManager}.
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/MapToFastFlow.jpg}
+      \caption{Le mappage de \TT{PpFf} \`a \TT{FastFlow}.}
+       \label{MapToFastFlow.fig}
+\end{figure}
+
+
 \subsection{Parall\'elisation}
 
 La cr\'eation du code parall\`ele a \'et\'e le domaine des experts. La complexit\'e du code parall\`ele diminue la productivit\'e, ce qui peut augmenter les co\^uts de d\'eveloppement. \TT{PpFf} permet aux programmeurs de composer du code s\'equentiel et de l'ex\'ecuter en parall\`ele. Dans une interface unique, l'\TT{API} offre deux mod\`eles de parall\'elisme : le parall\'elisme de flux et \TT{Task-Farm}.
