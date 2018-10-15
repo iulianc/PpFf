@@ -69,17 +69,8 @@ sur les \'el\'ements Xn apparaissant dans le flux d'entr\'ee. Le r\'esultat Yi e
 
 
 
-
-
-
-
 \subsection{Stages}
 
-Le traitement du flux de donn\'ees est mod\'elis\'e en utilisant une cha\^{\i}ne d'\'etapes. Dans notre API, une \'etape est repr\'esent\'ee par un \texttt{Stage}, et chaque \texttt{Stage} est compos\'e d'un ou plusieurs op\'erateurs. Notons toutefois que ce module n'est pas visible \`a l'utilisateur. 
+Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les performances du pipeline en utilisant les cœurs de la machine. Cependant, il existe une limitation lorsque le parall\'elisme est appliqu\'e sur certains op\'erateurs. Dans PpFf seulement les op\'erateurs sans \'etat peuvent \^etre parall\'elis\'es en toute s\'ecurit\'e. Par contre, quand il est n\'ecessaire de parall\'eliser un op\'erateur avec l'\'etat les choses deviennent un peu plus compliqu\'ees parce que les r\'esultats du calcul sont obtenus en traitant un ensemble d'\'el\'ements d'entrée appartenant \'a un ou plusieurs flux de donn\'ees. Comme la plupart des traitements consistent en une combinaison d'op\'erateurs sans \'etat et avec \'etat, le parall\'elisme ne peut pas \^etre effectu\'e. 
 
 
-\GT{Donc, en lien avec ma remarque pr\'esent\'ee plus haut: si la
-notion de Stage n'est pas visible \`a l'utilisateur, elle ne devrait
-donc pas faire partie de la pr\'esentation de l'API. Elle devrait
-plut\^ot \^etre trait\'ee dans la partie Mise en \oe{}uvre
-(impl\'ementation).}
