@@ -835,31 +835,31 @@ std::vector<std::string> result =
 
 \subsection{FlatMap}
 
-Un \TT{FlatMap}  permet d'aplanir un flux multiniveaux en mappant chaque \'el\'ement du flux d'entr\'ee sur un conteneur de type STL, puis en cr\'eant un flux unique \`a partir de ce conteneur de conteneurs. \`A l'int\'erieur, la m\'ethode \TT{flatMap()} fait des appels aux op\'erateurs \TT{map} et \TT{flat}. Les deux signatures pour cette m\'ethode sont pr\'esent\'ees dans le tableau~\ref{methodes_api.tab}. Le type du flux avant d'appliquer l'op\'erateur \TT{flatMap} est \TT{In} et \TT{Out} est le type du flux apr\`es le traitement de l'op\'erateur sur le flux. Le type \TT{OutContainer} est le type interm\`ediaire r\'esultant de l'application de l'op\'erateur \TT{map} sur le flux. Par exemple, dans le listing~\ref{wordcount.fig}, \TT{OutContainer} est de type \TT{Words}. Dans cet exemple les lignes d'un fichier divis\'ees en mots sont accumul\'ees dans un conteneur et ensuite le contenu du conteneur est renvoy\'e dans le flux.
+Un \TT{FlatMap}  permet d'aplanir un flux multiniveaux en mappant chaque \'el\'ement du flux d'entr\'ee sur un conteneur de type STL, puis en cr\'eant un flux unique \`a partir de ce conteneur de conteneurs. \`A l'int\'erieur, la m\'ethode \TT{flatMap()} fait des appels aux op\'erateurs \TT{map} et \TT{flat}. Les deux signatures pour cette m\'ethode sont pr\'esent\'ees dans le tableau~\ref{methodes_api.tab}. Le type du flux avant d'appliquer l'op\'erateur \TT{flatMap} est \TT{In} alors que \TT{Out} est le type du flux apr\`es le traitement de l'op\'erateur sur le flux. Le type \TT{OutContainer} est le type interm\`ediaire r\'esultant de l'application de l'op\'erateur \TT{map} sur le flux. Par exemple, dans le listing~\ref{wordcount.fig}, \TT{OutContainer} est de type \TT{Words}. Dans cet exemple les lignes d'un fichier divis\'ees en mots sont accumul\'ees dans un conteneur et ensuite le contenu du conteneur est renvoy\'e dans le flux.
 
 
 \subsection{Find}
 
-L'interface pour l'op\'erateur find d\'ecrit dans le tableau~\ref{methodes_api.tab} s\'electionne les \'el\'ements d'un flux selon un pr\'edicat de sorte que seuls les \'el\'ements qui le satisfont sont renvoy\'es \`a l'\'etape suivante dans le flux. \`A noter qu'il est obligatoire que le pr\'edicat renvoie une expression bool\'eenne. Dans le listage~\ref{wordcount.fig} la m\`ethode \TT{find} ignore tous les \'el\'ements du flux de type \TT{string} qui sont vides.
+L'op\'erateur \TT{find}, d\'ecrit dans le tableau~\ref{methodes_api.tab}, s\'electionne les \'el\'ements d'un flux selon un pr\'edicat de sorte que seuls les \'el\'ements qui  satisfont le pr\'edicat sont envoy\'es \`a l'\'etape suivante dans le flux. \`A noter qu'il est obligatoire que le pr\'edicat renvoie une expression bool\'eenne. Dans le listage~\ref{wordcount.fig}, la m\`ethode \TT{find} ignore tous les \'el\'ements du flux de type \TT{string} qui sont vides.
 
 
 \subsection{Collectors}
 
-La derni\`ere \'etape dans le traitement d'un flux c'est le ramassage du r\'esultat. Le r\'esultat est obtenu par l'interm\`ede des op\'erateurs finals. Les m\'ethodes fournies par l'API offrent quatre fonctionnalit\'es principales : 
+La derni\`ere \'etape dans le traitement d'un flux est la collecte du r\'esultat. Le r\'esultat est obtenu par l'interm\`ede des op\'erateurs finaux. Les m\'ethodes fournies par l'API offrent quatre fonctionnalit\'es principales: 
 
 \begin{itemize}
 	\item Collecter les \'el\'ements du flux dans un conteneur;	
 
 	\item R\'eduire les \'el\'ements de flux en une seule valeur;
 
-	\item Regroupement d'\'el\'ements;
+	\item Regrouper des \'el\'ements;
 	
-	\item Regroupement et r\'eduction d'\'el\'ements;
+	\item Regroupemer et r\'eduire des \'el\'ements;
 \end{itemize}
 
 \subsubsection{Collecter les \'el\'ements du flux dans un conteneur}
 
-Afin de collecter les \'el\'ements d'un flux dans un conteneur, l'\TT{API} fournit la m\'ethode collect d\'ecrite dans le tableau~\ref{methodes_api.tab}. Cette m\'ethode retourne un conteneur \TT{STL}. Le type pour les \'el\'ements du conteneur et le type du conteneur sont donn\'es par les types de param\`etres \TT{template} de la m\'ethode \TT{collect}. Par exemple dans l'exemple du listage~\ref{employeeNamesExample.c++} les param\`etres \TT{template} de la m\'ethode \TT{collect} sont de type \TT{string} et respectivement \TT{list}. Donc, dans notre exemple la m\'ehode \TT{collect} va retourner une liste de type \TT{string} avec les noms d'employ\`ees.
+Afin de collecter les \'el\'ements d'un flux dans un conteneur, l'\TT{API} fournit la m\'ethode \TT{collect}, d\'ecrite dans le tableau~\ref{methodes_api.tab}. Cette m\'ethode retourne un conteneur \TT{STL}. Le type pour les \'el\'ements du conteneur et le type du conteneur sont donn\'es par les types de param\`etres \TT{template} de la m\'ethode \TT{collect}. Par exemple dans l'exemple du listage~\ref{employeeNamesExample.c++}, les param\`etres \TT{template} de la m\'ethode \TT{collect} sont respectivement de type \TT{string} et \TT{list}. Donc, dans notre exemple, la m\'ehode \TT{collect} va retourner une liste de type \TT{string} avec les noms d'employ\`es.
 
 \begin{Listing}[tbp]
 \begin{lstlisting}
@@ -868,16 +868,16 @@ Afin de collecter les \'el\'ements d'un flux dans un conteneur, l'\TT{API} fourn
         .source<Employee>(elems.begin(), elems.end())
         .map<Employee, std::string>( [](Employee *e) ->std::string* { return &(e->name); } )
         .collect<std::string, std::list>();
-
 \end{lstlisting}
-\caption{Extraire les noms d'employ\'ees.}
+\caption{Extraire les noms d'employ\'es.}
 \label{employeeNamesExample.c++}
 \end{Listing}
 
 
 \subsubsection{R\'eduire les \'el\'ements de flux en une seule valeur}
 
-Consiste \`a combiner tous les \'el\'ements du flux en un seul r\'esultat. La m\'ethode \TT{max} d\'ecrite dans le tableau~\ref{methodes_api.tab} est l'une des m\'ethodes offertes par l'\TT{API} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. Le listage~\ref{olderEmployeeExample.c++} montre un exemple ou les \'el\'ements de type \TT{Employee} d'un flux sont compar\'es afin de trouver l'employ\'ee le plus \^ag\'ee.
+Une r\'eduction
+consiste \`a combiner les \'el\'ements d'un flux en un seul r\'esultat. La m\'ethode \TT{max} d\'ecrite dans le tableau~\ref{methodes_api.tab} est l'une des m\'ethodes offertes par l'\TT{API} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. Le listage~\ref{olderEmployeeExample.c++} montre un exemple ou les \'el\'ements de type \TT{Employee} d'un flux sont compar\'es afin de trouver l'employ\'e le plus \^ag\'e.
 
 \begin{Listing}[tbp]
 \begin{lstlisting}
@@ -886,8 +886,7 @@ Consiste \`a combiner tous les \'el\'ements du flux en un seul r\'esultat. La m\
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .max<Employee>( [](Employee *older, Employee *e) 
-        		{ if(older->age < e->age) *older = *e;} );
-
+                          { if (older->age < e->age) *older = *e; } );
 \end{lstlisting}
 \caption{Le plus \^ag\'ee employ\'ee.}
 \label{olderEmployeeExample.c++}
@@ -913,7 +912,7 @@ L'\TT{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flu
 
 \subsubsection{Regroupement d'\'el\'ements}
 
-Assez souvent une op\'eration de la base de donn\'ees consiste \`a regrouper ses \'el\'ements dans un ensemble en fonction d'une ou de plusieurs propri\'et\'es. L'\TT{API} fournit une fonctionnalit\'e similaire via la m\'ethode \TT{groupByKey} d\'efinie dans le tableau~\ref{methodes_api.tab}. Le listage~\ref{groupByKeyExample.c++} montre un exemple ou les employ\'ees sont group\'ees par leurs \^ages.
+Souvent, une op\'eration sur une collection de donn\'ees consiste \`a regrouper ses \'el\'ements dans un ensemble en fonction d'une ou de plusieurs propri\'et\'es. Notre \TT{API} fournit une fonctionnalit\'e similaire via la m\'ethode \TT{groupByKey}, d\'efinie dans le tableau~\ref{methodes_api.tab}. Le listage~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es sont regroup\'es selon leur \^age.
 
 \begin{Listing}[tbp]
 \begin{lstlisting}
@@ -927,11 +926,11 @@ Assez souvent une op\'eration de la base de donn\'ees consiste \`a regrouper ses
         		[](Employee* e) { return &(e->age); });
 
 \end{lstlisting}
-\caption{Grouper les employ\'ees par leurs \^ages.}
+\caption{Grouper les employ\'es par leur \^age.}
 \label{groupByKeyExample.c++}
 \end{Listing}
 
 
 \subsubsection{Regroupement et r\'eduction d'\'el\'ements}
 
-Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee avec un style imp\'eratif. L'\TT{API} fournit une op\'eration similaire dans un style plus fonctionnel. La m\'ethode \TT{reduceByKey} d\'ecrite dans le tableau~\ref{methodes_api.tab} combine une op\'eration de regroupement et une op\'eration de r\'eduction dans le m\^eme temps. Le programme compte de mots du listage~\ref{wordcount.fig} montre un exemple ou une telle fonctionnalit\'e est tr\`es utile. Les \'el\'ements du flux qui sont les mots contenus dans un fichier sont regroup\'es par mot, puis une op\'eration de r\'eduction est appliqu\'ee \`a l'ensemble de mots au pr\'ealable group\'e. L'op\'eration de r\'eduction \TT{Reducer} p.~\pageref{reducer.sect} est repr\'esent\'ee par l'argument de la m\'ethode. Dans ce cas particulier, elle a le r\^ole de compter l'occurrence de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} c'est un \TT{map} de type cl\'e valeur. La cl\'e repr\'esente chaque mot distinct du fichier et la valeur repr\'esente l'occurrence du mot dans le fichier.
+Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'\TT{API} fournit une op\'eration similaire dans un style plus fonctionnel. La m\'ethode \TT{reduceByKey}, d\'ecrite dans le tableau~\ref{methodes_api.tab}, combine les fonctionnalit\'es de regroupement et de r\'eduction dans une seule op\'eration. Le programme compte de mots du listage~\ref{wordcount.fig} montre un exemple o\`u une telle fonctionnalit\'e est utile. Les \'el\'ements du flux, qui sont les mots contenus dans un fichier, sont regroup\'es par mot, puis une op\'eration de r\'eduction est appliqu\'ee \`a l'ensemble de mots au pr\'ealable group\'e. L'op\'eration de r\'eduction \TT{Reducer} (p.~\pageref{reducer.sect}) est repr\'esent\'ee par l'argument de la m\'ethode. Dans ce cas particulier, elle a pour r\^ole de compter le nombre d'occurrences de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un \TT{map} de type cl\'e--valeur~: la cl\'e repr\'esente un mot du fichier et la valeur associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier.

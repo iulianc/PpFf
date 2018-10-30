@@ -15,8 +15,8 @@ $(MAIN): $(MAIN).tex $(TEXTS) $(FIGURES) memoireuqam1.3.cls
 	pdflatex $(MAIN)
 	pdflatex $(MAIN)
 
-clean:
-	rm -f *~ Text/*~ $(MAIN).log $(MAIN).lot $(MAIN).lof $(MAIN).toc *.aux $(MAIN).aux $(MAIN).blg Text/*.bak $(MAIN).pdf $(MAIN).bbl *.bak
+clean cleanxtra:
+	rm -f *~ Text/*~ $(MAIN).log $(MAIN).lo[lt] $(MAIN).lof $(MAIN).toc *.aux $(MAIN).aux $(MAIN).blg Text/*.bak $(MAIN).pdf $(MAIN).bbl *.bak
 
 
 xv:
