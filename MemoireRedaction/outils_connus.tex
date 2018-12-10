@@ -1,3 +1,120 @@
 
 \chapter{Analyse des outils connus}
 \label{outils_connus}
+
+\section{Java}
+
+La version 8 d'Oracle, appel\'e \TT{Stream}, a chang\'e compl\`etement la façon dont les d\'eveloppeurs traitent les donn\'ees. Elle ressemble plut\^ot \`a un langage de requ\^ete de base de donn\'ees. Au lieu de parcourir les donn\'ees, les d\'eveloppeurs fournissent simplement des op\'erations \`a effectuer au flux. Les auteurs \cite{urma2014java} fournissent une d\'etaill\'ee description des nouveaux concepts introduits dans \TT{Java Stream 8}. Les expressions \TT{Stream} et \TT{Lambda} sont les fonctionnalit\'es les plus remarquables ajout\'ees dans l'API \cite{javaStreamAPI}. Ils sont con\c{c}us pour traiter les sources de donn\'ees de mani\`ere simple et efficace. Cette section d\'ecrit quelques concepts de \TT{Java 8}.
+
+
+\subsubsection{Lambda}
+
+Une expression lambda --- souvent appel\'ee fonction anonyme --- est un bloc de code avec des param\`etres qui peut \^etre transmis afin de pouvoir \^etre ex\'ecut\'e ult\'erieurement. Par exemple l'expression (int x, int y) –> \{ x + y \} est une expression lambda qui re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme.
+
+Les expressions lambda rendent le code plus concis et \'etendent \TT{Java} avec les concepts de langages de programmation fonctionnels. Ce concept n'est pas nouveau. Elle est utilis\'ee dans les langages de programmation fonctionnels tels que \TT{Haskell} \cite{hutton2016programming} et \TT{Lisp} \cite{steele1990common}. En Java ce concept est li\'e \`a l'interface fonctionnelle. Un lambda peut \^etre sp\'ecifi\'e \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple le listage~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{thread} d\'eclar\'e en utilisant la syntaxe de classe anonyme peut \^etre \'ecrit plus facilement avec une expression lambda.
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+	Thread th = new Thread(new Runnable()
+	{
+		public void run()
+		{
+			...
+		}
+	});
+
+	Thread th = new Thread(() ->
+	{
+		...
+	});
+\end{lstlisting}
+\caption{Remplacement d’une classe anonyme avec une expression lambda.}
+\label{lambdaAsFonctionalInterface}
+\end{Listing}
+
+Dans une expression \TT{lambda} lors de la compilation le type d'arguments est automatiquement d\'etermin\'e par le compilateur. Cette fonctionnalit\'e permet de passer des m\'ethodes comme arguments plut\^ot que de construire un objet d'une classe sp\'ecifi\'ee. Ceci permet \`a un programmeur de construire facilement des pipelines d'op\'erations fonctionnelles.
+
+
+\subsubsection{It\'erations}
+
+Une it\'eration est le processus de traverser une s\'equence d'\'el\'ements. Dans \TT{Java stream} une it\'eration peut \^etre ex\'ecut\'ee de deux mani\`eres : en tant qu'it\'eration externe ou it\'eration interne. Une it\'eration est appelée externe lorsque le d\'eveloppeur contr\^ole la travers\'ee des \'el\'ements.  L'acc\`es et l'op\'eration sur chaque \'el\'ement de la collection sont d\'efinis par l'utilisateur. D'autre part, une it\'eration est dite interne lorsque la s\'equence contr\^ole elle-m\^eme tous les d\'etails du processus d'it\'eration. L'utilisateur fournit uniquement les op\'erations permettant de traiter les \'el\'ements, sans se soucier de la mani\`ere dont les \'el\'ements sont acc\'ed\'es et fournis.
+Elle est attrayante pour les opportunit\'es qu'ils offrent aux compilateurs, notamment l'optimisation de l'exécution et les m\'ecanismes de nettoyage n\'ecessaire en arri\`ere-plan. Un autre avantage offert par les it\'erations internes est l'efficacit\'e. Le traitement de donn\'ees est efficace, car il peut \^etre r\'eparti en parall\`ele parmi les cœurs de la machine.
+
+
+\subsubsection{Flux}
+
+
+Un flux est d\'efini comme une s\'equence immuable d'\'el\'ements fournissant une vari\'et\'e d'op\'erateurs et de m\'ethodes permettant de traiter un flux de donn\'ees. Le flux prend en charge les op\'erations d'agr\'egation \cite{javaStreamAggregate} s\'equentielles et parall\`eles sans se soucier de la mani\`ere dont les \'el\'ements sont stock\'es ou accessibles. Pour effectuer un traitement, les op\'erations de flux sont compos\'ees dans un \TT{pipeline}. Un \TT{pipeline} est compos\'e d'une source, z\'ero ou plusieurs op\'erations interm\'ediaires et une op\'eration terminale. Une source en \TT{Java 8 Stream} peut \^etre constitu\'ee d'une collection ou de tout objet impl\'ementant l'interface qui d\'efinisse le m\'ecanisme permettant d'extraire les donn\'ees de la source. 
+Les op\'erations sur les flux adoptent un m\'ecanisme d'\'evaluation paresseux. L'\'evaluation paresseuse est une m\'ethode d'optimisation du traitement qui retarde l'\'etape du calcul jusqu'\`a ce qu'elle soit n\'eécessaire. En \TT{Java} le traitement sur les \'el\'ements du flux est r\'ealis\'e seulement \`a l'initialisation de l'op\'eration finale et les \'el\'ements source ne sont consomm\'es qu'au besoin. Cela permet au compilateur d'optimiser le traitement des donn\'ees dans le \TT{pipeline}.
+Une autre technique d'optimisation utilis\'ee par \TT{Java} c'est court-circuit (\TT{short-circuiting} en anglais). Dans un flux sont consum\'es seulement les \'el\'ements n\'ecessaires. Par exemple dans le listage~\ref{findFirst}, l'opérateur \TT{findFirst} retourne le premier employ\'e trouv\'e dans une liste d'employ\'ees. Les \'el\'ements du flux restant sont ignor\'es.
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+	List<Employee> employees;
+	Optional<Employee> employee = employees.findFirst();
+\end{lstlisting}
+\caption{Optimisation du traitement d'un flux en utilisant la technique de court-circuit.}
+\label{findFirst}
+\end{Listing}
+
+L'un des principaux avantages des flux est qu'ils peuvent \^etre soit \'evalu\'es s\'equentiellement, soit \'evalu\'es en parall\`ele. L'\'evaluation s\'equentielle est r\'ealis\'ee en ex\'ecutant toutes les op\'erations en \TT{pipeline} sur chaque \'el\'ement du flux. Lorsqu'un flux est \'evalu\'e en parall\`ele, il utilise un type sp\'ecial d'it\'erateur appel\'e \TT{Spliterator}. Ce dernier partitionne le flux de mani\`ere r\'ecursive en se divisant lui-m\^eme pour cr\'eer des flux enfants. Ce m\'ecanisme permet aux threads de traverser plusieurs flux en parall\`ele. Les threads sont g\'er\'es par un groupe de threads \TT{Fork-join}.
+
+
+\subsubsection{Fork-join}
+
+Introduit dans \TT{Java 7}, le framework \TT{fork-join} permet aux d\'eveloppeurs de sp\'ecifier des t\^aches pouvant \^etre subdivis\'ees et ex\'ecut\'ees en parall\`ele sur des machines multi cœurs. Il est bas\'e sur deux op\'erations : \TT{fork} et \TT{joint}. L'op\'eration \TT{fork} a le r\^ole de diviser r\'ecursivement la t\^ache en plus petites sous-t\^aches ind\'ependantes jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees de mani\`ere asynchrone. L'op\'eration \TT{joint} a le r\^ole de fusionner les r\'esultats de toutes les sous-t\^aches de mani\`ere r\'ecursive en un seul r\'esultat.
+Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \TT{pool fork-join}. Ce dernier est composé d'un ensemble de travailleurs. Le nombre de travailleurs dans un \TT{pool fork-join} est g\'en\'eralement limit\'e par le nombre de cœurs de la machine. Chaque travailleur peut ex\'ecuter une t\^ache \`a la fois. Les t\^aches en attente d'ex\'ecution sont stock\'ees dans une file d'attente appartenant \`a un travailleur. Une t\^ache en cours d'ex\'ecution peut g\'en\'erer de nouvelles t\^aches, qui sont ensuite mises en file d'attente pour une ex\'ecution ult\'erieure. Lorsqu'un travailleur a termin\'e l'ex\'ecution d'une t\^ache, il essaie de prendre une t\^ache des files d'attente des autres travailleurs \`a l'aide d'un algorithme de vol de travail (stealing algorithm en anglais). Cet algorithme permet un \'equilibrage efficace de la charge de travail de chaque travailleur.
+
+
+\subsubsection{Word Count en Java}
+
+Afin d'illustrer le mod\`ele de programmation en \TT{Java 8 Stream}, le listage~\ref{wordCountJava} montre le code source d'une application de compte de mots. Impl\'ement\'ee dans \TT{Java 8 Stream}, l'application examine la fr\'equence de mots dans un fichier texte. Une telle application est compos\'ee de plusieurs op\'erations encha\^in\'ees :
+
+
+\begin{itemize}
+	\item La premi\`ere op\'eration, \TT{Files.lines} renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
+
+	\item La deuxi\`eme op\'eration, parallel marque le flux en tant que flux parall\`ele. Cette op\'eration permet de partitionner et d'ex\'ecuter le \TT{pipeline} en parall\`ele.
+
+	\item L'op\'eration \TT{flatMap} divise chaque ligne en mots qui sont ensuite transmis en aval sous forme d'\'el\'ements de donn\'ees individuelles.
+	
+	\item L'op\'eration \TT{map} transforme les lettres majuscules du mot en lettres minuscules.
+	
+	\item L'op\'eration filter retourne dans le flux seulement les mots qui ne sont pas vides.
+	
+	\item La deuxi\`eme op\'eration map dans le pipeline cr\'ee un \TT{Entry} avec la cl\'e repr\'esent\'ee par le mot.
+	
+	\item L'op\'eration \TT{collect} collecte les \'el\'ements dans un \TT{Map} et compte la fr\'equence de mots.
+	
+	\item L'op\'eration \TT{entrySet} renvoie un flux de type cl\'e valeur. La cl\'e est le mot et la valeur est sa fr\'equence dans le fichier.
+	
+	\item La derni\`ere op\'eration \TT{collect} collecte les \'el\'ements dans une liste.
+	
+	
+\end{itemize}
+
+
+
+
+
+\begin{Listing}[tbp]
+\begin{lstlisting}
+  List<Map.Entry<String,Integer>> wordsCount = 
+	Files.lines(Paths.get(inputFile))
+    .parallel()
+    .flatMap(line->Arrays.stream(line.trim().split(" ")))
+    .map(word->word.replaceAll("[^a-zA-Z]", "").toLowerCase())
+    .filter(word->word.length() > 0)
+    .map(word->new SimpleEntry<>(word, 1))
+    .collect(toMap(e->e.getKey(),e->e.getValue(),(v1,v2)->v1+v2))
+    .entrySet().stream()
+    .collect(Collectors.toList());
+\end{lstlisting}
+\caption{Le code source d'une application de compte de mots.}
+\label{wordCountJava}
+\end{Listing}
+
+
+
+
+\section{FastFlow}
