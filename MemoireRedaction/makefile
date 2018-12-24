@@ -4,7 +4,6 @@
 
 TEXTS= macros.tex remerciements.tex resume.tex  introduction.tex  description.tex appendice1.tex appendice2.tex
 
-
 FIGURES= Figures/cache.eps
 
 MAIN=    memoire
