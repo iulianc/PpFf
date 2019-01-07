@@ -20,12 +20,12 @@ la r\'ef\'erence soit compl\`etement entre parenth\`eses. Voir les
 exemples ci-haut et ci-bas.}
 
 
-\section{Java 8 et les \TT{Stream}s}
+\section{Java 8 et ses \TT{Stream}s}
 
 La version 8 de Java, qui a introduit les \TT{Stream}s, a chang\'e la façon dont les d\'eveloppeurs peuvent traiter, tant de fa\c{c}on s\'equentielle que parall\`eles, les collections de donn\'ees. La manipulation des \TT{Stream}s ressemble \`a un langage de requ\^ete de base de donn\'ees. Au lieu de parcourir explicitement les donn\'ees \`a l'aide de boucles (\TT{for}), les d\'eveloppeurs sp\'ecifient simplement des suites d'op\'erations \`a effectuer sur les \'el\'ements d'une collection. \cite{urma2014java} fournissent une description d\'etaill\'ee des nouveaux concepts introduits dans \TT{Java~8}. Les \TT{Stream}s et les \emph{expressions-lambdas} sont les fonctionnalit\'es les plus remarquables ajout\'ees dans l'API \citep{javaStreamAPI}. Ils sont con\c{c}us pour traiter les sources de donn\'ees de mani\`ere simple et efficace. Cette section d\'ecrit quelques-uns des concepts de \TT{Java~8}.
 
 
-\subsection{Lambda-expressions}
+\subsection{Expressions lambda}
 
 Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- est un bloc de code avec des param\`etres qui peut \^etre d\'efini, comme n'importe quelle valeur, puis qui \^etre ex\'ecut\'e ult\'erieurement. Par exemple, l'expression lambda suivante re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme~:
 {\small
@@ -110,7 +110,7 @@ Introduit en \TT{Java~7}, le \emph{framework} \TT{fork-join} permet aux d\'evelo
 Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \emph{pool} \TT{fork-join}. Ce dernier est composé d'un ensemble de travailleurs. Le nombre de travailleurs dans un \emph{pool} \TT{fork-join} est g\'en\'eralement limit\'e par le nombre de cœurs de la machine. Chaque travailleur peut ex\'ecuter une t\^ache \`a la fois. Les t\^aches en attente d'ex\'ecution sont stock\'ees dans une file appartenant \`a un travailleur. Une t\^ache en cours d'ex\'ecution peut g\'en\'erer de nouvelles t\^aches, qui sont ensuite mises en file d'attente pour une ex\'ecution ult\'erieure. Lorsqu'un travailleur a termin\'e l'ex\'ecution d'une t\^ache, il essaie de prendre une t\^ache des files d'attente des autres travailleurs \`a l'aide d'un algorithme de vol de travail (\emph{work stealing algorithm} en anglais). Cet algorithme permet un \'equilibrage efficace de la charge de travail entre les divers travailleurs.
 
 
-\subsection{WordCount en Java}
+\subsection{Exemple~: WordCount}
 
 Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listage~\ref{wordCountJava} montre le code source d'une application de d\'ecompte des mots --- plus pr\'ecis\'ement, l'application compte le nombre d'occurrences des divers mots dans un fichier texte. Une telle application est compos\'ee de plusieurs op\'erations encha\^in\'ees :
 
@@ -170,11 +170,11 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 \GT{Phrase que je ne comprends pas, \`a reformuler~: <<en augmentant
 le niveau d'abstraction de la phase de conception>>!?}
 
-\TT{FastFlow} est une biblioth\`eque \TT{C++} qui offre un ensemble de m\'ecanismes de bas niveau pour supporter les flux de donn\'ees, s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement et l'efficacit\'e d'ex\'ecution de \TT{FastFlow} peuvent \^etre obtenues en augmentant le niveau d'abstraction de la phase de conception. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. \TT{FastFlow} fournit aux d\'eveloppeurs un ensemble de squelettes algorithmiques qui peuvent \^etre utilis\'es pour parall\'eliser les plus courants mod\`eles de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles de parall\'elisme plus complexes.
+\TT{FastFlow} est une biblioth\`eque \TT{C++} qui, \`a la base, offre un ensemble de m\'ecanismes de bas niveau pour supporter les flux de donn\'ees, s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement et l'efficacit\'e d'ex\'ecution de \TT{FastFlow} peuvent \^etre obtenues en augmentant le niveau d'abstraction de la phase de conception. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. \TT{FastFlow} fournit aux d\'eveloppeurs un ensemble de \emph{squelettes algorithmiques} qui peuvent \^etre utilis\'es pour exprimer les mod\`eles les plus courants de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles hi\'erarchiques de parall\'elisme plus complexes.
 
-\TT{FastFlow} a \'et\'e conçue selon plusieurs principes: conception en couches, efficacit\'e et support du parall\'elisme de flux.
+\TT{FastFlow} a \'et\'e conçue selon plusieurs principes: conception en couches, efficacit\'e des communications et synchronisation, et support pour le parall\'elisme de flux.
 
-\textbf{Conception en couches}
+\subsection{Conception en couches}
 
 \GT{Tu ne dois utiliser la police $\backslash$texttt que pour des
 extraits de code, des identificateurs provenant du code, etc. Donc,
@@ -188,23 +188,25 @@ Le niveau le plus bas de la pile, \emph{Building blocks}, g\`ere les communicati
 
 Au-dessus de la couche \emph{Building blocks} se trouve la couche \emph{Core patterns}, qui fournit des squelettes (gabarits) pour mod\'eliser le parall\'elisme de flux. Les trois mod\`eles fournis dans cette couche sont \emph{task-farm}, \emph{pipeline} et \emph{feedback}, qui permettent de construire des flux parall\`eles. 
 
-Au sommet de la pile se trouve la couche \emph{High-level patterns}, qui permet d'exprimer le parall\'elisme de plus haut niveau. Elle fournit plusieurs m\'ethodes qui couvrent les paradigmes de programmation parall\`eles les plus courants : flux de donn\'ees, parall\'elisme de donn\'ees et  parall\'elisme de t\^aches. 
+Au sommet de la pile se trouve la couche \emph{High-level patterns}, qui permet d'exprimer le parall\'elisme de plus haut niveau. Elle fournit plusieurs m\'ethodes qui couvrent les paradigmes de programmation parall\`eles les plus courants : parall\'elisme de flux, parall\'elisme de donn\'ees et  parall\'elisme de t\^aches. 
 
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/FastFlowLayers.jpg}
-      \caption{Les couches de \emph{FastFlow}. \GT{Quand tu as une telle figure qui provient d'ailleurs, il faut indiquer explicitement la source, par exemple (mais pas certain que ce soit la bonne r\'ef\'erence: \`a v\'erifier!)}. Figure tir\'ee de \cite{AldinucciEtAl14}.}
+      \caption{Les couches de \TT{FastFlow}. \GT{Quand tu as une telle figure qui provient d'ailleurs, il faut indiquer explicitement la source, par exemple (mais pas certain que ce soit la bonne r\'ef\'erence: \`a v\'erifier!)}. Figure tir\'ee de \cite{AldinucciEtAl14}.}
        \label{FastFlowLayers.fig}
 \end{figure}
 
-\textbf{Efficacit\'e}
+\subsection{Efficacit\'e}
 
-L'id\'ee de \emph{FastFlow} est de fournir au programmeur des files (\emph{queues}) \emph{MP (Multiple Producer)} et des files \emph{MC (Multiple Consumer)} sans verrouillage, et ce afin de supporter des acc\`es rapides aux flux de donn\'ees. G\'en\'eralement, dans les applications de flux de donn\'ees, les canaux de communication sont impl\'ementés via des files de type \emph{MPMC (Multiple Producer/Multiple Consumer)}. Dans ce modèle, les acteurs se synchronisent simultanément pour acc\'eder aux donn\'ees. Ces synchronisations sont habituellement support\'ees par une ou plusieurs op\'erations atomiques (par exemple, \TT{Compare-And-Swap}) qui se comportent comme des barri\`eres de m\'emoire. Afin d'\'eviter les barri\`eres de m\'emoires, \TT{FastFlow} b\^atit les files d'attente \emph{MPMC} en assemblant des files, sans barri\`ere de m\'emoire, de type \emph{SPSC (Single Producer/Single Consumer)}. Dans ce mod\`ele, des files d’ex\'ecution regroupent ou \'emettent les donn\'ees des files d'entr\'ee vers les files de sortie. Selon son r\^ole, une file d'ex\'ecution peut \^etre un \TT{Emitter} ou un \TT{Collector}. Alors que l'\TT{Emitter} lit les donn\'ees, le \TT{Collector} \'ecrit sur une ou plusieurs files d'attente de types \emph{SPSC}. Contrairement aux op\'erations atomiques, ce m\'ecanisme n\'ecessite seulement des copies de m\'emoire. La performance offerte par cette solution d\'ecoule de la vitesse sup\'erieure de la copie par rapport \`a la barri\`ere de m\'emoire.
+L'id\'ee de \TT{FastFlow} est de fournir au programmeur des files (\emph{queues}) \emph{MP (Multiple Producer)} et des files \emph{MC (Multiple Consumer)} sans verrouillage, et ce afin de supporter des acc\`es rapides aux flux de donn\'ees. G\'en\'eralement, dans les applications de flux de donn\'ees, les canaux de communication sont impl\'ementés via des files de type \emph{MPMC (Multiple Producer/Multiple Consumer)}. Dans ce modèle, les acteurs se synchronisent simultanément pour acc\'eder aux donn\'ees. Ces synchronisations sont habituellement support\'ees par une ou plusieurs op\'erations atomiques --- par exemple, \TT{Compare-And-Swap} --- qui se comportent comme des barri\`eres de m\'emoire. Afin d'\'eviter les barri\`eres de m\'emoires, \TT{FastFlow} b\^atit les files d'attente \emph{MPMC} en assemblant des files, sans barri\`ere de m\'emoire, de type \emph{SPSC (Single Producer/Single Consumer)}. Dans ce mod\`ele, des files d’ex\'ecution regroupent ou \'emettent les donn\'ees des files d'entr\'ee vers les files de sortie. Selon son r\^ole, une file d'ex\'ecution peut \^etre un \TT{Emitter} ou un \TT{Collector}. Alors que l'\TT{Emitter} lit les donn\'ees, le \TT{Collector} \'ecrit sur une ou plusieurs files d'attente de types \emph{SPSC}. Contrairement aux op\'erations atomiques, ce m\'ecanisme n\'ecessite seulement des copies de m\'emoire. La performance offerte par cette solution d\'ecoule de la vitesse sup\'erieure de la copie par rapport \`a la barri\`ere de m\'emoire.
 
 
-\textbf{Parall\'elisme de flux}
+\subsection{Parall\'elisme de flux}
 
-Dans \TT{FastFlow}, le parall\'elisme de flux est repr\'esent\'e par un flux de donn\'ees \`a l'aide d'une s\'erie d'\'etapes s\'equentielles ou parall\`eles appel\'ees \emph{stages}. Chaque \emph{stage} lit les donn\'ees \`a partir du flux d'entr\'ee, applique des calculs et \'ecrit le r\'esultat sur le flux de sortie. Le calcul repr\'esente une s\'equence de transformations sur les flux de donn\'ees. Le parall\'elisme est obtenu en ex\'ecutant chaque \emph{stage} simultan\'ement sur des \'el\'ements ind\'ependants ou sur des sous-s\'equences d'\'el\'ements. Dans \TT{FastFlow}, le parall\'elisme peut \^etre obtenu en exploitant directement les mod\`eles parall\`eles disponibles dans la couche \emph{Building blocks}. En particulier cela peut \^etre r\'ealis\'e des deux fa\c{c}ons suivantes :
+Dans \TT{FastFlow}, le parall\'elisme de flux est repr\'esent\'e par un flux de donn\'ees \`a l'aide d'une s\'erie d'\'etapes, s\'equentielles ou parall\`eles, appel\'ees \emph{stages}. Chaque \emph{stage} lit les donn\'ees \`a partir du flux d'entr\'ee, effectue des calculs et traitements, puis \'ecrit le r\'esultat sur le flux de sortie. Le calcul repr\'esente une s\'equence de transformations sur les donn\'ees. Le parall\'elisme est obtenu en ex\'ecutant chaque \emph{stage} simultan\'ement sur des \'el\'ements ind\'ependants ou sur des sous-s\'equences d'\'el\'ements. 
+
+Dans \TT{FastFlow}, le parall\'elisme peut \^etre obtenu en exploitant directement les mod\`eles parall\`eles disponibles dans la couche \emph{Building blocks}. En particulier, cela peut \^etre r\'ealis\'e des deux fa\c{c}ons suivantes :
 
 \begin{itemize}
 \item en d\'efinissant des activit\'es concurrentes s\'equentielles en sous-classant la classe \TT{ff\_node}~;
@@ -214,7 +216,7 @@ Dans \TT{FastFlow}, le parall\'elisme de flux est repr\'esent\'e par un flux de 
 
 \textbf{ff\_node}
 
-Dans \TT{FastFlow}, \TT{ff\_node} est la classe de base pour le traitement de flux. Elle fournit les m\'ecanismes appropri\'es pour d\'efinir des activit\'es s\'equentielles pour le traitement de données apparaissant sur un seul canal d'entr\'ee et fournissant les r\'esultats correspondants sur un seul canal de sortie. 
+Dans \TT{FastFlow}, \TT{ff\_node} est la classe de base pour un noeud de traitement. Elle fournit les m\'ecanismes appropri\'es pour d\'efinir des activit\'es s\'equentielles pour le traitement de données apparaissant sur un seul canal d'entr\'ee et fournissant les r\'esultats correspondants sur un seul canal de sortie. 
 
 La classe \TT{ff\_node} d\'efinit plusieurs m\'ethodes, les trois plus importantes \'etant les suivantes :
 \begin{lstlisting}[language=c++]
@@ -235,6 +237,8 @@ La premi\`ere m\'ethode est celle qui d\'efinit le comportement du nœud lors du
 Un \TT{pipeline} est utilis\'e pour mod\'eliser les traitements exprim\'es par des \emph{stages}. Il est repr\'esent\'e par la classe \TT{ff\_pipeline}. Un \TT{pipeline} peut comporter plusieurs \emph{stages}, peut \^etre construit comme un pipeline \`a \emph{n} \emph{stages}, ou encore comme un \TT{pipeline} de \TT{pipelines}. Un \emph{stage} peut \^etre de type \TT{ff\_node} ou \TT{farm}.
 
 
+\goodbreak
+
 \textbf{Farm}
 
 Un \TT{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow}, un \TT{farm} est repr\'esent\'e par la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig}, un \TT{farm} est compos\'e de trois parties distinctes: un \TT{Emitter}, un  \emph{pool} de \TT{workers} et un \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements du flux au \emph{pool} de \TT{workers}, lesquels traitent et produisent les donn\'ees de sortie. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire.
@@ -245,3 +249,10 @@ Un \TT{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow},
       \caption{Un \TT{farm} de \TT{FastFlow} est compos\'e de trois parties~:  l'\TT{Emitter (E)}, le \emph{pool} de \TT{workers} (W1\ldots\ Wn) et le \TT{Collector (C)}. Les canaux de communication sont impl\'ement\'es en assemblant des files de types \emph{Simple Producer/Simple Consumer (SPSC)} \GT{Indiquer d'o\`u est tir\'ee cette figure!}}.
        \label{FastFlowFarm.fig}
 \end{figure}
+
+\subsection{Exemple~: Blah Blah}
+
+\GT{Il faut un exemple, le WordCount de Java ou un autre du m\^eme
+style (possiblement plus simple), pour illustrer toutes ces notions de
+FastFlow que tu viens de pr\'esenter, sinon cela reste beaucoup trop
+vague et abstrait.}
