@@ -129,3 +129,66 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 
 
 \section{FastFlow}
+
+\TT{FastFlow} est une biblioth\`eque \TT{C++} qui offre un ensemble de m\'ecanismes de bas niveau pour supporter les flux de donn\'ees, et s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement et l'efficacit\'e d'ex\'ecution de \TT{FastFlow} peuvent \^etre obtenues en augmentant le niveau d'abstraction de la phase de conception. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. Il fournit aux d\'eveloppeurs un ensemble de squelettes algorithmiques qui peuvent \^etre utilis\'es pour parall\'eliser les plus courants mod\`eles de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre librement imbriqu\'es pour cr\'eer des mod\`eles de parall\'elisme plus complexes.
+
+\TT{FastFlow} a \'et\'e conçue selon plusieurs principes: conception en couches, efficacit\'e et pour supporter le parall\'elisme de flux.
+
+\textbf{Conception en couches}
+
+\TT{FastFlow} a \'et\'e conçue dans une pile de couches pour permettre d'impl\'ementer les m\'ecanismes d'optimisations. La figure~\ref{FastFlowLayers.fig} montre les trois principales couches: \TT{High-level patterns}, \TT{Core patterns} et \TT{Building blocks}. 
+
+Le niveau le plus bas de la pile, \TT{Building blocks}, g\`ere les communications asynchrones entre les canaux et g\`ere le cycle de vie des flux. Plus pr\'ecis\'ement, cette couche offre des services pour les couches sup\'erieures. Elle g\`ere les queues, les processeurs et les fils d'ex\'ecutions.
+
+Au-dessus de la couche \TT{Building blocks} se trouve la couche \TT{Core patterns}, qui fournit des squelettes (gabarits) pour mod\'eliser le parall\'elisme de flux. Les trois mod\`eles fournis dans cette couche sont \TT{task-farm}, \TT{pipeline} et \TT{feedback}, qui permettent de construire des flux parall\`eles. 
+
+Au sommet de la pile se trouve la couche \TT{High-level patterns}, responsable d'exprimer le parall\'elisme du code s\'equentiel. Elle fournit plusieurs m\'ethodes qui couvrent les paradigmes de programmation parall\`eles les plus courants : flux de donn\'ees, parall\'elisme de donn\'ees, et  parall\'elisme de t\^aches. 
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/FastFlowLayers.jpg}
+      \caption{Les couches de FastFlow.}
+       \label{FastFlowLayers.fig}
+\end{figure}
+
+\textbf{Efficacit\'e}
+
+L'id\'ee de \TT{FastFlow} est de fournir au programmeur des files d'attente \TT{MP (Multiple Producer)} et des files d'attente \TT{MC (Multiple Consumer)} sans verrouillage afin de supporter des rapides flux de donn\'ees. G\'en\'eralement, dans les applications de flux de donn\'ees, les canaux de communication sont impl\'ementés via des files d'attente de type \TT{Multiple Producer Multiple Consumer (MPMC)}. Dans ce modèle, les files d'attente se synchronisent simultanément pour acc\'eder aux donn\'ees. Ces synchronisations sont habituellement support\'ees par une ou plusieurs op\'erations atomiques (par exemple, \TT{Compare-And-Swap}) qui se comportent comme des barri\`eres de m\'emoire. Afin d'\'eviter les barri\`eres de m\'emoires, \TT{FastFlow} b\^atit les files d'attente \TT{MPMC} en assemblant des files, sans barri\`ere de m\'emoire, de type \TT{Single Producer Single Consumer (SPSC)}. Dans ce mod\`ele, des files d’ex\'ecution regroupent ou \'emettent les donn\'ees des files d'entr\'ee vers les files de sortie. Selon son r\^ole, une file d'ex\'ecution peut \^etre un Emitter ou un Collector. Tandis que l'\TT{Emitter} lit les donn\'ees, le \TT{Collector} \'ecrit sur une ou plusieurs files d'attente de types \TT{SPSC}. Contrairement aux op\'erations atomiques, ce m\'ecanisme n\'ecessite seulement des copies de m\'emoire. La performance offerte par cette solution d\'ecoule de la vitesse sup\'erieure de la copie par rapport \`a la barri\`ere de m\'emoire.
+
+
+\textbf{Parall\'elisme de flux}
+
+Dans \TT{FastFlow} le parall\'elisme de flux est repr\'esent\'e par un flux de donn\'ees \`a l'aide d'une s\'erie d'\'etapes s\'equentielles ou parall\`eles appel\'ees stages. Chaque stage lit les donn\'ees \`a partir du flux d'entr\'ee, applique des calculs et \'ecrit le r\'esultat sur le flux de sortie. Le calcul repr\'esente une s\'equence de transformations sur les flux de donn\'ees. Le parall\'elisme est obtenu en ex\'ecutant chaque stage simultan\'ement sur d'\'el\'ements ind\'ependants ou sur sous s\'equences d'\'el\'ements. Dans FastFlow le parall\'elisme peut \^etre obtenu en exploitant directement les mod\`eles parall\`eles disponibles dans la couche \TT{Building blocks}. En particulier cela peut \^etre r\'ealis\'e:
+
+\begin{itemize}
+\item en d\'efinissant d'activit\'es concurrentes s\'equentielles en sous-classant la classe \TT{ff\_node}, et
+\item en construisant des mod\`eles parall\`eles complexes en composant de mani\`ere hi\'erarchique des activit\'es concurrentes s\'equentielles, des \TT{pipelines} et des \TT{farm}.
+\end{itemize}
+
+\textbf{ff\_node}
+
+Dans \TT{FastFlow ff\_node} est la classe de base pour le traitement du flux. Elle fournit des moyens appropri\'es pour d\'efinir d'activit\'es s\'equentielles pour le traitement de données apparaissant sur un seul canal d'entr\'ee et fournissant les r\'esultats correspondants sur un seul canal de sortie. 
+
+La classe \TT{ff\_node} d\'efinit plusieurs m\'ethodes. Les plus importantes sont :
+- virtual void*  svc (void *task) = 0
+- virtual int svc\_init () { return 0 ; } 
+- virtual void svc\_end ( ) {} 
+
+La premi\`ere m\'ethode est celle qui d\'efinit le comportement du nœud lors du traitement des \'el\'ements du flux d'entr\'ee. Les deux autres m\'ethodes sont automatiquement appel\'ees lorsque le traitement repr\'esent\'e par le nœud est d\'emarr\'e \TT{(svc\_init)} et juste avant qu'elle soit termin\'ee \TT{(svc\_end)}. Ces m\'ethodes virtuelles peuvent \^etre r\'ecrites dans les sous-classes \TT{ff\_node} fournies par l'utilisateur afin d'impl\'ementer l'initialisation et la finalisation du code.
+
+
+\textbf{Pipeline}
+
+Le \TT{pipeline} est utilis\'e pour mod\'eliser les traitements exprim\'es par stages. Dans \TT{FastFlow} le \TT{pipeline} est repr\'esent\'e par la classe \TT{ff\_pipeline}. Un \TT{pipeline} peut comporter plus de deux stages et peut \^etre construit comme un pipeline \`a n stages ou comme un \TT{pipeline} de \TT{pipelines}. Un stage peut \^etre de type \TT{ff\_node} ou \TT{farm}.
+
+
+\textbf{Farm}
+
+Le \TT{farm} est le flux parall\`ele bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow} le \TT{farm} est repr\'esent\'e par la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig} un \TT{farm} est compos\'e de trois parties distinctes: l'\TT{Emitter}, le \TT{pool de workers} et le \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements de flux au \TT{pool de workers} qui traitent et produisent les donn\'ees de sortie. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire.
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/FastFlowFarm.png}
+      \caption{Le \TT{farm} de \TT{FastFlow} compos\'e des trois parties l'\TT{Emitter (E)}, le \TT{pool de workers (W1..Wn)} et le \TT{Collector (C)}. Les canaux de communication sont impl\'ement\'es en assemblant des files d'attente de types \TT{Simple Producer Simple Consumer (SPSC)}}.
+       \label{FastFlowFarm.fig}
+\end{figure}
