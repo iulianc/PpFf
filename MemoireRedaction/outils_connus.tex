@@ -11,6 +11,9 @@ Introduction.  Ici, quelques paragraphes, sans section, devraient
 \^etre suffisants.}
 
 
+\IC{J'ai ajout\'e une petite introduction pour ce chapitre.}
+
+
 
 \GT{Concernant les citations~: il y a deux macros que tu peux
 utiliser: cite vs.\ citep: tu dois utiliser cite si tu veux que les
@@ -20,6 +23,13 @@ la r\'ef\'erence soit compl\`etement entre parenth\`eses. Voir les
 exemples ci-haut et ci-bas.}
 
 
+La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Il y a quelques ann\'ees la principale modalit\'e pour ex\'ecuter un programme plus rapidement \'etait d'augmenter la vitesse d'horloge du processeur. De nos jours, la performance d'un programme ne peut plus se r\'ealiser que de l'ex\'ecuter en parall\`ele. 
+
+Le paradigme de la programmation par flux offre une approche prometteuse pour la programmation de syst\`emes multicœurs. Les flux sont utilis\'es dans plusieurs domaines par exemple le traitement d'images, dans le r\'eseau et d'autres domaines de traitement des m\'edias.
+
+Il existe de nombreux syst\`emes de traitement de flux. La conception, le mod\`ele et l'architecture de ces syst\`emes sont diff\'erents, de sorte qu'ils poss\`edent des fonctionnalit\'es diff\'erentes et des performances diff\'erentes. Ce chapitre pr\'esente des informations sur quelques syst\`emes de traitement de flux de donn\'ees les plus significatifs parmi ceux actuellement disponibles.
+
+
 \section{Java 8 et ses \TT{Stream}s}
 
 La version 8 de Java, qui a introduit les \TT{Stream}s, a chang\'e la façon dont les d\'eveloppeurs peuvent traiter, tant de fa\c{c}on s\'equentielle que parall\`eles, les collections de donn\'ees. La manipulation des \TT{Stream}s ressemble \`a un langage de requ\^ete de base de donn\'ees. Au lieu de parcourir explicitement les donn\'ees \`a l'aide de boucles (\TT{for}), les d\'eveloppeurs sp\'ecifient simplement des suites d'op\'erations \`a effectuer sur les \'el\'ements d'une collection. \cite{urma2014java} fournissent une description d\'etaill\'ee des nouveaux concepts introduits dans \TT{Java~8}. Les \TT{Stream}s et les \emph{expressions-lambdas} sont les fonctionnalit\'es les plus remarquables ajout\'ees dans l'API \citep{javaStreamAPI}. Ils sont con\c{c}us pour traiter les sources de donn\'ees de mani\`ere simple et efficace. Cette section d\'ecrit quelques-uns des concepts de \TT{Java~8}.
@@ -27,12 +37,30 @@ La version 8 de Java, qui a introduit les \TT{Stream}s, a chang\'e la façon don
 
 \subsection{Expressions lambda}
 
-Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- est un bloc de code avec des param\`etres qui peut \^etre d\'efini, comme n'importe quelle valeur, puis qui \^etre ex\'ecut\'e ult\'erieurement. Par exemple, l'expression lambda suivante re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme~:
-{\small
-\begin{lstlisting}
- (int x, int y) -> { x + y }
+Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- est un bloc de code avec des param\`etres qui peut \^etre d\'efini, comme n'importe quelle valeur, puis qui \^etre ex\'ecut\'e ult\'erieurement. Par exemple la fonction anonyme du listing~\ref{exLambda} re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme.
+
+%Par exemple, l'expression lambda suivante re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme~:
+%{\small
+%\begin{lstlisting}
+% (int x, int y) -> { x + y }
+%\end{lstlisting}
+%}
+
+\begin{Listing}[tbp]
+\begin{lstlisting}[language=java]
+    interface Addable { int add ( int x, int y ); }
+    
+    int y = 2;
+    int x = 3;
+    int result = 0;
+    
+    Addable a = ( int w, int z ) -> { return w + z; };
+    result = a.add(x, y);    
+    
 \end{lstlisting}
-} 
+\caption{Un exemple dèune expression lambda qui re\c{c}oit deux valeurs de type entier en argument. Le r\'esultat est affect\'e au variable result.}
+\label{exLambda}
+\end{Listing}
 
 
 \GT{Il faudrait montrer un exemple plus complet, avec possiblement une
@@ -42,17 +70,21 @@ arguments et une indication du r\'esultat produit. Par exemple, voir
 mes notes de cours sur Java~:
 \url{http://moka.labunix.uqam.ca/~tremblay_gu/INF5171/Diapositives/10-java-ac.pdf}.}
 
+\IC{J'ai remplac\'e l'exemple (int x, int y) -> \{ x + y \} avec un exemple plus complet.}
+
 \GT{Je crois que dans un commit pr\'ec\'edent, tu as remplac\'e le
 terme <<listing>> par celui de <<listage>>. Je ne me souviens pas:
 est-ce moi qui t'avait sugg\'er\'e cela?  Parce que le probl\`eme est
 que c'est le terme <<Listing>> qui est utilis\'e partout, via les
 captions, donc il faudrait utiliser le m\^eme terme.}
 
+\IC{J'ai remplac\'e le terme <<listage>> par <<listing>> partout dans le document. }
+
 Le concept d'expression lambda n'est pas nouveau. Il est utilis\'e dans les langages de programmation fonctionnelle tels que \TT{Haskell}~\citep{hutton2016programming} et \TT{Lisp}~\citep{steele1990common}. 
 %
 Les expressions lambda rendent le code plus concis et, dans le cas de \TT{Java}, l'\'etendent avec des concepts de langages de programmation fonctionnelle. 
 %
-Plus sp\'ecifiquement, en Java, ce concept est li\'e \`a celui d'interface fonctionnelle. Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listage~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{thread}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
+Plus sp\'ecifiquement, en Java, ce concept est li\'e \`a celui d'interface fonctionnelle. Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listing~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{thread}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
 
 \begin{Listing}[tbp]
 \begin{lstlisting}[language=java]
@@ -77,7 +109,30 @@ Dans une expression lambda, lors de la compilation, les types des arguments peuv
 
 \subsection{It\'erations}
 
-Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'el\'ements pour traiter chacun d'entre eux. Avec les \TT{Stream}s \TT{Java}, une it\'eration peut \^etre ex\'ecut\'ee de deux mani\`eres : par une it\'eration \emph{externe} ou \emph{interne}. Une it\'eration est dite \emph{externe} lorsque le d\'eveloppeur contr\^ole la travers\'ee des \'el\'ements.  L'acc\`es et l'op\'eration sur chaque \'el\'ement de la collection sont d\'efinis par l'utilisateur. Par contre, une it\'eration est dite \emph{interne} lorsque la s\'equence contr\^ole elle-m\^eme tous les d\'etails du processus d'it\'eration. L'utilisateur fournit uniquement les op\'erations permettant de traiter les \'el\'ements, sans se soucier de la mani\`ere dont les \'el\'ements sont acc\'ed\'es et fournis.
+Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'el\'ements pour traiter chacun d'entre eux. Avec les \TT{Stream}s \TT{Java}, une it\'eration peut \^etre ex\'ecut\'ee de deux mani\`eres : par une it\'eration \emph{externe} ou \emph{interne}. Une it\'eration est dite \emph{externe} lorsque le d\'eveloppeur contr\^ole la travers\'ee des \'el\'ements.  L'acc\`es et l'op\'eration sur chaque \'el\'ement de la collection sont d\'efinis par l'utilisateur. Par contre, une it\'eration est dite \emph{interne} lorsque la s\'equence contr\^ole elle-m\^eme tous les d\'etails du processus d'it\'eration. L'utilisateur fournit uniquement les op\'erations permettant de traiter les \'el\'ements, sans se soucier de la mani\`ere dont les \'el\'ements sont acc\'ed\'es et fournis. Le listing~\ref{comparisonInternVsExtern} montre un exemple d’une comparaison entre une itération externe et interne. 
+
+\begin{Listing}[tbp]
+\begin{lstlisting}[language=java]
+    List<String> myList =
+            Arrays.asList("Tom", "Jhon", "Harry", "Jonathan");
+
+    List<String> myExternList = new ArrayList<String>();
+    for(String s : myList){
+        if(s.startsWith("J"))
+           myExternList.add(s.toUpperCase());
+    }
+        
+    List<String> myInternList;
+    myInternList = myList
+                .stream()
+                .filter(s -> s.startsWith("J"))
+                .map(String::toUpperCase)
+                .collect(Collectors.toList()); 
+\end{lstlisting}
+\caption{Comparaison entre une it\'eration externe et interne.}
+\label{comparisonInternVsExtern}
+\end{Listing}
+
 L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux compilateurs, notamment l'optimisation de l'exécution et les m\'ecanismes de nettoyage n\'ecessaires en arri\`ere-plan. Un autre avantage des it\'erations internes est l'efficacit\'e~: le traitement de donn\'ees peut \^etre plus efficace car il peut \^etre r\'eparti en parall\`ele parmi les cœurs de la machine.
 
 
@@ -85,12 +140,14 @@ L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux comp
 interne vs.\ externe avec un petit exemple, sinon cela reste trop
 abstrait et on ne comprend pas bien la diff\'erence~:(}
 
+\IC{J'ai ajout\'e un exemple pour la comparaison externe vs interne.}
+
 \subsection{Flux}
 
 
 Un flux est d\'efini comme une s\'equence immuable d'\'el\'ements fournissant une vari\'et\'e d'op\'erateurs et de m\'ethodes permettant de traiter une collection de donn\'ees. Le flux prend en charge les op\'erations d'agr\'egation \citep{javaStreamAggregate} s\'equentielles et parall\`eles sans se soucier de la mani\`ere dont les \'el\'ements sont stock\'es ou accessibles. Pour effectuer un traitement, les op\'erations de flux sont compos\'ees dans un \TT{pipeline}. Un \TT{pipeline} est compos\'e d'une source, de z\'ero ou plusieurs op\'erations interm\'ediaires et d'une op\'eration terminale. Une source en peut \^etre constitu\'ee d'une collection ou de tout objet impl\'ementant l'interface qui d\'efinit le m\'ecanisme permettant d'extraire les donn\'ees de la source. 
 Les op\'erations sur les flux adoptent un m\'ecanisme d'\'evaluation paresseuse. L'\'evaluation paresseuse est une m\'ethode d'optimisation du traitement qui retarde l'\'etape du calcul jusqu'\`a ce qu'il soit nécessaire. En \TT{Java}, le traitement sur les \'el\'ements du flux est r\'ealis\'e seulement \`a l'initialisation de l'op\'eration finale et les \'el\'ements source ne sont consomm\'es qu'au besoin. Cela permet au compilateur d'optimiser le traitement des donn\'ees dans le \TT{pipeline}.
-Une autre technique d'optimisation utilis\'ee par \TT{Java} est l'\'evaluation court-circuit\'ee (\emph{short-circuiting} en anglais). Dans un flux, seuls les \'el\'ements n\'ecessaires sont consomm\'es. Par exemple, dans le listage~\ref{findFirst}, l'opérateur \TT{findFirst} retourne le premier employ\'e trouv\'e dans une liste d'employ\'es~; les \'el\'ements restants du flux sont ignor\'es.
+Une autre technique d'optimisation utilis\'ee par \TT{Java} est l'\'evaluation court-circuit\'ee (\emph{short-circuiting} en anglais). Dans un flux, seuls les \'el\'ements n\'ecessaires sont consomm\'es. Par exemple, dans le listing~\ref{findFirst}, l'opérateur \TT{findFirst} retourne le premier employ\'e trouv\'e dans une liste d'employ\'es~; les \'el\'ements restants du flux sont ignor\'es.
 
 \begin{Listing}[tbp]
 \begin{lstlisting}[language=java]
@@ -112,7 +169,7 @@ Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \emp
 
 \subsection{Exemple~: WordCount}
 
-Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listage~\ref{wordCountJava} montre le code source d'une application de d\'ecompte des mots --- plus pr\'ecis\'ement, l'application compte le nombre d'occurrences des divers mots dans un fichier texte. Une telle application est compos\'ee de plusieurs op\'erations encha\^in\'ees :
+Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'une application de d\'ecompte des mots --- plus pr\'ecis\'ement, l'application compte le nombre d'occurrences des divers mots dans un fichier texte. Une telle application est compos\'ee de plusieurs op\'erations encha\^in\'ees :
 
 
 \begin{itemize}
@@ -134,7 +191,9 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 
 \GT{Et pourquoi <<.stream()>>? Et pourquoi pas sur une ligne distincte comme les autres?} 
 
+\IC{Je n'ai pas vu cela. C'\'etait un copier-coller.}
 
+	\item L'op\'eration \TT{stream} cr\'ee un nouveau flux.
 	
 	\item La derni\`ere op\'eration, \TT{collect}, combine tous les \'el\'ements dans une liste.
 	
@@ -155,7 +214,8 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
     .filter(word->word.length() > 0)
     .map(word->new SimpleEntry<>(word, 1))
     .collect(toMap(e->e.getKey(),e->e.getValue(),(v1,v2)->v1+v2))
-    .entrySet().stream()
+    .entrySet()
+    .stream()
     .collect(Collectors.toList());
 \end{lstlisting}
 \caption{Le code source Java~8 d'une application de d\'ecompte du nombre d'occurrences des mots.}
@@ -170,17 +230,14 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 \GT{Phrase que je ne comprends pas, \`a reformuler~: <<en augmentant
 le niveau d'abstraction de la phase de conception>>!?}
 
-\TT{FastFlow} est une biblioth\`eque \TT{C++} qui, \`a la base, offre un ensemble de m\'ecanismes de bas niveau pour supporter les flux de donn\'ees, s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement et l'efficacit\'e d'ex\'ecution de \TT{FastFlow} peuvent \^etre obtenues en augmentant le niveau d'abstraction de la phase de conception. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. \TT{FastFlow} fournit aux d\'eveloppeurs un ensemble de \emph{squelettes algorithmiques} qui peuvent \^etre utilis\'es pour exprimer les mod\`eles les plus courants de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles hi\'erarchiques de parall\'elisme plus complexes.
+\IC{J'ai reformul\'e l'expression <<en augmentant le niveau d'abstraction de la phase de conception>>}
+
+\TT{FastFlow} est une biblioth\`eque \TT{C++} qui, \`a la base, offre un ensemble de m\'ecanismes de bas niveau pour supporter les flux de donn\'ees, s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement et l'efficacit\'e d'ex\'ecution de \TT{FastFlow} peuvent \^etre obtenues en utilisant l'ensemble de squelettes algorithmiques offerts par la biblioth\`eque. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. Les squelettes algorithmiques offerts par \TT{FastFlow} peuvent \^etre utilis\'es pour exprimer les mod\`eles les plus courants de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles hi\'erarchiques de parall\'elisme plus complexes.
 
 \TT{FastFlow} a \'et\'e conçue selon plusieurs principes: conception en couches, efficacit\'e des communications et synchronisation, et support pour le parall\'elisme de flux.
 
 \subsection{Conception en couches}
 
-\GT{Tu ne dois utiliser la police $\backslash$texttt que pour des
-extraits de code, des identificateurs provenant du code, etc. Donc,
-ci-bas, pour les noms des couches, il faut plut\^ot utiliser les
-italiques, i.e., $\backslash$emph. (Mais cela peut \^etre OK pour
-\TT{FastFlow}.)}
 
 \TT{FastFlow} a \'et\'e conçue sous la forme d'une pile de couches pour permettre d'impl\'ementer des m\'ecanismes d'abstraction et d'optimisation \`a plusieurs niveaux. La figure~\ref{FastFlowLayers.fig} montre les trois principales couches: \emph{High-level patterns}, \emph{Core patterns} et \emph{Building blocks}. 
 
@@ -193,7 +250,7 @@ Au sommet de la pile se trouve la couche \emph{High-level patterns}, qui permet 
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/FastFlowLayers.jpg}
-      \caption{Les couches de \TT{FastFlow}. \GT{Quand tu as une telle figure qui provient d'ailleurs, il faut indiquer explicitement la source, par exemple (mais pas certain que ce soit la bonne r\'ef\'erence: \`a v\'erifier!)}. Figure tir\'ee de \cite{AldinucciEtAl14}.}
+      \caption{Les couches de \TT{FastFlow}. \GT{Quand tu as une telle figure qui provient d'ailleurs, il faut indiquer explicitement la source, par exemple (mais pas certain que ce soit la bonne r\'ef\'erence: \`a v\'erifier!)}. \IC{J'ai ajout\'e une r\'ef\'erence externe pour cette figure.}. Figure tir\'ee de \cite{Torquati15}.}
        \label{FastFlowLayers.fig}
 \end{figure}
 
@@ -245,8 +302,8 @@ Un \TT{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow},
 
 \begin{figure}[ht]
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/FastFlowFarm.png}
-      \caption{Un \TT{farm} de \TT{FastFlow} est compos\'e de trois parties~:  l'\TT{Emitter (E)}, le \emph{pool} de \TT{workers} (W1\ldots\ Wn) et le \TT{Collector (C)}. Les canaux de communication sont impl\'ement\'es en assemblant des files de types \emph{Simple Producer/Simple Consumer (SPSC)} \GT{Indiquer d'o\`u est tir\'ee cette figure!}}.
+     \includegraphics[width=1.0\textwidth]{Figures/FastFlowFarm.jpg}
+      \caption{Un \TT{farm} de \TT{FastFlow} est compos\'e de trois parties~:  l'\TT{Emitter (E)}, le \emph{pool} de \TT{workers} (W1\ldots\ Wn) et le \TT{Collector (C)}. Les canaux de communication sont impl\'ement\'es en assemblant des files de types \emph{Simple Producer/Simple Consumer (SPSC)} \GT{Indiquer d'o\`u est tir\'ee cette figure!}. \IC{J'ai ajout\'e une r\'ef\'erence pour cette figure et j'ai pris l'image originale..}. Figure tir\'ee de \cite{aldinucci2010efficient}.}
        \label{FastFlowFarm.fig}
 \end{figure}
 
