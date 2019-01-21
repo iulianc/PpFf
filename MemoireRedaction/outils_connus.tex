@@ -37,7 +37,6 @@ La version 8 de Java, qui a introduit les \TT{Stream}s, a chang\'e la façon don
 
 \subsection{Expressions lambda}
 
-Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- est un bloc de code avec des param\`etres qui peut \^etre d\'efini, comme n'importe quelle valeur, puis qui \^etre ex\'ecut\'e ult\'erieurement. Par exemple la fonction anonyme du listing~\ref{exLambda} re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme.
 
 %Par exemple, l'expression lambda suivante re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme~:
 %{\small
@@ -62,6 +61,8 @@ Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- es
 \label{exLambda}
 \end{Listing}
 
+Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- est un bloc de code avec des param\`etres qui peut \^etre d\'efini, comme n'importe quelle valeur, puis qui \^etre ex\'ecut\'e ult\'erieurement. Par exemple la fonction anonyme du listing~\ref{exLambda} re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme.
+
 
 \GT{Il faudrait montrer un exemple plus complet, avec possiblement une
 affectation \`a une variable de cette valeur (avec une interface
@@ -79,12 +80,6 @@ que c'est le terme <<Listing>> qui est utilis\'e partout, via les
 captions, donc il faudrait utiliser le m\^eme terme.}
 
 \IC{J'ai remplac\'e le terme <<listage>> par <<listing>> partout dans le document. }
-
-Le concept d'expression lambda n'est pas nouveau. Il est utilis\'e dans les langages de programmation fonctionnelle tels que \TT{Haskell}~\citep{hutton2016programming} et \TT{Lisp}~\citep{steele1990common}. 
-%
-Les expressions lambda rendent le code plus concis et, dans le cas de \TT{Java}, l'\'etendent avec des concepts de langages de programmation fonctionnelle. 
-%
-Plus sp\'ecifiquement, en Java, ce concept est li\'e \`a celui d'interface fonctionnelle. Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listing~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{thread}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
 
 \begin{Listing}[tbp]
 \begin{lstlisting}[language=java]
@@ -104,12 +99,17 @@ Plus sp\'ecifiquement, en Java, ce concept est li\'e \`a celui d'interface fonct
 \label{lambdaAsFonctionalInterface}
 \end{Listing}
 
+Le concept d'expression lambda n'est pas nouveau. Il est utilis\'e dans les langages de programmation fonctionnelle tels que \TT{Haskell}~\citep{hutton2016programming} et \TT{Lisp}~\citep{steele1990common}. 
+%
+Les expressions lambda rendent le code plus concis et, dans le cas de \TT{Java}, l'\'etendent avec des concepts de langages de programmation fonctionnelle. 
+%
+Plus sp\'ecifiquement, en Java, ce concept est li\'e \`a celui d'interface fonctionnelle. Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listing~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{thread}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
+
 Dans une expression lambda, lors de la compilation, les types des arguments peuvent \^etre automatiquement d\'etermin\'es par le compilateur. Cette fonctionnalit\'e permet de passer des m\'ethodes comme arguments plut\^ot que de construire un objet d'une classe sp\'ecifique. Ceci permet \`a un programmeur de construire facilement des pipelines d'op\'erations fonctionnelles.
 
 
 \subsection{It\'erations}
 
-Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'el\'ements pour traiter chacun d'entre eux. Avec les \TT{Stream}s \TT{Java}, une it\'eration peut \^etre ex\'ecut\'ee de deux mani\`eres : par une it\'eration \emph{externe} ou \emph{interne}. Une it\'eration est dite \emph{externe} lorsque le d\'eveloppeur contr\^ole la travers\'ee des \'el\'ements.  L'acc\`es et l'op\'eration sur chaque \'el\'ement de la collection sont d\'efinis par l'utilisateur. Par contre, une it\'eration est dite \emph{interne} lorsque la s\'equence contr\^ole elle-m\^eme tous les d\'etails du processus d'it\'eration. L'utilisateur fournit uniquement les op\'erations permettant de traiter les \'el\'ements, sans se soucier de la mani\`ere dont les \'el\'ements sont acc\'ed\'es et fournis. Le listing~\ref{comparisonInternVsExtern} montre un exemple d’une comparaison entre une itération externe et interne. 
 
 \begin{Listing}[tbp]
 \begin{lstlisting}[language=java]
@@ -133,6 +133,10 @@ Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'e
 \label{comparisonInternVsExtern}
 \end{Listing}
 
+
+Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'el\'ements pour traiter chacun d'entre eux. Avec les \TT{Stream}s \TT{Java}, une it\'eration peut \^etre ex\'ecut\'ee de deux mani\`eres : par une it\'eration \emph{externe} ou \emph{interne}. Une it\'eration est dite \emph{externe} lorsque le d\'eveloppeur contr\^ole la travers\'ee des \'el\'ements.  L'acc\`es et l'op\'eration sur chaque \'el\'ement de la collection sont d\'efinis par l'utilisateur. Par contre, une it\'eration est dite \emph{interne} lorsque la s\'equence contr\^ole elle-m\^eme tous les d\'etails du processus d'it\'eration. L'utilisateur fournit uniquement les op\'erations permettant de traiter les \'el\'ements, sans se soucier de la mani\`ere dont les \'el\'ements sont acc\'ed\'es et fournis. Le listing~\ref{comparisonInternVsExtern} montre un exemple d’une comparaison entre une itération externe et interne. 
+
+
 L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux compilateurs, notamment l'optimisation de l'exécution et les m\'ecanismes de nettoyage n\'ecessaires en arri\`ere-plan. Un autre avantage des it\'erations internes est l'efficacit\'e~: le traitement de donn\'ees peut \^etre plus efficace car il peut \^etre r\'eparti en parall\`ele parmi les cœurs de la machine.
 
 
@@ -145,10 +149,6 @@ abstrait et on ne comprend pas bien la diff\'erence~:(}
 \subsection{Flux}
 
 
-Un flux est d\'efini comme une s\'equence immuable d'\'el\'ements fournissant une vari\'et\'e d'op\'erateurs et de m\'ethodes permettant de traiter une collection de donn\'ees. Le flux prend en charge les op\'erations d'agr\'egation \citep{javaStreamAggregate} s\'equentielles et parall\`eles sans se soucier de la mani\`ere dont les \'el\'ements sont stock\'es ou accessibles. Pour effectuer un traitement, les op\'erations de flux sont compos\'ees dans un \TT{pipeline}. Un \TT{pipeline} est compos\'e d'une source, de z\'ero ou plusieurs op\'erations interm\'ediaires et d'une op\'eration terminale. Une source en peut \^etre constitu\'ee d'une collection ou de tout objet impl\'ementant l'interface qui d\'efinit le m\'ecanisme permettant d'extraire les donn\'ees de la source. 
-Les op\'erations sur les flux adoptent un m\'ecanisme d'\'evaluation paresseuse. L'\'evaluation paresseuse est une m\'ethode d'optimisation du traitement qui retarde l'\'etape du calcul jusqu'\`a ce qu'il soit nécessaire. En \TT{Java}, le traitement sur les \'el\'ements du flux est r\'ealis\'e seulement \`a l'initialisation de l'op\'eration finale et les \'el\'ements source ne sont consomm\'es qu'au besoin. Cela permet au compilateur d'optimiser le traitement des donn\'ees dans le \TT{pipeline}.
-Une autre technique d'optimisation utilis\'ee par \TT{Java} est l'\'evaluation court-circuit\'ee (\emph{short-circuiting} en anglais). Dans un flux, seuls les \'el\'ements n\'ecessaires sont consomm\'es. Par exemple, dans le listing~\ref{findFirst}, l'opérateur \TT{findFirst} retourne le premier employ\'e trouv\'e dans une liste d'employ\'es~; les \'el\'ements restants du flux sont ignor\'es.
-
 \begin{Listing}[tbp]
 \begin{lstlisting}[language=java]
 	List<Employee> employees;
@@ -157,6 +157,11 @@ Une autre technique d'optimisation utilis\'ee par \TT{Java} est l'\'evaluation c
 \caption{Optimisation du traitement d'un flux en utilisant la technique d'\'evaluation court-circuit\'ee.}
 \label{findFirst}
 \end{Listing}
+
+Un flux est d\'efini comme une s\'equence immuable d'\'el\'ements fournissant une vari\'et\'e d'op\'erateurs et de m\'ethodes permettant de traiter une collection de donn\'ees. Le flux prend en charge les op\'erations d'agr\'egation \citep{javaStreamAggregate} s\'equentielles et parall\`eles sans se soucier de la mani\`ere dont les \'el\'ements sont stock\'es ou accessibles. Pour effectuer un traitement, les op\'erations de flux sont compos\'ees dans un \TT{pipeline}. Un \TT{pipeline} est compos\'e d'une source, de z\'ero ou plusieurs op\'erations interm\'ediaires et d'une op\'eration terminale. Une source en peut \^etre constitu\'ee d'une collection ou de tout objet impl\'ementant l'interface qui d\'efinit le m\'ecanisme permettant d'extraire les donn\'ees de la source. 
+Les op\'erations sur les flux adoptent un m\'ecanisme d'\'evaluation paresseuse. L'\'evaluation paresseuse est une m\'ethode d'optimisation du traitement qui retarde l'\'etape du calcul jusqu'\`a ce qu'il soit nécessaire. En \TT{Java}, le traitement sur les \'el\'ements du flux est r\'ealis\'e seulement \`a l'initialisation de l'op\'eration finale et les \'el\'ements source ne sont consomm\'es qu'au besoin. Cela permet au compilateur d'optimiser le traitement des donn\'ees dans le \TT{pipeline}.
+Une autre technique d'optimisation utilis\'ee par \TT{Java} est l'\'evaluation court-circuit\'ee (\emph{short-circuiting} en anglais). Dans un flux, seuls les \'el\'ements n\'ecessaires sont consomm\'es. Par exemple, dans le listing~\ref{findFirst}, l'opérateur \TT{findFirst} retourne le premier employ\'e trouv\'e dans une liste d'employ\'es~; les \'el\'ements restants du flux sont ignor\'es.
+
 
 L'un des principaux avantages des flux est qu'ils peuvent \^etre \'evalu\'es soit de fa\c{c}on s\'equentielle, soit en parall\`ele. L'\'evaluation s\'equentielle est r\'ealis\'ee en ex\'ecutant toutes les op\'erations en \TT{pipeline} sur chaque \'el\'ement du flux. Lorsqu'un flux est \'evalu\'e en parall\`ele, il utilise un type sp\'ecial d'it\'erateur appel\'e \TT{Spliterator}. Ce dernier partitionne le flux de mani\`ere r\'ecursive en se divisant lui-m\^eme pour cr\'eer des flux enfants. Ce m\'ecanisme permet aux \emph{threads} de traverser plusieurs flux en parall\`ele. Les \emph{threads} sont g\'er\'es par un groupe de \emph{threads} de type \TT{fork-join}.
 
@@ -168,6 +173,26 @@ Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \emp
 
 
 \subsection{Exemple~: WordCount}
+
+
+\begin{Listing}[tbp]
+\begin{lstlisting}[language=java]
+  List<Map.Entry<String,Integer>> wordsCount = 
+	Files.lines(Paths.get(inputFile))
+    .parallel()
+    .flatMap(line->Arrays.stream(line.trim().split(" ")))
+    .map(word->word.replaceAll("[^a-zA-Z]", "").toLowerCase())
+    .filter(word->word.length() > 0)
+    .map(word->new SimpleEntry<>(word, 1))
+    .collect(toMap(e->e.getKey(),e->e.getValue(),(v1,v2)->v1+v2))
+    .entrySet()
+    .stream()
+    .collect(Collectors.toList());
+\end{lstlisting}
+\caption{Le code source Java~8 d'une application de d\'ecompte du nombre d'occurrences des mots.}
+\label{wordCountJava}
+\end{Listing}
+
 
 Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'une application de d\'ecompte des mots --- plus pr\'ecis\'ement, l'application compte le nombre d'occurrences des divers mots dans un fichier texte. Une telle application est compos\'ee de plusieurs op\'erations encha\^in\'ees :
 
@@ -199,28 +224,6 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 	
 	
 \end{itemize}
-
-
-
-
-
-\begin{Listing}[tbp]
-\begin{lstlisting}[language=java]
-  List<Map.Entry<String,Integer>> wordsCount = 
-	Files.lines(Paths.get(inputFile))
-    .parallel()
-    .flatMap(line->Arrays.stream(line.trim().split(" ")))
-    .map(word->word.replaceAll("[^a-zA-Z]", "").toLowerCase())
-    .filter(word->word.length() > 0)
-    .map(word->new SimpleEntry<>(word, 1))
-    .collect(toMap(e->e.getKey(),e->e.getValue(),(v1,v2)->v1+v2))
-    .entrySet()
-    .stream()
-    .collect(Collectors.toList());
-\end{lstlisting}
-\caption{Le code source Java~8 d'une application de d\'ecompte du nombre d'occurrences des mots.}
-\label{wordCountJava}
-\end{Listing}
 
 
 
@@ -307,9 +310,107 @@ Un \TT{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow},
        \label{FastFlowFarm.fig}
 \end{figure}
 
-\subsection{Exemple~: Blah Blah}
+
+\subsection{Exemple~: WordCount}
 
 \GT{Il faut un exemple, le WordCount de Java ou un autre du m\^eme
 style (possiblement plus simple), pour illustrer toutes ces notions de
 FastFlow que tu viens de pr\'esenter, sinon cela reste beaucoup trop
 vague et abstrait.}
+
+\IC{J'ai ajout\'e comme exemple le programme de d\'ecompte de mots.}
+
+
+
+\begin{lstlisting}[language=c, frame=single, caption={Le code source FastFlow d'une application de d\'ecompte du nombre d'occurrences des mots.},captionpos=b]
+ #define DEFAULT_INPUT_FILE "Words.txt"
+ typedef std::vector<std::string> Words;
+ 
+ struct linesFromFileStage: ff_node {
+ 	std::string const &path;
+ 
+ 	linesFromFileStage(std::string const &path):path(path){}
+ 
+	void* svc(void* task) {
+		std::ifstream file(path);
+		std::string* line = new std::string;
+		while (std::getline(file, *line)) {
+			ff_send_out(line);
+			line = new std::string;
+		}
+		return EOS;
+	}
+ };
+ 
+ struct splitInWordsStage: ff_node {
+	std::string delimiter = " ";
+	void* svc(void* task) {
+	std::string line = *((std::string*)task);
+	Words* words = new Words();
+	size_t start = 0, end = 0;
+	do {
+		end = line.find(delimiter, start);
+		size_t len = end - start;
+		words->push_back( line.substr(start, len) );
+		start += len + delimiter.length();
+	} while (end != std::string::npos);
+
+	 return words;
+	}
+ };
+ 
+ struct flatStage: ff_node {
+    std::string delimiter = " ";
+ 	void* svc(void* task) {
+ 	    for(auto &elem : *(Words*)task){
+ 	    	ff_send_out(&elem);
+ 	    }
+ 		return GO_ON;
+ 	}
+ };
+ 
+ struct groupByKeyStage:ff_node {
+ 	typedef std::unordered_map< std::string, int > CONTAINER;
+ 	CONTAINER &container;
+ 	groupByKeyStage(CONTAINER &container): container(container){}
+ 	void* svc(void* task) {
+ 		container[*((std::string*)task)] += 1;
+ 		return GO_ON;
+    }
+ };
+ 
+ int main(int argc, char *argv[]) {
+ 	std::unordered_map< std::string, int > result;
+ 	std::string inputFile = DEFAULT_INPUT_FILE;
+	if (argc >= 2) { inputFile = argv[1]; } 
+	linesFromFileStage linesFromFile(inputFile);
+	splitInWordsStage splitInWords;
+	flatStage flat;
+	groupByKeyStage groupByKey(result);
+
+	ff_pipeline ffp;
+	ffp.add_stage(&linesFromFile);
+	ffp.add_stage(&splitInWords);
+	ffp.add_stage(&flat);
+	ffp.add_stage(&groupByKey);
+
+	if (ffp.run_and_wait_end()<0) error("running pipe");
+ 	return 0;
+ }
+\end{lstlisting}
+\label{wordcountFastFlow}
+
+\IC{Je n'ai pas utilis\'e Listing. Il n'\'etait pas visible sur plusieurs pages. Je dois revenir sur cela.}
+
+Cette section pr\'esente un exemple d'un programme r\'ealis\'e en \TT{FastFlow}. Illustr\'e dans le listing~\ref{wordcountFastFlow}, le programme compte le nombre d'occurrences des divers mots dans un fichier texte. Un \TT{pipeline} de n \TT{stages} distincts en \TT{FastFlow} est cr\'e\'e en instanciant les n diff\'erents \TT{stages} et ensuite leurs r\'ef\'erences sont transmis dans le bon ordre au \TT{pipeline}. Dans l'exemple montr\'e dans le listing~\ref{wordcountFastFlow} les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots. Les quatre op\'erations r\'ealisent les fonctions suivantes :
+
+\begin{itemize}
+	\item La premi\`ere op\'eration, \TT{linesFromFile}, renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
+
+	\item La deuxi\`eme op\'eration, \TT{splitInWords} divise chaque ligne en mots qui sont ensuite transmis en aval sous forme d'une collection de mots.
+	
+	\item L'op\'eration \TT{flat} décompose la collection en mots individuels, lesquels sont ensuite transmis dans le fux en tant qu'éléments individuels de données.
+	
+	\item La derni\`ere op\'eration, \TT{groupByKey}, regroupe les mots similaires ensemble et ensuite compte le nombre d'occurrences de chaque mot.
+	
+\end{itemize}

@@ -5,12 +5,24 @@
 
 \GT{Avant d'avoir une subsection, tu dois avoir une section. Donc, v\'erifie la structure de ce chapitre!}
 
+\IC{J'ai ajout\'e une petite introduction du chapitre.}
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/AllComponentsAPI.jpg}
+      \caption{Les composants de \TT{PpFf}.}
+       \label{AllComponentsAPI.fig}
+\end{figure}
+
+
+Ce chapitre donne une description compl\`ete de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble de ses composants est pr\'esent\'ee à la figure~\ref{AllComponentsAPI.fig}. En g\'en\'eral, il est bas\'e sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes.
+La premi\`ere section d\'ecrit  comment le pipeline du flux est mis en œuvre. La deuxi\`eme section examine  comment la parall\'elisation du flux est r\'ealis\'ee. Le chapitre se termine par la description des stages d\'ecrits dans la derni\`ere section.
+
+
 \subsection{Pipeline}
 
 Tel que mentionn\'e au chapitre pr\'ec\'edent, un pipeline est compos\'e d'une cha\^ine de traitement appel\'e \TT{Pipe}. Un \TT{Pipe} est repr\'esent\'e essentiellement par une s\'erie d'op\'erateurs d\'efinis par l'utilisateur qui sont appliqu\'es aux \'el\'ements d'un flux. \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \TT{FastFlow}, de sorte que nous utilisons les constructions \TT{ff\_node}, \TT{ff\_pipeline} et \TT{ff\_farm} de \TT{FastFlow} pour l'ex\'ecution de \TT{PpFf}. 
 
-Tels que d\'ecrits au chapitre pr\'ec\`edent, les op\'erateurs qui composent un \TT{Pipe} sont de deux types : les op\'erateurs sans \'etat et les op\'erateurs avec \'etat. Comme on peut le voir dans la figure~\ref{MapToFastFlow.fig}, un op\'erateur h\'erite de la class \TT{ff\_node} de \TT{FastFlow}. Un \TT{Pipe} contient un ou plusieurs op\'erateurs sans \'etat et un seul op\'erateur avec \'etat. Lorsque ce dernier est ajout\'e dans le \TT{pipeline}, la m\'ethode \TT{run()} est appel\'ee. \`A ce stade, un objet de type \TT{ff\_pipeline} correspondant au \TT{Pipe} est cr\'e\'e. Ensuite, chaque op\'erateur d\'efini par l'utilisateur est visit\'e et en fonction de la configuration \'etablie, des objets de type \TT{ff\_node} ou \TT{ff\_farm} sont ajout\'es comme stage au \TT{ff\_pipeline}. Chaque nœud ainsi ajout\'e dans \TT{ff\_pipeline} sera ex\'ecut\'e dans un fil d'ex\'ecution.
-La cr\'eation de \TT{Pipe} est r\'ealis\'ee \`a l'aide de \TT{PipeManager}.
 
 \begin{figure}[ht]
 \centering
@@ -18,6 +30,10 @@ La cr\'eation de \TT{Pipe} est r\'ealis\'ee \`a l'aide de \TT{PipeManager}.
       \caption{La correspondance entre les \'el\'ements de \TT{PpFf} et ceux de  \TT{FastFlow}.}
        \label{MapToFastFlow.fig}
 \end{figure}
+
+
+Tels que d\'ecrits au chapitre pr\'ec\`edent, les op\'erateurs qui composent un \TT{Pipe} sont de deux types : les op\'erateurs sans \'etat et les op\'erateurs avec \'etat. Comme on peut le voir dans la figure~\ref{MapToFastFlow.fig}, un op\'erateur h\'erite de la class \TT{ff\_node} de \TT{FastFlow}. Un \TT{Pipe} contient un ou plusieurs op\'erateurs sans \'etat et un seul op\'erateur avec \'etat. Lorsque ce dernier est ajout\'e dans le \TT{pipeline}, la m\'ethode \TT{run()} est appel\'ee. \`A ce stade, un objet de type \TT{ff\_pipeline} correspondant au \TT{Pipe} est cr\'e\'e. Ensuite, chaque op\'erateur d\'efini par l'utilisateur est visit\'e et en fonction de la configuration \'etablie, des objets de type \TT{ff\_node} ou \TT{ff\_farm} sont ajout\'es comme stage au \TT{ff\_pipeline}. Chaque nœud ainsi ajout\'e dans \TT{ff\_pipeline} sera ex\'ecut\'e dans un fil d'ex\'ecution.
+La cr\'eation de \TT{Pipe} est r\'ealis\'ee \`a l'aide de \TT{PipeManager}.
 
 
 \subsection{Parall\'elisation}
@@ -39,12 +55,6 @@ Un flux avec $n$ \emph{stages} peut \^etre formellement exprim\'e sous la forme 
 	O(x) = O_n( \ldots (O_k( \ldots O_1(x)) \ldots ) \ldots ));
 \]
 
-Dans ce cas, le parall\'elisme est repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux. Cette solution n'acc\'el\`ere pas le calcul d'un seul \'el\'ement. Par contre, elle am\'eliore le d\'ebit de sortie.
-
-\GT{Si tu as une figure, alors tu dois y r\'ef\'erer dans le texte.}
-
-\GT{Il faudrait expliquer, dans la figure, \`a quoi correspondent
-$S_i$ et $W_i$.}
 
 \begin{figure}[ht]
 \centering
@@ -52,6 +62,14 @@ $S_i$ et $W_i$.}
       \caption{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$ \emph{stages} $O_1, O_2, \ldots, O_n$.}
        \label{ParallelismeDuFlux.fig}
 \end{figure}
+
+
+Dans ce cas, le parall\'elisme est repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux. Cette solution n'acc\'el\`ere pas le calcul d'un seul \'el\'ement. Par contre, elle am\'eliore le d\'ebit de sortie.
+
+\GT{Si tu as une figure, alors tu dois y r\'ef\'erer dans le texte.}
+
+\GT{Il faudrait expliquer, dans la figure, \`a quoi correspondent
+$S_i$ et $W_i$.}
 
 
 \subsubsection{Parall\'elisme de donn\'ees et \emph{Task Farm}}
@@ -73,6 +91,15 @@ que, dans un chapitre pr\'ec\'edent, tu expliques FastFlow, notammen
 \TT{ff\_farm}. Ensuite, ici, tu pourrais simplement r\'ef\'erer \`a
 ces explications ant\'erieures.}
 
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/ParallelismeTaskFarm.jpg}
+      \caption{Un \emph{Task Farm} de FastFlow.}
+       \label{ParallelismeTaskFarm.fig}
+\end{figure}
+
+
 Une instance de \TT{Task-Farm} est compos\'ee de trois principales entit\'es : un \TT{Emitter}, un \TT{Collector} et de multiples instances de travailleurs. L'\TT{Emitter} distribue les \'el\'ements d'entr\'ee aux travailleurs selon une certaine politique d'ordonnancement afin d'\'equilibrer la charge des travailleurs. La figure~\ref{ParallelismeTaskFarm.fig} montre le mod\`ele \emph{TaskFarm} tel qu'utilis\'e dans \TT{PpFf}. Par d\'efaut, les \'el\'ements sont repartis aux divers travailleurs selon une politique \emph{round robin}. Les travailleurs re\c{c}oivent les \'el\'ements d'entr\'ee et appliquent sur chacun d'eux l'op\'erateur d\'efini au pr\'ealable par l'utilisateur. Les r\'esultats sont envoy\'es vers le \TT{Collector} charg\'e de les collecter --- i.e., de les combiner --- puis de les transmettre au flux de sortie.
 
 Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee selon le principe \emph{FIFO}. La collection de plusieurs r\'esultats \`a l'aide de cette approche r\'esulte dans un flux sans ordre sur ses \'el\'ements. En effet, le \TT{Collector} transmet les \'el\'ements au flux de sortie dans l'ordre d'arriv\'ee. \'Etant donn\'e que plusieurs flux ind\'ependants sont impliqu\'es, cet ordre ne peut pas \^etre pr\'ed\'etermin\'e. Si le respect d'un  ordre sp\'ecifique est requis, l'utilisateur de l'API peut ajouter un op\'erateur qui produit cet ordre --- \GT{par ex., l'op\'erateur ???}.
@@ -92,12 +119,7 @@ le flux d'entr\'ee~:
 
 Le r\'esultat $Y_i$ est g\'en\'er\'e en appliquant l'op\'erateur $O$ sur l'\'el\'ement $X_i$. L'op\'eration sera ex\'ecut\'ee en parall\`ele par les diff\'erents travailleurs. Dans ce cas, la structure du mod\`ele d'ex\'ecution peut \'eventuellement recevoir, en param\`etre, le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Si ce param\`etre n'est pas sp\'ecifi\'e, un seul travailleur est activ\'e. Cette solution de permettre d'augmenter le nombre de travailleurs permet d'augmenter le d\'ebit du traitement des donn\'ees, c'est-\`a-dire le nombre de donn\'ees qui peuvent \^etre trait\'ees en un temps donn\'e.
 
-\begin{figure}[ht]
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/ParallelismeTaskFarm.jpg}
-      \caption{Un \emph{Task Farm} de FastFlow.}
-       \label{ParallelismeTaskFarm.fig}
-\end{figure}
+
 
 
 
