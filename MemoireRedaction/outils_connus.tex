@@ -300,8 +300,7 @@ Un \TT{pipeline} est utilis\'e pour mod\'eliser les traitements exprim\'es par d
 \goodbreak
 
 \textbf{Farm}
-
-Un \TT{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow}, un \TT{farm} est repr\'esent\'e par la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig}, un \TT{farm} est compos\'e de trois parties distinctes: un \TT{Emitter}, un  \emph{pool} de \TT{workers} et un \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements du flux au \emph{pool} de \TT{workers}, lesquels traitent et produisent les donn\'ees de sortie. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire.
+\label{farm.sect}
 
 \begin{figure}[ht]
 \centering
@@ -309,6 +308,8 @@ Un \TT{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow},
       \caption{Un \TT{farm} de \TT{FastFlow} est compos\'e de trois parties~:  l'\TT{Emitter (E)}, le \emph{pool} de \TT{workers} (W1\ldots\ Wn) et le \TT{Collector (C)}. Les canaux de communication sont impl\'ement\'es en assemblant des files de types \emph{Simple Producer/Simple Consumer (SPSC)} \GT{Indiquer d'o\`u est tir\'ee cette figure!}. \IC{J'ai ajout\'e une r\'ef\'erence pour cette figure et j'ai pris l'image originale..}. Figure tir\'ee de \cite{aldinucci2010efficient}.}
        \label{FastFlowFarm.fig}
 \end{figure}
+
+Un \TT{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow}, un \TT{farm} est repr\'esent\'e par la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig}, un \TT{farm} est compos\'e de trois parties distinctes: un \TT{Emitter}, un  \emph{pool} de \TT{workers} et un \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements du flux au \emph{pool} de \TT{workers}, lesquels traitent et produisent les donn\'ees de sortie. L'\TT{Emitter} distribue les \'el\'ements d'entr\'ee aux travailleurs selon une certaine politique d'ordonnancement afin d'\'equilibrer la charge des travailleurs. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire.
 
 
 \subsection{Exemple~: WordCount}
