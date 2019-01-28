@@ -1,5 +1,5 @@
 
-\chapter{Mise en \oe{}uvre de \PpFf}
+\chapter{Mise en oeuvre de \PpFf}
 \label{implementation.chap}
 
 
@@ -61,7 +61,7 @@ Un flux avec $n$ \emph{stages} peut \^etre formellement exprim\'e sous la forme 
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ParallelismeDuFlux.jpg}
-      \caption{Une repr\'esentation graphique du parall\'elisme de t\^aches pour une d\'ecomposition en $n$ \emph{stages} $S_1, S_2, \ldots, S_n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees concomitantes dans des diff\`erent fils d'ex\'eécution $W_1, W_2, \ldots, W_n$.}
+      \caption[Une repr\'esentation graphique du parall\'elisme de t\^aches.]{Une repr\'esentation graphique du parall\'elisme de t\^aches pour une d\'ecomposition en $n$ \emph{stages} $S_1, S_2, \ldots, S_n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees concomitantes dans des diff\`erent fils d'ex\'eécution $W_1, W_2, \ldots, W_n$.}
        \label{ParallelismeDuFlux.fig}
 \end{figure}
 
@@ -143,7 +143,7 @@ Le r\'esultat $Y_i$ est g\'en\'er\'e en appliquant l'op\'erateur $O$ sur l'\'el\
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/StageDataParallel.jpg}
-      \caption{Un exemple en appliquant l'op\'erateur \TT{reduce} sur diff\'erents sous-flux de donn\'ees. L'\TT{Emiter} E distribue  les sous-flux de donn\'ees aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
+      \caption[Un exemple d'application de l'op\'erateur \TT{reduce} sur diff\'erents sous-flux de donn\'ees.]{Un exemple en appliquant l'op\'erateur \TT{reduce} sur diff\'erents sous-flux de donn\'ees. L'\TT{Emiter} E distribue  les sous-flux de donn\'ees aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
        \label{StageDataParallel.fig}
 \end{figure}
 
@@ -154,7 +154,7 @@ Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les 
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/Stages.jpg}
-      \caption{Le groupement logique de n op\'erateurs $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.  L'\TT{Emiter} E distribue les \'el\'ements du flux aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
+      \caption[Le groupement logique de $n$ op\'erateurs $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.]{Le groupement logique de $n$ op\'erateurs $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.  L'\TT{Emiter} E distribue les \'el\'ements du flux aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
        \label{Stages.fig}
 \end{figure}
 
