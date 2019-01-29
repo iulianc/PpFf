@@ -1,0 +1,179 @@
+% fonts and lang packages
+\usepackage[utf8]{inputenc} 	% utf8
+\usepackage[T1]{fontenc} 	% french characters
+\usepackage[french]{babel}	% french dictionnary
+
+% utils
+\usepackage{graphicx} 	% enhenced includes
+\usepackage{latex/comment}	% comment blocks
+\usepackage[hyphens]{url}		% display url links
+\usepackage{rotating}	% rotating figues
+%\usepackage{authblk}	% enhenced authors
+\usepackage{color}		% colors
+\usepackage{float}
+
+\usepackage{tablefootnote}
+\usepackage{ifthen}
+\usepackage{tikz, tikz-qtree}
+
+% tables
+\usepackage{tabularx}
+\usepackage{latex/multirow}
+
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{natbib}
+
+\usepackage{xcolor}
+\usepackage[export]{adjustbox}
+\definecolor{light-gray}{gray}{0.8}
+
+% \usepackage{relsize}
+\usepackage{subcaption}
+\captionsetup[figure]{labelfont=bf}
+\captionsetup[table]{labelfont=bf}
+
+% renew authors
+%\renewcommand\Authand{ et }
+%\renewcommand\Authands{, et }
+
+% listings
+\usepackage{listings}
+
+\lstset{
+	inputencoding=utf8,
+	basicstyle=\small\ttfamily,
+	frame=none,
+	numberstyle=\footnotesize,
+	numbersep=5pt,
+	tabsize=4,
+	literate=
+	{ç}{{\,c}}1
+	{û}{{\^u}}1
+	{é}{{\'e}}1
+	{è}{{\`e}}1
+	{ê}{{\^e}}1
+	{à}{{\`a}}1
+	{É}{{\'E}}1
+	{È}{{\`E}}1
+	{À}{{\`A}}1
+	{`}{{\`{}}}1,
+}
+
+\usepackage{pdfpages}
+
+\usepackage{nameref}
+\usepackage{lscape}
+
+% Change paragraph style
+\usepackage{latex/titlesec}
+\titleformat{\paragraph}[runin]
+{\bfseries}{\theparagraph}{1em}{}
+
+% maths packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+% Change asm questions styles
+\makeatletter
+\newtheoremstyle{indented}
+  {3pt}% space before
+  {3pt}% space after
+  {\addtolength{\@totalleftmargin}{2.5em}
+   \addtolength{\linewidth}{-2.5em}
+   \parshape 1 2.5em \linewidth}% body font
+  {}% indent
+  {\bfseries}% header font
+  { - }% punctuation
+  {0em}% after theorem header
+  {}% header specification (empty for default)
+\def\th@plain{%
+  \thm@notefont{}% same as heading font
+  \itshape % body font
+}
+\def\th@definition{%
+  \thm@notefont{}% same as heading font
+  \normalfont % body font
+}
+\makeatother
+
+\theoremstyle{indented}
+\newtheorem{question}{Question}[section]
+\newtheorem*{response}{Réponse}
+
+\usepackage{latex/silence}
+\WarningFilter{frenchb.ldf}{Figure}
+
+% J'ai de la difficult\'e \`a lire quand les hyperliens sont vert
+% pale. De plus, je crois que quand tu imprimeras les versions
+% papier... cela risque de g\'en\'erer du texte plus pale, moins
+% lisible... Donc j'ai desactive la couleur pour les liens... mais
+% c'est facile de les reactiver: voir makefile.
+
+\newboolean{ColoredLinks}
+\input{latex/colored_links}
+
+\usepackage[pdfborder={0 0 0}, colorlinks=true]{hyperref}
+% compatibility between pdftex and hyperref
+\ifthenelse{\boolean{ColoredLinks}}
+{ \hypersetup{citecolor=blue} }
+{ \hypersetup{colorlinks=false} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Macros et ajouts %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\floatstyle{ruled}
+
+\newfloat{programme}{htbp}{lop}[chapter]
+\floatname{programme}{Programme}
+
+\newcommand{\ACOMPLETER}[1]{{\textcolor{red}{#1}}}
+\newcommand{\AVERIFIER}[1]{{\textcolor{blue}{#1}}}
+
+\newcommand{\todo}[1]{{\textcolor{blue}{<\footnotesize A faire: #1>}}}
+\newcommand{\TODO}[1]{{\textcolor{blue}{[[A FAIRE: #1]]}}}
+
+\newcommand{\README}{{\sc readme}}
+\newcommand{\DOCDOWN}{{\texttt{DocDown}}}
+\newcommand{\MAN}{{\sc man}}
+
+\newcommand\rot{\rotatebox{90}}
+
+\newcommand{\Legende}[1]{{\footnotesize{\newline L\'egende: #1}}}
+
+\newcommand{\B}{{$\bullet$}}
+
+\newcommand{\subsectionSansNum}[1]{\paragraph{#1}{\ }}
+
+% Pour presentation de sous-sections avec numero alphabetique
+\newcounter{numSoussectionAlpha}
+\setcounter{numSoussectionAlpha}{1}
+
+\newcommand{\resetsoussectionAlpha}{\setcounter{numSoussectionAlpha}{1}}
+\renewcommand{\thenumSoussectionAlpha}{\Alph{numSoussectionAlpha}}
+\newcommand{\soussectionAlpha}[1]{\thenumSoussectionAlpha.~{\bf #1}{\ }\stepcounter{numSoussectionAlpha}}
+\renewcommand{\soussectionAlpha}[1]{{\bf #1}{\ }\stepcounter{numSoussectionAlpha}}
+%\renewcommand{\soussectionAlpha}[1]{{\bf #1}{\ }\stepcounter{numSoussectionAlpha}}
+
+\newcommand{\captionEcosysteme}[1]{\caption[Place #1 dans l'\'ecosyst\`eme de documentation Nit.]{Place #1 dans l'\'ecosyst\`eme de documentation Nit.}}
+
+\newcommand{\captionTaxonomieThemes}[1]{\caption[Taxonomie des
+ th\`emes #1 les plus fréquents dans les fichiers \README.]{Taxonomie des
+ th\`emes #1 les plus fréquents dans les fichiers \README.
+ \Legende{\textbf{occ.}: nombre d'occurrences du thème dans le corpus;
+ \textbf{\% occ.}: pourcentage d'occurrences associées à ce thème;
+ \textbf{moy.}: moyenne du nombre d'occurrences du thème par document;
+ \textbf{\# doc.}: nombre de documents contenant le thème;
+ \textbf{\% doc.}: pourcentage de documents contenant le thème;
+ \textbf{\% pos.}: position moyenne du thème dans les documents en pourcentage de la taille du document.
+ Les thèmes sont triés par position moyenne dans les documents.}}}
+
+\newcommand{\captionComparaisonExpert}[3]{\caption[Comparaison du
+nombre #1 dans le fichier \README\ produit par l'expert~#2 pour la biblioth\`eque \texttt{#3}.]{Comparaison du
+nombre #1 dans le fichier \README\ produit par l'expert~#2 pour la biblioth\`eque \texttt{#3} avec ceux issus de
+GitHub analys\'es dans le chapitre~\ref{readmes-github} et ceux
+\'ecrits par les experts Nit pour le corpus d'alignement du
+chapitre~\ref{align}.}}
+
+\newtheorem{definition}{D\'efinition}
