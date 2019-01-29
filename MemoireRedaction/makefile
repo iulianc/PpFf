@@ -20,3 +20,9 @@ clean cleanxtra:
 
 xv:
 	evince memoire.pdf
+
+bib:
+	pdflatex $(MAIN)
+	bibtex $(MAIN)
+	pdflatex $(MAIN)
+	pdflatex $(MAIN)
