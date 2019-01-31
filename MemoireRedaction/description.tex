@@ -604,9 +604,12 @@ associ\'ees directement \`a lstlisting. Pour rappel, voir le chapitre
 pr\'ec\'edent ainsi que l'exemple de Reducer un peu plus bas.}
 
 
-\begin{Listing}
-{\small
-\begin{lstlisting}
+\begin{lstlisting}[
+label={expressivite_api.c++},
+language=c++,
+caption={Un exemple illustrant les principaux \'el\'ements de l'API de \ppff.},
+frame=single,
+float]
 // Definition (omise) d'un vecteur d'objets Employe.
 std::vector<Employe> sourceEmployes;
 ...
@@ -617,10 +620,9 @@ std::vector<Employe> result =
    .find<Employe>([](Employe *e) { return e->salary > 35000; })
    .collect<Employe, std::vector>();
 \end{lstlisting}
-}
-\caption{Un exemple illustrant les principaux \'el\'ements de l'API de \ppff.}
-\label{expressivite_api.c++}
-\end{Listing}
+
+
+
 
 Le listing~\ref{expressivite_api.c++} pr\'esente un extrait de code C++ qui donne un premier aper\c{c}u de l'expressivit\'e de l'interface --- d'autres exemples seront pr\'esent\'es plus loin. Dans cet exemple, on s\'electionne les employ\'es qui ont un salaire plus grand que 35~K\$. Les employ\'es sont initialement dans un conteneur STL et sont filtr\'es en chainant trois op\'erations : $i)$ \TT{source} qui permet d'envoyer dans le flux des objets de type~\TT{Employe}; $ii$) \TT{find} qui s\'electionne les employ\'es selon la condition fournie en param\`etre (une lambda-expression); $iii)$ \TT{collect} qui met les employ\'es s\'electionn\'es dans un conteneur STL. Ici, les employ\'es s\'electionn\'es sont mis dans un conteneur de type \TT{std::vector} --- le type de conteneur est donn\'e par le type fourni en argument (g\'en\'erique) de la m\'ethode \TT{collect}.
 
@@ -641,8 +643,12 @@ Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de 
 
 \label{reducer.sect}
 
-\begin{Listing}[tbp]
-\begin{lstlisting}
+\begin{lstlisting}[
+label={reducer.c++},
+language=c++,
+caption={La signature d'un objet \TT{Reducer}.},
+frame=single,
+float]
  template< typename In, typename Out >
  class Reducer{
        Reducer(Out init, 
@@ -656,24 +662,14 @@ Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de 
                Func<Out(Out, In)> const& accumulator)
  }
 \end{lstlisting}
-\caption{La signature d'un objet \TT{Reducer}.}
-\label{reducer.c++}
-\end{Listing}
+
+
 
 \gt{Une règle utile à savoir pour \LaTeX: lorsqu'on met un élément
 flottant (avec caption/label, e.g., figure, table, pseudocode,
 listing), il est préférable de mettre cet élément \underline{avant} la
 première référence (et non pas après).  La position du flottant par
 rapport au texte qui y réfère est alors meilleure.}
-
-\gt{Pour les exemples de code, il est préférable d'utiliser Listing
-(définie dans macros.tex) et lstlisting (package \LaTeX) plutot que
-alltt --- ce qui évite d'avoir à mettre un backslash devant une
-accolade. J'ai configure pour que par defaut ce soit avec le langage
-C++ (on peut faire de la coloration syntaxique, mais pas utile dans un
-mémoire.  On peut aussi spécifier un autre langage, avec une mise en
-forme différente.}
-
 
 L'op\'erateur de classe \TT{Reducer} est utilis\'e pour r\'eduire les \'el\'ements du flux \`a une valeur unique. Le listing~\ref{reducer.c++} présente la spécification  de la classe \TT{Reducer} avec les signatures des fonctions associées. 
 
@@ -707,8 +703,13 @@ float]
 Un \TT{Reducer} est construit avec une valeur initiale, une fonction \TT{accumulator} et une fonction \TT{combiner}. La valeur initiale et la fonction \TT{combiner} sont optionnelles gr\^ace \`a la surcharge du constructeur. Lorsque ces arguments sont omis, la valeur initiale est initialis\'ee \`a la valeur par d\'efaut du type de cette valeur et la fonction \TT{combiner} est remplac\'ee par la fonction \TT{accumulator}. Par exemple, le listing~\ref{sumElementsCollectionWithReducer} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer}. La valeur initiale est sp\'ecifi\'ee comme \'etant \TT0 et la fonction \TT{combiner} est indiqu\'ee par la fonction d'addition \TT{std::plus<int>\{\}}. 
 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}[language=c++,gobble=4]
+\begin{lstlisting}[
+label={sumElementsCollectionWithReducerParallel},
+gobble=4,
+language=c++,
+caption={Exemple d'utilisation de l'opérateur \TT{Reducer} en parall\`ele.},
+frame=single,
+float]
     int n = 100;
     int initVal = 3;
     
@@ -730,11 +731,9 @@ Un \TT{Reducer} est construit avec une valeur initiale, une fonction \TT{accumul
 	
 	std::cout << "Result: " << currentResult;	//4953 
                   JE CROIS QUE CE DEVRAIT PLUTOT ETRE 5053, NON...
-    
 \end{lstlisting}
-\caption{Exemple d'utilisation de l'opérateur \TT{Reducer} en parall\`ele.}
-\label{sumElementsCollectionWithReducerParallel}
-\end{Listing}
+
+
 
 
 Le troisi\`eme param\`etre de l'op\'erateur \TT{Reducer}, la fonction \TT{combiner}, est utilis\'ee lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer} en parall\`ele. Dans ce cas, la valeur initiale \TT3 et les fonctions \TT{combiner} et \TT{accumulator} sont indiqu\'ees comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
@@ -778,8 +777,12 @@ Utiliser des flux dans \PpFf{} implique de d\'efinir et combiner trois \'el\'eme
 \end{itemize}
 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}
+\begin{lstlisting}[
+label={wordcount.c++},
+language=c++,
+caption={Le code source d'une application pour compter le nombre d'occurrences de mots dans un texte.},
+frame=single,
+float]
 typedef std::vector<std::string> Words;
 
 bool notEmpty(std::string* s) { return s->size() > 0; }
@@ -802,9 +805,8 @@ int main(int argc, char* argv[]) {
         .reduceByKey<std::string, std::string, int>(sumOccurrences);
 }
 \end{lstlisting}
-\caption{Le code source d'une application pour compter le nombre d'occurrences de mots dans un texte.}
-\label{wordcount.c++}
-\end{Listing}
+
+
 
 
 Pour illustrer un flux dans \PpFf, le listing~\ref{wordcount.c++} montre le code source d'une petite application pour compter le nombre d'occurrences des mots dans un fichier texte. Une telle application est compos\'ee de plusieurs \'etapes. 
@@ -850,8 +852,12 @@ Un programme \PpFf{} est un ensemble d'objets de type \TT{Operator} compos\'es d
 Un flux est ex\'ecut\'e en parall\`ele lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la chaine d'op\'erations. Le param\`etre optionnel de cette m\'ethode d\'efinit le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Par exemple, un appel tel que \TT{parallel(4)} dans le programme du d\'ecompte du nombre de mots du listing~\ref{wordcount.c++} indique qu'il faut ex\'ecuter en parall\`ele toutes les op\'erations suivant cette m\'ethode;  le nombre de travailleurs utilis\'es dans ce cas est quatre. Si ce param\`etre n'est pas fourni,  un seul travailleur est utilis\'e par d\'efaut. 
 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}
+\begin{lstlisting}[
+label={wordcountParallel.c++},
+language=c++,
+caption={Un autre pipeline pour compter les mots, mais un nombre de travailleurs qui varie selon les \'etapes du pipeline.},
+frame=single,
+float]
 std::unordered_map<std::string, int> currentResult = 
 	Pipe()
 	.linesFromFile(path) 
@@ -862,9 +868,8 @@ std::unordered_map<std::string, int> currentResult =
 	.parallel(2)
 	.reduceByKey<std::string, std::string, int>(reducer);
 \end{lstlisting}
-\caption{Un autre pipeline pour compter les mots, mais un nombre de travailleurs qui varie selon les \'etapes du pipeline.}
-\label{wordcountParallel.c++}
-\end{Listing}
+
+
 
 
 \PpFf{} est assez flexible en permettant l'ex\'ecution des op\'erations en parall\`ele avec un nombre diff\'erent de travailleurs. Par exemple, dans le listing~\ref{wordcountParallel.c++}, l’opération \TT{flatMap} du programme de d\'ecompte du nombre de mots est exécutée avec un seul travailleur, les opérations \TT{map} et \TT{find} sont exécutées avec quatre travailleurs et la dernière opération, \TT{reduceByKey}, avec deux travailleurs. 
@@ -903,8 +908,12 @@ illustre concr\`etement avec un exemple.}
 Les signatures pour les deux m\'ethodes sont donn\'ees dans le tableau~\ref{methodes_api.tab}. Tandis que la premi\`ere m\'ethode, \TT{linesFromFile}, consomme les donn\'ees \`a partir d'un fichier, la deuxi\`eme m\'ethode, \TT{source}, consomme les donn\'ees \`a partir d'un conteneur STL.
 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}     
+\begin{lstlisting}[
+label={mapExample.c++},
+language=c++,
+caption={Transformation d'une collection d'entiers en un autre collection d'entiers en appliquant une lambda-expression sur chacun des \'el\'ements.},
+frame=single,
+float]
 std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
 std::vector<int> currentResult =
@@ -913,9 +922,8 @@ std::vector<int> currentResult =
     .map<int, int>( [](int *in){ *in *= 3; return in; } )
     .collect<int, std::vector>();            
 \end{lstlisting}
-\caption{Transformation d'une collection d'entiers en un autre collection d'entiers en appliquant une lambda-expression sur chacun des \'el\'ements.}
-\label{mapExample.c++}
-\end{Listing}
+
+
 
 
 Les deux m\'ethodes d'entr\'ee dans le flux sont illustr\'ees dans les exemples du listing~\ref{wordcount.c++} et respectivement~\ref{mapExample.c++}. La m\'ethode, \TT{linesFromFile} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier \TT{Words.txt}. Le param\`etre \TT{path} sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple fourni dans le listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} en fournissant les it\'erateure de d\'ebut et fin du \TT{vector elems}.
@@ -929,8 +937,12 @@ Les deux m\'ethodes d'entr\'ee dans le flux sont illustr\'ees dans les exemples 
 % \url{https://fr.wiktionary.org/wiki/nous_de_modestie}}
 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}
+\begin{lstlisting}[
+label={mapExample2.c++},
+language=c++,
+caption={S\'election des noms de tous les employ\'es d'une collection.},
+frame=single,
+float]
 std::vector<std::string> result =
     Pipe()
     .source<Employee>(elems.begin(), elems.end())
@@ -938,9 +950,8 @@ std::vector<std::string> result =
                                    { return &(e->getName()); } )
     .collect<std::string, std::vector>();
 \end{lstlisting}
-\caption{S\'election des noms de tous les employ\'es d'une collection.}
-\label{mapExample2.c++}
-\end{Listing}
+
+
 
 
 La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en un autre collection d'objets en appliquant une fonction --- typiquement une lambda-expression --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, la lambda-expression pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement du conteneur \TT{elems}. Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des employ\'es d'une collection. 
@@ -985,8 +996,13 @@ L'exemple fourni dans le listing~\ref{mapExample2.c++} montre l'utilisation de l
 Une r\'eduction
 consiste \`a combiner les \'el\'ements d'un flux en un seul r\'esultat. La m\'ethode \TT{max} d\'ecrite dans le tableau~\ref{methodes_api.tab} est l'une des m\'ethodes offertes par l'{API} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}[gobble=4]
+\begin{lstlisting}[
+label={olderEmployeeExample.c++},
+gobble=4,
+language=c++,
+caption={Un pipeline pour identifier l'employ\'e le plus ag\'e.},
+frame=single,
+float]
     Employee currentResult = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
@@ -994,9 +1010,8 @@ consiste \`a combiner les \'el\'ements d'un flux en un seul r\'esultat. La m\'et
         .max<Employee>( [](Employee *older, Employee *e) 
                           { if (e->age > older->age) *older = *e; } );
 \end{lstlisting}
-\caption{Un pipeline pour identifier l'employ\'e le plus ag\'e.}
-\label{olderEmployeeExample.c++}
-\end{Listing}
+
+
 
 Le listing~\ref{olderEmployeeExample.c++} montre un exemple o\`u les \'el\'ements de type \TT{Employee} d'un flux sont compar\'es afin de trouver l'employ\'e le plus \^ag\'e.
 
@@ -1004,8 +1019,14 @@ Le listing~\ref{olderEmployeeExample.c++} montre un exemple o\`u les \'el\'ement
 L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \`a une seule valeur. Les plus utilis\'ees sont \TT{count}, \TT{min} et \TT{sum}. D\'ecrites dans le tableau~\ref{methodes_api.tab}, ces m\'ethodes sont des m\'ethodes sp\'ecifiques. Autrement dit, en utilisant la m\'ethode \TT{max}, on peut seulement trouver l'\'el\'ement maximum du flux. Une autre m\'ethode plus g\'en\'erale fournie par l'{API} est \TT{reduce}. D\'ecrite dans le m\^eme tableau~\ref{methodes_api.tab}, la m\'ehode \TT{reduce} r\'eduit les \'el\'ements du flux en utilisant un \TT{Reducer} (cf.~Section~\ref{reducer.sect}, p.~\pageref{reducer.sect}). 
 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}[gobble=4,escapechar=\%]
+\begin{lstlisting}[
+label={olderEmployeeWithReduceExample.c++},
+language=c++,
+caption={Un autre pipeline pour identifier l'employ\'e le plus ag\'e, mais avec un \TT{Reducer}.},
+frame=single,
+gobble=4,
+escapechar=\%,
+float]
     Reducer<Employee, Employee> 
            reducer( [](Employee e1, Employee e2) 
                       { return e1.age > e2.age %?% e1 : e2; } );
@@ -1014,11 +1035,9 @@ L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .reduce<Employee, Employee>(reducer);
-
 \end{lstlisting}
-\caption{Un autre pipeline pour identifier l'employ\'e le plus ag\'e, mais avec un \TT{Reducer}.}
-\label{olderEmployeeWithReduceExample.c++}
-\end{Listing}
+
+
 
 
 Le listing~\ref{olderEmployeeWithReduceExample.c++} montre l'exemple du listing~\ref{olderEmployeeExample.c++} r\'e\'ecrit avec la m\'ethode \TT{reduce} et un \TT{Reducer}.
@@ -1034,8 +1053,12 @@ exemple, tu dois aussi avoir un appel \`a \TT{parallel(4)}!}
 Souvent, une op\'eration sur une collection de donn\'ees consiste \`a regrouper ses \'el\'ements dans un ensemble en fonction d'une ou plusieurs propri\'et\'es. Notre {API} fournit une fonctionnalit\'e similaire via la m\'ethode \TT{groupByKey}, d\'efinie dans le tableau~\ref{methodes_api.tab}. 
 
 
-\begin{Listing}[tbp]
-\begin{lstlisting}
+\begin{lstlisting}[
+label={groupByKeyExample.c++},
+language=c++,
+caption={Un pipeline pour regrouper les employ\'es selon leur \^age.},
+frame=single,
+float]
 typedef std::vector<Employee> EMPLOYES;
 typedef std::unordered_map<int, EMPLOYES> EMPLOYES_PAR_AGE;
 
@@ -1045,11 +1068,9 @@ EMPLOYES_PAR_AGE result =
    .groupByKey<Employee, int, Employee>( 
       [](Employee* e) { return &(e->age); }
     );
-
 \end{lstlisting}
-\caption{Un pipeline pour regrouper les employ\'es selon leur \^age.}
-\label{groupByKeyExample.c++}
-\end{Listing}
+
+
 
 
 Le listing~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es sont regroup\'es selon leur \^age.
