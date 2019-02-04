@@ -22,14 +22,14 @@ simplement la police de caract\`eres qui \'etait incorrecte!}
 \end{figure}
 
 
-\GT{Pour ce premier diagramme de classes: il ne faudrait mettre que
+\gt{Pour ce premier diagramme de classes: il ne faudrait mettre que
 les classes qui sont visibles aux utilisateurs, donc les <<concepts>>
 qui sont utiles pour utiliser l'API et \^etre capable de s'en
 servir. Les autres classes de plus bas niveau (en lien avec FastFlow
 par exemple), pourront \^etre pr\'esent\'ees dans le prochain
 chapitre.}
 
-\IC{J'ai mis dans le diagramme seulement les classes qui sont visibles aux utilisateurs.}
+\ic{J'ai mis dans le diagramme seulement les classes qui sont visibles aux utilisateurs.}
 
 Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble de l'architecture de \ppff. L'API est compos\'ee de quatre \'el\'ements principaux: l'Interface avec laquelle le d\'eveloppeur interagit, les \TT{Pipeline}s --- qui sont le coeur de l'API ---, les \TT{Stage}s et les \TT{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les principales m\'ethodes de l'interface.
 
@@ -604,21 +604,45 @@ associ\'ees directement \`a lstlisting. Pour rappel, voir le chapitre
 pr\'ec\'edent ainsi que l'exemple de Reducer un peu plus bas.}
 
 
+\IC{J'ai v\'erifi\'e le terme listing dans tout le document. Vous les avez remplac\'es par tout. }
+
+
+\begin{lstlisting}[
+label={reducer.c++},
+language=c++,
+caption={La signature d'un objet \TT{Reducer}.},
+frame=single,
+float]
+ template< typename In, typename Out >
+ class Reducer{
+       Reducer(Out init, 
+               Func<Out(Out, In)> const& accumulator,
+               Func<Out(Out, Out)> const& combiner)
+
+       Reducer(Func<Out(Out, In)> const& accumulator,
+               Func<Out(Out, Out)> const& combiner)
+
+       Reducer(Out init, 
+               Func<Out(Out, In)> const& accumulator)
+ }
+\end{lstlisting}
+
+
 \begin{lstlisting}[
 label={expressivite_api.c++},
 language=c++,
 caption={Un exemple illustrant les principaux \'el\'ements de l'API de \ppff.},
 frame=single,
 float]
-// Definition (omise) d'un vecteur d'objets Employe.
-std::vector<Employe> sourceEmployes;
+// Definition (omise) d'un vecteur d'objets Employee.
+std::vector<Employee> sourceEmployees;
 ...
 
-std::vector<Employe> result = 
+std::vector<Employee> result = 
    Pipe()
-   .source<Employe>(sourceEmployes.begin(), sourceEmployes.end())
-   .find<Employe>([](Employe *e) { return e->salary > 35000; })
-   .collect<Employe, std::vector>();
+   .source<Employee>(sourceEmployees.begin(), sourceEmployees.end())
+   .find<Employee>([](Employee *e) { return e->salary > 35000; })
+   .collect<Employee, std::vector>();
 \end{lstlisting}
 
 
@@ -741,13 +765,26 @@ Le troisi\`eme param\`etre de l'op\'erateur \TT{Reducer}, la fonction \TT{combin
 
 \GT{R\'esultat incorrect indiqu\'e je crois: 4953 => 5053!?}
 
+\IC{J’ai pris l’exemple des tests unitaires. La formule de calcul pour le résultat attendu est~:  expectedResult = n * (n - 1) / 2;}
+
 \section{Pipeline}
 
 
 \GT{Ci-bas: de quelle figure s'agit-il? Ref\'erence pas indiqu\'ee!
 Figure \`a venir?}
 
-Le \TT{Pipeline} est le composant principal de notre {API}. Un \TT{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \TT{Operator}s regroup\'es dans des \TT{Stages}. La figure~\ref{Quelle figure?} montre une vue d\'etaill\'ee d'un \TT{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \TT{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
+\IC{J'ai oubli\'e de la figure. Je viens de l'ajouter.}
+
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/Pipeline.jpg}
+      \caption{Pipeline.}
+       \label{Pipeline.fig}
+\end{figure}
+
+
+Le \TT{Pipeline} est le composant principal de notre {API}. Un \TT{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \TT{Operator}s regroup\'es dans des \TT{Stages}. La figure~\ref{Pipeline.fig} montre une vue d\'etaill\'ee d'un \TT{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \TT{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
 
 
 \[
@@ -757,8 +794,8 @@ Le \TT{Pipeline} est le composant principal de notre {API}. Un \TT{Pipeline} est
 
 Dans l'expression ci-dessus, $O_k$ d\'enote le $k^e$ op\'erateur dans le pipeline~\TT{P}.
 
-L'utilisation de \TT{Pipeline} introduit une couche d'abstraction sur une cha\^{\i}ne complexe d'op\'erateurs. De plus, un \TT{Pipeline} n'expose à l'ext\'erieur que ses entr\'ees et ses sorties. Une telle conception modulaire permet une flexibilit\'e au syst\`eme tout en simplifiant la mise en œuvre. Par exemple, le parall\'elisme de flux%
-\GT{Je crois que tu veux dire <<parall\'elisme de donn\'ees>> ici, non?}
+L'utilisation de \TT{Pipeline} introduit une couche d'abstraction sur une cha\^{\i}ne complexe d'op\'erateurs. De plus, un \TT{Pipeline} n'expose à l'ext\'erieur que ses entr\'ees et ses sorties. Une telle conception modulaire permet une flexibilit\'e au syst\`eme tout en simplifiant la mise en œuvre. Par exemple, le parall\'elisme de donn\'ees%
+\GT{Je crois que tu veux dire <<parall\'elisme de donn\'ees>> ici, non?}. \IC{Oui. Il s’agit du parall\'elisme de donn\'ees.}
 %
  pourrait \^etre facilement r\'ealis\'e en ayant plusieurs \TT{Pipeline}s identiques connect\'es \`a la m\^eme entr\'ee et sortie respectivement.
 
@@ -1034,6 +1071,7 @@ float]
     Employee currentResult =
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
+        .parallel(4)
         .reduce<Employee, Employee>(reducer);
 \end{lstlisting}
 
@@ -1045,6 +1083,9 @@ Le listing~\ref{olderEmployeeWithReduceExample.c++} montre l'exemple du listing~
 \GT{Oops! Pas tout \`a fait. Dans le premier exemple, tu as un appel
 \`a \TT{parallel(4)}. Donc, si tu dis que tu r\'e\'ecrit le m\^eme
 exemple, tu dois aussi avoir un appel \`a \TT{parallel(4)}!}
+
+
+\IC{C'est vrai. L'exemple ant\'erieur est de type parall\`ele.}
 
 
 
