@@ -825,21 +825,21 @@ typedef std::vector<std::string> Words;
 bool notEmpty(std::string* s) { return s->size() > 0; }
 
 int main(int argc, char* argv[]) {
-    Reducer<std::string, int> sumOccurrences(
-        0, 
-    	[](int count, std::string _) { return count + 1; },
-        std::plus<int>{} );
+  Reducer<std::string, int> sumOccurrences(
+    0, 
+    [](int count, std::string _) { return count + 1; },
+    std::plus<int>{} );
 
-   	std::string path = "/home/Words.txt"; 
+  std::string path = "/home/Words.txt"; 
 
-	std::unordered_map<std::string, int> currentResult = 
-		Pipe()
-        .linesFromFile(path) 
-        .parallel(4)
-        .flatMap<std::string, std::string, Words>(splitInWords)
-        .map<std::string, std::string>(toLowercaseLetters)
-        .find<std::string>(notEmpty)
-        .reduceByKey<std::string, std::string, int>(sumOccurrences);
+  std::unordered_map<std::string, int> currentResult = 
+	Pipe()
+    .linesFromFile(path) 
+    .parallel(4)
+    .flatMap<std::string, std::string, Words>(splitInWords)
+    .map<std::string, std::string>(toLowercaseLetters)
+    .find<std::string>(notEmpty)
+    .reduceByKey<std::string, std::string, int>(sumOccurrences);
 }
 \end{lstlisting}
 
@@ -1103,12 +1103,36 @@ float]
 typedef std::vector<Employee> EMPLOYES;
 typedef std::unordered_map<int, EMPLOYES> EMPLOYES_PAR_AGE;
 
+// Definition ( omise ) d'un vecteur d'objets Employee .
+employees[0].age = employees[1].age = employees[2].age = 22;
+employees[3].age = employees[4].age = 18;
+employees[5].age = employees[6].age = employees[9].age = 55;
+employees[7].age = employees[8].age = 33;
+
+EMPLOYES_PAR_AGE exp_result = {
+   {18, {employees[3], employees[4]}},
+   {22, {employees[0], employees[1], employees[2]}},
+   {33, {employees[7], employees[8]}},
+   {55, {employees[5], employees[6], employees[9]}}
+};
+
 EMPLOYES_PAR_AGE result = 
    Pipe()
    .source<Employee>(employees.begin(), employees.end())
    .groupByKey<Employee, int, Employee>( 
       [](Employee* e) { return &(e->age); }
     );
+    
+REQUIRE(result.size() == exp_result.size());
+for (auto it=exp_result.begin(); it!=exp_result.end(); it++) {
+ VALUE result_v = result[it->first];
+ VALUE exp_result_v = it->second;
+
+ REQUIRE(result_v.size()==exp_result_v.size());
+ for (unsigned int i=0; i<exp_result_v.size(); i++) {
+  REQUIRE(result_v[i].name==exp_result_v[i].name);
+ }
+}    
 \end{lstlisting}
 
 
@@ -1125,13 +1149,16 @@ voit la sp\'ecification de l'expression lambda pour obtenir l'age, et
 le type \TT{EMPLOYES\_PAR\_AGE}, mais on ne voit pas comment les
 \'el\'ements du flux sont ensuite effectivement regroup\'es.}
 
+\IC{J'ai compl\'et\'e l'exemple avec des tests unitaires. }
+
 
 
 \subsubsection{Regroupement des \'el\'ements selon une cl\'e et r\'eduction selon une valeur}
 
-Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une op\'eration similaire dans un style plus fonctionnel. La m\'ethode \TT{reduceByKey}, d\'ecrite dans le tableau~\ref{methodes_api.tab}, combine les fonctionnalit\'es de regroupement et de r\'eduction en une seule op\'eration. 
+Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une op\'eration similaire dans un style plus fonctionnel. La m\'ethode \TT{reduceByKey}, d\'ecrite dans le tableau~\ref{methodes_api.tab}, combine les fonctionnalit\'es de regroupement et de r\'eduction en une seule op\'eration. Le programme de d\'ecompte des mots du listing~\ref{wordcount.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Chaque \'el\'ement du flux, qui est un mot contenu dans le fichier, est regroup\'e par son nom et son occurrence est incr\'ement\'ee avec une unit\'e.
 
-Le programme de d\'ecompte des mots du listing~\ref{wordcount.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Les \'el\'ements du flux, qui sont les mots contenus dans un fichier, sont regroup\'es par mot, puis une op\'eration de r\'eduction est appliqu\'ee \`a l'ensemble de mots au pr\'ealable group\'e. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est repr\'esent\'ee par l'argument de la m\'ethode. Dans ce cas particulier, elle a pour r\^ole de compter le nombre d'occurrences de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un \TT{map} de type cl\'e--valeur~: la cl\'e repr\'esente un mot du fichier et la valeur associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier.
+En arri\`ere l'opérateur \TT{ReduceByKeyOperator} associ\'e \`a cette m\'ethode garde les \'el\'ements dans un conteneur de type cl\'e-valeur. La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si n'existe aucune cl\'e, un nouvel \'el\'ement de type cl\'e-valeur est ajout\'e. Dans le cas o\`u la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et la valeur recherch\'ee dans le conteneur par la cl\'e en cause. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est repr\'esent\'ee par l'argument de la m\'ethode. Dans le cas particulier du programme de d\'ecompte des mots du listing~\ref{wordcount.c++}, elle a pour r\^ole de compter le nombre d'occurrences de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un \TT{map} de type cl\'e--valeur~: la cl\'e repr\'esente un mot du fichier et la valeur associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier.
+
 
 \GT{Je vais relire ce dernier paragraphe plus tard. Pas certain que ce
 soit suffisant comme explication.  Et, surtout, pas certain que,
@@ -1141,3 +1168,6 @@ r\'eduction. Parce que la m\'ethode de r\'eduction re\c{c}oit un
 qu'on peut exprimer \TT{reduceByKey} comme une combinaison de
 \TT{groupByKey} suivi d'un \TT{reduce}? J'ai un vague souvenir d'avoir
 formalis\'e quelque chose dans ce style il y a plusieurs mois!?}
+
+\IC{On ne peut pas exprimer reduceByKey comme une combinaison de groupByKey suivi d'un reduce. La r\'eduction est faite \`a l'aide d'op\'erateur Reducer. Cet op\'erateur re\c{c}oit en argument une valeur d'initialisation, une fonction d'accumulation et une fonction de combinaison. La fonction de r\'eduction a pour r\^ole de r\'eduire les \'el\'ements du flux \`a une seule valeur. La fonction de combinaison est utilisée seulement dans le parallélisme de données.  Elle a pour rôle de combiner les valeurs r\'esultantes en appliquant la fonction d'accumulation. J'ai essay\'e d'ajouter plus d'explications.
+}
