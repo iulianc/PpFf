@@ -25,12 +25,8 @@ exemples ci-haut et ci-bas.}
 
 La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Il y a quelques ann\'ees, la principale fa\c{c}on d'ex\'ecuter un programme plus rapidement \'etait d'augmenter la vitesse d'horloge du processeur. De nos jours, la vitesse d'horloge a atteint ses limites et la performance d'un programme ne peut souvent \^etre am\'elior\'ee que si on l'ex\'ecute en parall\`ele. 
 
-Le paradigme de programmation parall\`ele par flux de donn\'ees offre une approche prometteuse pour la programmation de syst\`emes multicœurs. Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, tels que le traitement d'images, sur le r\'eseau, pour la Bourse, le trafic routier, etc.
+Le paradigme de programmation parall\`ele par flux de donn\'ees offre une approche prometteuse pour la programmation de syst\`emes multicœurs. Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
 
-
-\GT{Ci-haut: je ne comprends pas ce que tu veux dire par <<autres domaines de \textbf{traitement des m\'edias}>>!?}
-
-\IC{J'ai reformul\'e la phrase}.
 
 
 Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de deux syst\`emes de traitement de flux de donn\'ees~: les \TT{Stream} de Java~8 et \TT{FastFlow}.  Ce sont deux parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, pr\'esent\'e aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
@@ -44,7 +40,7 @@ La version 8 de Java, qui a introduit les \TT{Stream}s, a chang\'e la façon don
 \subsection{Expressions lambda}
 
 
-\GT{Bon, apr\`es avoir jet\'e un coup d'oeil \`a la documentation de
+\gt{Bon, apr\`es avoir jet\'e un coup d'oeil \`a la documentation de
 lstlisting et \`a des m\'emoires et th\`eses r\'ecentes, je constate
 qu'il est pr\'ef\'erable {\bf de ne pas utiliser la macro Listing},
 mais d'utiliser plut\^ot les divers arguments de l'environnement
@@ -53,13 +49,6 @@ diff\'erents listings et, surtout, une num\'erotation correcte (et
 uniforme), dans le vrai style requis~: listing 1.1, 1.2, etc. pour le
 chapitre 1; listing 2.2, 2.2, etc pour la chapitre 2 --- donc comme
 pour les figures.}
-
-\GT{J'ai fait le m\^eme genre de modifications dans le fichier
-description.tex --- je l'ai fait facilement en d\'efinissant une macro
-emacs, ce qui m'a pris 2--3 minutes, alors que si tu l'avais fait
-<<\`a la main>>, cela t'aurait pris beaucoup de temps!!}
-
-\IC{Oui je l'ai fait \`a la main}.
 
 
 \begin{lstlisting}[
@@ -107,7 +96,7 @@ float]
 \end{lstlisting}
 
 
-\GT{Citation trop r\'ecente pour Haskell, qui ne montre pas que c'est quand m\^eme un ancien langage. Je l'ai remplac\'e. Idem pour Lisp.}
+\gt{Citation trop r\'ecente pour Haskell, qui ne montre pas que c'est quand m\^eme un ancien langage. Je l'ai remplac\'e. Idem pour Lisp.}
 
 Le concept d'expression lambda n'est pas nouveau. Il est utilis\'e depuis longtemps dans les langages de programmation fonctionnelle tels que \TT{Lisp}~\citep{Steele84} ou \TT{Haskell}~\citep{HudakWad90,hutton2016programming}.
 %
@@ -125,27 +114,27 @@ Dans une expression lambda, lors de la compilation, les types des arguments peuv
 label={comparisonInternVsExtern},
 language=java,
 gobble=4,
-caption={[Comparaison entre une it\'eration externe et interne.]Comparaison entre une it\'eration externe et interne~: Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit la boucle pour traverser les \'el\'ements de la collection.  La fonction appliqu\'ee \`a chaque \'el\'ement convertit la cha\^ine en lettres majuscules. La m\^eme fonction est appliqu\'ee dans le cas de l'it\'eration interne. Cette fois, le syst\`eme contr\^ole le processus d'it\'eration.
-\GT{Il faudrait donner quelques explications additionnelles, pour souligner l'aspect imp\'eratif (externe) vs. fonctionnel (interne). Et aussi dire bri\`evement ce que cela fait!} \IC{J\'ai ajout\'e plus des explications.}},
+caption={[Comparaison entre une it\'eration externe et interne.]Comparaison entre une it\'eration externe et interne~: dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<J>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{stream} qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
 frame=single,
 float]
     List<String> myList =
             Arrays.asList("Tom", "John", "Harry", "Jonathan");
 
     // Iteration externe avec ajout explicite (style imperatif).
-    List<String> myExternList = new ArrayList<String>();
-    for(String s : myList){
-        if (s.startsWith("J"))
-           myExternList.add(s.toUpperCase());
+    List<String> resultExtern = new ArrayList<String>();
+    for (String s: myList){
+        if (s.startsWith("J")) // Selection
+           // Transformation et ajout dans le resultat.
+           resultExtern.add(s.toUpperCase()); 
     }
         
     // Iteration interne avec pipeline d'operations (style fonctionnel).
-    List<String> myInternList = 
-                myList
-                .stream()
-                .filter(s -> s.startsWith("J"))
-                .map(String::toUpperCase)
-                .collect(Collectors.toList()); 
+    List<String> resultIntern = 
+        myList
+        .stream()
+        .filter(s -> s.startsWith("J")) // Selection.
+        .map(String::toUpperCase)       // Transformation.
+        .collect(Collectors.toList());  // Collecte du resultat.
 \end{lstlisting}
 
 
@@ -153,20 +142,16 @@ Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'e
 
 L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux compilateurs, notamment l'optimisation de l'exécution et les m\'ecanismes de nettoyage n\'ecessaires en arri\`ere-plan. Un autre avantage des it\'erations internes est l'efficacit\'e~: le traitement de donn\'ees peut \^etre plus efficace car il peut \^etre r\'eparti en parall\`ele parmi les cœurs de la machine.
 
-\GT{Dire quelques mots en plus sur l'ex\'ecution parall\`ele, comment \c{c} s'applique dans l'exemple notamment.}
 
-\IC{Ci-dessous j'ai ajout\'e plus des explications.}
-
-
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ComparisonSequentialVsParallel.jpg}
-      \caption[La comparaison entre le traitement s\'equentiel et parall\`ele.]{La comparaison entre le traitement s\'equentiel et parall\`ele. Les six \'el\'ements du flux E1 \ldots E6 sont partitionn\'es en quatre sous-flux. Chaque sous-flux est trait\'e avec l'un de quatre cœurs disponibles. Les r\'esultats sont combin\'es apr\`es le traitement.}
+      \caption[La comparaison entre le traitement s\'equentiel et parall\`ele.]{La comparaison entre le traitement s\'equentiel et parall\`ele. Les six \'el\'ements du flux, E1 \ldots E6, sont r\'epartis en quatre sous-flux. Chaque sous-flux est trait\'e avec l'un de quatre cœurs disponibles. Les r\'esultats sont combin\'es apr\`es le traitement.}
        \label{ComparisonSequentialVsParallel.fig}
 \end{figure}
 
 
-Lorsqu'un flux s'ex\'ecute en parall\`ele, Java partitionne le flux en plusieurs sous-flux. Les op\'erations parcourent et traitent ces sous-flux en parall\`ele, puis combinent les r\'esultats. La figure~\ref{ComparisonSequentialVsParallel.fig} montre la comparaison entre le traitement s\'equentiel et parall\`ele. Les \'el\'ements du flux sont partitionn\'es en sous-flux et chaque sous-flux r\'esultant est trait\'e avec l'un de quatre cœurs disponibles.  
+Lorsqu'un flux s'ex\'ecute en parall\`ele, Java partitionne le flux en plusieurs sous-flux. Les op\'erations parcourent et traitent ces sous-flux en parall\`ele, puis combinent les r\'esultats. La figure~\ref{ComparisonSequentialVsParallel.fig} montre la comparaison entre  un traitement s\'equentiel et un traitement parall\`ele, dans cet exemple avec quatre c\oe{}urs. Les \'el\'ements du flux sont partitionn\'es en sous-flux et chaque sous-flux r\'esultant est trait\'e avec l'un de quatre cœurs disponibles.  
 
 
 
@@ -203,22 +188,25 @@ Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \TT{
 
 
 \begin{lstlisting}[
+basicstyle=\footnotesize\tt,
 label={wordCountJava},
 language=java,
-gobble=2,
 caption={Le code source Java~8 d'une application de d\'ecompte du nombre d'occurrences des mots.},
 frame=single,
+escapechar=\#,
 float]
-  public static void main(String[] args) throws IOException {
-  
-  String text = "Lorem ipsum dolor sit amet, consectetur \n"+
-  " adipiscing elit. Lorem ipsum dolor sit amet, consectetur \n"+
-  " adipiscing elit. Lorem ipsum dolor sit amet.";
+public static void main(String[] args) throws IOException {
+  String text = 
+    "Lorem ipsum dolor sit amet, consectetur \n" +
+    " adipiscing elit. Lorem ipsum dolor sit amet, consectetur \n" +
+    " adipiscing elit. Lorem ipsum dolor sit amet.";
   
   ArrayList<String> lines = 
 	new ArrayList<String>(Arrays.asList(text.split("\\n")));
 	
-  List<Map.Entry<String,Integer>> wordsCount = lines.stream()
+  List<Map.Entry<String,Integer>> wordsCount = 
+    lines
+    .stream()
     .parallel()
     .flatMap(line->Arrays.stream(line.trim().split(" ")))
     .map(word->word.replaceAll("[^a-zA-Z]", "").toLowerCase())
@@ -230,19 +218,20 @@ float]
     .collect(Collectors.toList());   	
   
   wordsCount.forEach( x -> 
-    System.out.println("\""+ x.getKey()+"\" => "+x.getValue()));
-  }
+    System.out.println("'" + x.getKey() + 
+                             "' => " + x.getValue()) );
+}
+#\hrule#
 
-  Result:
-  "dolor" => 3
-  "lorem" => 3
-  "amet" => 3
-  "adipiscing" => 2
-  "ipsum" => 3
-  "elit" => 2
-  "consectetur" => 2
-  "sit" => 3
-
+#\underline{R\'esultat de l'ex\'ecution:}#
+  'dolor' => 3
+  'lorem' => 3
+  'amet' => 3
+  'adipiscing' => 2
+  'ipsum' => 3
+  'elit' => 2
+  'consectetur' => 2
+  'sit' => 3
 \end{lstlisting}
 
 
@@ -272,15 +261,6 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 	
 	
 \end{itemize}
-
-\GT{Je crois qu'il serait bien, pour rendre cela plus concret, de
-montrer un petit exemple d'ex\'ecution, en donnant le contenu (lignes)
-d'un fichier et en montrant ensuite la collection r\'esultante obtenue
-par le \TT{collect} --- peut-\^etre en ajoutant une it\'eration
-(externe) explicite avec des appels \`a \TT{System.out.println}.}
-
-\IC{J'ai ajout\'e un petit exemple d'ex\'ecution.}
-
 
 
 \section{FastFlow}
@@ -361,8 +341,6 @@ courte entre crochets~: c'est alors cette derni\`ere qui apparait dans
 la table des mati\`eres, plut\^ot que le long (long) texte. (Et voir
 aussi ci-haut comment on peut faire de m\^eme pour un lstlisting: avec
 crochets aussi mais un peu diff\'erent.)}
-
-\IC{C'est un bon truc.}
 
      \includegraphics[width=1.0\textwidth]{Figures/FastFlowFarm.jpg}
       \caption[Les trois parties d'un \emph{farm} de \TT{FastFlow}.]{Un \emph{farm} de \TT{FastFlow} est compos\'e de trois parties~:  l'\TT{Emitter (E)}, le \emph{pool} de \TT{workers} (W1\ldots\ Wn) et le \TT{Collector (C)}. Les canaux de communication sont impl\'ement\'es en assemblant des files de types \emph{Simple Producer/Simple Consumer (SPSC)} --- figure tir\'ee de~\citep{aldinucci2010efficient}.}
@@ -463,7 +441,7 @@ numbers=left
 
 Cette section pr\'esente un exemple d'un programme r\'ealis\'e en \TT{FastFlow}. Illustr\'e dans le listing~\ref{wordcountFastFlow}, ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. 
 
-Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \TT{n} diff\'erents \TT{stages}; ensuite leurs r\'ef\'erences sont transmises dans le bon ordre au {pipeline}. Dans l'exemple du listing~\ref{wordcountFastFlow}, les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots --- les lignes de 64 \`a 67.  \GT{Indique quelles lignes, sinon on ne sait pas trop \`a quoi tu r\'ef\`eres}. \IC{J'ai indiq\'e les lignes}. Les quatre op\'erations r\'ealisent les fonctions suivantes :
+Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \TT{n} diff\'erents \TT{stages}; ensuite leurs r\'ef\'erences sont transmises dans le bon ordre au {pipeline}. Dans l'exemple du listing~\ref{wordcountFastFlow}, les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots --- les lignes de 64 \`a 67.  Les quatre op\'erations r\'ealisent les fonctions suivantes :
 
 \begin{itemize}
     \item La premi\`ere op\'eration, \TT{linesFromFile}, renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est identifi\'e par le param\`etre \TT{inputFile} fourni en argument.

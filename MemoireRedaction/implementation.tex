@@ -85,7 +85,7 @@ Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee
 \begin{samepage}
 L'impl\'ementation parall\`ele de ce mod\`ele peut \^etre formellement
 exprim\'ee sous la forme d'un ensemble de travailleurs $W_1, W_2,\ldots, W_n$ qui
-applique l'op\'erateur $O$ sur les \'el\'ements $X$ apparaissant dans
+appliquent l'op\'erateur $O$ sur les \'el\'ements $X$ apparaissant dans
 le flux d'entr\'ee~:
 %
 \[
@@ -100,23 +100,15 @@ le flux d'entr\'ee~:
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/DataParallelisme.jpg}
-      \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. Le m\^eme op\'eration $O$ est ex\'ecut\'e par les travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). L'op\'eration est group\'ee logiquement dans le stage $S_1$}
+      \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. LLa m\^eme op\'eration $O$ est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Le traitement associ\'e est repr\'esent\'e logiquement par le stage $S_1$. Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur ($E$\emph{mitter}). Les divers r\'esultats sont ensuite combin\'es par le collecteur $C$.}
        \label{DataParallelisme.fig}
 \end{figure}
 
 
-Le r\'esultat $Y_i$ est g\'en\'er\'e en appliquant l'op\'erateur $O$ sur l'\'el\'ement $X_i$. La figure~\ref{DataParallelisme.fig} montre la repr\'esentation graphique du parall\'elisme de donn\'ees. Le m\^eme op\'erateur est ex\'ecut\'e par les travailleurs $W_1, W_2,\ldots, W_n$. L'op\'eration est group\'ee logiquement dans le stage $S_1$. La structure du mod\`ele d'ex\'ecution peut \'eventuellement recevoir, en param\`etre, le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Si ce param\`etre n'est pas sp\'ecifi\'e, un seul travailleur est activ\'e. Cette solution de permettre d'augmenter le nombre de travailleurs permet d'augmenter le d\'ebit du traitement des donn\'ees, c'est-\`a-dire le nombre de donn\'ees qui peuvent \^etre trait\'ees en un temps donn\'e.
+Le r\'esultat $Y_i$ est g\'en\'er\'e en appliquant l'op\'erateur $O$ sur l'\'el\'ement $X_i$. La figure~\ref{DataParallelisme.fig} montre une repr\'esentation graphique du parall\'elisme de donn\'ees. Le m\^eme op\'erateur est ex\'ecut\'e par les travailleurs $W_1, W_2,\ldots, W_n$. 
 
+Il est possible de sp\'ecifier, en param\`etre, le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Si ce param\`etre n'est pas sp\'ecifi\'e, un seul travailleur est activ\'e. Cette solution de permettre d'augmenter le nombre de travailleurs fait en sorte qu'on peut augmenter le d\'ebit du traitement des donn\'ees si appropri\'e, c'est-\`a-dire, augmenter le nombre de donn\'ees qui peuvent \^etre trait\'ees en un temps donn\'e.
 
-
-\GT{Ci-haut: Cela (les \'equations avec WS et O) ne me semble pas
-tr\`es clair \frownie 
-%
-On ne comprend pas trop le lien entre WS et O!  Dans le cas du
-parall\'elisme de t\^aches, c'\'etait plus clair \`a cause de la
-figure, o\`u on voyait un lien entre $W_i$ et $O_i$.}
-
-\IC{J'ai ajout\'e une image. Je ne sais pas si c'est un peu plus clair.}
 
 
 

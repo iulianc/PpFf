@@ -33,9 +33,9 @@ chapitre.}
 
 Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble de l'architecture de \ppff. L'API est compos\'ee de quatre \'el\'ements principaux: l'Interface avec laquelle le d\'eveloppeur interagit, les \TT{Pipeline}s --- qui sont le coeur de l'API ---, les \TT{Stage}s et les \TT{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les principales m\'ethodes de l'interface.
 
-% \GT{La macro \PpFf{} permet de g\'en\'erer la forme correcte, et
-% partout pareille. Une version sans majuscule, plus simple \`a
-% utiliser, produit la m\^eme chose.}
+\gt{La macro \PpFf{} permet de g\'en\'erer la forme correcte, et
+partout pareille. Une version sans majuscule, plus simple \`a
+utiliser, produit la m\^eme chose.}
 
 L'{API} de \PpFf{} est impl\'ement\'ee au-dessus de la biblioth\`eque \TT{FastFlow}, impl\'ementation qui sera d\'ecrite au prochain chapitre.
 
@@ -44,12 +44,7 @@ Le pr\'esent chapitre d\'ecrit le r\^ole de chaque composant de
 d'ensemble des classes qui composent l'{API}.
 
 
-%
-%\GT{Probablement qu'un diagramme de classe UML serait int\'eressant et
-%utile.  Il pourrait \^etre introduit ici, puis expliqu\'e dans les
-%sous-sections qui suivent.}
-%
-%\GT{Note que de fa\c{c}on g\'en\'erale, lorsqu'on d\'ebute une section
+%\gt{Note que de fa\c{c}on g\'en\'erale, lorsqu'on d\'ebute une section
 %qui contient plusieurs sous-sections, il est pr\'ef\'erable d'avoir
 %quelques lignes d'introduction, qui donnent une vue d'ensemble de ce
 %qui suit. Pas toujours, mais ici, avec le diagramme de classes, \c{c}a
@@ -62,14 +57,14 @@ d'ensemble des classes qui composent l'{API}.
 %}
 
 
-%\GT{La description est tout ce qu'un programmeur doit savoir/connaitre
+%\gt{La description est tout ce qu'un programmeur doit savoir/connaitre
 %pour \underline{utiliser} ton API --- de l'ext\'erieur, comme une
 %boite noire. L'impl\'ementation d\'ecrit les <<d\'etails>>
 %n\'ecessaires pour comprendre \underline{comment fonctionne} l'API,
 %par exemple, ce qu'un mainteneur devrait comprendre/connaitre s'il
 %voulait modifier, corriger ou \'etendre ton API.}
 %
-%\GT{En lien avec le diagramme de classes, si l'utilisateur de l'API
+%\gt{En lien avec le diagramme de classes, si l'utilisateur de l'API
 %utilise ou manipule diff\'erents concepts et classes dans son
 %programme, que ces concepts/classes sont utiles pour pouvoir utiliser
 %correctement l'API --- avec la bonne syntaxe et la bonne s\'emantique
@@ -92,21 +87,11 @@ L'interface propos\'ee en \PpFf\ consiste en un ensemble de m\'ethodes qui perme
 
 
 
-%\GT{Dans un tabular, pour mettre du texte, on utilise p avec une
+%\gt{Dans un tabular, pour mettre du texte, on utilise p avec une
 %largeur. Ceci \'evite de mettre des sauts de lignes explicites, ce qui
 %n'est jamais une bonne id\'ee.}
 
-%\GT{Il faut mettre le code avec police tt. Par contre, j'ai essay\'e
-%que le code soit mis par d\'efaut ainsi, mais cela n'a pas
-%fonctionn\'e, d'o\`u les commandes tt ins\'er\'ees en d\'ebut de
-%chaque ligne~:(}
-%
-%\GT{Par contre, le d\'efaut avec la solution actuelle, c'est que c'est
-%tr\`es difficile \`a comprendre pour les m\'ethodes plus complexes. Il
-%faudra qu'on r\'efl\'echisse \`a une fa\c{c}on plus claire de
-%pr\'esenter la signaure des m\'ethodes.}
-%
-%\IC{J'ai ajout\'e toutes les m\'ethodes d\'efinies dans l'interface de l'API dans ce tableau et j'ai \'et\'e oblig\'e d'utiliser le paquet longtable parce qu'elle s'\'etendait sur plusieurs pages. J'ai essay\'e de pr\'esenter la signature des m\'ethodes dans un format plus concis. Par exemple le paramètre std ::fonction a \'et\'e remplac\'e pour Func; j'ai enlev\'e les mots typename de chaque d\'eclaration de template; le param\`etre <typename ELEM, class ALLOC = std ::allocator<ELEM class TContainer >> a \'et\'e remplac\'e pour Container. De plus je n'ai pas pu r\'eutiliser la fonction qui redimensionne le tableau resizebox(textwidth). J'ai utilis\'e une police de caract\`ere plus petite (tiny) pour pouvoir encadrer le tableau dans la page.
+%\ic{J'ai ajout\'e toutes les m\'ethodes d\'efinies dans l'interface de l'API dans ce tableau et j'ai \'et\'e oblig\'e d'utiliser le paquet longtable parce qu'elle s'\'etendait sur plusieurs pages. J'ai essay\'e de pr\'esenter la signature des m\'ethodes dans un format plus concis. Par exemple le paramètre std ::fonction a \'et\'e remplac\'e pour Func; j'ai enlev\'e les mots typename de chaque d\'eclaration de template; le param\`etre <typename ELEM, class ALLOC = std ::allocator<ELEM class TContainer >> a \'et\'e remplac\'e pour Container. De plus je n'ai pas pu r\'eutiliser la fonction qui redimensionne le tableau resizebox(textwidth). J'ai utilis\'e une police de caract\`ere plus petite (tiny) pour pouvoir encadrer le tableau dans la page.
 %}
 %
 %\IC{J'ai reformul\'e la description pour le r\'esultat de la fonction flatMap}
@@ -213,7 +198,7 @@ L'interface propos\'ee en \PpFf\ consiste en un ensemble de m\'ethodes qui perme
 %	\end{tabular} &
 %	\TT{Collection<T, Container>} &
 %    Retourne une collection avec les
-%    \'el\'ements du flux. \GT{Est-ce utile de mentionner cette m\'ethode?}
+%    \'el\'ements du flux. 
 %    \\ 
 %\hline
 	\begin{tabular}{@{}l@{}}
@@ -593,10 +578,7 @@ Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant s
 \gt{Lorsque dans le texte tu indiques des identificateurs qui viennent du code --- find, collect, etc. --- alors il faut les mettre en police tt, donc \TT{find}, \TT{collect}, etc.}
 
 
-% \GT{Tu peux utiliser le terme <<listing>> plut\^ot que <<listage>> car
-% c'est ce terme qui est utilis\'e dans la l\'egende et dans la liste.}
-
-\GT{Comme indiqu\'e dans le chapitre pr\'ec\'edent, oublie ce que
+\gt{Comme indiqu\'e dans le chapitre pr\'ec\'edent, oublie ce que
 j'avais \'ecrit concernant l'environnement Listing, car cela ne
 produit pas le bon num\'ero, tel qu'officiellement requis par le guide
 UQAM (2.1, 2.2, etc.).  Il faut plut\^ot utiliser les diverses options
@@ -604,28 +586,30 @@ associ\'ees directement \`a lstlisting. Pour rappel, voir le chapitre
 pr\'ec\'edent ainsi que l'exemple de Reducer un peu plus bas.}
 
 
-\IC{J'ai v\'erifi\'e le terme listing dans tout le document. Vous les avez remplac\'es par tout. }
+\ic{J'ai v\'erifi\'e le terme listing dans tout le document. Vous les avez remplac\'es par tout. }
 
 
-\begin{lstlisting}[
-label={reducer.c++},
-language=c++,
-caption={La signature d'un objet \TT{Reducer}.},
-frame=single,
-float]
- template< typename In, typename Out >
- class Reducer{
-       Reducer(Out init, 
-               Func<Out(Out, In)> const& accumulator,
-               Func<Out(Out, Out)> const& combiner)
+%
+% Tu as deja ce listing plus bas!?
+% \begin{lstlisting}[
+% label={reducer.c++},
+% language=c++,
+% caption={La signature d'un objet \TT{Reducer}.},
+% frame=single,
+% float]
+%  template<typename In, typename Out>
+%  class Reducer {
+%        Reducer(Out init, 
+%                Func<Out(Out, In)> const& accumulator,
+%                Func<Out(Out, Out)> const& combiner)
 
-       Reducer(Func<Out(Out, In)> const& accumulator,
-               Func<Out(Out, Out)> const& combiner)
+%        Reducer(Func<Out(Out, In)> const& accumulator,
+%                Func<Out(Out, Out)> const& combiner)
 
-       Reducer(Out init, 
-               Func<Out(Out, In)> const& accumulator)
- }
-\end{lstlisting}
+%        Reducer(Out init, 
+%                Func<Out(Out, In)> const& accumulator)
+%  }
+% \end{lstlisting}
 
 
 \begin{lstlisting}[
@@ -669,12 +653,13 @@ Les \emph{op\'erateurs avec \'etat} sont ceux qui maintiennent une structure de 
 
 \begin{lstlisting}[
 label={reducer.c++},
+gobble=1,
 language=c++,
 caption={La signature d'un objet \TT{Reducer}.},
 frame=single,
 float]
- template< typename In, typename Out >
- class Reducer{
+ template<typename In, typename Out>
+ class Reducer {
        Reducer(Out init, 
                Func<Out(Out, In)> const& accumulator,
                Func<Out(Out, Out)> const& combiner)
@@ -703,7 +688,9 @@ label={sumElementsCollectionWithReducer},
 language=c++,
 gobble=4,
 caption={[Exemple d'utilisation de l'opérateur \TT{Reducer}.]Exemple
-d'utilisation de l'opérateur \TT{Reducer}~: ici, les \'el\'ements d'une collection sont additionn\'es.},
+d'utilisation de l'opérateur \TT{Reducer}~: ici, les \'el\'ements
+d'une collection sont simplement additionn\'es entre eux, avec
+l'op\'erateur \TT{std::plus<int>\{\}}.},
 frame=single,
 float]
     int n = 100;
@@ -719,7 +706,7 @@ float]
         .source<int>(elems.begin(), elems.end())
         .reduce<int, int>(reducer);
 
-	std::cout << "Result: " << currentResult;	//4950   
+	std::cout << "Result: " << currentResult;	// == 4950   
 \end{lstlisting}
 
 
@@ -731,19 +718,20 @@ Un \TT{Reducer} est construit avec une valeur initiale, une fonction \TT{accumul
 label={sumElementsCollectionWithReducerParallel},
 gobble=4,
 language=c++,
-caption={Exemple d'utilisation de l'opérateur \TT{Reducer} en parall\`ele.},
+caption={[Exemple d'utilisation de l'opérateur \TT{Reducer}, ex\'ecut\'e en
+parall\`ele et avec une valeur initiale.]Exemple
+d'utilisation de l'opérateur \TT{Reducer}, ex\'ecut\'e en parall\`ele et avec une
+valeur initiale non nulle sp\'ecifi\'ee explicitement.},
 frame=single,
 float]
     int n = 100;
-    int initVal = 3;
-    
     std::vector<int> elems(n);
     for (unsigned int i = 0; i < elems.size(); i++) {
-        elems[i] = i+1;
+        elems[i] = i;
     };
-    int expectedResult = n * (n + 1) / 2;
 
-    Reducer<int, int> reducer(initVal, 
+    // Avec valeur initiale explicite... pour illustrer l'effet!
+    Reducer<int, int> reducer(3, 
                               std::plus<int>{}, 
                               std::plus<int>{});
 
@@ -753,33 +741,32 @@ float]
 		.parallel(2)
 		.reduce<int, int>(reducer); 
 	
-	std::cout << "Result: " << currentResult;	//4953 
-                  JE CROIS QUE CE DEVRAIT PLUTOT ETRE 5053, NON...
+	std::cout << "Result: " << currentResult;	// == 4953
 \end{lstlisting}
 
 
 
 
-Le troisi\`eme param\`etre de l'op\'erateur \TT{Reducer}, la fonction \TT{combiner}, est utilis\'ee lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer} en parall\`ele. Dans ce cas, la valeur initiale \TT3 et les fonctions \TT{combiner} et \TT{accumulator} sont indiqu\'ees comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
+Le troisi\`eme param\`etre de l'op\'erateur \TT{Reducer}, la fonction \TT{combiner}, est utilis\'ee lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer} mais ex\'ecut\'e en parall\`ele. Dans cet exemple, \`a des fins d'illustration, une valeur initiale est sp\'ecifi\'ee, \'egale \`a \TT3 et, alors que les fonctions \TT{combiner} et \TT{accumulator} sont toutes deux indiqu\'ees comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
 
 
-\GT{R\'esultat incorrect indiqu\'e je crois: 4953 => 5053!?}
+\gt{R\'esultat incorrect indiqu\'e je crois: 4953 => 5053!?}
 
-\IC{J’ai pris l’exemple des tests unitaires. La formule de calcul pour le résultat attendu est~:  expectedResult = n * (n - 1) / 2;}
+\ic{J’ai pris l’exemple des tests unitaires. La formule de calcul pour
+le résultat attendu est~:  expectedResult = n * (n - 1) / 2;}
+
+\GT{L'exemple ne semble pas \^etre le m\^eme: \TT{elems[i] = i+1} vs.\
+\TT{elems[i] = i} comme dans l'exemple pr\'ec\'edent, donc r\'esultats
+diff\'erents. J'ai corrig\'e/adapt\'e pour avoir le m\^eme exemple,
+donc le m\^eme r\'esultat, modulo la valeur initiale!}
 
 \section{Pipeline}
-
-
-\GT{Ci-bas: de quelle figure s'agit-il? Ref\'erence pas indiqu\'ee!
-Figure \`a venir?}
-
-\IC{J'ai oubli\'e de la figure. Je viens de l'ajouter.}
 
 
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/Pipeline.jpg}
-      \caption{Pipeline.}
+      \caption[Repr\'esentation graphique d'un pipeline.]{Une repr\'esentation graphique d'un pipeline. \GT{Donner des explications additionnelles~: voir plus bas.}}
        \label{Pipeline.fig}
 \end{figure}
 
@@ -794,10 +781,29 @@ Le \TT{Pipeline} est le composant principal de notre {API}. Un \TT{Pipeline} est
 
 Dans l'expression ci-dessus, $O_k$ d\'enote le $k^e$ op\'erateur dans le pipeline~\TT{P}.
 
-L'utilisation de \TT{Pipeline} introduit une couche d'abstraction sur une cha\^{\i}ne complexe d'op\'erateurs. De plus, un \TT{Pipeline} n'expose à l'ext\'erieur que ses entr\'ees et ses sorties. Une telle conception modulaire permet une flexibilit\'e au syst\`eme tout en simplifiant la mise en œuvre. Par exemple, le parall\'elisme de donn\'ees%
-\GT{Je crois que tu veux dire <<parall\'elisme de donn\'ees>> ici, non?}. \IC{Oui. Il s’agit du parall\'elisme de donn\'ees.}
-%
- pourrait \^etre facilement r\'ealis\'e en ayant plusieurs \TT{Pipeline}s identiques connect\'es \`a la m\^eme entr\'ee et sortie respectivement.
+
+\GT{Il faut clarifier la partie ci-haut. On ne comprends pas pourquoi
+$P = O_1 + \ldots + O_n$ --- pourquoi <<+>>? Pourquoi ne pas utiliser
+le symbole de pipe comme en Unix, i.e., <<$\vert$>>?  Ce serait plus
+naturel peut-\^etre?  (Parce que dans plusieurs notations formelles,
+<<+>> est utilis\'e pour repr\'esenter un {\bf choix}, et non une
+s\'equence cons\'ecutive d'items.)}
+
+\GT{En outre, on ne comprend pas le lien entre cette \'equation et la
+figure.  Ce serait pr\'ef\'erable qu'on puisse comprendre quel est
+exactement ce qui est repr\'esent\'e par la figure: il y a un premier
+pipeline s\'equentiel, form\'e de 3 op\'erateurs, un autre parall\`ele
+(form\'e de 4 op\'erateurs), puis un autre (de 2 op\'erateurs).
+Sinon, on cherche \`a comprendre \`a quoi la figure correspond, quel
+est le lien avrc l'\'equation. Parce qu'en ce moment, il me semble que
+l'\'equation n'est pas utile --- elle le serait si elle \'etait
+ensuite utilis\'ee plus loin, ailleurs, pour expliquer/repr\'esenter
+autre chose, ce qui n'est pas le cas.}
+
+
+
+L'utilisation de \TT{Pipeline} introduit une couche d'abstraction sur une cha\^{\i}ne complexe d'op\'erateurs. De plus, un \TT{Pipeline} n'expose à l'ext\'erieur que ses entr\'ees et ses sorties. Une telle conception modulaire permet une flexibilit\'e au syst\`eme tout en simplifiant la mise en œuvre. Par exemple, le parall\'elisme de donn\'ees
+pourrait \^etre facilement r\'ealis\'e en ayant plusieurs \TT{Pipeline}s identiques connect\'es \`a la m\^eme entr\'ee et sortie respectivement.
 
 
 \section{Travailler avec des flux}
@@ -862,7 +868,7 @@ Les op\'erations subs\'equentes du pipeline sont les suivantes :
 \item L'op\'eration \TT{find} retourne dans le flux seulement les mots qui ne sont pas vides (\TT{notEmpty}).
 
 
-% \GT{Lorsqu'on utilise des tirets explicatifs, i.e., <<--->>, il faut
+% \gt{Lorsqu'on utilise des tirets explicatifs, i.e., <<--->>, il faut
 % mettre trois tirets et, en fran\c{c}ais, il faut laisser un espace
 % avant et apr\`es les trois tirets.}
 
@@ -877,13 +883,6 @@ Les op\'erations subs\'equentes du pipeline sont les suivantes :
 
 
 Un programme \PpFf{} est un ensemble d'objets de type \TT{Operator} compos\'es dans un objet de type flux. Au niveau utilisateur, un flux est repr\'esent\'e par une instance de la classe \TT{Pipe} --- voir la figure~\ref{ClassDiagramme.fig}. 
-
-% \GT{L'explication entre allocation sur la pile vs.\ le tas n'est pas
-% n\'ecessaire: c'est une caract\'eristique inh\'erente, intrins\`eque,
-% de C++, donc pas besoin d'expliquer cela. Tu peux donc aussi supprimer
-% ce petit listing.}
-% \IC(Supprim\'e)
-
 
 
 Un flux est ex\'ecut\'e en parall\`ele lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la chaine d'op\'erations. Le param\`etre optionnel de cette m\'ethode d\'efinit le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Par exemple, un appel tel que \TT{parallel(4)} dans le programme du d\'ecompte du nombre de mots du listing~\ref{wordcount.c++} indique qu'il faut ex\'ecuter en parall\`ele toutes les op\'erations suivant cette m\'ethode;  le nombre de travailleurs utilis\'es dans ce cas est quatre. Si ce param\`etre n'est pas fourni,  un seul travailleur est utilis\'e par d\'efaut. 
@@ -912,11 +911,11 @@ std::unordered_map<std::string, int> currentResult =
 \PpFf{} est assez flexible en permettant l'ex\'ecution des op\'erations en parall\`ele avec un nombre diff\'erent de travailleurs. Par exemple, dans le listing~\ref{wordcountParallel.c++}, l’opération \TT{flatMap} du programme de d\'ecompte du nombre de mots est exécutée avec un seul travailleur, les opérations \TT{map} et \TT{find} sont exécutées avec quatre travailleurs et la dernière opération, \TT{reduceByKey}, avec deux travailleurs. 
 
 
-% \GT{Les mots qui correspondent \`a des noms de m\'ethodes ou des
+% \gt{Les mots qui correspondent \`a des noms de m\'ethodes ou des
 % \'el\'ements du code (par ex., variables, etc., doivent \^etre mis en
 % police texttt.  C'est ce que fait la macro TT, que j'ai d\'efinie.}
 
-% \GT{Dans une phrase, les nombres plus petits que 10 sont
+% \gt{Dans une phrase, les nombres plus petits que 10 sont
 % g\'en\'eralement mis en mots, plut\^ot qu'en chiffres. }
 
 
@@ -968,7 +967,7 @@ Les deux m\'ethodes d'entr\'ee dans le flux sont illustr\'ees dans les exemples 
 
 \subsection{Map}
 
-% \GT{Dans un texte scientifique, dont un m\'emoire, on utilise <<nous>>
+% \gt{Dans un texte scientifique, dont un m\'emoire, on utilise <<nous>>
 % assez rarement. En fait, on utilise <<nous>> surtout comme une
 % fa\c{c}on plus formelle de dire <<je>>.  Voir:
 % \url{https://fr.wiktionary.org/wiki/nous_de_modestie}}
@@ -1080,14 +1079,6 @@ float]
 
 Le listing~\ref{olderEmployeeWithReduceExample.c++} montre l'exemple du listing~\ref{olderEmployeeExample.c++} r\'e\'ecrit avec la m\'ethode \TT{reduce} et un \TT{Reducer}.
 
-\GT{Oops! Pas tout \`a fait. Dans le premier exemple, tu as un appel
-\`a \TT{parallel(4)}. Donc, si tu dis que tu r\'e\'ecrit le m\^eme
-exemple, tu dois aussi avoir un appel \`a \TT{parallel(4)}!}
-
-
-\IC{C'est vrai. L'exemple ant\'erieur est de type parall\`ele.}
-
-
 
 \subsubsection{Regroupement des \'el\'ements selon une cl\'e}
 
@@ -1096,78 +1087,66 @@ Souvent, une op\'eration sur une collection de donn\'ees consiste \`a regrouper 
 
 \begin{lstlisting}[
 label={groupByKeyExample.c++},
+escapechar=\#,
 language=c++,
-caption={Un pipeline pour regrouper les employ\'es selon leur \^age.},
+caption={[Un pipeline pour regrouper les employ\'es selon leur \^age.]Un pipeline pour regrouper les employ\'es selon leur \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
 frame=single,
 float]
-typedef std::vector<Employee> EMPLOYES;
-typedef std::unordered_map<int, EMPLOYES> EMPLOYES_PAR_AGE;
+typedef std::unordered_map<int, std::vector<Employee>> 
+        EMPLOYES_PAR_AGE;
 
-// Definition ( omise ) d'un vecteur d'objets Employee .
-employees[0].age = employees[1].age = employees[2].age = 22;
+// Definition (omise) d'un vecteur d'objets Employee.
+std::vector<Employee> employees = ...; 
 employees[3].age = employees[4].age = 18;
-employees[5].age = employees[6].age = employees[9].age = 55;
+employees[0].age = employees[1].age = employees[2].age = 22;
 employees[7].age = employees[8].age = 33;
+employees[5].age = employees[6].age = employees[9].age = 55;
 
-EMPLOYES_PAR_AGE exp_result = {
+EMPLOYES_PAR_AGE result = 
+   Pipe()
+   .source<Employee>(employees.begin(), employees.end())
+   .groupByKey<Employee, int, Employee>( // Regroupe selon l'age.
+      [](Employee* e) { return &(e->age); } 
+    );
+    
+EMPLOYES_PAR_AGE expected = {
    {18, {employees[3], employees[4]}},
    {22, {employees[0], employees[1], employees[2]}},
    {33, {employees[7], employees[8]}},
    {55, {employees[5], employees[6], employees[9]}}
 };
 
-EMPLOYES_PAR_AGE result = 
-   Pipe()
-   .source<Employee>(employees.begin(), employees.end())
-   .groupByKey<Employee, int, Employee>( 
-      [](Employee* e) { return &(e->age); }
-    );
-    
-REQUIRE(result.size() == exp_result.size());
-for (auto it=exp_result.begin(); it!=exp_result.end(); it++) {
- VALUE result_v = result[it->first];
- VALUE exp_result_v = it->second;
-
- REQUIRE(result_v.size()==exp_result_v.size());
- for (unsigned int i=0; i<exp_result_v.size(); i++) {
-  REQUIRE(result_v[i].name==exp_result_v[i].name);
- }
-}    
+// #\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}#
+// #\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}#
+  ...
 \end{lstlisting}
 
 
 
 
-Le listing~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es sont regroup\'es selon leur \^age.
-
-
-\GT{Je crois qu'il serait bien de montrer plus clairement \`a quoi
-ressemble le r\'esultat de \TT{groupByKey}, peut-\^etre en it\'erant
-sur son contenu avec un petit exemple concret et en montrant ce qui
-est produit -- par exemple avec un test unitaire? Parce que sinon, on
-voit la sp\'ecification de l'expression lambda pour obtenir l'age, et
-le type \TT{EMPLOYES\_PAR\_AGE}, mais on ne voit pas comment les
-\'el\'ements du flux sont ensuite effectivement regroup\'es.}
-
-\IC{J'ai compl\'et\'e l'exemple avec des tests unitaires. }
+Le listing~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es sont regroup\'es selon leur \^age. Plus pr\'ecis\'ement, ce listing pr\'esente un des tests unitaires pour \TT{groupByKey}, qui montre que%
+%
+\GT{donner des explications additionnelles sur ce qu'il faut
+comprendre de cet exemple: que ce produit un map o\`u la cl\'e est
+l'age, etc.}
 
 
 
-\subsubsection{Regroupement des \'el\'ements selon une cl\'e et r\'eduction selon une valeur}
 
-Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une op\'eration similaire dans un style plus fonctionnel. La m\'ethode \TT{reduceByKey}, d\'ecrite dans le tableau~\ref{methodes_api.tab}, combine les fonctionnalit\'es de regroupement et de r\'eduction en une seule op\'eration. Le programme de d\'ecompte des mots du listing~\ref{wordcount.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Chaque \'el\'ement du flux, qui est un mot contenu dans le fichier, est regroup\'e par son nom et son occurrence est incr\'ement\'ee avec une unit\'e.
+\subsubsection{Regroupement des \'el\'ements selon une cl\'e et r\'eduction d'une valeur associ\'ee}
 
-En arri\`ere l'opérateur \TT{ReduceByKeyOperator} associ\'e \`a cette m\'ethode garde les \'el\'ements dans un conteneur de type cl\'e-valeur. La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si n'existe aucune cl\'e, un nouvel \'el\'ement de type cl\'e-valeur est ajout\'e. Dans le cas o\`u la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et la valeur recherch\'ee dans le conteneur par la cl\'e en cause. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est repr\'esent\'ee par l'argument de la m\'ethode. Dans le cas particulier du programme de d\'ecompte des mots du listing~\ref{wordcount.c++}, elle a pour r\^ole de compter le nombre d'occurrences de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un \TT{map} de type cl\'e--valeur~: la cl\'e repr\'esente un mot du fichier et la valeur associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier.
+Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une op\'eration similaire dans un style fonctionnel. La m\'ethode \TT{reduceByKey}, d\'ecrite dans le tableau~\ref{methodes_api.tab}, combine les fonctionnalit\'es de regroupement et de r\'eduction en une seule et m\^eme op\'eration. Le programme de d\'ecompte des mots du listing~\ref{wordcount.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Chaque \'el\'ement du flux, qui est un mot contenu dans le fichier, est regroup\'e par son nom et un nombre d'occurrences lui est associ\'e, nombre incr\'ement\'e d'une unit\'e \`a chaque fois que le m\^eme mot est rencontr\'e.
+
+L'opérateur \TT{ReduceByKeyOperator} associ\'e \`a cette m\'ethode conserve les \'el\'ements dans un conteneur de type cl\'e--valeur --- donc un dictionnaire (\TT{map}). La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si la cl\'e n'est pas trouv\'ee, une nouvelle paire cl\'e--valeur est ajout\'ee. Si la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et sa valeur associ\'ee dans le conteneur. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est sp\'ecifi\'e par l'argument de la m\'ethode \TT{reduceByKey}. Dans le cas particulier du programme de d\'ecompte des mots du listing~\ref{wordcount.c++}, elle a pour r\^ole de compter le nombre d'occurrences de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un \TT{map} de type cl\'e--valeur~: la cl\'e repr\'esente un mot du fichier et la valeur associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier.
 
 
-\GT{Je vais relire ce dernier paragraphe plus tard. Pas certain que ce
-soit suffisant comme explication.  Et, surtout, pas certain que,
-conceptuellement, on fasse le regroupement par mot avant la
-r\'eduction. Parce que la m\'ethode de r\'eduction re\c{c}oit un
-\TT{count}, initialis\'e au d\'ebut \`a 0, et une (1) chaine.  Est-ce
-qu'on peut exprimer \TT{reduceByKey} comme une combinaison de
-\TT{groupByKey} suivi d'un \TT{reduce}? J'ai un vague souvenir d'avoir
-formalis\'e quelque chose dans ce style il y a plusieurs mois!?}
 
-\IC{On ne peut pas exprimer reduceByKey comme une combinaison de groupByKey suivi d'un reduce. La r\'eduction est faite \`a l'aide d'op\'erateur Reducer. Cet op\'erateur re\c{c}oit en argument une valeur d'initialisation, une fonction d'accumulation et une fonction de combinaison. La fonction de r\'eduction a pour r\^ole de r\'eduire les \'el\'ements du flux \`a une seule valeur. La fonction de combinaison est utilisée seulement dans le parallélisme de données.  Elle a pour rôle de combiner les valeurs r\'esultantes en appliquant la fonction d'accumulation. J'ai essay\'e d'ajouter plus d'explications.
-}
+\GT{Apr\`es relecture, je crois qu'il serait pr\'ef\'erable de ne pas
+r\'ef\'erer \`a l'exemple du compte du nombre d'occurrences --- parce
+que tr\`es loin dans le texte et assez compliqu\'e --- mais d'utiliser
+plut\^ot un cas plus simple, un peu comme tu as fait avec le test
+unitaire pour groupByKey.  De plus, comme tu as pu le constater, il
+m'a sembl\'e pr\'ef\'erable d'omettre les d\'etails des assertions,
+parce qu'elles n'\'etaient pas simples \`a comprendre.  Il me semble
+suffisant qu'on voit \`a quoi ressemble le r\'esultat attendu, comme
+illustr\'e ci-haut.}
