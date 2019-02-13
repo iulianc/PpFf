@@ -1141,6 +1141,42 @@ l'age, etc.}
 
 
 
+\subsection*{Mod\'elisation formelle de \TT{groupByKey}}
+
+Soit les \'el\'ements suivants~: 
+\begin{itemize}
+\item $T$, un type de donn\'ees;
+
+\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, avec $s_i
+\in T$; 
+
+\item $fk: T \rightarrow K$, une fonction qui produit une <<cl\'e>>;
+
+\item $fv: T \rightarrow V$, une fonction qui retourne une
+<<valeur>>;
+
+
+\end{itemize}
+
+
+\begin{itemize}
+\item $groupByKey(S, fk) = groupByKey(S, fk, id)$ avec $id(x) = x$
+\end{itemize}
+
+\begin{itemize}
+\item $keys = \{ fk(s_i) \vert s_i \in S \}$
+
+\item $groupByKey(S, fk, fv) = \{ (k, vals(k)) \vert k \in keys\}$
+
+
+avec $vals(k) = \{ fv(s_i) \vert  s_i\in S \wedge fk(s_i) = k\}$
+
+\end{itemize}
+
+
+
+
+
 
 \subsubsection{Regroupement des \'el\'ements selon une cl\'e et r\'eduction d'une valeur associ\'ee}
 
