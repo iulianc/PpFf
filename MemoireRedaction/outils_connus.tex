@@ -373,7 +373,7 @@ numbers=left
        while (std::getline(file, *line)) {
            ff_send_out(line);
            line = new std::string;
-        }
+       }
        return EOS;
     }
  };
@@ -389,7 +389,7 @@ numbers=left
            size_t len = end - start;
            words->push_back( line.substr(start, len) );
            start += len + delimiter.length();
-        } while (end != std::string::npos);
+       } while (end != std::string::npos);
 
        return words;
     }
@@ -407,7 +407,7 @@ numbers=left
     }
  };
  
- struct groupByKeyStage:ff_node {
+ struct groupByKeyStage: ff_node {
     typedef std::unordered_map<std::string, int> CONTAINER;
     CONTAINER &container;
     groupByKeyStage(CONTAINER &container): container(container){}
@@ -420,9 +420,11 @@ numbers=left
  
 \begin{lstlisting}[language=c++, frame=single, float, numbers=left,firstnumber=54]
  int main(int argc, char *argv[]) {
-     std::unordered_map< std::string, int > result;
+     std::unordered_map<std::string, int> result;
      std::string inputFile = DEFAULT_INPUT_FILE;
+
      if (argc >= 2) { inputFile = argv[1]; } 
+
      linesFromFileStage linesFromFile(inputFile);
      splitInWordsStage splitInWords;
      flatStage flat;
@@ -441,7 +443,7 @@ numbers=left
 
 Cette section pr\'esente un exemple d'un programme r\'ealis\'e en \TT{FastFlow}. Illustr\'e dans le listing~\ref{wordcountFastFlow}, ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. 
 
-Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \TT{n} diff\'erents \TT{stages}; ensuite leurs r\'ef\'erences sont transmises dans le bon ordre au {pipeline}. Dans l'exemple du listing~\ref{wordcountFastFlow}, les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots --- les lignes de 64 \`a 67.  Les quatre op\'erations r\'ealisent les fonctions suivantes :
+Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \TT{n} diff\'erents \TT{stages}; ensuite leurs r\'ef\'erences sont transmises dans le bon ordre au {pipeline}. Dans l'exemple du listing~\ref{wordcountFastFlow}, les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots --- lignes 66 \`a 69.  Les quatre op\'erations r\'ealisent les fonctions suivantes :
 
 \begin{itemize}
     \item La premi\`ere op\'eration, \TT{linesFromFile}, renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est identifi\'e par le param\`etre \TT{inputFile} fourni en argument.
