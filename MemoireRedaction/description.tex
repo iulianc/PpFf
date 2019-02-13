@@ -1141,39 +1141,52 @@ l'age, etc.}
 
 
 
-\subsection*{Mod\'elisation formelle de \TT{groupByKey}}
+\subsection*{Description formelle de \TT{groupByKey}}
 
-Soit les \'el\'ements suivants~: 
+Repr\'esentons comme suit un \emph{map} qui associe la cl\'e $k_i$ \`a
+une valeur $v_i$, pour $i=0, \ldots, n$~:
+\begin{itemize}
+\item $\{ k_i \mapsto v_i~\vert~0 \leq i \leq n \}$
+\end{itemize}
+
+Soit alors les \'el\'ements suivants~: 
 \begin{itemize}
 \item $T$, un type de donn\'ees;
 
-\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, avec $s_i
-\in T$; 
+\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
+\in T~(i=0, \ldots, k)$;
 
-\item $fk: T \rightarrow K$, une fonction qui produit une <<cl\'e>>;
+\item $fk: T \rightarrow K$, une fonction sur  $T$ qui produit une
+<<cl\'e>> de type $K$;
 
-\item $fv: T \rightarrow V$, une fonction qui retourne une
-<<valeur>>;
+\item $fv: T \rightarrow V$, une fonction sur $T$ qui retourne une
+<<valeur>> de type $V$;
 
 
 \end{itemize}
 
 
+La m\'ethode \TT{groupByKey} avec deux arguments peut alors \^etre
+d\'ecrite par la fonction suivante~:
+%
 \begin{itemize}
-\item $groupByKey(S, fk) = groupByKey(S, fk, id)$ avec $id(x) = x$
+\item $S.\TT{groupByKey}(fk, fv) = \{ k \mapsto vals(k, S)~\vert~k \in \{ fk(s_i)~\vert~s_i \in S \} \}$
+
+\item[] O\`u $vals(k, S) = \{ fv(s_i)~\vert~ s_i\in S \wedge fk(s_i) = k\}$
+
 \end{itemize}
 
+
+Quant \`a la m\'ethode $\TT{groupByKey}$ avec un seul argument, elle est
+\'equivalente \`a celle avec deux arguments, mais o\`u le deuxi\`eme
+argument est simplement la fonction $id$entit\'e:
+%
 \begin{itemize}
-\item $keys = \{ fk(s_i) \vert s_i \in S \}$
-
-\item $groupByKey(S, fk, fv) = \{ (k, vals(k)) \vert k \in keys\}$
-
-
-avec $vals(k) = \{ fv(s_i) \vert  s_i\in S \wedge fk(s_i) = k\}$
-
+\item $S.\TT{groupByKey}(fk) = S.\TT{groupByKey}(fk, id)$
+\begin{Items}
+\item[] O\`u $id(x) = x$
+\end{Items}
 \end{itemize}
-
-
 
 
 
