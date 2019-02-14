@@ -1143,14 +1143,14 @@ l'age, etc.}
 
 \subsection*{Description formelle de \TT{groupByKey}}
 
-D\'enotons comme suit un \emph{map} $M$ qui associe la cl\'e $k_i$ \`a
+D\'enotons comme suit un \emph{map} $M$ qui associe la cl\'e $c_i$ \`a
 la valeur $v_i$, pour $i=0, \ldots, n$~:%
 %
 \footnote{Dans du code C++, un tel \emph{map} serait repr\'esent\'e
-comme suit~: $\{\{k_0, v_0\}, \ldots, \{k_n, v_n\}\}$}
+comme suit~: $\{\{c_0, v_0\}, \ldots, \{c_n, v_n\}\}$}
 %
 \begin{itemize}
-\item $M = \{ k_i \mapsto v_i~\vert~0 \leq i \leq n \}$
+\item $M = \{ c_i \mapsto v_i~\vert~0 \leq i \leq n \}$
 \end{itemize}
 
 Soit alors les \'el\'ements suivants~: 
@@ -1160,8 +1160,8 @@ Soit alors les \'el\'ements suivants~:
 \item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
 \in T~(i=0, \ldots, k)$;
 
-\item $fk: T \rightarrow K$, une fonction sur  $T$ qui produit une
-<<cl\'e>> de type $K$;
+\item $fc: T \rightarrow C$, une fonction sur  $T$ qui produit une
+<<cl\'e>> de type $C$;
 
 \item $fv: T \rightarrow V$, une fonction sur $T$ qui retourne une
 <<valeur>> de type $V$;
@@ -1175,13 +1175,13 @@ Le r\'esultat d'un appel pour le flux $S$ de la m\'ethode
 suit~:
 %
 \begin{itemize}
-\item $S.\TT{groupByKey}(fk, fv) = \{ k \mapsto vals(k, S)~\vert~k \in
+\item $S.\TT{groupByKey}(fc, fv) = \{ c \mapsto vals(c, S)~\vert~c \in
 cles(S)\}$
 
 \item[] O\`u
 \begin{itemize}
-\item $cles(S) = \{ fk(s_i)~\vert~s_i \in S \}$
-\item $vals(k, S) = \{ fv(s_i)~\vert~ s_i\in S \wedge fk(s_i) = k\}$
+\item $cles(S) = \{ fc(s_i)~\vert~s_i \in S \}$
+\item $vals(c, S) = \{ fv(s_i)~\vert~ s_i\in S \wedge fc(s_i) = c\}$
 \end{itemize}
 
 \end{itemize}
@@ -1192,7 +1192,7 @@ Quant \`a la m\'ethode $\TT{groupByKey}$ avec un seul argument, elle est
 argument est simplement la fonction $id$entit\'e:
 %
 \begin{itemize}
-\item $S.\TT{groupByKey}(fk) = S.\TT{groupByKey}(fk, id)$
+\item $S.\TT{groupByKey}(fc) = S.\TT{groupByKey}(fc, id)$
 \begin{Items}
 \item[] O\`u $id(x) = x$
 \end{Items}
