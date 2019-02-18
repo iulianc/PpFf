@@ -40,7 +40,7 @@ avgReducer
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 || NOTE: id = identity: id x = x
-||       foldr = reduce
+||       red = reduce
 
 groupByKey = groupByKey2 || Par defaut, on doit specifier les deux fonctions (sur cle et valeur).
 
@@ -54,7 +54,7 @@ groupByKey2 (Reducer injectValue combineValues initValue) keyFunc valueFunc theS
        || On associe a chaque cle la liste des differentes valeurs obtenues via valueFunc.
        keyAndValues    = [(k, [valueFunc x | x <- theStream; keyFunc x = k]) | k <- keys]
        || On reduit/combine les valeurs associees a chaque cle.
-       aggregatedPairs = [(k, foldr injectValue initValue values) | (k, values) <- keyAndValues]
+       aggregatedPairs = [(k, red injectValue initValue values) | (k, values) <- keyAndValues]
 
 groupByKey1 :: (reducer * *) -> (* -> **) -> (streamOf *) -> (mapFromTo ** *)
 groupByKey1 reducer keyFunc
@@ -75,14 +75,18 @@ nb_threads = 3
 || Definie uniquement pour assurer validite des exemples/tests avec les deux fonctions d'un reduecr.
 reduce :: (reducer * **) -> (streamOf *) -> **
 reduce (Reducer injectValue combineThreadValues initValue) theStream
-    = foldr combineThreadValues initValue threadResults
+    = red combineThreadValues initValue threadResults
       where
         subStreams = splitIntoSubstreams theStream nb_threads
                      where
                        splitIntoSubstreams theStream nb_threads = split theStream nb_threads [[] | i <- [1..nb_threads]] 0
                        split []       nb_threads sub_streams k = sub_streams
                        split (x : xs) nb_threads sub_streams k = split xs nb_threads (tl sub_streams ++ [x : hd sub_streams]) ((k+1) mod nb_threads)
-        threadResults = [foldr injectValue initValue subStream | subStream <- subStreams]
+        threadResults = [red injectValue initValue subStream | subStream <- subStreams]
+
+
+red f a []     = a
+red f a (x:xs) = f x (red f a xs) 
 
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
