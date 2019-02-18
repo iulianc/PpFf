@@ -91,8 +91,8 @@ TEST_CASE( "GroupByAgeNamesEmployees", "GroupByKeyOperator" ) {
     CONTAINER result = 
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
-        .groupByKey<Employee, int, std::string>([](Employee* e) { return new int(e->age); },
-                                                [](Employee* e) { return new std::string(e->name); });
+        .groupByKey<Employee, int, std::string>([](Employee* e) { return &e->age; },
+                                                [](Employee* e) { return &e->name; });
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
@@ -237,8 +237,8 @@ TEST_CASE( "GroupByAgeNamesEmployeesParallel", "GroupByKeyOperator" ) {
         Pipe()
         .source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .groupByKey<Employee, int, std::string>([](Employee* e) { return new int(e->age); },
-                                                [](Employee* e) { return new std::string(e->name); });
+        .groupByKey<Employee, int, std::string>([](Employee* e) { return &e->age; },
+                                                [](Employee* e) { return &e->name; });
 
     REQUIRE(result.size() == expectedResult.size());
     for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
