@@ -769,27 +769,20 @@ le résultat attendu est~:  expectedResult = n * (n - 1) / 2;}
 diff\'erents. J'ai corrig\'e/adapt\'e pour avoir le m\^eme exemple,
 donc le m\^eme r\'esultat, modulo la valeur initiale!}
 
+\IC{Erreur de copier-coller.}
+
 \section{Pipeline}
 
 
-\begin{figure}[ht]
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/Pipeline.jpg}
-      \caption[Repr\'esentation graphique d'un pipeline.]{Une repr\'esentation graphique d'un pipeline. \GT{Donner des explications additionnelles~: voir plus bas.}}
-       \label{Pipeline.fig}
-\end{figure}
+Le \TT{Pipeline} est le composant principal de notre {API}. Un \TT{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \TT{Operator}s regroup\'es dans des \TT{Stages}. La figure~\ref{Pipeline.fig} montre une vue d\'etaill\'ee d'un \TT{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. 
 
-
-Le \TT{Pipeline} est le composant principal de notre {API}. Un \TT{Pipeline} est une cha\^{\i}ne de traitement compos\'ee d'un ou plusieurs \TT{Operator}s regroup\'es dans des \TT{Stages}. La figure~\ref{Pipeline.fig} montre une vue d\'etaill\'ee d'un \TT{Pipeline} en action. Une \'etape de la cha\^{\i}ne de traitement de ce mod\`ele traite les donn\'ees produites par l'\'etape pr\'ec\'edente dans le flux et fournit les r\'esultats \`a l'étape suivante dans le flux. Un pipeline \TT{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
-
-
-\[
-	\TT{P} = O_1 +  \ldots + O_k + \ldots + O_n
-\]
-
-
-Dans l'expression ci-dessus, $O_k$ d\'enote le $k^e$ op\'erateur dans le pipeline~\TT{P}.
-
+%Un pipeline \TT{P} avec $n$ \'etapes peut \^etre d\'efini comme suit:
+%
+%\[
+%	\TT{P} = O_1 +  \ldots + O_k + \ldots + O_n
+%\]
+%
+%Dans l'expression ci-dessus, $O_k$ d\'enote le $k^e$ op\'erateur dans le pipeline~\TT{P}.
 
 \GT{Il faut clarifier la partie ci-haut. On ne comprends pas pourquoi
 $P = O_1 + \ldots + O_n$ --- pourquoi <<+>>? Pourquoi ne pas utiliser
@@ -809,10 +802,17 @@ l'\'equation n'est pas utile --- elle le serait si elle \'etait
 ensuite utilis\'ee plus loin, ailleurs, pour expliquer/repr\'esenter
 autre chose, ce qui n'est pas le cas.}
 
+\IC{J'ai enlev\'e l'expression formelle. La figure a \'et\'e ajout\'ee ult\'erieurement. Je n'ai pas pens\'e \`a un lien entre l'\'equation et la figure.}
 
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/Pipeline.jpg}
+      \caption[Repr\'esentation graphique d'un pipeline.]{Repr\'esentation graphique d'un \TT{pipeline}. Le \TT{pipeline} compos\'e de plusieurs op\'erateurs peut \^etre dispos\'e en parall\`ele ou en s\'erie. \GT{Donner des explications additionnelles~: voir plus bas.} \IC{J'ai ajout\'e un peu plus des explications ici et plus bas.}}
+       \label{Pipeline.fig}
+\end{figure}
 
 L'utilisation de \TT{Pipeline} introduit une couche d'abstraction sur une cha\^{\i}ne complexe d'op\'erateurs. De plus, un \TT{Pipeline} n'expose à l'ext\'erieur que ses entr\'ees et ses sorties. Une telle conception modulaire permet une flexibilit\'e au syst\`eme tout en simplifiant la mise en œuvre. Par exemple, le parall\'elisme de donn\'ees
-pourrait \^etre facilement r\'ealis\'e en ayant plusieurs \TT{Pipeline}s identiques connect\'es \`a la m\^eme entr\'ee et sortie respectivement.
+pourrait \^etre facilement r\'ealis\'e en ayant plusieurs \TT{Pipeline}s identiques connect\'es \`a la m\^eme entr\'ee et sortie respectivement. La figure~\ref{Pipeline.fig} illustre ce m\'ecanisme. Le parall\'elisme de donn\'ee est r\'ealis\'e en connectant plusieurs pipelines en parall\`ele. Dans cette figure l'entr\'ee pour les pipelines parall\`ele est la sortie du pipeline s\'equentiel et la sortie des pipelines parall\`ele est l'entr\'ee dèun autre pipeline s\'equentiel.
 
 
 \section{Travailler avec des flux}
@@ -1133,12 +1133,54 @@ EMPLOYES_PAR_AGE expected = {
 
 
 
-Le listing~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es sont regroup\'es selon leur \^age. Plus pr\'ecis\'ement, ce listing pr\'esente un des tests unitaires pour \TT{groupByKey}, qui montre que%
+Le listing~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es sont regroup\'es selon leur \^age. Plus pr\'ecis\'ement, ce listing pr\'esente un des tests unitaires pour \TT{groupByKey}, qui montre que les employ\'es d'un conteneur sont regroup\'es dans un map ou la cl\'e est l'\^age d'employeurs et la valeur du map est repr\'esent\'ee par un conteneur contenant les employeurs de même cat\'egorie d'\^age.
 %
 \GT{donner des explications additionnelles sur ce qu'il faut
 comprendre de cet exemple: que ce produit un map o\`u la cl\'e est
 l'age, etc.}
 
+\IC{J'ai ajout\'e plus des explications pour cet exemple et j'ai ajout\'e aussi un autre exemple, cette fois en utilisant le deuxi\`eme param\`etre de la m\'ethode.}
+
+
+\begin{lstlisting}[
+label={groupByKeyExample2.c++},
+escapechar=\#,
+language=c++,
+caption={[Un pipeline pour regrouper les noms d'employ\'es selon leur \^age.]Un pipeline pour regrouper les noms d'employ\'es selon leur \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+typedef std::unordered_map<int, std::vector<std::string>> 
+        NOMS_EMPLOYES_PAR_AGE;
+
+// Definition (omise) d'un vecteur d'objets Employee.
+std::vector<Employee> employees = ...; 
+employees[3].age = employees[4].age = 18;
+employees[0].age = employees[1].age = employees[2].age = 22;
+employees[7].age = employees[8].age = 33;
+employees[5].age = employees[6].age = employees[9].age = 55;
+
+NOMS_EMPLOYES_PAR_AGE result = 
+   Pipe()
+   .source<Employee>(employees.begin(), employees.end())
+   .groupByKey<Employee, int, std::string>(
+      [](Employee* e) { return &(e->age); 
+      [](Employee* e) { return new std::string(e->name);
+    });
+    
+NOMS_EMPLOYES_PAR_AGE expected = {
+   {18, {"Employee3", "Employee4"}},
+   {22, {"Employee0", "Employee1", "Employee2"}},
+   {33, {"Employee7", "Employee8"}},
+   {55, {"Employee5", "Employee6", "Employee9"}}
+};
+
+// #\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}#
+// #\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}#
+  ...
+\end{lstlisting}
+
+
+La m\'ethode \TT{groupByKey} est d\'efinie avec deux param\`etres. Le deuxi\`eme param\`etre de la m\'ethode est optionnel. Il est repr\'esent\'e par une fonction qui s'applique sur la valeur du \TT{map} de sortie. Par exemple, en prenant le m\^eme exemple d\'efini dans le listing~\ref{groupByKeyExample.c++}, cette fois nous regroupons les noms d'employeurs selon leur \^age. Le listing~\ref{groupByKeyExample2.c++} pr\'esente un tel exemple ou les noms d'employ\'es sont regroup\'es dans un \TT{map}. La cl\'e du \TT{map} est l'\^age d'employeurs et la valeur du map est repr\'esent\'ee par un conteneur contenant les noms d'employeurs de m\^eme cat\'egorie d'\^age.
 
 
 \subsection*{Description formelle de \TT{groupByKey}}
@@ -1203,9 +1245,48 @@ argument est simplement la fonction $id$entit\'e:
 
 \subsubsection{Regroupement des \'el\'ements selon une cl\'e et r\'eduction d'une valeur associ\'ee}
 
-Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une op\'eration similaire dans un style fonctionnel. La m\'ethode \TT{reduceByKey}, d\'ecrite dans le tableau~\ref{methodes_api.tab}, combine les fonctionnalit\'es de regroupement et de r\'eduction en une seule et m\^eme op\'eration. Le programme de d\'ecompte des mots du listing~\ref{wordcount.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Chaque \'el\'ement du flux, qui est un mot contenu dans le fichier, est regroup\'e par son nom et un nombre d'occurrences lui est associ\'e, nombre incr\'ement\'e d'une unit\'e \`a chaque fois que le m\^eme mot est rencontr\'e.
+\begin{lstlisting}[
+label={reduceByKeyExample.c++},
+escapechar=\#,
+language=c++,
+caption={[Un pipeline pour regrouper et compter les employ\'es selon leur \^age.]Un pipeline pour regrouper et compter les employ\'es selon leur \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+typedef std::unordered_map<int, int> NO_EMPLOYES_PAR_AGE;
 
-L'opérateur \TT{ReduceByKeyOperator} associ\'e \`a cette m\'ethode conserve les \'el\'ements dans un conteneur de type cl\'e--valeur --- donc un dictionnaire (\TT{map}). La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si la cl\'e n'est pas trouv\'ee, une nouvelle paire cl\'e--valeur est ajout\'ee. Si la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et sa valeur associ\'ee dans le conteneur. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est sp\'ecifi\'e par l'argument de la m\'ethode \TT{reduceByKey}. Dans le cas particulier du programme de d\'ecompte des mots du listing~\ref{wordcount.c++}, elle a pour r\^ole de compter le nombre d'occurrences de chaque mot. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un \TT{map} de type cl\'e--valeur~: la cl\'e repr\'esente un mot du fichier et la valeur associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier.
+// Definition (omise) d'un vecteur d'objets Employee.
+std::vector<Employee> employees = ...; 
+employees[3].age = employees[4].age = 18;
+employees[0].age = employees[1].age = employees[2].age = 22;
+employees[7].age = employees[8].age = 33;
+employees[5].age = employees[6].age = employees[9].age = 55;
+
+Reducer< Employee, int > reducer(0,
+   [](int count, Employee e) {return count + 1;});
+
+NO_EMPLOYES_PAR_AGE result = 
+   Pipe()
+   .source<Employee>(employees.begin(), employees.end())
+   .reduceByKey<Employee, int, int>(
+   		reducer, [](Employee *e) { return &(e->age); 
+   	});
+    
+NO_EMPLOYES_PAR_AGE expected = {
+   {18, 2},
+   {22, 3 },
+   {33, 2 },
+   {44, 1 },
+   {55, 2 }
+};
+
+// #\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}#
+// #\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}#
+  ...
+\end{lstlisting}
+
+Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une op\'eration similaire dans un style fonctionnel. La m\'ethode \TT{reduceByKey}, d\'ecrite dans le tableau~\ref{methodes_api.tab}, combine les fonctionnalit\'es de regroupement et de r\'eduction en une seule et m\^eme op\'eration. Le listing~\ref{reduceByKeyExample.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Le listing pr\'esente un des tests unitaires pour \TT{reduceByKey}, qui montre que les employ\'es contenus dans un conteneur sont compt\'es selon leur cat\'egorie d'\^age. 
+
+L'opérateur \TT{ReduceByKeyOperator} associ\'e \`a cette m\'ethode conserve les \'el\'ements dans un conteneur de type cl\'e--valeur --- donc un dictionnaire (\TT{map}). La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si la cl\'e n'est pas trouv\'ee, une nouvelle paire cl\'e--valeur est ajout\'ee. Si la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et sa valeur associ\'ee dans le conteneur. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est sp\'ecifi\'e par l'argument de la m\'ethode \TT{reduceByKey}. Dans le cas particulier de l'exemple fourni dans le listing~\ref{reduceByKeyExample.c++}, elle a pour r\^ole de compter le nombre d'employ\'es de m\^eme catégorie d'\^age. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un map de type cl\'e--valeur~: la cl\'e repr\'esente l'\^age d'employ\'es et la valeur associ\'ee repr\'esente le nombre d'employ\'es qui se trouve dans la m\^eme cat\'egorie d'\^age.
 
 
 
@@ -1218,3 +1299,5 @@ m'a sembl\'e pr\'ef\'erable d'omettre les d\'etails des assertions,
 parce qu'elles n'\'etaient pas simples \`a comprendre.  Il me semble
 suffisant qu'on voit \`a quoi ressemble le r\'esultat attendu, comme
 illustr\'e ci-haut.}
+
+\IC{J'ai ajout\'e un exemple de tests unitaire.}
