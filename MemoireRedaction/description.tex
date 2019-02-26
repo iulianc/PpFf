@@ -1321,7 +1321,7 @@ Soit alors les \'el\'ements suivants~:
 \end{itemize}
 
 
-Le r\'esultat d'un appel pour le flux $S$ de la m\'ethode
+Le r\'esultat d'un appel sur le flux $S$ de la m\'ethode
 \TT{groupByKey} avec deux arguments peut alors \^etre d\'ecrit comme
 suit~:
 %
@@ -1400,3 +1400,53 @@ Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'
 Le listing~\ref{reduceByKeyExample.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Le listing pr\'esente un des tests unitaires pour \TT{reduceByKey}, qui d\'enombre les employ\'es en fonction de leur cat\'egorie d'\^age. 
 
 L'opérateur \TT{ReduceByKeyOperator} associ\'e \`a cette m\'ethode conserve les \'el\'ements dans un conteneur de type cl\'e--valeur --- donc un dictionnaire (\TT{map}). La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si la cl\'e n'est pas trouv\'ee, une nouvelle paire cl\'e--valeur est ajout\'ee. Si la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et sa valeur associ\'ee dans le conteneur. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est sp\'ecifi\'e par l'argument de la m\'ethode \TT{reduceByKey}. Dans le cas particulier de l'exemple fourni dans le listing~\ref{reduceByKeyExample.c++}, elle a pour r\^ole de compter le nombre d'employ\'es de m\^eme catégorie d'\^age. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un map de type cl\'e--valeur~: la cl\'e repr\'esente l'\^age d'employ\'es et la valeur associ\'ee repr\'esente le nombre d'employ\'es qui se trouve dans la m\^eme cat\'egorie d'\^age.
+
+\newpage
+
+\subsection*{Description formelle de \TT{reduceByKey}}
+
+Soit les \'el\'ements suivants~: 
+\begin{itemize}
+\item $In$, $K$ et $V$ des types de donn\'ees;
+
+\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
+\in In~(i=0, \ldots, k)$;
+
+\item Soit $r$ = \TT{Reducer($v_0, acc, comb$)} un objet
+\TT{Reducer} avec les attributs $v_0: V$, $acc: V \times In
+\rightarrow V$ et $comb: V \times V \rightarrow V$.
+
+\item $fk: In \rightarrow K$, une fonction sur $In$ qui produit une
+<<cl\'e>> de type $K$;
+\end{itemize}
+
+
+Le r\'esultat d'un appel sur le flux $S$ de la m\'ethode
+\TT{reduceByKey} avec deux arguments peut alors \^etre d\'ecrit comme
+suit~:
+%
+\begin{itemize}
+\item $S.\TT{reduceByKey}(r, fk) = \{ c \mapsto vals(c, S).\TT{reduce}(r)~\vert~c \in
+cles(S)\}$
+
+\item[] O\`u
+\begin{itemize}
+\item $cles(S) = \{ fk(s_i)~\vert~s_i \in S \}$
+\item $vals(c, S) = \{ s_i~\vert~ s_i\in S \wedge fk(s_i) = c\}$
+\end{itemize}
+\end{itemize}
+
+\medskip
+
+
+Quant \`a la m\'ethode $\TT{reduceByKey}$ avec un seul argument, elle est
+\'equivalente \`a celle avec deux arguments, mais o\`u le deuxi\`eme
+argument est simplement la fonction $id$entit\'e:
+%
+\begin{itemize}
+\item $S.\TT{reduceByKey}(r) = S.\TT{reduceByKey}(r, id)$
+\begin{Items}
+\item[] O\`u $id(x) = x$
+\end{Items}
+\end{itemize}
+
