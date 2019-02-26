@@ -144,12 +144,15 @@ Un \emph{stage} repr\'esente le groupement logique d'un ou plusieurs op\'erateur
 
 
 
-\section{Impl\'ementation de \TT{PpFf} \`a l'ex\'ecution}
+\section{Exemple illustrant l'impl\'ementation d'un pipeline \TT{PpFf}
+et son comportement \`a l'ex\'ecution}
 
 \begin{lstlisting}[
 label={listingExampleImplementationPpFf},
 language=c++,
-caption={[Le code source d'une application abstaite.]Le code source d'une application abstaite pour d\'ecrir l'impl\'ementation de PpFf. L'impl\'ementation de la fonction pour chaque op\'eration a \'et\'e omise},
+caption={[Code source d'un pipeline utilis\'e pour illustrer la mise
+en \oe{}uvre de \TT{PpFF}.]Code source d'un pipeline utilis\'e pour illustrer la mise
+en \oe{}uvre de \TT{PpFF}. L'impl\'ementation des fonctions utilis\'ees par chaque op\'eration a \'et\'e omise.},
 frame=single,
 float]
 std::vector<std::string> result = 
@@ -161,17 +164,17 @@ std::vector<std::string> result =
   .collect<std::string, std::string>();
 \end{lstlisting}
 
-Cette section d\'ecrite le mod\`ele d'ex\'ecution de l'API \`a l'aide du code source d'une application \TT{PpFf}. Illustr\'ee dans le listing~\ref{listingExampleImplementationPpFf}, l'application est compos\'ee de quatre op\'erations :
+Cette section d\'ecrit le mod\`ele d'ex\'ecution de l'API \`a l'aide du code source d'un pipeline \TT{PpFf}. Pr\'esent\'e dans le listing~\ref{listingExampleImplementationPpFf}, le pipeline est compos\'e de quatre op\'erations :
 \begin{itemize}
-	\item La première opération, linesFromFile, renvoie un flux séquentiel de lignes à partir du fichier. Le fichier est repéré par le paramètre path fourni en argument;
+	\item La première opération, \TT{linesFromFile}, renvoie un flux séquentiel de lignes à partir du fichier --- le fichier est repéré par le paramètre \TT{path} fourni en argument;
 
-	\item La deuxi\`eme op\'eration, find, s\'electionne dans le flux seulement les mots qui ne sont pas vides;
+	\item La deuxi\`eme op\'eration, \TT{find}, s\'electionne dans le flux les mots qui ne sont pas vides;
 
-	\item L'op\'eration, parallel, marque le flux en tant que flux parall\`ele;
+	\item L'op\'eration, \TT{parallel}, marque le flux en tant que flux parall\`ele, donc ex\'ecut\'e avec plusieurs \emph{threads}~;  
 	
-	\item L'op\'eration map transforme les lettres majuscules du mot en lettres minuscules;
+	\item L'op\'eration \TT{map} transforme les lettres majuscules du mot en minuscules;
 	
-	\item Finalement, la derni\`ere op\'eration, collect, combine tous les \'el\'ements dans un conteneur de type vector.
+	\item Finalement, la derni\`ere op\'eration, \TT{collect}, combine tous les \'el\'ements dans un conteneur de type \TT{std::vector}.
 \end{itemize}
 
-Par souci de simplicit\'e, l'impl\'ementation de la fonction pour chaque op\'eration a \'et\'e omise.
+Par souci de simplicit\'e, l'impl\'ementation de la fonction associ\'ee \`a chaque op\'eration a \'et\'e omise.
