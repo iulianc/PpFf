@@ -218,12 +218,12 @@ namespace PpFf {
 
         template < typename In, typename K = In, typename V = In,
                    typename MapType = std::unordered_map<K, std::vector<V>> >
-            MapType groupByKey(std::function<K*(In*)> const& taskFuncOnKey, 
-                               std::function<V*(In*)> const& taskFuncOnValue = identity<In,V>) {
+            MapType groupByKey(std::function<K*(In*)> const& keyFunction,
+                               std::function<V*(In*)> const& valueFunction = identity<In,V>) {
             typedef GroupByKeyOperator<In, K, V, MapType> GroupByKey;
             
             Collectors<GroupByKey>* collectors = new Collectors<GroupByKey>();
-            collectors->addOperator(pipe.nbWorkers(), taskFuncOnKey, taskFuncOnValue);
+            collectors->addOperator(pipe.nbWorkers(), keyFunction, valueFunction);
             pipe.addStage(collectors);
             pipe.run();
 
@@ -233,11 +233,11 @@ namespace PpFf {
         template < typename In, typename K = In, typename V = In,
                    typename MapType = std::unordered_map<K, V> >
         MapType reduceByKey(Reducer<In, V> const& reducer,
-                            std::function<K*(In*)> const& taskFuncOnKey = identity<In,K>) {
+                            std::function<K*(In*)> const& keyFunction = identity<In,K>) {
             typedef ReduceByKeyOperator<In, K, V, MapType> ReduceByKey;
             
             Collectors<ReduceByKey>* collectors = new Collectors<ReduceByKey>();
-            collectors->addOperator(pipe.nbWorkers(), taskFuncOnKey, reducer);
+            collectors->addOperator(pipe.nbWorkers(), keyFunction, reducer);
             pipe.addStage(collectors);
             pipe.run();
 
