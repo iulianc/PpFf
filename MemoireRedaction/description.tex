@@ -678,6 +678,8 @@ float]
 
        Reducer(Out init, 
                Func<Out(Out, In)> const& accumulator)
+
+       Reducer(Func<Out(Out, In)> const& accumulator)
  }
 \end{lstlisting}
 
@@ -689,7 +691,7 @@ listing), il est préférable de mettre cet élément \underline{avant} la
 première référence (et non pas après).  La position du flottant par
 rapport au texte qui y réfère est alors meilleure.}
 
-L'op\'erateur de classe \TT{Reducer} est utilis\'e pour r\'eduire les \'el\'ements du flux \`a une valeur unique. Le listing~\ref{reducer.c++} présente la spécification  de la classe \TT{Reducer} avec les signatures des fonctions associées. 
+L'op\'erateur de classe \TT{Reducer} est utilis\'e pour r\'eduire les \'el\'ements du flux \`a une valeur unique. Le listing~\ref{reducer.c++} présente la spécification  de la classe \TT{Reducer} avec les signatures des diverses fonctions associées. 
 
 
 \begin{lstlisting}[
@@ -719,8 +721,12 @@ float]
 \end{lstlisting}
 
 
+\GT{J'ai chang\'e la description ci-bas. Ce n'\'etait pas vrai de
+dire, il me semble, que la valeur initiale \'etait la valeur par
+d\'efaut du type, car ce n'est pas cela que fait le code et, de toute
+fa\c{c}on, tu ne peux pas connaitre cette valeur, non?}
 
-Un \TT{Reducer} est construit avec une valeur initiale, une fonction \TT{accumulator} et une fonction \TT{combiner}. La valeur initiale et la fonction \TT{combiner} sont optionnelles gr\^ace \`a la surcharge du constructeur. Lorsque ces arguments sont omis, la valeur initiale est initialis\'ee \`a la valeur par d\'efaut du type de cette valeur et la fonction \TT{combiner} est remplac\'ee par la fonction \TT{accumulator}. Par exemple, le listing~\ref{sumElementsCollectionWithReducer} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer}. La valeur initiale est sp\'ecifi\'ee comme \'etant \TT0 et la fonction \TT{combiner} est indiqu\'ee par la fonction d'addition \TT{std::plus<int>\{\}}. 
+La forme la plus g\'en\'erale d'un \TT{Reducer} est celle construite avec trois \'el\'ements: une valeur initiale, une fonction \TT{accumulator} et une fonction \TT{combiner}. La valeur initiale et la fonction \TT{combiner} sont optionnelles gr\^ace \`a la surcharge du constructeur. Lorsque ces arguments sont omis, la valeur initiale utilis\'ee est le premier \'el\'ement re\c{c}u et la fonction \TT{combiner} est simplement la fonction \TT{accumulator}. Par exemple, le listing~\ref{sumElementsCollectionWithReducer} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer} avec un seul argument~: la valeur initiale n'est pas sp\'ecifi\'ee --- donc la collection \`a traiter doit contenir au moins un \'el\'ement --- et la fonction \TT{combiner}, si n\'ecessaire (voir plus bas) sera simplement la fonction \TT{accumulator}, i.e., l'addition \TT{std::plus<int>\{\}}.
 
 
 \begin{lstlisting}[
@@ -756,7 +762,7 @@ float]
 
 
 
-Le troisi\`eme param\`etre de l'op\'erateur \TT{Reducer}, la fonction \TT{combiner}, est utilis\'ee lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer} mais ex\'ecut\'e en parall\`ele. Dans cet exemple, \`a des fins d'illustration, une valeur initiale est sp\'ecifi\'ee, \'egale \`a \TT3 et, alors que les fonctions \TT{combiner} et \TT{accumulator} sont toutes deux indiqu\'ees comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
+Le troisi\`eme param\`etre de l'op\'erateur \TT{Reducer}, la fonction \TT{combiner}, est utilis\'e lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel} montre un exemple d'utilisation de l'op\'erateur \TT{Reducer} mais ex\'ecut\'e en parall\`ele. Dans cet exemple, \`a des fins d'illustration, une valeur initiale est sp\'ecifi\'ee, \'egale \`a \TT3 et, alors que les fonctions \TT{combiner} et \TT{accumulator} sont toutes deux indiqu\'ees comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
 
 
 \gt{R\'esultat incorrect indiqu\'e je crois: 4953 => 5053!?}
@@ -767,45 +773,112 @@ le résultat attendu est~:  expectedResult = n * (n - 1) / 2;}
 
 \newpage
 
-\GT{PARTIE QUE JE VAIS COMPLETER PLUS TARD... SI NECESSAIRE}
-
 \subsection*{Description formelle d'un \TT{Reducer}}
 
 Soit les \'el\'ements suivants~: 
 \begin{itemize}
-\item $T$ et $R$ des types de donn\'ees;
+\item $In$ et $Out$ des types de donn\'ees;
 
 \item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
-\in T~(i=0, \ldots, k)$;
+\in In~(i=0, \ldots, k)$;
 
-Soit $S_0, \ldots, S_n$ une partition de $S$;
+\item Soit $v_0\in Out$;
 
-\item Soit $v_0\in R$;
+\item Soit $acc: Out\times In \rightarrow Out$;
 
-\item Soit $acc: R\times T \rightarrow R$;
-
-\item Soit $comb: R\times R \rightarrow R$;
-
+\item Soit $comb: Out\times Out \rightarrow Out$;
 
 \end{itemize}
 
-Soit $red$ un \TT{Reducer} avec les attributs $v_0, acc, comb$.
+Notons par~:
+\begin{itemize}
+\item   \TT{Reducer($acc$)} un objet \TT{Reducer} avec l'attribut $acc$~; 
+\item   \TT{Reducer($v_0, acc$)} un objet \TT{Reducer} avec les attributs $v_0$ et $acc$.
+\item   \TT{Reducer($v_0, acc, comb$)} un objet \TT{Reducer} avec les
+attributs $v_0$, $acc$ et $comb$.
+\end{itemize}
 
-Alors $S$\TT{.reduce($red$)}
+\bigskip
+
+Pour les deux premiers types de \TT{Reducer}, on peut alors
+repr\'esenter un appel \`a \TT{reduce} de fa\c{c}on graphiquement
+comme illustr\'e dans la figure~\ref{reduce.fig}.%
+%
+\footnote{Plus formellement~:
+%
+\begin{eqnarray*}
+S\TT{.reduce}(\TT{Reducer}(acc)) 
+  &=& fold\ acc\ s_0\ [s_1, \ldots, s_k]
+\\
+S\TT{.reduce}(\TT{Reducer}(v_0, acc)) 
+  &=& fold\ acc\ v_0\ [s_0, s_1, \ldots, s_k]
+\\
+\\
+fold\ acc\ a\ [~]  
+  &=& a
+\\
+fold\ acc\ a\ [s_0, s_1, \ldots, s_k] 
+  &=& fold\ acc\ (acc\ a\ s_0)\ [s_1, \ldots, s_k]
+\\
+  &=& acc (\ldots (acc\ (acc\ a\ s_0)\ s_1) \ldots) s_k)
+\end{eqnarray*}
+}
+ 
+\begin{figure}
+\begin{minipage}{.05\linewidth}
+\ \ 
+\end{minipage}
+%
+\begin{minipage}{.4\linewidth}
+\begin{alltt}
+\(S\TT{.reduce}(\TT{Reducer}(v\sb0, acc)) =\)
+         \(acc\)
+         \(\slash\) \(\backslash\)
+       \(acc\)  \(s\sb{k}\)
+        \(\slash\) \(\backslash\)
+       \vdots
+      \(\slash\) \(\backslash\)
+    \(acc\)  \(s\sb1\)
+    \(\slash\) \(\backslash\)
+  \(v\sb0\)   \(s\sb0\)
+\end{alltt}
+\end{minipage}
+%
+\begin{minipage}{.1\linewidth}
+\ \ 
+\end{minipage}
+%
+\begin{minipage}{.4\linewidth}
+\begin{alltt}
+\(S\TT{.reduce}(\TT{Reducer}(acc)) =\)
+         \(acc\)
+         \(\slash\) \(\backslash\)
+       \(acc\)  \(s\sb{k}\)
+        \(\slash\) \(\backslash\)
+       \vdots
+      \(\slash\) \(\backslash\)
+    \(acc\)  \(s\sb2\)
+    \(\slash\) \(\backslash\)
+  \(s\sb0\)   \(s\sb1\)
+\end{alltt}
+\end{minipage}
+\caption[Repr\'esentation graphique d'un appel \`a
+\TT{reduce}.]{Repr\'esentation graphique d'un appel \`a
+\TT{reduce}. Chaque n\oe{}ud interm\'ediaire, not\'e avec $acc$,
+repr\'esente un appel \`a la fonction $acc$ avec deux arguments.}
+\label{reduce.fig}
+\end{figure}
+
+\GT{Peut-\^etre serait-il pr\'ef\'erable d'avoir un <<vrai>>
+graphique, plut\^ot que du texte comme dans le alltt ci-haut?}
 
 
-\begin{verbatim}
-S.reduce( Reducer v0 acc comb )
-  = foldr comb r_0 [r_1, ..., r_{k-1}]
-    where
-      [S_0, S_1, ..., S_{k-1}] = splitIntoSubstreams S k
-      [r_0, r_1, ..., r_{k-1}] = [foldr acc v0 S_i | i <- [0, ..., k-1]]
-
-
-foldr f a []     = a
-foldr f a (x:xs) = f x (foldr f a xs)
-\end{verbatim}
-
+\GT{Donnez ensuite quelques explications concernant un appel
+\TT{S.reduce(Reducer($v_0, acc, comb$))}~: Les \'el\'ements de $S$
+sont r\'epartis entre divers \emph{threads}, accumul\'es comme dans la
+figure pour produire un r\'esultat interm\'ediaire par \emph{threads},
+puis ces r\'esultats interm\'ediaires sont $comb$in\'es avec la
+fonction $comb$.}
 \newpage
 
 
@@ -1233,33 +1306,33 @@ comme suit~: $\{\{c_0, v_0\}, \ldots, \{c_n, v_n\}\}$}
 
 Soit alors les \'el\'ements suivants~: 
 \begin{itemize}
-\item $T$, un type de donn\'ees;
+\item $In$, un type de donn\'ees;
 
 \item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
-\in T~(i=0, \ldots, k)$;
+\in In~(i=0, \ldots, k)$;
 
-\item $fc: T \rightarrow C$, une fonction sur  $T$ qui produit une
-<<cl\'e>> de type $C$;
+\item $fk: In \rightarrow K$, une fonction sur  $In$ qui produit une
+<<cl\'e>> de type $K$;
 
-\item $fv: T \rightarrow V$, une fonction sur $T$ qui retourne une
+\item $fv: In \rightarrow V$, une fonction sur $In$ qui retourne une
 <<valeur>> de type $V$;
 
 
 \end{itemize}
 
 
-Le r\'esultat d'un appel pour le flux $S$ de la m\'ethode
+Le r\'esultat d'un appel sur le flux $S$ de la m\'ethode
 \TT{groupByKey} avec deux arguments peut alors \^etre d\'ecrit comme
 suit~:
 %
 \begin{itemize}
-\item $S.\TT{groupByKey}(fc, fv) = \{ c \mapsto vals(c, S)~\vert~c \in
+\item $S.\TT{groupByKey}(fk, fv) = \{ c \mapsto vals(c, S)~\vert~c \in
 cles(S)\}$
 
 \item[] O\`u
 \begin{itemize}
-\item $cles(S) = \{ fc(s_i)~\vert~s_i \in S \}$
-\item $vals(c, S) = \{ fv(s_i)~\vert~ s_i\in S \wedge fc(s_i) = c\}$
+\item $cles(S) = \{ fk(s_i)~\vert~s_i \in S \}$
+\item $vals(c, S) = \{ fv(s_i)~\vert~ s_i\in S \wedge fk(s_i) = c\}$
 \end{itemize}
 
 \end{itemize}
@@ -1270,7 +1343,7 @@ Quant \`a la m\'ethode $\TT{groupByKey}$ avec un seul argument, elle est
 argument est simplement la fonction $id$entit\'e:
 %
 \begin{itemize}
-\item $S.\TT{groupByKey}(fc) = S.\TT{groupByKey}(fc, id)$
+\item $S.\TT{groupByKey}(fk) = S.\TT{groupByKey}(fk, id)$
 \begin{Items}
 \item[] O\`u $id(x) = x$
 \end{Items}
@@ -1327,3 +1400,53 @@ Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'
 Le listing~\ref{reduceByKeyExample.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Le listing pr\'esente un des tests unitaires pour \TT{reduceByKey}, qui d\'enombre les employ\'es en fonction de leur cat\'egorie d'\^age. 
 
 L'opérateur \TT{ReduceByKeyOperator} associ\'e \`a cette m\'ethode conserve les \'el\'ements dans un conteneur de type cl\'e--valeur --- donc un dictionnaire (\TT{map}). La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si la cl\'e n'est pas trouv\'ee, une nouvelle paire cl\'e--valeur est ajout\'ee. Si la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et sa valeur associ\'ee dans le conteneur. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect}, p.~\pageref{reducer.sect})  --- est sp\'ecifi\'e par l'argument de la m\'ethode \TT{reduceByKey}. Dans le cas particulier de l'exemple fourni dans le listing~\ref{reduceByKeyExample.c++}, elle a pour r\^ole de compter le nombre d'employ\'es de m\^eme catégorie d'\^age. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un map de type cl\'e--valeur~: la cl\'e repr\'esente l'\^age d'employ\'es et la valeur associ\'ee repr\'esente le nombre d'employ\'es qui se trouve dans la m\^eme cat\'egorie d'\^age.
+
+\newpage
+
+\subsection*{Description formelle de \TT{reduceByKey}}
+
+Soit les \'el\'ements suivants~: 
+\begin{itemize}
+\item $In$, $K$ et $V$ des types de donn\'ees;
+
+\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
+\in In~(i=0, \ldots, k)$;
+
+\item Soit $r$ = \TT{Reducer($v_0, acc, comb$)} un objet
+\TT{Reducer} avec les attributs $v_0: V$, $acc: V \times In
+\rightarrow V$ et $comb: V \times V \rightarrow V$.
+
+\item $fk: In \rightarrow K$, une fonction sur $In$ qui produit une
+<<cl\'e>> de type $K$;
+\end{itemize}
+
+
+Le r\'esultat d'un appel sur le flux $S$ de la m\'ethode
+\TT{reduceByKey} avec deux arguments peut alors \^etre d\'ecrit comme
+suit~:
+%
+\begin{itemize}
+\item $S.\TT{reduceByKey}(r, fk) = \{ c \mapsto vals(c, S).\TT{reduce}(r)~\vert~c \in
+cles(S)\}$
+
+\item[] O\`u
+\begin{itemize}
+\item $cles(S) = \{ fk(s_i)~\vert~s_i \in S \}$
+\item $vals(c, S) = \{ s_i~\vert~ s_i\in S \wedge fk(s_i) = c\}$
+\end{itemize}
+\end{itemize}
+
+\medskip
+
+
+Quant \`a la m\'ethode $\TT{reduceByKey}$ avec un seul argument, elle est
+\'equivalente \`a celle avec deux arguments, mais o\`u le deuxi\`eme
+argument est simplement la fonction $id$entit\'e:
+%
+\begin{itemize}
+\item $S.\TT{reduceByKey}(r) = S.\TT{reduceByKey}(r, id)$
+\begin{Items}
+\item[] O\`u $id(x) = x$
+\end{Items}
+\end{itemize}
+
