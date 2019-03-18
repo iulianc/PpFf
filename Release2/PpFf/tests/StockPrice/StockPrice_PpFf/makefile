@@ -32,22 +32,29 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
 
-
 # Tell make that these target are not real files
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
 
+
+compile: $(EXE)
+	javac OptionData.java StockPrice.java
+
+run:  run_cpp run_java
 default: run
 
 compile: $(EXE)
-
-run: run_cpp
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
 	@./StockPrice $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS)
 
+
+run_java: compile
+	@echo "*** Execution Java ***"
+	@java -cp . StockPrice $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
+	@diff obtenus-java.txt $(ATTENDUS)
 
 all		: $(EXE)
 	./StockPrice 
