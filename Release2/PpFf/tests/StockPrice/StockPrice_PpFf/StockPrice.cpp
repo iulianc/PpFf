@@ -16,6 +16,7 @@
 #include <Pipe.hpp>
 #include <unordered_map>
 #include <ctype.h>
+#include <iomanip>
 
 #include "black_scholes.hpp"
 
@@ -100,7 +101,7 @@ int main(int argc, char* argv[]) {
     for (auto it = orderedResult.begin(); it != orderedResult.end(); it++) {
         std::string currentResultKey = it->first;
         double currentResultValue = it->second;
-        std::cout << currentResultKey << " => " << currentResultValue << std::endl;
+        std::cout << currentResultKey << " => " << std::fixed << std::setprecision(4) << currentResultValue << std::endl;
     }
 
     return 0;

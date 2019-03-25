@@ -28,7 +28,7 @@ public class StockPrice {
         double divq = Double.parseDouble(structData[4].trim());
         double v = Double.parseDouble(structData[5].trim());
         double t = Double.parseDouble(structData[6].trim());
-        char OptionType = structData[7].trim().charAt(0);
+        int OptionType = (structData[7].trim().charAt(0) == 'P') ? 1 : 0;
         double divs = Double.parseDouble(structData[8].trim());
         double DGrefval = Double.parseDouble(structData[9].trim());
         
@@ -71,7 +71,7 @@ public class StockPrice {
     	System.err.println("Temps Java: " + milliseconds + " ms");       
        
         stockPrice.forEach( x -> 
-                        System.out.println( x.getKey() + " => " + x.getValue() ) ); 
+                        System.out.println( x.getKey() + " => " + String.format("%.4f", x.getValue() ) ) ); 
         
     }
     

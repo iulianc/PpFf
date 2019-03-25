@@ -34,6 +34,7 @@
 #include <string>
 #include <unordered_map>
 #include <map>
+#include <iomanip>
 
 #include "black_scholes.hpp"
 #include "defs.h"
@@ -98,7 +99,7 @@ int main(int argc, char** argv) {
   /* print results */
   std::ofstream out_file(out_fname);
   //for (auto item : red) out_file << item.second.to_string() << std::endl;
-  for (auto item : red) out_file << item.second.Key() << " => " << item.second.Value() << std::endl;
+  for (auto item : red) out_file << item.second.Key() << " => " << std::fixed << std::setprecision(4) << item.second.Value() << std::endl;
 
 
   return 0;

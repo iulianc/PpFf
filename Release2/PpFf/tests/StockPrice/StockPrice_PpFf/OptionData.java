@@ -17,7 +17,7 @@ public class OptionData {
     double v;       // volatility
     double t;  // time to maturity or option expiration in years (1yr = 1.0, 6mos
                // = 0.5, 3mos = 0.25, ..., etc)
-    char OptionType;   // Option type.  "P"=PUT, "C"=CALL
+    int OptionType;   // Option type.  "P"=PUT, "C"=CALL
     double divs;      // dividend vals (not used in this test)
     double DGrefval;  // DerivaGem Reference Value  
     
@@ -31,7 +31,7 @@ public class OptionData {
         this.StockName = value;
     }
   
-    public OptionData(String StockName, double s, double strike, double r, double divq, double v, double t, char OptionType, double divs, double DGrefval){
+    public OptionData(String StockName, double s, double strike, double r, double divq, double v, double t, int OptionType, double divs, double DGrefval){
         this.StockName = StockName;
         this.s = s;
         this.strike = strike;
