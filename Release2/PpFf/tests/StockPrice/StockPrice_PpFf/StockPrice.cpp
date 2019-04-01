@@ -83,8 +83,9 @@ int main(int argc, char* argv[]) {
         currentResult = 
             Pipe()
             .linesFromFile(inputFile)
+			.parallel(2)
             .map<std::string, OptionData>(getOptionData)
-	    .map<OptionData, StockAndPrice>(calculateStockPrice)
+			.map<OptionData, StockAndPrice>(calculateStockPrice)
             .reduceByKey<StockAndPrice, std::string, double>(reducer, [](StockAndPrice *sp) { return &(sp->StockName); });
 
     }

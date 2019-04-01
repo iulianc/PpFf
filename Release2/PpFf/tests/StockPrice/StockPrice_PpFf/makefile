@@ -1,7 +1,7 @@
 #def:
 #	make -f gt-makefile
 
-NB_TIMES=1
+NB_TIMES=5
 
 # Specify the final target name
 EXE 		:= StockPrice

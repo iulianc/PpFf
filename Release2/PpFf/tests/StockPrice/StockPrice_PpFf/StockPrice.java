@@ -58,6 +58,7 @@ public class StockPrice {
        
 	for (int i = 0; i < nbIterations; ++i) {
           stockPrice = Files.lines(Paths.get(inputFile))
+				.parallel()
                 .map(ligne -> StockPrice.getOptionData(ligne))
                 .map( opData -> new SimpleEntry<>(opData.StockName, opData.BlkSchlsEqEuroNoDiv()) )
                 .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 > v2 ? v1 : v2) )
@@ -70,8 +71,8 @@ public class StockPrice {
     	double milliseconds = (double) duration / 1000000;
     	System.err.println("Temps Java: " + milliseconds + " ms");       
        
-        stockPrice.forEach( x -> 
-                        System.out.println( x.getKey() + " => " + String.format("%.4f", x.getValue() ) ) ); 
+        stockPrice.forEach( x ->
+                        System.out.println( x.getKey() + " => " + ( String.format("%.4f", x.getValue() ).replace(",",".") ) ) );
         
     }
     
