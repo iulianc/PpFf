@@ -24,6 +24,7 @@ using namespace PpFf;
 
 #define DEFAULT_NB_ITERATIONS 1
 #define DEFAULT_INPUT_FILE "/home/iuly/PpFf_JapetServer/tests/StockPrice/testdata/stock_options_64K.txt"
+#define DEFAULT_NB_THREADS 1
 
 
 struct StockAndPrice {
@@ -58,6 +59,7 @@ StockAndPrice* calculateStockPrice(OptionData* opt) {
 int main(int argc, char* argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
     std::string inputFile = DEFAULT_INPUT_FILE;
+    uint32_t nbThreads = DEFAULT_NB_THREADS;
 
     if (argc >= 2) {
         inputFile = argv[1];
@@ -65,6 +67,10 @@ int main(int argc, char* argv[]) {
 
     if (argc >= 3) {
         nbIterations = atoi(argv[2]);
+    }
+    
+    if (argc >= 4) {
+        nbThreads = atoi(argv[3]);
     }
     
     Reducer<StockAndPrice, double> reducer(0.0, 
@@ -82,9 +88,10 @@ int main(int argc, char* argv[]) {
         currentResult = 
             Pipe()
             .linesFromFile(inputFile)
-            .parallel(2)
+            .parallel(nbThreads)
             .map<std::string, OptionData>(getOptionData)
             .map<OptionData, StockAndPrice>(calculateStockPrice)
+            .parallel(1)
             .reduceByKey<StockAndPrice, std::string, double>(reducer, 
                                                              [](StockAndPrice* sp) { return &(sp->StockName); });
         
@@ -92,7 +99,7 @@ int main(int argc, char* argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
     
-    std::cerr << "Temps C++:  " << duration_ms / nbIterations << " ms" << std::endl;
+    std::cerr << "Temps C++ (" << nbIterations << " iterations; " << nbThreads << " threads): " << duration_ms / nbIterations << " ms" << std::endl;
     
     std::map<std::string, double> orderedResult;
     for (auto it = currentResult.begin(); it != currentResult.end(); it++) {

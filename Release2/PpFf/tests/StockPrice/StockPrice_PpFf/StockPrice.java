@@ -69,7 +69,7 @@ public class StockPrice {
      	long duration = (System.nanoTime() - startTime) / nbIterations;
     
     	double milliseconds = (double) duration / 1000000;
-    	System.err.println("Temps Java: " + milliseconds + " ms");       
+    	System.err.println("Temps Java (" + nbIterations + " iterations): " + milliseconds + " ms");       
        
         stockPrice.forEach( x ->
                         System.out.println( x.getKey() + " => " + ( String.format("%.4f", x.getValue() ).replace(",",".") ) ) );
