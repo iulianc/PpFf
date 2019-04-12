@@ -1,13 +1,3 @@
-_def: compile
-	@java -cp . StockPrice $(TEST_FILE) 1 | sort > obtenus-java.txt
-	@java -cp . StockPrice $(TEST_FILE) 2 | sort > obtenus-java.txt
-	@java -cp . StockPrice $(TEST_FILE) 4 | sort > obtenus-java.txt
-	@java -cp . StockPrice $(TEST_FILE) 8 | sort > obtenus-java.txt
-	@java -cp . StockPrice $(TEST_FILE) 16 | sort > obtenus-java.txt
-	@java -cp . StockPrice $(TEST_FILE) 32 | sort > obtenus-java.txt
-	@java -cp . StockPrice $(TEST_FILE) 64 | sort > obtenus-java.txt
-	@java -cp . StockPrice $(TEST_FILE) 128 | sort > obtenus-java.txt
-
 def: compile
 	@echo "*** Execution avec divers nombres d'iterations et de threads *** "
 	@./StockPrice $(TEST_FILE) 1 1 | sort > obtenus-cpp.txt
@@ -33,6 +23,12 @@ def: compile
 	@./StockPrice $(TEST_FILE) 8 3 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 8 4 | sort > obtenus-cpp.txt
 	@java -cp . StockPrice $(TEST_FILE) 8 | sort > obtenus-java.txt
+	@echo
+	@./StockPrice $(TEST_FILE) 16 1 | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 2 | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 3 | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 4 | sort > obtenus-cpp.txt
+	@java -cp . StockPrice $(TEST_FILE) 16 | sort > obtenus-java.txt
 
 .IGNORE:
 

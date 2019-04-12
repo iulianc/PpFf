@@ -66,10 +66,10 @@ public class StockPrice {
                 .collect( Collectors.toList() );  
 	}
 
-     	long duration = (System.nanoTime() - startTime) / nbIterations;
+     	long duration = (System.nanoTime() - startTime);
     
     	double milliseconds = (double) duration / 1000000;
-    	System.err.println("Temps Java (" + nbIterations + " iterations): " + milliseconds + " ms");       
+    	System.err.println("Temps Java (" + String.format("%3d", nbIterations) + " it.):         " + String.format("%6.0f", milliseconds) + " ms" + " {" + String.format("%5.0f", milliseconds / nbIterations) + " ms/it. }" );       
        
         stockPrice.forEach( x ->
                         System.out.println( x.getKey() + " => " + ( String.format("%.4f", x.getValue() ).replace(",",".") ) ) );

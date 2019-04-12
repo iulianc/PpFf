@@ -99,7 +99,8 @@ int main(int argc, char* argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
     
-    std::cerr << "Temps C++ (" << nbIterations << " iterations; " << nbThreads << " threads): " << duration_ms / nbIterations << " ms" << std::endl;
+    fprintf( stderr, "Temps C++  (%3d it.; %2d thr.): %5ld ms {%5ld ms/it. }\n",
+             nbIterations, nbThreads, duration_ms, duration_ms / nbIterations );
     
     std::map<std::string, double> orderedResult;
     for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
