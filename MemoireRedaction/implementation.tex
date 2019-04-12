@@ -144,7 +144,7 @@ Un \emph{stage} repr\'esente le groupement logique d'un ou plusieurs op\'erateur
 
 
 
-\section{Impl\'ementation de \TT{PpFf} \`a l'ex\'ecution}
+\section{Impl\'ementation de \TT{PpFf} avec FastFlow: Un exemple}
 
 \begin{lstlisting}[
 label={listingExampleImplementationPpFf},
@@ -163,15 +163,15 @@ std::vector<std::string> result =
 
 Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code source d'une petite application. Illustr\'ee dans le listing~\ref{listingExampleImplementationPpFf}, l'application est compos\'ee des op\'erations suivantes :
 \begin{itemize}
-	\item L'opération \TT{linesFromFile} renvoie un flux séquentiel de lignes à partir d'un fichier~; le fichier est identifi\'e par le paramètre \TT{path} fourni en argument;
+	\item L'opération \TT{linesFromFile} g\'en\`ere un flux séquentiel de lignes à partir d'un fichier --- le fichier est identifi\'e par le paramètre \TT{path} fourni en argument;
 
-	\item L'op\'eration \TT{find} s\'electionne dans le flux les mots qui ne sont pas vides;
+	\item L'op\'eration \TT{find} s\'electionne dans le flux d'entr\'ee les mots qui ne sont pas vides;
 
-	\item L'op\'eration \TT{parallel} indique que les op\'erations subs\'equentes doivent \^etre ex\'ecut\'ees en parall\`ele;
+	\item L'op\'eration \TT{parallel} indique que les op\'erations subs\'equentes doivent \^etre ex\'ecut\'ees en parall\`ele, ici, avec deux \emph{threads};
 	
-	\item L'op\'eration \TT{map} transforme les lettres majuscules du mot en minuscules;
+	\item L'op\'eration \TT{map} transforme les lettres majuscules du mot en lettres minuscules;
 	
-	\item Finalement, l'op\'eration \TT{collect} combine tous les \'el\'ements r\'esultants dans un conteneur de type \TT{vector}.
+	\item Finalement, l'op\'eration \TT{collect} combine tous les \'el\'ements obtenus dans un conteneur de type \TT{vector}.
 \end{itemize}
 
 Par souci de simplicit\'e, l'impl\'ementation de la fonction pour chaque op\'eration a \'et\'e omise.
@@ -189,23 +189,25 @@ Par souci de simplicit\'e, l'impl\'ementation de la fonction pour chaque op\'era
 
 La classe \TT{Pipeline} de l'API repr\'esente l'entit\'e principale de l'application. \`A l'ex\'ecution, le \TT{Pipeline} correspond \`a la classe \TT{ff\_pipeline} de \TT{FastFlow}. Un \TT{Pipeline} est compos\'e de plusieurs nœuds de type \TT{ff\_node} ou \TT{ff\_farm}. La figure~\ref{ExempleRuntimeExecution.fig} montre la repr\'esentation graphique d'un \TT{Pipeline} compos\'e des op\'erateurs d\'ecrits dans le listing~\ref{listingExampleImplementationPpFf}.
  
-Dans un \TT{Pipeline} le premier op\'erateur est toujours un op\'erateur d'entr\'ee, lequel est impl\'ement\'e sous forme d'un \TT{ff\_node}. Dans notre exemple, \TT{linesFromFile} renvoie un flux s\'equentiel de lignes \`a partir d'un fichier. De plus, l'op\'erateur d'entr\'ee a le r\^ole d'envoyer un signal \TT{EOS} lorsque la g\'en\'eration d'entr\'ee est termin\'ee. \TT{EOS} instruit les nœuds \TT{ff\_node}s de \TT{FastFlow} de finir leur ex\'ecution apr\`es la r\'eception de celui-ci.
+Dans un \TT{Pipeline}, le premier op\'erateur est toujours un op\'erateur d'entr\'ee, lequel est impl\'ement\'e sous forme d'un \TT{ff\_node}. Dans notre exemple, \TT{linesFromFile} renvoie un flux s\'equentiel de lignes \`a partir d'un fichier. De plus, l'op\'erateur d'entr\'ee a aussi la t\^ache d'envoyer un signal \TT{EOS} lorsque la g\'en\'eration d'entr\'ee est termin\'ee~: \TT{EOS} indique aux nœuds \TT{ff\_node}s de \TT{FastFlow} de terminer leur ex\'ecution apr\`es la r\'eception de celui-ci.
 
-La classe repr\'esentant chaque nœud dans un \TT{Pipeline} contient les informations concernant son r\^ole dans la chaine du traitement. Par exemple, l'op\'erateur \TT{find} du listing~\ref{listingExampleImplementationPpFf} a pour r\^ole de s\'electionner dans le flux seulement les mots qui ne sont pas vides. Ce r\^ole est d\'efini par utilisateur \`a la cr\'eation du \TT{Pipeline}. 
-
-
-Un \TT{Pipeline} est toujours ex\'ecut\'e en parall\`ele. Nous rappelons que, dans \TT{FastFlow}, chaque \TT{ff\_node} est un thread. Le mod\`ele de parall\'elisme de t\^aches est appliqu\'e par d\'efaut. Lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la chaine du traitement d'un \TT{Pipeline}, les op\'erateurs subs\'equents sont ex\'ecut\'es en parall\`ele, et ce en utilisant du parall\'elisme de donn\'ees. Dans l'exemple du listing~\ref{listingExampleImplementationPpFf}, les deux premiers op\'erateurs sont ex\'ecut\'es en parall\`ele, avec du parall\'elisme de t\^aches, alors que du  parall\'elisme de donn\'ees est aussi exploit\'e pour les derniers op\'erateurs. 
-
-Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en œuvre avec la classe \TT{ff\_farm} de \TT{FastFlow}. La cr\'eation du flux de traitement en utilisant le mod\`ele de parall\'elisme de donn\'ees est simple. Lorsque la m\'ethode \TT{parallel()} est invoqu\'ee, une classe de type \TT{ff\_farm} est ajout\'ee dans le \TT{Pipeline}. Pour chaque \emph{worker} de \TT{ff\_farm}, un nouveau \TT{ff\_pipeline} est cr\'e\'e. Les op\'erateurs ajout\'es dans la chaine du traitement de l'API seront ajout\'es comme nœuds dans les nouveaux \TT{ff\_pipeline} cr\'e\'es. Par exemple, les op\'erateurs \TT{map} et \TT{collect} de la figure~\ref{ExempleRuntimeExecution.fig} sont ajout\'es dans le \TT{pipeline} de chaque \TT{worker} de \TT{ff\_farm}. 
+La classe repr\'esentant chaque nœud dans un \TT{Pipeline} contient les informations concernant son r\^ole dans la chaine du traitement. Par exemple, l'op\'erateur \TT{find} du listing~\ref{listingExampleImplementationPpFf} a pour r\^ole de s\'electionner dans le flux seulement les mots qui ne sont pas vides. Ce r\^ole est d\'efini par l'utilisateur \`a la cr\'eation du \TT{Pipeline}, en fournissant une fonction ou lambda-expression \`a \TT{find}.
 
 
-\GT{Ce serait int\'eressant --- mais \`a voir si c'est possible, simple, compliqu\'e? --- de montrer une repr\'esentation graphique du pipeline FastFlow ainsi g\'en\'er\'e!}
+Les divers op\'erateurs d'un \TT{Pipeline} sont toujours ex\'ecut\'es en parall\`ele.  Rappelons que, dans \TT{FastFlow}, chaque \TT{ff\_node} est associ\'e \`a un \emph{thread} ind\'ependant. Le mod\`ele de parall\'elisme de t\^aches --- plus sp\'ecifiquement, de flux --- est donc appliqu\'e par d\'efaut. 
 
-L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'ethode \TT{run\_and\_wait\_end()} de la classe \TT{ff\_pipeline} de \TT{FastFlow}. Chaque \TT{ff\_node} de \TT{ff\_pipeline} est une classe C++ qui entre dans une boucle infinie via sa m\'ethode \TT{svc()} o\`u:
+En outre, lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la chaine du traitement d'un \TT{Pipeline}, les op\'erateurs subs\'equents sont ex\'ecut\'es en parall\`ele, et ce en utilisant du parall\'elisme de donn\'ees. Dans l'exemple du listing~\ref{listingExampleImplementationPpFf}, les deux premiers op\'erateurs sont ex\'ecut\'es en parall\`ele, avec du parall\'elisme de t\^aches, alors que du parall\'elisme de t\^aches et du parall\'elisme de donn\'ees sont aussi exploit\'es pour les op\'erateurs suivants (apr\`es \TT{parallel}). 
+
+Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en œuvre avec la classe \TT{ff\_farm} de \TT{FastFlow}. La cr\'eation du flux de traitement en utilisant le mod\`ele de parall\'elisme de donn\'ees est simple. Lorsque la m\'ethode \TT{parallel()} est invoqu\'ee, une instance de la classe \TT{ff\_farm} est ajout\'ee dans le \TT{Pipeline}. Pour chaque \emph{worker} de \TT{ff\_farm}, un nouveau \TT{ff\_pipeline} est cr\'e\'e. Les op\'erateurs ajout\'es dans la chaine du traitement  sont ajout\'es comme nœuds dans les nouveaux \TT{ff\_pipeline} cr\'e\'es. Par exemple, les op\'erateurs \TT{map} et \TT{collect} de la figure~\ref{ExempleRuntimeExecution.fig} sont ajout\'es dans le \TT{pipeline} de chaque \TT{worker} de \TT{ff\_farm}. 
+
+
+\GT{Ce serait int\'eressant --- est-ce possible ou trop compliqu\'e? --- de montrer une repr\'esentation graphique du pipeline FastFlow ainsi g\'en\'er\'e! Dans ce cas, on verrait alors mieux les \'el\'ements FastFlow qui correspondent aux op\'erateurs PpFf.}
+
+L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'ethode \TT{run\_and\_wait\_end()} de la classe \TT{ff\_pipeline} de \TT{FastFlow}. Chaque \TT{ff\_node} de \TT{ff\_pipeline} est une instance de la classe C++ \TT{ff\_node} qui, dans sa m\'ethode \TT{svc()},  ex\'ecute une boucle de traitement qui va comme suit:
 \begin{itemize}
 	\item elle obtient du canal d'entr\'ee, via un pointeur, un \'el\'ement \`a traiter;
 	\item elle ex\'ecute le code sur l'\'el\'ement;
 	\item elle \'emet dans le canal de sortie,  via un pointeur,  l'\'el\'ement produit;
 \end{itemize}
 
-Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'au moment qu'ils re\c coivent le signal \TT{EOS} (\emph{End-Of-Stream}). \`A ce moment, tous les nœuds seront d\'etruits. Dans le cas du traitement du mod\`ele de parall\'elisme de donn\'ees, le r\'esultat global est obtenu en combinant les r\'esultats du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Par exemple, chaque op\'erateur \TT{collect} repr\'esent\'e dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires.
+Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS} (\emph{End-Of-Stream}). \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es au de parall\'elisme de donn\'ees, le r\'esultat global de l'op\'erateur est obtenu en combinant les r\'esultats de chacun des sous-flux, produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'erateur \TT{collect} repr\'esent\'e dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires.
