@@ -1,34 +1,48 @@
-def: compile
+
+# Oter le commentaire de la 2e ligne pour desactiver JIT de Java
+AVEC_SANS_JIT=-Djava.compiler=NONE
+#AVEC_SANS_JIT=
+
+def: _exemple_jit_
+
+_exemple_jit_: 
+	make compile
+	@java -cp . StockPrice $(TEST_FILE) 1 | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 1 | sort > obtenus-java.txt
+	@java -cp . StockPrice $(TEST_FILE) 10 | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 10 | sort > obtenus-java.txt
+
+benchmarks: compile
 	@echo "*** Execution avec divers nombres d'iterations et de threads *** "
 	@./StockPrice $(TEST_FILE) 1 1 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 1 2 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 1 3 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 1 4 | sort > obtenus-cpp.txt
-	@java -cp . StockPrice $(TEST_FILE) 1 | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 1 | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 2 1 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 2 2 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 2 3 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 2 4 | sort > obtenus-cpp.txt
-	@java -cp . StockPrice $(TEST_FILE) 2 | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 2 | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 4 1 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 4 2 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 4 3 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 4 4 | sort > obtenus-cpp.txt
-	@java -cp . StockPrice $(TEST_FILE) 4 | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 4 | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 8 1 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 8 2 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 8 3 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 8 4 | sort > obtenus-cpp.txt
-	@java -cp . StockPrice $(TEST_FILE) 8 | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 8 | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 16 1 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 16 2 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 16 3 | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 16 4 | sort > obtenus-cpp.txt
-	@java -cp . StockPrice $(TEST_FILE) 16 | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 16 | sort > obtenus-java.txt
 
 .IGNORE:
 
@@ -85,7 +99,7 @@ run_cpp: compile
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . StockPrice $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS)
 
 all		: $(EXE)
