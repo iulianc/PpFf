@@ -155,10 +155,20 @@ float]
 std::vector<std::string> result = 
   Pipe()
   .linesFromFile(path) 
-  .find<std::string>(notEmpty)
+  .find<std::string>([](std::string *s){return s->size() > 0;})
   .parallel(2)
-  .map<std::string, std::string>(toLowercaseLetters)
-  .collect<std::string, std::string>();
+  .map<std::string, std::string>([](std::string *s) {
+	   std::string* result = new std::string;
+       for (char c: *s) {
+         if ('a' <= c && c <= 'z') {
+           result->push_back(c);
+         } else if ('A' <= c && c <= 'Z') {
+           result->push_back(c-('Z'-'z'));
+         }
+       }
+   	   return result;
+     })
+  .collect<std::string, std::vector>();
 \end{lstlisting}
 
 Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code source d'une petite application. Illustr\'ee dans le listing~\ref{listingExampleImplementationPpFf}, l'application est compos\'ee des op\'erations suivantes :
@@ -174,9 +184,9 @@ Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code so
 	\item Finalement, l'op\'eration \TT{collect} combine tous les \'el\'ements obtenus dans un conteneur de type \TT{vector}.
 \end{itemize}
 
-Par souci de simplicit\'e, l'impl\'ementation de la fonction pour chaque op\'eration a \'et\'e omise.
-%
 \GT{Je crois qu'il serait pr\'ef\'erable, <<par souci de compl\'etude>> et pour assurer que le lecteur comprenne bien ce que fait le programme, de fournir aussi ces fonctions, quitte \`a les d\'efinir simplement sous forme d'expression-lambda.}
+
+\IC{J'ai impl\'ement\'e les fonctions sous forme d'expression-lambda.}
 
 
 \begin{figure}[ht]
@@ -198,10 +208,19 @@ Les divers op\'erateurs d'un \TT{Pipeline} sont toujours ex\'ecut\'es en parall\
 
 En outre, lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la chaine du traitement d'un \TT{Pipeline}, les op\'erateurs subs\'equents sont ex\'ecut\'es en parall\`ele, et ce en utilisant du parall\'elisme de donn\'ees. Dans l'exemple du listing~\ref{listingExampleImplementationPpFf}, les deux premiers op\'erateurs sont ex\'ecut\'es en parall\`ele, avec du parall\'elisme de t\^aches, alors que du parall\'elisme de t\^aches et du parall\'elisme de donn\'ees sont aussi exploit\'es pour les op\'erateurs suivants (apr\`es \TT{parallel}). 
 
-Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en œuvre avec la classe \TT{ff\_farm} de \TT{FastFlow}. La cr\'eation du flux de traitement en utilisant le mod\`ele de parall\'elisme de donn\'ees est simple. Lorsque la m\'ethode \TT{parallel()} est invoqu\'ee, une instance de la classe \TT{ff\_farm} est ajout\'ee dans le \TT{Pipeline}. Pour chaque \emph{worker} de \TT{ff\_farm}, un nouveau \TT{ff\_pipeline} est cr\'e\'e. Les op\'erateurs ajout\'es dans la chaine du traitement  sont ajout\'es comme nœuds dans les nouveaux \TT{ff\_pipeline} cr\'e\'es. Par exemple, les op\'erateurs \TT{map} et \TT{collect} de la figure~\ref{ExempleRuntimeExecution.fig} sont ajout\'es dans le \TT{pipeline} de chaque \TT{worker} de \TT{ff\_farm}. 
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=0.8\textwidth]{Figures/ExempleRuntimeExecutionFF.jpg}
+      \caption[Repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erateurs d\'efinis par l'utilisateur : \TT{lineFromFile} (Lff), \TT{find} (Find), les deux \TT{map} (Map) et les deux \TT{collector} (Collec). Les cercles en jaunes repr\'esentent l'\TT{Emitor} et le \TT{Collector} de \TT{ff\_farm}.}
+       \label{ExempleRuntimeExecutionFF.fig}
+\end{figure}
+
+Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en œuvre avec la classe \TT{ff\_farm} de \TT{FastFlow}. La cr\'eation du flux de traitement en utilisant le mod\`ele de parall\'elisme de donn\'ees est simple. Lorsque la m\'ethode \TT{parallel()} est invoqu\'ee, une instance de la classe \TT{ff\_farm} est ajout\'ee dans le \TT{Pipeline}. Pour chaque \emph{worker} de \TT{ff\_farm}, un nouveau \TT{ff\_pipeline} est cr\'e\'e. Les op\'erateurs ajout\'es dans la chaine du traitement  sont ajout\'es comme nœuds dans les nouveaux \TT{ff\_pipeline} cr\'e\'es. Par exemple, les op\'erateurs \TT{map} et \TT{collect} du listing~\ref{listingExampleImplementationPpFf} sont ajout\'es dans le \TT{pipeline} de chaque \TT{worker} de \TT{ff\_farm}. La figure~\ref{ExempleRuntimeExecutionFF.fig} montre la repr\'esentation graphique de \TT{FastFlow}. Chaque cercle est une classe de type \TT{ff\_node}. Les cercles en bleu repr\'esentent les op\'erateurs d\'efinis par l'utilisateur : \TT{lineFromFile} (Lff), \TT{find} (Find), les deux \TT{map} (Map) et les deux \TT{collector} (Collec). Les cercles en jaunes repr\'esentent l'\TT{Emitor} et le \TT{Collector} de \TT{ff\_farm}. 
 
 
 \GT{Ce serait int\'eressant --- est-ce possible ou trop compliqu\'e? --- de montrer une repr\'esentation graphique du pipeline FastFlow ainsi g\'en\'er\'e! Dans ce cas, on verrait alors mieux les \'el\'ements FastFlow qui correspondent aux op\'erateurs PpFf.}
+
+\IC{J’ai ajout\'e un diagramme pour montrer le flux dans FastFlow.}
 
 L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'ethode \TT{run\_and\_wait\_end()} de la classe \TT{ff\_pipeline} de \TT{FastFlow}. Chaque \TT{ff\_node} de \TT{ff\_pipeline} est une instance de la classe C++ \TT{ff\_node} qui, dans sa m\'ethode \TT{svc()},  ex\'ecute une boucle de traitement qui va comme suit:
 \begin{itemize}
