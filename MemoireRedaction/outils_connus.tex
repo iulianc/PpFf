@@ -29,7 +29,30 @@ Le paradigme de programmation parall\`ele par flux de donn\'ees offre une approc
 
 
 
-Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de deux syst\`emes de traitement de flux de donn\'ees~: les \TT{Stream} de Java~8 et \TT{FastFlow}.  Ce sont deux parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, pr\'esent\'e aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
+Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apach Spark}, les \TT{Stream} de Java~8 et \TT{FastFlow}.  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, pr\'esent\'e aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
+
+
+\section{Apach Spark}
+
+\TT{Apache Spark} \citep{apachSpark} est un outil de traitement par lots qui a aussi des capacit\'es de traitement des flux de donn\'ees. Conçu initialement pour r\'esoudre certaines problématiques de l'approche MapReduce (par ex., Hadoop \citep{white2012hadoop}), Spark se concentre principalement sur l'acc\'el\'eration du traitement des donn\'ees en gardant en m\'emoire les donn\'ees de travail.
+
+Alors que le traitement en m\'emoire contribue consid\'erablement \`a la vitesse, Spark est \'egalement rapide avec le traitement de donn\'ees sur disques en raison de l'optimisation qui peut \^etre r\'ealis\'ee en analysant l'ensemble complet des t\^aches \`a l'avance. Ceci peut \^etre r\'ealis\'e en cr\'eant des graphes acycliques dirig\'es (DAG) qui repr\'esentent toutes les op\'erations qui doivent \^etre ex\'ecut\'ees, les donn\'ees \`a \^etre utilis\'ees, ainsi que les relations entre elles. \`A l'aide de ce m\'ecanisme, le processeur a la capacit\'e de coordonner le travail intelligemment.
+
+Afin d'implémenter le traitement de donn\'ees, Spark utilise le mod\`ele appel\'e \TT{Resilient Distributed Datasets (RDD)} \citep{Salloum2016} qui g\`ere efficacement la m\'emoire. De plus, il impl\'emente le mod\`ele \TT{Discretized Streams} \citep{zaharia2013discretized} pour le traitement de flux.
+
+
+\subsection{Resilient Distributed Dataset (RDD)}
+
+\TT{RDD} est une abstraction de m\'emoire qui \'evite la r\'eplication de donn\'ees et minimise les recherches sur disque. Il permet aux applications de mettre en cache des donn\'ees \`a travers diff\'erentes \'etapes de traitement, ce qui acc\'el\`ere consid\'erablement la r\'eutilisation pour les donn\'ees futures. De plus, les RDD peuvent se souvenir des op\'erations utilis\'ees pour les construire. Lorsqu'une panne survient, ils peuvent reconstruire les donn\'ees avec une surcharge du r\'eseau minimale.
+
+Les \TT{RDD} sont conçus pour \^etre partitionn\'es. Chaque partition contient des enregistrements qui peuvent \^etre cr\'e\'es par op\'erations de transformations. Les transformations incluent les opérations \TT{map}, \TT{filter}, \TT{groupBy} et \TT{join}.
+
+Les \TT{RDD} peuvent \^etre cr\'e\'es via d'autres \TT{RDD} existants. Ce m\'ecanisme permet la reconstruction des partitions perdues, car chaque \TT{RDD} dispose d'informations suffisantes sur la reconstruction \`a partir d'autres \TT{RDD}. Lorsqu'il y a une demande de mise en cache d'un \TT{RDD}, Spark stocke ses partitions par d\'efaut en m\'emoire. Cependant, des partitions peuvent \^etre stock\'ees sur des disques lorsque la m\'emoire est insuffisante. 
+
+
+\subsection{Discretized Streams}
+
+\TT{Spark} traite un flux de donn\'ee par l'implémentation du mod\`ele \TT{Discretized Streams (D-streams)}. \TT{D-stream} repr\'esentent les flux de donn\'ees pris en entr\'ee pour le traitement. Il d\'ecompose un flux de donn\'ees en une s\'erie de petits lots dans de petits intervalles de temps appel\'es \TT{micro-batches}. Chaque \TT{micro-batch} stocke ses donn\'ees dans des \TT{DDR}. Ensuite, le \TT{micro-batch} est trait\'e et ses r\'esultats sont stock\'es dans des \TT{DDR} interm\'ediaires.
 
 
 \section{Java 8 et ses \TT{Stream}s}
