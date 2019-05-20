@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.util.List;
-import static java.util.stream.Collectors.toMap;
-
+import static java.util.stream.Collectors.toMap; 
+import java.io.*;  
 
 
 /**
@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toMap;
 public class StockPrice {
     static final int DEFAULT_NB_ITERATIONS = 5;
     static final String DEFAULT_INPUT_FILE = "../testdata/stock_options_64K.txt";
+	 static final String DEFAULT_OUTPUT_FILE_RESULT = "../testdata/stock_output_result.txt";
     
     static public OptionData getOptionData(String data) {
         String structData[] = data.trim().split("\\t|\\s");
@@ -35,7 +36,9 @@ public class StockPrice {
         OptionData opt = new OptionData(StockName, s, strike, r, divq, v, t, OptionType, divs, DGrefval);
 
         return opt;
-    }    
+    }
+
+
     
     /**
      * @param args the command line arguments
@@ -43,6 +46,7 @@ public class StockPrice {
     public static void main(String[] args) throws IOException {        
         int nbIterations = DEFAULT_NB_ITERATIONS;
         String inputFile = DEFAULT_INPUT_FILE;
+		  String outputFileResult = DEFAULT_OUTPUT_FILE_RESULT;
 
         if (args.length >= 1) {
           inputFile = args[0];
@@ -51,7 +55,11 @@ public class StockPrice {
         if (args.length >= 2) {
           nbIterations = Integer.parseInt(args[1]);
         }
-        
+
+        if (args.length >= 3) {
+          outputFileResult = args[2];
+        }
+    
         List<Map.Entry<String, Double>> stockPrice = null;
 
 	long startTime = System.nanoTime();
@@ -69,10 +77,22 @@ public class StockPrice {
      	long duration = (System.nanoTime() - startTime);
     
     	double milliseconds = (double) duration / 1000000;
-    	System.err.println("Temps Java (" + String.format("%3d", nbIterations) + " it.):         " + String.format("%6.0f", milliseconds) + " ms" + " {" + String.format("%5.0f", milliseconds / nbIterations) + " ms/it. }" );       
+		String outputResult = "Temps Java (" + String.format("%3d", nbIterations) + " it.):         " + String.format("%6.0f", milliseconds) + " ms" + " {" + String.format("%5.0f", milliseconds / nbIterations) + " ms/it. }";
+    	System.err.println(outputResult); 
+
+		// Write the result to file
+    	try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileResult, true));
+			writer.write(outputResult);
+			writer.write("\n");
+			writer.write("\n");
+			writer.close();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
        
-        stockPrice.forEach( x ->
-                        System.out.println( x.getKey() + " => " + ( String.format("%.4f", x.getValue() ).replace(",",".") ) ) );
+      stockPrice.forEach( x ->
+                      System.out.println( x.getKey() + " => " + ( String.format("%.4f", x.getValue() ).replace(",",".") ) ) );
         
     }
     

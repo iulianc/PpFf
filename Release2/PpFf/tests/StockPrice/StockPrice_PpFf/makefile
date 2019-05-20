@@ -14,35 +14,36 @@ _exemple_jit_:
 
 benchmarks: compile
 	@echo "*** Execution avec divers nombres d'iterations et de threads *** "
-	@./StockPrice $(TEST_FILE) 1 1 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 1 2 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 1 3 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 1 4 | sort > obtenus-cpp.txt
-	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 1 | sort > obtenus-java.txt
+	echo "" > $(OUTPUT_FILE_RESULT)
+	@./StockPrice $(TEST_FILE) 1 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 1 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 1 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 1 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
-	@./StockPrice $(TEST_FILE) 2 1 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 2 2 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 2 3 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 2 4 | sort > obtenus-cpp.txt
-	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 2 | sort > obtenus-java.txt
+	@./StockPrice $(TEST_FILE) 2 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 2 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 2 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 2 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
-	@./StockPrice $(TEST_FILE) 4 1 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 4 2 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 4 3 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 4 4 | sort > obtenus-cpp.txt
-	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 4 | sort > obtenus-java.txt
+	@./StockPrice $(TEST_FILE) 4 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 4 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 4 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 4 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
-	@./StockPrice $(TEST_FILE) 8 1 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 8 2 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 8 3 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 8 4 | sort > obtenus-cpp.txt
-	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 8 | sort > obtenus-java.txt
+	@./StockPrice $(TEST_FILE) 8 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 8 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 8 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 8 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 8 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
-	@./StockPrice $(TEST_FILE) 16 1 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 16 2 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 16 3 | sort > obtenus-cpp.txt
-	@./StockPrice $(TEST_FILE) 16 4 | sort > obtenus-cpp.txt
-	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 16 | sort > obtenus-java.txt
+	@./StockPrice $(TEST_FILE) 16 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 16 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 
 .IGNORE:
 
@@ -54,8 +55,8 @@ EXE 		:= StockPrice
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
-#ROOT_PIPE      := $(HOME)/PpFf_JapetServer/src
-ROOT_PIPE      := $(HOME)/PpFf/Release2/PpFf/src
+ROOT_PIPE      := $(HOME)/ProjectMemoir/Release2/PpFf/src
+#ROOT_PIPE      := $(HOME)/PpFf/Release2/PpFf/src
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
@@ -77,6 +78,7 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
+OUTPUT_FILE_RESULT="../testdata/stock_benchmark_result.txt"
 
 # Tell make that these target are not real files
 .PHONY: all clean cleanall

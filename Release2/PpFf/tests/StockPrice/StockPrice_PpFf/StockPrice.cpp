@@ -25,6 +25,7 @@ using namespace PpFf;
 #define DEFAULT_NB_ITERATIONS 1
 #define DEFAULT_INPUT_FILE "/home/iuly/PpFf_JapetServer/tests/StockPrice/testdata/stock_options_64K.txt"
 #define DEFAULT_NB_THREADS 1
+#define DEFAULT_OUTPUT_FILE_RESULT "/home/iuly/PpFf_JapetServer/tests/StockPrice/testdata/stock_output_result.txt"
 
 
 struct StockAndPrice {
@@ -59,6 +60,7 @@ StockAndPrice* calculateStockPrice(OptionData* opt) {
 int main(int argc, char* argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
     std::string inputFile = DEFAULT_INPUT_FILE;
+	 std::string outputFileResult = DEFAULT_OUTPUT_FILE_RESULT;
     uint32_t nbThreads = DEFAULT_NB_THREADS;
 
     if (argc >= 2) {
@@ -71,6 +73,10 @@ int main(int argc, char* argv[]) {
     
     if (argc >= 4) {
         nbThreads = atoi(argv[3]);
+    }
+
+    if (argc >= 5) {
+        outputFileResult = argv[4];
     }
     
     Reducer<StockAndPrice, double> reducer(0.0, 
@@ -91,7 +97,7 @@ int main(int argc, char* argv[]) {
             .parallel(nbThreads)
             .map<std::string, OptionData>(getOptionData)
             .map<OptionData, StockAndPrice>(calculateStockPrice)
-            .parallel(1)
+            //.parallel(1)
             .reduceByKey<StockAndPrice, std::string, double>(reducer, 
                                                              [](StockAndPrice* sp) { return &(sp->StockName); });
         
@@ -102,6 +108,17 @@ int main(int argc, char* argv[]) {
     fprintf( stderr, "Temps C++  (%3d it.; %2d thr.): %5ld ms {%5ld ms/it. }\n",
              nbIterations, nbThreads, duration_ms, duration_ms / nbIterations );
     
+  	 // Write result to file
+	 std::ofstream ofs;
+
+  	 ofs.open (outputFileResult, std::ofstream::out | std::ofstream::app);
+  	 
+	 char buffer[100];
+	 snprintf(buffer, sizeof(buffer), "Temps C++  (%3d it.; %2d thr.): %5ld ms {%5ld ms/it. }\n", 
+												nbIterations, nbThreads, duration_ms, duration_ms / nbIterations);
+	 ofs << buffer;
+	 ofs.close();
+
     std::map<std::string, double> orderedResult;
     for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
     	orderedResult[it->first] = it->second;
@@ -112,6 +129,6 @@ int main(int argc, char* argv[]) {
         double currentResultValue = it->second;
         std::cout << currentResultKey << " => " << std::fixed << std::setprecision(4) << currentResultValue << std::endl;
     }
-    
+   
     return 0;
 }

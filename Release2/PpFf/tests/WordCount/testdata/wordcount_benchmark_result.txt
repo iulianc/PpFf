@@ -1,0 +1,82 @@
+
+Temps C++  (  1 it.;  1 thr.;   78792 words):   129 ms {  129 ms/it. }
+Temps C++  (  1 it.;  2 thr.;   78792 words):  9874 ms { 9874 ms/it. }
+Temps C++  (  1 it.;  3 thr.;   78792 words):  7281 ms { 7281 ms/it. }
+Temps C++  (  1 it.;  4 thr.;   78792 words):  8970 ms { 8970 ms/it. }
+Temps C++  (  1 it.;  8 thr.;   78792 words): 10893 ms {10893 ms/it. }
+Temps Java (  1 it.;            78792 words):  1563 ms { 1563 ms/it. }
+
+Temps C++  (  2 it.;  1 thr.;   78792 words):   205 ms {  102 ms/it. }
+Temps C++  (  2 it.;  2 thr.;   78792 words): 20603 ms {10301 ms/it. }
+Temps C++  (  2 it.;  3 thr.;   78792 words): 17326 ms { 8663 ms/it. }
+Temps C++  (  2 it.;  4 thr.;   78792 words): 15858 ms { 7929 ms/it. }
+Temps C++  (  2 it.;  8 thr.;   78792 words): 25756 ms {12878 ms/it. }
+Temps Java (  2 it.;            78792 words):  1549 ms {  774 ms/it. }
+
+Temps C++  (  4 it.;  1 thr.;   78792 words):   454 ms {  113 ms/it. }
+Temps C++  (  4 it.;  2 thr.;   78792 words): 39711 ms { 9927 ms/it. }
+Temps C++  (  4 it.;  3 thr.;   78792 words): 31798 ms { 7949 ms/it. }
+Temps C++  (  4 it.;  4 thr.;   78792 words): 29122 ms { 7280 ms/it. }
+Temps C++  (  4 it.;  8 thr.;   78792 words): 48566 ms {12141 ms/it. }
+Temps Java (  4 it.;            78792 words):  1419 ms {  355 ms/it. }
+
+Temps C++  (  1 it.;  1 thr.;  167941 words):   200 ms {  200 ms/it. }
+Temps C++  (  1 it.;  4 thr.;  167941 words): 13827 ms {13827 ms/it. }
+Temps C++  (  1 it.;  8 thr.;  167941 words): 22032 ms {22032 ms/it. }
+Temps Java (  1 it.;           167941 words):  2321 ms { 2321 ms/it. }
+
+Temps C++  (  2 it.;  1 thr.;  167941 words):   424 ms {  212 ms/it. }
+Temps C++  (  2 it.;  4 thr.;  167941 words): 31048 ms {15524 ms/it. }
+Temps C++  (  2 it.;  8 thr.;  167941 words): 47078 ms {23539 ms/it. }
+Temps Java (  2 it.;           167941 words):  2267 ms { 1134 ms/it. }
+
+Temps C++  (  4 it.;  1 thr.;  167941 words):   822 ms {  205 ms/it. }
+Temps C++  (  4 it.;  4 thr.;  167941 words): 73095 ms {18273 ms/it. }
+Temps C++  (  4 it.;  8 thr.;  167941 words): 125190 ms {31297 ms/it. }
+Temps Java (  4 it.;           167941 words):  2347 ms {  587 ms/it. }
+
+Temps C++  (  1 it.;  1 thr.;  281307 words):   404 ms {  404 ms/it. }
+Temps Java (  1 it.;           281307 words):  3637 ms { 3637 ms/it. }
+
+Temps C++  (  2 it.;  1 thr.;  281307 words):   750 ms {  375 ms/it. }
+Temps Java (  2 it.;           281307 words):  3614 ms { 1807 ms/it. }
+
+Temps C++  (  4 it.;  1 thr.;  281307 words):  1388 ms {  347 ms/it. }
+Temps Java (  4 it.;           281307 words):  3299 ms {  825 ms/it. }
+
+Temps C++  (  1 it.;  1 thr.;  482636 words):   578 ms {  578 ms/it. }
+Temps Java (  1 it.;           482636 words):  4722 ms { 4722 ms/it. }
+
+Temps C++  (  2 it.;  1 thr.;  482636 words):  1182 ms {  591 ms/it. }
+Temps Java (  2 it.;           482636 words):  4775 ms { 2387 ms/it. }
+
+Temps C++  (  4 it.;  1 thr.;  482636 words):  2268 ms {  567 ms/it. }
+Temps Java (  4 it.;           482636 words):  4746 ms { 1186 ms/it. }
+
+Temps C++  (  1 it.;  1 thr.;  752856 words):   947 ms {  947 ms/it. }
+Temps Java (  1 it.;           752856 words):  6723 ms { 6723 ms/it. }
+
+Temps C++  (  2 it.;  1 thr.;  752856 words):  1484 ms {  742 ms/it. }
+Temps Java (  2 it.;           752856 words):  6730 ms { 3365 ms/it. }
+
+Temps C++  (  4 it.;  1 thr.;  752856 words):  3644 ms {  911 ms/it. }
+Temps Java (  4 it.;           752856 words):  6719 ms { 1680 ms/it. }
+
+Temps C++  (  1 it.;  1 thr.; 1505712 words):  1425 ms { 1425 ms/it. }
+Temps Java (  1 it.;          1505712 words): 11307 ms {11307 ms/it. }
+
+Temps C++  (  2 it.;  1 thr.; 1505712 words):  3512 ms { 1756 ms/it. }
+Temps Java (  2 it.;          1505712 words): 10745 ms { 5373 ms/it. }
+
+Temps C++  (  4 it.;  1 thr.; 1505712 words):  6658 ms { 1664 ms/it. }
+Temps Java (  4 it.;          1505712 words): 10811 ms { 2703 ms/it. }
+
+Temps C++  (  1 it.;  1 thr.; 5247678 words):  4769 ms { 4769 ms/it. }
+Temps Java (  1 it.;          5247678 words):228166 ms {228166 ms/it. }
+
+Temps C++  (  2 it.;  1 thr.; 5247678 words): 11916 ms { 5958 ms/it. }
+Temps Java (  2 it.;          5247678 words):221839 ms {110919 ms/it. }
+
+Temps C++  (  4 it.;  1 thr.; 5247678 words): 24458 ms { 6114 ms/it. }
+Temps Java (  4 it.;          5247678 words):224573 ms {56143 ms/it. }
+
