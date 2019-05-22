@@ -11,12 +11,13 @@ N=100
 #default:  run_bm_mfm
 #default:  run_bm_rbk
 #default: graphes_mfm
-default: graphes_rbk
+#default: graphes_rbk
+default: run_maps
 
 ########################################################
 
 # Specify the final target name
-EXE 		:= MapFilterMap MapFilterMapFastFlow MapFilterMapFastFlowSansMalloc ReduceByKey
+EXE 		:= Maps MapFilterMap MapFilterMapFastFlow MapFilterMapFastFlowSansMalloc ReduceByKey
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -81,6 +82,46 @@ run_mfm: compile
 	@echo "*** Execution Java *** "
 	java MapFilterMapJava $(N)
 	@echo ""
+
+NB_MAPS=1
+N=1000
+GRANULARITE=3
+NB_THREADS=2
+
+run_maps: compile
+	@echo "*** Execution Maps *** "
+	# Avec 1 map et granularite = 1
+	@MALLOC_CHECK_=0 ./Maps 1000 1 1 0
+	@MALLOC_CHECK_=0 ./Maps 1000 1 1 1
+	@MALLOC_CHECK_=0 ./Maps 1000 1 1 2
+	@MALLOC_CHECK_=0 ./Maps 1000 1 1 4
+	# Avec 2 maps et granularite = 2
+	@MALLOC_CHECK_=0 ./Maps 1000 2 2 0
+	@MALLOC_CHECK_=0 ./Maps 1000 2 2 1
+	@MALLOC_CHECK_=0 ./Maps 1000 2 2 2
+	@MALLOC_CHECK_=0 ./Maps 1000 2 2 4
+	# Avec 3 maps et granularite = 3
+	@MALLOC_CHECK_=0 ./Maps 1000 3 3 0
+	@MALLOC_CHECK_=0 ./Maps 1000 3 3 1
+	@MALLOC_CHECK_=0 ./Maps 1000 3 3 2
+	@MALLOC_CHECK_=0 ./Maps 1000 3 3 4
+	# Avec 5 maps et granularite = 2
+	@MALLOC_CHECK_=0 ./Maps 1000 5 2 0
+	@MALLOC_CHECK_=0 ./Maps 1000 5 2 1
+	@MALLOC_CHECK_=0 ./Maps 1000 5 2 2
+	@MALLOC_CHECK_=0 ./Maps 1000 5 2 4
+	# Avec 5 maps et granularite = 6
+	@MALLOC_CHECK_=0 ./Maps 1000 5 6 0
+	@MALLOC_CHECK_=0 ./Maps 1000 5 6 1
+	@MALLOC_CHECK_=0 ./Maps 1000 5 6 2
+	@MALLOC_CHECK_=0 ./Maps 1000 5 6 4
+	@echo ""
+	@#@echo "*** Execution FastFlow *** "
+	@#./MapsFastFlow $(N)
+	@#@echo ""
+	@#@echo "*** Execution Java *** "
+	@#java MapsJava $(N)
+	@#@echo ""
 
 run_rbk: compile
 	@echo "*** Execution ReduceByKey *** "
