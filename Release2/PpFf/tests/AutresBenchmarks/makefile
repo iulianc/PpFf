@@ -89,6 +89,10 @@ GRANULARITE=3
 NB_THREADS=2
 
 run_maps: compile
+	./run_maps.sh
+
+
+run_maps_zero:
 	@echo "*** Execution Maps *** "
 	# Avec 1 map et granularite = 1
 	@MALLOC_CHECK_=0 ./Maps 1000 1 1 0
