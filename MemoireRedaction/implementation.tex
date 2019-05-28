@@ -18,7 +18,19 @@
 Ce chapitre donne une description plus d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble de ses composants est pr\'esent\'ee à la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liaisons entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les stages sont d\'ecrits dans la quatri\`eme section. Le chapitre se termine par la description d'un exemple complet d\'ecrivant comment un programme PpFf est compil\'e et ex\'ecut\'e.
 
 
-\section{Les couches de l'API}
+\section{Mise en \oe{}uvre multi-couches de \PpFf{} via FastFlow}
+
+\GT{De quelle fa\c{c}on as-tu fait le diagramme?  Est-ce que ce serait
+possible, dans la partie du haut surtout, de changer l'ordre de
+pr\'esentation des classes? Cela aurait plus de sens de mettre la
+classe Pipe en haut, puisque c'est la classe principale.  Et on ne
+comprend pas trop pourquoi il y a Pipe, PipeManager et Pipeline?
+D'autant plus que dans la figure 3.1, il y aussi Stage, qui n'apparait
+pas dans la figure 3.2. Et en relisant, je constate que dans la figure
+2.1, il y a Pipeline et Operateurs, mais il n'y a pas Stage.  Tout
+cela semble un peu m\'elangeant~:(}
+
+
 
 \begin{figure}[ht]
 \centering
@@ -28,6 +40,16 @@ Ce chapitre donne une description plus d\'etaill\'ee de la fa\c{c}on dont \TT{Pp
 \end{figure}
 
 PpFf est impl\'ement\'e au--dessus de la biblioth\`eque \TT{FastFlow}, de sorte que nous utilisons les constructions \TT{ff\_node}, \TT{ff\_pipeline} et \TT{ff\_farm} de \TT{FastFlow}. La figure~\ref{MapToFastFlow.fig} montre la correspondance entre les \'el\'ements de \TT{PpFf} et ceux de \TT{FastFlow}. Chaque classe susmentionn\'ee de \TT{FastFlow} a une association dans \TT{PpFf}. Par exemple l'impl\'ementation de la classe \TT{Node} de \TT{PpFf} est r\'ealis\'ee par l'entremise de la classe \TT{ff\_node} de \TT{FastFlow}. Ce m\'ecanisme a permis d'ajouter plus de fonctionnalit\'e \`a l'API tout en utilisant les performances offertes par \TT{FastFlow}.
+
+
+\GT{Ci-haut: le texte parle de correspodance, sauf qu'il n'y a pas du
+tout de lien (graphique) entre les deux niveaux~:( Peut-\^etre
+faudrait-il montrer des liens graphiques? Par exemple, pour Farm, au
+lieu d'avoir un attribut \TT{ff\_farm}, faudrait-il avoir un lien vers
+la classe \TT{ff\_farm}? C'est certain que le graphique serait plus
+compliqu\'e, donc peut-\^etre le faire par morceau? Ou dans l'autre
+sens (landscape)?}
+
 
 \section{Pipeline}
 
@@ -149,7 +171,7 @@ Un \emph{stage} repr\'esente le groupement logique d'un ou plusieurs op\'erateur
 \begin{lstlisting}[
 label={listingExampleImplementationPpFf},
 language=c++,
-caption={[Le code source d'une application abstaite.]Le code source d'une application abstaite pour d\'ecrir l'impl\'ementation de PpFf. L'impl\'ementation de la fonction pour chaque op\'eration a \'et\'e omise},
+caption={[Le code source d'une petite application.]Le code source d'une petite application utilis\'ee pour d\'ecrire l'impl\'ementation de PpFf.},
 frame=single,
 float]
 std::vector<std::string> result = 
@@ -170,6 +192,16 @@ std::vector<std::string> result =
      })
   .collect<std::string, std::vector>();
 \end{lstlisting}
+
+
+\GT{Suggestion pour le code source du Listing 3.1~: Oui, donner le
+code des lambda-expressions, mais introduire explicitement des
+lambda-expressions avec un nom, ce qui aidera \`a comprendre ce que
+cela fait, par ex., d\'eclarer une variable lambda-expression {\bf
+avant} de d\'efinir result~: <<auto mettre\_en\_minuscules =
+[](std::string* s)...>>, puis map<std::string,
+std::string>(mettre\_en\_minuscules). Idem pour l'autre
+lambda-expression utilis\'ee dans le find.}
 
 Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code source d'une petite application. Illustr\'ee dans le listing~\ref{listingExampleImplementationPpFf}, l'application est compos\'ee des op\'erations suivantes :
 \begin{itemize}
@@ -195,6 +227,12 @@ Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code so
       \caption[Repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs.]{Repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs ex\'ecut\'es en parall\`ele. Le mod\`ele de parall\'elisme de t\^aches est appliqu\'e sur les deux premiers op\'erateurs et le mod\`ele de parall\'elisme de donn\'ees est appliqu\'e sur les derniers op\'erateurs.}
        \label{ExempleRuntimeExecution.fig}
 \end{figure}
+
+\GT{Le probl\`eme avec la figure 3.8 est qu'on ne voit pas
+explicitement/clairement les objets fastflow qui sont g\'en\'er\'es:
+Est-ce que Lff est un ff\_node, un ff\_pipeline, etc. Idem pour les
+autres.  Il faudrait voir plus clairement et explicitement les objets
+FastFlow (ff\_node, ff\_pipeline, ff\_farm, etc.) et leurs liens.}
 
 
 La classe \TT{Pipeline} de l'API repr\'esente l'entit\'e principale de l'application. \`A l'ex\'ecution, le \TT{Pipeline} correspond \`a la classe \TT{ff\_pipeline} de \TT{FastFlow}. Un \TT{Pipeline} est compos\'e de plusieurs nœuds de type \TT{ff\_node} ou \TT{ff\_farm}. La figure~\ref{ExempleRuntimeExecution.fig} montre la repr\'esentation graphique d'un \TT{Pipeline} compos\'e des op\'erateurs d\'ecrits dans le listing~\ref{listingExampleImplementationPpFf}.
