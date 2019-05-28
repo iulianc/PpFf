@@ -341,7 +341,7 @@ namespace PpFf {
             return Collection;
         }
 		
-        void end(void) {
+        void consume(void) {
             pipe.run();
         }		
     
