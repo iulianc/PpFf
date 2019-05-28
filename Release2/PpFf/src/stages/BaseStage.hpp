@@ -58,15 +58,7 @@ namespace PpFf {
                 workers.push_back(new TOperator(taskFunc));
             }
         }
-
-//        //source
-//        template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-//        void addOperator(int const& no_workers, Param1 const& param1, Param2 const& param2) {
-//            for (int i = 0; i < no_workers; i++) {
-//                workers.push_back(new TOperator(param1, param2));
-//            }
-//        }
-
+        
         //source
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
         void addOperator(int const& no_workers, Param1 &param1, Param2 &param2) {
@@ -100,7 +92,7 @@ namespace PpFf {
         }
 
         bool isFinal() {
-        	return isFinalStage;
+            return isFinalStage;
         }
 
     protected:

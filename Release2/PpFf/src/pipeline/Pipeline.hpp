@@ -14,7 +14,7 @@ namespace PpFf {
             type = NodeTypePipeline;
             pipe = new ff_pipeline();
         }
-
+        
         NodeTypes Type(){
             return type;
         }

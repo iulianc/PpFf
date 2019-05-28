@@ -45,24 +45,19 @@ namespace PpFf {
             } else {
             	Farm *farm;
             	if (currentNode == NULL || currentNode->Type() != NodeTypeFarm) {
-                    farm = new Farm(no_workers);
-                    currentNode = farm;
+                    currentNode = farm = new Farm(no_workers);
             	} else {
                     farm = (Farm*) currentNode;
                     if (farm->nbWorkers() != no_workers) {
                         ff_farm<> *ffFarm = (ff_farm<>*) farm->getNode();
                         ffFarm->add_collector(new Empty());
                         pipeline.addStage(ffFarm);
-
-                        farm = new Farm(no_workers);
-                        currentNode = farm;
+                        currentNode = farm = new Farm(no_workers);
                     }
             	}
-
+                
             	std::vector<ff_node*> stages;
-                for (unsigned int i = 0; i < no_workers; i++) {
-                    stages.push_back(stage->workers[i]);
-                }
+                stages.assign(stage->workers.begin(), stage->workers.end());
             	farm->addStage(stages);
 
             	if (stage->isFinal()) {

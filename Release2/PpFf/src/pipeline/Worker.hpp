@@ -25,7 +25,7 @@ namespace PpFf {
         ff_node* getNode() {
             if (nodes.size() > 1) {
                 ff_pipeline *pipe = new ff_pipeline();
-                for ( ff_node* node: nodes) {
+                for (ff_node* node: nodes) {
                     pipe->add_stage(node);
                 }
                 return pipe;
