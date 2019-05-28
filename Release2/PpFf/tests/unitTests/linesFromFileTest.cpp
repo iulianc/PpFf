@@ -14,6 +14,22 @@ using namespace PpFf;
 #define TEST_FILE "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/lorem.txt"
 #endif
 
+TEST_CASE( "GetDataFromFileIntoCollectionUsingLinesStaticVersion", "LinesFromFileOperator" ) {
+    std::vector<std::string> expectedResult = {
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    };
+
+    std::string test_file = TEST_FILE;
+
+    std::vector<std::string> currentResult = 
+        Pipe::source_(test_file)
+        .collect<std::string, std::vector>();
+
+    REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
+}
+
 TEST_CASE( "GetDataFromFileIntoCollectionUsingLines", "LinesFromFileOperator" ) {
     std::vector<std::string> expectedResult = {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",

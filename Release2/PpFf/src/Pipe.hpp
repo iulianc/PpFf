@@ -71,6 +71,29 @@ namespace PpFf {
             return *this;
         }
 
+        static Pipe& source_(const std::string& path) {
+            Pipe* pipe = new Pipe();
+            typedef LinesFromFileOperator LinesFromFile;
+
+            BaseStage<LinesFromFile>* stage = new BaseStage<LinesFromFile>();
+            stage->addOperator(pipe->pipe.nbWorkers(), path);
+            pipe->pipe.addStage(stage);
+
+            return *pipe;
+        }
+
+        template < typename T, typename Iterator >
+        static Pipe& source_(Iterator begin, Iterator end) {
+            Pipe* pipe = new Pipe();
+            typedef SourceOperator<T, Iterator> Source;
+
+            Stage<Source>* stage = new Stage<Source>();
+            stage->addOperator(pipe->pipe.nbWorkers(), begin, end);
+            pipe->pipe.addStage(stage);
+
+            return *pipe;
+        }
+
         unsigned int count() {
             typedef CountOperator<int> Count;
 
