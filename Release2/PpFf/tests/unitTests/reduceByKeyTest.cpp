@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 #include <string>
 #include <vector>
 #include "Employee.hpp"
@@ -26,8 +26,8 @@ TEST_CASE( "ReduceByKeyCountElementsContainer", "ReduceByKeyOperator" ) {
     Reducer< std::string, int > reducer(0, plus1);
 
     CONTAINER result = 
-        Pipe()
-        .source<std::string>(strElems.begin(), strElems.end())
+        Flow
+        ::source<std::string>(strElems.begin(), strElems.end())
         .reduceByKey<std::string, std::string, int>(reducer);
 
     REQUIRE(result.size() == expectedResult.size());
@@ -50,8 +50,8 @@ TEST_CASE( "ReduceInOrderByKeyCountElementsContainer", "ReduceByKeyOperator" ) {
     Reducer<std::string, int> reducer(0, plus1);
 
     CONTAINER result =
-        Pipe()
-        .source<std::string>(strElems.begin(), strElems.end())
+        Flow
+        ::source<std::string>(strElems.begin(), strElems.end())
         .reduceByKey<std::string, std::string, int, std::map<std::string, int>>(reducer);
 
 
@@ -94,8 +94,8 @@ TEST_CASE( "ReduceByAgeCountEmployees", "ReduceByKeyOperator" ) {
     Reducer<Employee, int> reducer(0, [](int count, Employee _) { return count + 1; });
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .reduceByKey<Employee, int, int>(reducer, [](Employee *e) { return &(e->age); });
 
     std::map<int, int> sortedResult;
@@ -135,8 +135,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalary", "ReduceByKeyOperator" ) {
                                    [](int totalSalary, Employee e) { return totalSalary + e.salary; });
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
 
@@ -182,8 +182,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMaxAge", "ReduceByKeyOperator" ) {
                                    [](int maxAge, Employee e) { return maxAge < e.age ? e.age : maxAge; });
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
 
@@ -227,8 +227,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMinAge", "ReduceByKeyOperator" ) {
                                    [](int minAge, Employee e) { return minAge > e.age ? e.age : minAge; });
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
 
@@ -254,8 +254,8 @@ TEST_CASE( "ReduceByKeyCountElementsContainerParallel", "ReduceByKeyOperator" ) 
                                       std::plus<int>());
 
     CONTAINER result = 
-        Pipe()
-        .source<std::string>(strElems.begin(), strElems.end())
+        Flow
+        ::source<std::string>(strElems.begin(), strElems.end())
         .parallel(4)
         .reduceByKey<std::string, std::string, int>(reducer);
 
@@ -305,8 +305,8 @@ TEST_CASE( "ReduceByAgeCountEmployeesParallel", "ReduceByKeyOperator" ) {
                                      [](int total, int workerResult) { return total + workerResult; });
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .reduceByKey<Employee, int, int>(reducer, [](Employee *e) { return &(e->age); });
 
@@ -348,8 +348,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesSumSalaryParallel", "ReduceByKeyOperator" )
                                      std::plus<int>());
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
@@ -400,8 +400,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMaxAgeParallel", "ReduceByKeyOperator" ) {
                                    [](int max, int workerResult) { return max < workerResult ? workerResult : max; } );
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 
@@ -451,8 +451,8 @@ TEST_CASE( "ReduceByJobTitleEmployeesMinAgeParallel", "ReduceByKeyOperator" ) {
                                    [](int min, int workerResult) { return min > workerResult ? workerResult : min; });
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .reduceByKey<Employee, std::string, int>(reducer, [](Employee *e) { return &(e->job_title); });
 

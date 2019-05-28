@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -13,8 +13,8 @@ TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
     };
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .sum<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -30,8 +30,8 @@ TEST_CASE("CollectionOfNegativeIntegers", "SumOperator") {
     };
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .sum<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -49,8 +49,8 @@ TEST_CASE("CollectionOfFloatElements", "SumOperator") {
     };
 
     float currentResult = 
-        Pipe()
-        .source<float>(elems.begin(), elems.end())
+        Flow
+        ::source<float>(elems.begin(), elems.end())
         .sum<float>();
 
     REQUIRE(currentResult == Approx(expectedResult));
@@ -68,8 +68,8 @@ TEST_CASE("CollectionOfDoubleElements", "SumOperator") {
     };
 
     double currentResult = 
-        Pipe()
-        .source<double>(elems.begin(), elems.end())
+        Flow
+        ::source<double>(elems.begin(), elems.end())
         .sum<double>();
 
     REQUIRE(currentResult == Approx(expectedResult));
@@ -85,8 +85,8 @@ TEST_CASE("SumParallel", "SumOperator") {
     };
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .sum<int>();
 
@@ -103,8 +103,8 @@ TEST_CASE("SumOnCollectionTypeDeque", "SumOperator") {
     };
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel()
         .sum<int>();
 

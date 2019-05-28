@@ -13,7 +13,7 @@
 #include <sstream>
 #include<fstream>
 #include <locale>
-#include <Pipe.hpp>
+#include <Flow.hpp>
 #include <unordered_map>
 #include <ctype.h>
 #include <cassert>
@@ -87,19 +87,18 @@ int main(int argc, char* argv[]) {
         }
     } else {
         // EXECUTION PARALLELE.
-    // On construit le pipe.
-        auto pipe = 
-            Pipe()  
-            .source<int>(elems.begin(), elems.end());
+        // On construit le flow.
+        auto flow = 
+            Flow::source<int>(elems.begin(), elems.end());
         
         for (unsigned i = 0; i < nbMaps; i++) {
-            pipe = 
-                pipe
+            flow = 
+                flow
                 .parallel(nbThreads)
                 .map<int,int>(mapFunc);
         }
         obtenus = 
-            pipe      
+            flow      
             .collect<int, std::vector>();
     }
     auto end = std::chrono::high_resolution_clock::now();

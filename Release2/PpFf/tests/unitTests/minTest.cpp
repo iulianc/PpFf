@@ -4,7 +4,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -13,8 +13,8 @@ TEST_CASE( "MinEmenetsCollection", "MinOperator" ) {
     int expectedResult = 3;
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .min<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -25,8 +25,8 @@ TEST_CASE( "MinNegativeEmenetsCollection", "MinOperator" ) {
     int expectedResult = -7;
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .min<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -38,8 +38,8 @@ TEST_CASE( "MinEmenetsCollectionParallel", "MinOperator" ) {
     int expectedResult = 3;
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .min<int>();
 
@@ -61,8 +61,8 @@ TEST_CASE("Min_Elements_Collection_Parallel_Large_Number_of_elements", "MinOpera
     }
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .min<int>();
 
@@ -83,8 +83,8 @@ TEST_CASE("GetYoungerEmployee", "MinOperator") {
     Employee expectedResult(22, "Employee2", 1000);
 
     Employee currentResult = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .min<Employee>( [](Employee *younger, Employee *e) { if(younger->age > e->age) *younger = *e;} );
 
     REQUIRE(currentResult.name == expectedResult.name);
@@ -104,8 +104,8 @@ TEST_CASE("GetYoungerEMployeeParallel", "MinOperator") {
     Employee expectedResult(22, "Employee2", 1000);
 
     Employee currentResult = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .min<Employee>( [](Employee *younger, Employee *e) { if(younger->age > e->age) *younger = *e;} );
 

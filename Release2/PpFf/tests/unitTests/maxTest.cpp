@@ -4,7 +4,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -13,8 +13,8 @@ TEST_CASE( "MaxEmenetsCollection", "MaxOperator" ) {
     int expectedResult = 9;
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .max<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -26,8 +26,8 @@ TEST_CASE( "MaxEmenetsCollectionParallel", "MaxOperator" ) {
     int expectedResult = 9;
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .max<int>();
 
@@ -39,8 +39,8 @@ TEST_CASE( "MaxNegativeEmenetsCollection", "MaxOperator" ) {
     int expectedResult = -3;
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .max<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -61,8 +61,8 @@ TEST_CASE("Max_Elements_Collection_Parallel_Large_Number_of_elements", "MaxOpera
     }
 
     int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .max<int>();
 
@@ -83,8 +83,8 @@ TEST_CASE("GetOlderEmployee", "MaxOperator") {
     Employee expectedResult(48, "Employee8", 1000);
 
     Employee currentResult = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .max<Employee>( [](Employee *younger, Employee *e) { if(younger->age < e->age) *younger = *e;} );
 
     REQUIRE(currentResult.name == expectedResult.name);
@@ -104,8 +104,8 @@ TEST_CASE("GetOlderEMployeeParallel", "MaxOperator") {
     Employee expectedResult(48, "Employee8", 1000);
 
     Employee currentResult = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .max<Employee>( [](Employee *younger, Employee *e) { if(younger->age < e->age) *younger = *e;} );
 

@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -16,8 +16,8 @@ TEST_CASE("CheckAnyElementExisteInCollection1", "NoneMachOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .noneMatch<int>([=](int *in)->bool { return *in == (n+1); });
 
     REQUIRE(currentResult);
@@ -32,8 +32,8 @@ TEST_CASE("CheckAnyElementExisteInCollection2", "NoneMachOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .noneMatch<int>([](int *in) { return *in == 3; });
 
     REQUIRE(!currentResult);
@@ -49,8 +49,8 @@ TEST_CASE("CheckAnyElementExisteInCollection1Parallel", "NoneMachOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
 		.parallel(4)
         .noneMatch<int>([](int *in)->bool {return (*in == 10001); } );
 
@@ -66,8 +66,8 @@ TEST_CASE("CheckAnyElementExisteInCollection2Parallel", "NoneMachOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
 		.parallel(4)
         .noneMatch<int>([](int *in) { return *in == 3; });
 
@@ -87,8 +87,8 @@ TEST_CASE("CheckAnyEmployeeWithAgeBetween30And40", "NoneMachOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .noneMatch<Employee>([](Employee *e) ->bool { return e->age > 30 && e->age < 40; });
 
     REQUIRE(currentResult);
@@ -107,8 +107,8 @@ TEST_CASE("CheckAnyEmployeeWithAgeBetween31And40", "NoneMachOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .noneMatch<Employee>([](Employee *e) { return e->age > 30 && e->age < 40; });
 
     REQUIRE(!currentResult);

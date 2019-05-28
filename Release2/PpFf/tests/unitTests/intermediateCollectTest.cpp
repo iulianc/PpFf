@@ -4,7 +4,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -20,9 +20,9 @@ TEST_CASE( "ReturnIntermediateAndFinalCollectionTypeVector", "IntermediateCollec
         expectedFinalResult[i] = 3 * i + 2;
     };
 
-    Collection<int, std::vector, Pipe> intermediateResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+    Collection<int, std::vector, Flow> intermediateResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .intermediateCollect<int, std::vector>();
 
@@ -50,9 +50,9 @@ TEST_CASE("ReturnIntermediateAndFinalCollectionTypeDeque", "IntermediateCollect"
         expectedFinalResult[i] = 2 * i * 3;
     };
 
-    Collection<int, std::deque, Pipe> partialResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+    Collection<int, std::deque, Flow> partialResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) { *in *= 2; return in; } )
         .intermediateCollect<int, std::deque>();
 
@@ -85,9 +85,9 @@ TEST_CASE("ReturnIntermediateAndFinalCollectionTypeList", "IntermediateCollect")
         expectedFinalResult.push_back( (i + 1) * 3 );
     };
 
-    Collection<int, std::list, Pipe> partialResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+    Collection<int, std::list, Flow> partialResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) { *in += 1; return in; } )
         .intermediateCollect<int, std::list>();
 
@@ -125,9 +125,9 @@ TEST_CASE("CollectIntermediateAndFinalElementsParallel", "IntermediateCollect") 
         expectedFinalResult[i] = 3 * i + 2;
     };
 
-    Collection<int, std::vector, Pipe> intermediateResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+    Collection<int, std::vector, Flow> intermediateResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .sort<int>()
@@ -165,9 +165,9 @@ TEST_CASE("CollectIntermediateAndFinalObjects", "IntermediateCollect") {
         }
     };
 
-    Collection<Employee, std::list, Pipe> partialResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+    Collection<Employee, std::list, Flow> partialResult =
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .collect<Employee, std::list>();
 
     std::list<Employee> intermediateResult = partialResult.value();

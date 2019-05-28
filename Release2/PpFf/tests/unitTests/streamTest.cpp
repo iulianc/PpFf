@@ -2,15 +2,15 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 #include "../../src/collections/Collection.hpp"
 
 using namespace PpFf;
 
 
 TEST_CASE("CountElementsCollection", "StreamOperator") {
-    typedef Pipe Pipeline;
-	unsigned int n = 10000;
+    typedef Flow Pipeline;
+    unsigned int n = 10000;
     Collection<int, std::vector, Pipeline> elems(n);
     unsigned int expectedResult = n;
 
@@ -28,7 +28,7 @@ TEST_CASE("CountElementsCollection", "StreamOperator") {
 }
 
 TEST_CASE("CountEmployeesCollection", "StreamOperator") {
-	typedef Pipe Pipeline;
+    typedef Flow Pipeline;
     unsigned int n = 15;
     Collection<Employee, std::vector, Pipeline> elems;
     unsigned int expectedResult = n;
@@ -47,8 +47,8 @@ TEST_CASE("CountEmployeesCollection", "StreamOperator") {
 }
 
 TEST_CASE("FilterEmployeesWithSalaryBiggerThan100", "StreamOperator") {
-	typedef Pipe Pipeline;
-	Collection<Employee, std::vector, Pipeline> elems;
+    typedef Flow Pipeline;
+    Collection<Employee, std::vector, Pipeline> elems;
     std::vector<std::string> expectedResult(3);
     expectedResult = {"Employee3","Employee6","Employee9"};
     unsigned int noEmployees = 10;
@@ -73,7 +73,7 @@ TEST_CASE("FilterEmployeesWithSalaryBiggerThan100", "StreamOperator") {
 
 //
 //TEST_CASE( "GroupEmployeesCollection", "StreamOperator" ) {
-//	typedef Pipe Pipeline;
+//	typedef Flow Pipeline;
 //	typedef Collection<Employee, std::vector, Pipeline> VALUE;
 //    typedef std::unordered_map<int, VALUE> CONTAINER;
 //
@@ -119,7 +119,7 @@ TEST_CASE("FilterEmployeesWithSalaryBiggerThan100", "StreamOperator") {
 
 
 TEST_CASE("GetOlderEmployeeParallelWithStream", "StreamOperator") {
-	typedef Pipe Pipeline;
+    typedef Flow Pipeline;
     unsigned int noEmployees = 10;
     Collection<Employee, std::vector, Pipeline> employees;
     for (unsigned int i = 0; i < noEmployees; i++) {
@@ -143,7 +143,7 @@ TEST_CASE("GetOlderEmployeeParallelWithStream", "StreamOperator") {
 
 TEST_CASE( "ReduceByAgeCountEmployeesWithStream", "StreamOperator" ) {
     typedef std::unordered_map<int, int> CONTAINER;
-    typedef Pipe Pipeline;
+    typedef Flow Pipeline;
 
     unsigned int noEmployees = 10;
     Collection<Employee, std::vector, Pipeline> employees;
@@ -170,7 +170,7 @@ TEST_CASE( "ReduceByAgeCountEmployeesWithStream", "StreamOperator" ) {
 
     Reducer<Employee, int> reducer(0, [](int count, Employee _) { return count + 1; });
 
-    Pipe pipe;
+    Flow pipe;
 
     CONTAINER result =
     	employees
@@ -193,7 +193,7 @@ TEST_CASE( "ReduceByAgeCountEmployeesWithStream", "StreamOperator" ) {
 
 
 TEST_CASE("CollectionOfDoubleElementsWithStream", "StreamOperator") {
-	typedef Pipe Pipeline;
+    typedef Flow Pipeline;
     int n = 10000;
     Collection<double, std::vector, Pipeline> elems(n);
     double expectedResult = 0.1 * n * (n - 1) / 2.0;

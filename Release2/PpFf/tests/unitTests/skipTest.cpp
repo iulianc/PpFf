@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -18,8 +18,8 @@ TEST_CASE("Skip0", "SkipOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .skip<int>(0)
         .collect<int, std::vector>();
     
@@ -37,8 +37,8 @@ TEST_CASE("SkipMiddle", "SkipOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .skip<int>(n/2)
         .collect<int, std::vector>();
 
@@ -55,8 +55,8 @@ TEST_CASE("SkipN", "SkipOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .skip<int>(n)
         .collect<int, std::vector>();
 
@@ -73,8 +73,8 @@ TEST_CASE("SkipNMoins1", "SkipOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .skip<int>(n-1)
         .collect<int, std::vector>();
 
@@ -91,8 +91,8 @@ TEST_CASE("SkipMoreThanN", "SkipOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .skip<int>(n+1)
         .collect<int, std::vector>();
 

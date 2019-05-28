@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 #include <iostream>
 
@@ -14,8 +14,8 @@ TEST_CASE( "SortElementsCollection", "SortOperator" ) {
     std::vector<int> expectedResult = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .sort<int>()
         .stream()
         .collect<int, std::vector>();
@@ -28,8 +28,8 @@ TEST_CASE( "SortElementsCollectionParallel", "SortOperator" ) {
     std::vector<int> expectedResult = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .sort<int>()
         .stream()
@@ -50,8 +50,8 @@ TEST_CASE("SortElementsCollectionLargeNumberElements", "SortOperator") {
     std::reverse(elems.begin(), elems.end());
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .sort<int>()
         .stream()
@@ -75,8 +75,8 @@ TEST_CASE("SortEmployeesCollectionByAge", "SortOperator") {
     std::reverse(elems.begin(), elems.end());
 
     std::vector<Employee> currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .sort<Employee>( [](Employee e1, Employee e2) { return e1.age < e2.age; } )
         .stream()
     	.collect<Employee, std::vector>();
@@ -100,8 +100,8 @@ TEST_CASE("SortEmployeesCollectionByAgeParallel", "SortOperator") {
     std::reverse(elems.begin(), elems.end());
 
     std::vector<Employee> currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .parallel(4)
         .sort<Employee>( [](Employee e1, Employee e2) { return e1.age < e2.age; } )
         .stream()

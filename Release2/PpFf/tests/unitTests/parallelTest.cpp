@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -28,7 +28,7 @@ static int* sommeJusqua(int *in){
     return res;
 };
 
-TEST_CASE( "ParallelWithPipeline", "ParallelTest" ) {
+TEST_CASE( "ParallelWithFlowline", "ParallelTest" ) {
     int n = 1000;
 
     std::vector<int> elems(n);
@@ -44,8 +44,8 @@ TEST_CASE( "ParallelWithPipeline", "ParallelTest" ) {
     }
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(fois10)
         .find<int>(divise20)
@@ -78,8 +78,8 @@ TEST_CASE( "ChangingThreadNumber", "ParallelTest" ) {
     }
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(fois10)
         .find<int>(divise20)
@@ -114,8 +114,8 @@ TEST_CASE( "ParalleWithFarmForEachNode", "ParallelTest" ) {
     }
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(fois10)
 		.parallel(2)
@@ -135,7 +135,7 @@ TEST_CASE( "ParalleWithFarmForEachNode", "ParallelTest" ) {
 }
 
 
-TEST_CASE( "ParalleWithPipelineAndFarmForEachNode", "ParallelTest" ) {
+TEST_CASE( "ParalleWithFlowlineAndFarmForEachNode", "ParallelTest" ) {
     int n = 1000;
 
     std::vector<int> elems(n);
@@ -151,8 +151,8 @@ TEST_CASE( "ParalleWithPipelineAndFarmForEachNode", "ParallelTest" ) {
     }
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(fois10)
 		.parallel(1)
@@ -188,8 +188,8 @@ TEST_CASE( "ParalleSerialParallel", "ParallelTest" ) {
     }
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(fois10)
 		.parallel(1)
