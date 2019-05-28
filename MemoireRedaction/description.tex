@@ -21,6 +21,26 @@ simplement la police de caract\`eres qui \'etait incorrecte!}
        \label{ComponentsAPI.fig}
 \end{figure}
 
+\GT{Est-ce que dans la figure 2.2, tu pourrais mettre des boites qui
+montreraient le lien entre les boites Pipeline et Operateurs de la
+figure 2.1? Parce qu'on voit mal le lien entre les deux figures,
+puisque les noms ne correspondent pas directement entre les deux.}
+
+\GT{Et apr\`es relecture, je commence \`a trouver que la figure 2.1
+est elle aussi un peu m\'elangeante. A mes premi\`eres lectures, je me
+disais que les \'el\'ements \`a gauche \'etaient de ce cot\'e parce
+qu'ils communiquent avec l'ext\'erieur. Mais en regardant \`a nouveau
+la figure 2.2, je constate que ce n'est pas vraiment le cas.}
+
+\GT{De ce que je comprends, 2.1 veut donner une vue d'ensemble des
+diff\'erentes cat\'egories d'\'el\'ements de l'API.  Donc, la boite
+Interface serait plut\^ot une boite qui contient les autres
+\'el\'ements --- et non pas une boite en lien avec les autres.  Voir
+figure transmise par courriel.}
+
+\GT{Et dans le texte tu \'ecris qu'il y a quatre \'el\'ements
+principaux, en incluant l'Interface, mais il y a 5 boites!}
+
 
 \gt{Pour ce premier diagramme de classes: il ne faudrait mettre que
 les classes qui sont visibles aux utilisateurs, donc les <<concepts>>
@@ -31,7 +51,17 @@ chapitre.}
 
 \ic{J'ai mis dans le diagramme seulement les classes qui sont visibles aux utilisateurs.}
 
-Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble de l'architecture de \ppff. L'API est compos\'ee de quatre \'el\'ements principaux: l'Interface avec laquelle le d\'eveloppeur interagit, les \TT{Pipeline}s --- qui sont le coeur de l'API ---, les \TT{Stage}s et les \TT{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les principales m\'ethodes de l'interface.
+\GT{Revoir ci-bas: tu parles de quatre \'el\'ements, dont les Stages,
+qui n'apparaissent pas dans la figure --- ni les sources et
+collecteurs d'ailleurs. Et il ne faut pas pr\'esenter l'Interface come
+un \'el\'ement \`a part. L'API = l'interface = l'ensemble des classes
+et op\'erations avec lesquelles interagit le d\'eveloppeur --- et il
+n'y pas pas de classe <<Interface>> (j'ai reformul\'e un peu cette
+partie)!}
+
+
+
+Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble des principaux \'el\'ements de \ppff. L'API --- l'interface avec laquelle interagit le d\'eveloppeut --- est compos\'ee de quatre \'el\'ements principaux: les \TT{Pipeline}s --- qui sont le coeur de l'API ---, les \TT{Stage}s et les \TT{Operator}s. Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans la section suivante. La derni\`ere section  d\'ecrit plus en d\'etail les principales m\'ethodes de l'interface.
 
 \gt{La macro \PpFf{} permet de g\'en\'erer la forme correcte, et
 partout pareille. Une version sans majuscule, plus simple \`a
@@ -89,11 +119,26 @@ d'ensemble des classes qui composent l'{API}.
 
 
 
-\section{Interface}
-
-L'interface propos\'ee en \PpFf\ consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`es celle introduite pour les \emph{Streams} de Java~8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes impl\'ement\'ees dans l'API.
 
 
+
+\section{Aper\c{c}u des diff\'erentes m\'ethodes de l'API PpFf}
+
+L'interface propos\'ee en \PpFf\ consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`es celle introduite pour les \emph{Streams} de Java~8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes export\'ees par l'API.
+
+
+
+\GT{Je crois qu'il serait bien de pr\'esenter un aper\c{c} de ce qui
+s'en vient dans les sections suivantes et, surtout, de pr\'esenter
+rapidement dans le texte l'ordre logique des op\'erateurs, i.e., tel
+qu'on les utilise, donc \`a savoir~: m\'ethodes pour des sources de
+donn\'ees, puis pour des transformations, puis pour collecter des
+r\'esultats.}
+
+\GT{Parce qu'on ne comprend pas bien pourquoi le texte traite des
+op\'erateurs en premier. Notamment, parce que les op\'erateurs
+n'apparaissent pas explicitement dans les m\'ethodes du tableau 2.1,
+non?}
 
 
 %\gt{Dans un tabular, pour mettre du texte, on utilise p avec une
@@ -646,9 +691,14 @@ Le listing~\ref{expressivite_api.c++} pr\'esente un extrait de code C++ qui donn
 
 
 
-\section{Op\'erateurs}
+\section{Param\'etrisation des \'el\'ements de pipeline \`a l'aide d'Op\'erateurs}
 
 Les op\'erateurs (classe \TT{Operator}) sont la base de notre syst\`eme. L'API fournit un ensemble d'op\'erateurs qui facilitent la t\^ache de l'utilisateur. Les op\'erateurs sont structur\'es en deux cat\'egories : les op\'erateurs sans \'etat et les op\'erateurs avec \'etat.
+
+\GT{Il faut expliquer leur r\^ole dans l'API, comme j'ai tent\'e (??)
+de le faire dans le titre.  Dans le paragraphe qui pr\'ec\`ede, cela
+n'aide pas \`a comprendre quel est exactement leur <<r\^ole>>, \`a
+quoi ils servent!?}
 
 Les \emph{op\'erateurs sans \'etat} sont ceux qui ne disposent pas d'informations sur l'it\'eration en cours et ne transmettent pas les informations interm\'ediaires des \'etapes de traitement pr\'ec\'edentes. Si on prend comme exemple le filtre repr\'esent\'e par la m\'ethode \TT{find} du tableau~\ref{methodes_api.tab}, il traite le flux de donn\'ees \'el\'ement par \'el\'ement. 
 %
@@ -689,7 +739,7 @@ listing), il est préférable de mettre cet élément \underline{avant} la
 première référence (et non pas après).  La position du flottant par
 rapport au texte qui y réfère est alors meilleure.}
 
-L'op\'erateur de classe \TT{Reducer} est utilis\'e pour r\'eduire les \'el\'ements du flux \`a une valeur unique. Le listing~\ref{reducer.c++} présente la spécification  de la classe \TT{Reducer} avec les signatures des fonctions associées. 
+Un op\'erateur de classe \TT{Reducer} est utilis\'e pour sp\'ecifier comment r\'eduire les \'el\'ements d'un flux \`a une valeur unique. Le listing~\ref{reducer.c++} présente la spécification  de la classe \TT{Reducer} avec les signatures des fonctions associées. 
 
 
 \begin{lstlisting}[
@@ -929,7 +979,16 @@ Les op\'erations subs\'equentes du pipeline sont les suivantes :
 
 
 
-\subsection{Le flux}
+\subsection{Flux}
+
+
+\GT{Je r\'ealise que tu parles ci-bas d'un <<objet de type
+flux>>. Mais un tel type n'existe pas dans ton API, il me semble? Tu
+as plut\^ot le type Pipe, sauf que c'est un peu m\'elangeant par
+rapport \`a la notion de Pipeline dont tu traites pr\'ec\'edemment!?
+Pas clair du tout la diff\'erence entre les deux pour le lecteur ---
+et, je r\'ealise maintenant apr\`es plusieurs semaines/mois sans
+relire ton texte, pour moi non plus~:(}
 
 
 Un programme \PpFf{} est un ensemble d'objets de type \TT{Operator} compos\'es dans un objet de type flux. Au niveau utilisateur, un flux est repr\'esent\'e par une instance de la classe \TT{Pipe} --- voir la figure~\ref{ClassDiagramme.fig}. 
