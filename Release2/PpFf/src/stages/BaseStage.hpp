@@ -94,9 +94,14 @@ namespace PpFf {
         bool isFinal() {
             return isFinalStage;
         }
+		
+        bool isSource() {
+            return isSourceStage;
+        }		
 
     protected:
         bool isFinalStage = false;
+		bool isSourceStage = false;
     };
 }
 
