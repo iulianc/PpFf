@@ -4,7 +4,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -19,8 +19,8 @@ TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .collect<int, std::vector>();
 
@@ -38,8 +38,8 @@ TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
     };
 
     std::deque<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) { *in *= 2; return in; } )
         .collect<int, std::deque>();
 
@@ -60,8 +60,8 @@ TEST_CASE("ReturnCollectionTypeList", "CollectOperator") {
     };
 
     std::list<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>( [](int *in) { *in += 1; return in; } )
         .collect<int, std::list>();
 
@@ -84,8 +84,8 @@ TEST_CASE("CollectElementsParallel", "CollectOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .collect<int, std::vector>();
@@ -107,8 +107,8 @@ TEST_CASE("CollectObjects", "CollectOperator") {
     };
 
     std::list<Employee> currentResult = 
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .collect<Employee, std::list>();
 
     std::list<Employee>::iterator currentIterator = currentResult.begin();

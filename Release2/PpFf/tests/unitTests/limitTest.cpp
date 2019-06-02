@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -17,8 +17,8 @@ TEST_CASE("Limit0", "LimitOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .limit<int>(0)
         .collect<int, std::vector>();
     
@@ -36,8 +36,8 @@ TEST_CASE("LimitMiddle", "LimitOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .limit<int>(n/2)
         .collect<int, std::vector>();
 
@@ -55,8 +55,8 @@ TEST_CASE("LimitN", "LimitOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .limit<int>(n)
         .collect<int, std::vector>();
 
@@ -74,8 +74,8 @@ TEST_CASE("LimitMoreThanN", "LimitOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .limit<int>(n+1)
         .collect<int, std::vector>();
 

@@ -4,7 +4,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -19,8 +19,8 @@ TEST_CASE( "UpdateElementsCollectionUsingFunction", "MapOperator" ) {
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>(Fois3)
         .collect<int, std::vector>();
 
@@ -33,8 +33,8 @@ TEST_CASE("UpdateElementsCollectionUsingLambdaFunction", "MapOperator") {
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
         .collect<int, std::vector>();
 
@@ -54,8 +54,8 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
     };
 
     std::vector<std::string> currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .map<Employee, std::string>(([](Employee *e)->std::string* { return &(e->name); }))
         .collect<std::string, std::vector>();
 
@@ -67,8 +67,8 @@ TEST_CASE("UpdateElementsCollectionParallel", "MapOperator") {
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(Fois3)
         .collect<int, std::vector>();
@@ -87,8 +87,8 @@ TEST_CASE("UpdateElementsCollectionParallel Large number of elements", "MapOpera
     }
 
     std::vector<int> currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .map<int, int>(Fois3)
         .collect<int, std::vector>();

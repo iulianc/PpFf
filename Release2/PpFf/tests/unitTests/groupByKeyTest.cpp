@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 #include <string>
 #include <vector>
 #include "Employee.hpp"
@@ -42,8 +42,8 @@ TEST_CASE( "GroupByAgeACollectionEmployees", "GroupByKeyOperator" ) {
         };
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, Employee>([](Employee* e) { return &(e->age); });
 
     REQUIRE(result.size() == expectedResult.size());
@@ -89,8 +89,8 @@ TEST_CASE( "GroupByAgeNamesEmployees", "GroupByKeyOperator" ) {
         };
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, std::string>([](Employee* e) { return &e->age; },
                                                 [](Employee* e) { return &e->name; });
 
@@ -137,8 +137,8 @@ TEST_CASE( "GroupByAgeACollectionEmployeesWithMap", "GroupByKeyOperator" ) {
         };
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .groupByKey<Employee, int, Employee, CONTAINER>([](Employee* e) { return &(e->age); });
 
     REQUIRE(result.size() == expectedResult.size());
@@ -184,8 +184,8 @@ TEST_CASE( "GroupByAgeACollectionEmployeesParallel", "GroupByKeyOperator" ) {
         };
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .groupByKey<Employee, int, Employee>([](Employee* e) { return &(e->age); });
 
@@ -234,8 +234,8 @@ TEST_CASE( "GroupByAgeNamesEmployeesParallel", "GroupByKeyOperator" ) {
         };
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .groupByKey<Employee, int, std::string>([](Employee* e) { return &e->age; },
                                                 [](Employee* e) { return &e->name; });
@@ -286,8 +286,8 @@ TEST_CASE( "GroupByAgeACollectionEmployeesWithMapParallel", "GroupByKeyOperator"
         };
 
     CONTAINER result = 
-        Pipe()
-        .source<Employee>(employees.begin(), employees.end())
+        Flow
+        ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
         .groupByKey<Employee, int, Employee, CONTAINER>([](Employee* e) { return &(e->age); });
 

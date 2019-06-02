@@ -2,7 +2,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -16,8 +16,8 @@ TEST_CASE("CollectionOfIntegers", "CountOperator") {
     };
 
     unsigned int currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .count();
 
@@ -35,8 +35,8 @@ TEST_CASE("CollectionOfObjects", "CountOperator") {
     };
 
     unsigned int currentResult = 
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .count();
 
     REQUIRE(currentResult == expectedResult);
@@ -52,8 +52,8 @@ TEST_CASE("CollectionOfPointerObjects", "CountOperator") {
     };
 
     unsigned int currentResult = 
-        Pipe()
-        .source<Employee*>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee*>(elems.begin(), elems.end())
         .count();
 
     REQUIRE(currentResult == expectedResult);
@@ -71,8 +71,8 @@ TEST_CASE("CountOnCollectionTypeDeque", "CountOperator") {
     };
 
     unsigned int currentResult = 
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .count();
 
     REQUIRE(currentResult == expectedResult);
@@ -90,8 +90,8 @@ TEST_CASE("CountParallel", "CountOperator") {
     };
 
     unsigned int currentResult = 
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .parallel(4)
         .count();
 

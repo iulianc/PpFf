@@ -13,7 +13,7 @@
 #include <sstream>
 #include<fstream>
 #include <locale>
-#include <Pipe.hpp>
+#include <Flow.hpp>
 #include <unordered_map>
 #include <ctype.h>
 
@@ -87,8 +87,8 @@ int main(int argc, char* argv[]) {
     } else {
         // EXECUTION PARALLELE.
         obtenus = 
-            Pipe()
-            .source<int>(elems.begin(), elems.end())
+            Flow
+            ::source<int>(elems.begin(), elems.end())
             .parallel(nbThreads)
             .map<int, int>(fois10)
             .find<int>(divise20)

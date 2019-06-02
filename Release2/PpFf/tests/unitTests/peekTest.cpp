@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -19,8 +19,8 @@ TEST_CASE("PrintElementsCollection", "PeekOperator") {
 
     std::vector<int> peekedResult;
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .peek<int>( [&peekedResult](int *in)->void { peekedResult.push_back( *in ); } )
         .collect< int, std::vector >();
 
@@ -44,8 +44,8 @@ TEST_CASE("PrintPropertyObject", "PeekOperator") {
 
     std::vector<std::string> peekedResult;
     std::vector<std::string> currentResult = 
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .peek<Employee>( [&peekedResult](Employee *e) { peekedResult.push_back(e->name); } )
         .map<Employee, std::string>( [](Employee *e) { return &(e->name); } )
         .collect<std::string, std::vector>();

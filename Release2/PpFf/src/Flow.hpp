@@ -37,20 +37,20 @@ using namespace PpFf;
 
 namespace PpFf {
 
-    class Pipe {
+    class Flow {
     public:
-        Pipe() {};
+        Flow() {};
 
-        ~Pipe() {};
+        ~Flow() {};
 
-        Pipe& parallel(int no_workers = 1) {
+        Flow& parallel(int no_workers = 1) {
             pipe.setNbWorkers(no_workers);
 
             return *this;
         };
 
-        static Pipe& source(const std::string& path) {
-            Pipe* pipe = new Pipe();
+        static Flow& source(const std::string& path) {
+            Flow* pipe = new Flow();
             typedef LinesFromFileOperator LinesFromFile;
 
             BaseStage<LinesFromFile>* stage = new BaseStage<LinesFromFile>();
@@ -61,8 +61,8 @@ namespace PpFf {
         }
 
         template < typename T, typename Iterator >
-        static Pipe& source(Iterator begin, Iterator end) {
-            Pipe* pipe = new Pipe();
+        static Flow& source(Iterator begin, Iterator end) {
+            Flow* pipe = new Flow();
             typedef SourceOperator<T, Iterator> Source;
 
             Stage<Source>* stage = new Stage<Source>();
@@ -112,7 +112,7 @@ namespace PpFf {
         template < typename T,
                    template <typename ELEM, class ALLOC = std::allocator<ELEM>>
                    class TContainer >
-            Collection<T, TContainer, Pipe> intermediateCollect() {
+            Collection<T, TContainer, Flow> intermediateCollect() {
             typedef CollectorOperator<T, TContainer<T>> Collector;
             Collectors<Collector>* collectors = new Collectors<Collector>();
             collectors->addOperator(pipe.nbWorkers());
@@ -126,12 +126,12 @@ namespace PpFf {
             // de la fonction.  Mais comme il a ete alloue sur la
             // pile, il pourrait ulterieurement etre ecrase, non?
 
-            Collection<T, TContainer, Pipe> Collection(collectors->value());
+            Collection<T, TContainer, Flow> Collection(collectors->value());
             return Collection;
         }
 
         template < typename In, typename Out >
-        Pipe& map(std::function<Out*(In*)> const& taskFunc) {
+        Flow& map(std::function<Out*(In*)> const& taskFunc) {
             typedef MapOperator<In, Out> Map;
 
             BaseStage<Map>* stage = new BaseStage<Map>();
@@ -142,7 +142,7 @@ namespace PpFf {
         }
 
         template < typename In >
-        Pipe& find(std::function<bool(In*)> const& taskFunc) {
+        Flow& find(std::function<bool(In*)> const& taskFunc) {
             typedef FindOperator<In> Find;
             
             BaseStage<Find>* stage = new BaseStage<Find>();
@@ -153,7 +153,7 @@ namespace PpFf {
         }
 
         template< typename In, typename Out, typename OutContainer >
-        Pipe& flatMap(std::function<OutContainer*(In*)> const& taskFunc) {
+        Flow& flatMap(std::function<OutContainer*(In*)> const& taskFunc) {
             typedef MapOperator<In, OutContainer> Map;
             typedef FlatOperator<OutContainer, Out> Flat;
 
@@ -170,7 +170,7 @@ namespace PpFf {
         };
 
         template< typename In, typename Out, typename OutContainer = In >
-        Pipe& flatMap() {
+        Flow& flatMap() {
             typedef FlatOperator<In, Out> Flat;
             
             BaseStage<Flat>* stage = new BaseStage<Flat>();
@@ -181,7 +181,7 @@ namespace PpFf {
         };
 
         template < typename In >
-        Pipe& peek(std::function<void(In*)> const& taskFunc) {
+        Flow& peek(std::function<void(In*)> const& taskFunc) {
             typedef PeekOperator<In> Peek;
             
             BaseStage<Peek>* stage = new BaseStage<Peek>();
@@ -308,7 +308,7 @@ namespace PpFf {
 
 
         template < typename T >
-        Pipe& limit(int n) {
+        Flow& limit(int n) {
             typedef LimitOperator<T> Limit;
             
             BaseStage<Limit>* stage = new BaseStage<Limit>();
@@ -319,7 +319,7 @@ namespace PpFf {
         }
 
         template < typename T >
-        Pipe& skip(int n) {
+        Flow& skip(int n) {
             typedef SkipOperator<T> Skip;
             
             BaseStage<Skip>* stage = new BaseStage<Skip>();
@@ -330,7 +330,7 @@ namespace PpFf {
         }
 
         template < typename T >
-        Collection<T, std::vector, Pipe> sort(std::function<bool(T, T)> const& compare = std::less<T>()) {
+        Collection<T, std::vector, Flow> sort(std::function<bool(T, T)> const& compare = std::less<T>()) {
             typedef SortOperator<T> Sort;
 
             Collectors<Sort>* collectors = new Collectors<Sort>();
@@ -338,7 +338,7 @@ namespace PpFf {
             pipe.addStage(collectors);
             pipe.run();
 
-            Collection< T, std::vector, Pipe > Collection(collectors->value());
+            Collection< T, std::vector, Flow > Collection(collectors->value());
             return Collection;
         }
 		

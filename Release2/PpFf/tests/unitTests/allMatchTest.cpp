@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -16,8 +16,8 @@ TEST_CASE("CheckAllElementsSatisfyCondition1", "AllMatchOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .allMatch<int>([=](int *in) { return *in != (n+1); });
 
     REQUIRE(currentResult);
@@ -32,8 +32,8 @@ TEST_CASE("CheckAllElementsSatisfyCondition2", "AllMatchOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .allMatch<int>([](int *in) { return *in != 3; });
 
     REQUIRE(!currentResult);
@@ -49,8 +49,8 @@ TEST_CASE("CheckAllElemenstSatisfyCondition1Parallel", "AllMatchOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .allMatch<int>([=](int *in) { return *in != (n+1); });
     
@@ -66,8 +66,8 @@ TEST_CASE("CheckAllElemensSatisfyCondition2Parallel", "AllMatchOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .allMatch<int>([](int *in) { return *in == 3; });
     
@@ -88,8 +88,8 @@ TEST_CASE("CheckAllEmployeesAgeBetween30And40", "AllMatchOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .allMatch<Employee>([](Employee *e) { return 30 <= e->age && e->age <= 40; });
 
     REQUIRE(currentResult);
@@ -108,8 +108,8 @@ TEST_CASE("CheckAllEmployeesWithAgeNotBetween30And40Bis", "AllMatchOperator") {
     };
 
     bool currentResult =
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .allMatch<Employee>([](Employee *e) { return 30 <= e->age && e->age <= 40; });
 
     REQUIRE(!currentResult);

@@ -3,7 +3,7 @@
 #include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 
 using namespace PpFf;
 
@@ -20,8 +20,8 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .find<int>(FuncFind)
         .collect<int, std::vector>();
 
@@ -37,8 +37,8 @@ TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
         .collect<int, std::vector>();
 
@@ -59,8 +59,8 @@ TEST_CASE("FindOddElementsUsingLambdaFunction with large number of elements", "F
     };
 
     std::vector<int> currentResult = 
-        Pipe()
-        .source<int>(elems.begin(), elems.end())
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
         .collect<int, std::vector>();
@@ -84,8 +84,8 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
     };
 
     std::vector<std::string> currentResult = 
-        Pipe()
-        .source<Employee>(elems.begin(), elems.end())
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .find<Employee>( [](Employee *e) ->bool { return e->salary > 100; } )
         .map<Employee, std::string>( [](Employee *e) ->std::string* { return &(e->name); } )
         .collect<std::string, std::vector>();

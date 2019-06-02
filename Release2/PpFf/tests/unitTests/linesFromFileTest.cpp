@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../../src/Pipe.hpp"
+#include "../../src/Flow.hpp"
 #include <string>
 #include <vector>
 #include <list>
@@ -24,7 +24,7 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLinesStaticVersion", "LinesFromFil
     std::string test_file = TEST_FILE;
 
     std::vector<std::string> currentResult = 
-        Pipe::source_(test_file)
+        Flow::source(test_file)
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -40,8 +40,8 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLines", "LinesFromFileOperator" ) 
     std::string test_file = TEST_FILE;
 
     std::vector<std::string> currentResult = 
-        Pipe()
-        .linesFromFile(test_file)
+        Flow
+        ::source(test_file)
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -61,8 +61,8 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLinesAvecLignesBlanches", "LinesFr
     //std::string test_file = "/home/iuly/WorkplaceEclipse/PpFf/tests/unitTests/testdata/avec-lignes-blanches.txt";
 
     std::vector<std::string> currentResult = 
-        Pipe()
-        .linesFromFile(test_file)
+        Flow
+        ::source(test_file)
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
