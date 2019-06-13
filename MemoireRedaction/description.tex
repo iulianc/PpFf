@@ -4,17 +4,17 @@
 
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/ComponentsAPI.jpg}
-      \caption{Les composants de l'API de \ppff.}
-       \label{ComponentsAPI.fig}
+     \includegraphics[ height=15cm, width=9cm]{Figures/ComponentsAPI.jpg}
+      \caption{Les m\'ethodes expos\'ees par l'{API} group\'ees par leur fonctionnalit\'e.}
+       \label{ClassDiagramme.fig}
 \end{figure}
 
 
 
-Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble des principaux \'el\'ements de \ppff. Bas\'e sur la fonctionnalit\'e l'API --- l'interface avec laquelle interagit le d\'eveloppeur --- est compos\'ee de quatre \'el\'ements principaux: les \TT{Flux}, les \TT{Source}s, les \TT{Transformation}s et les \TT{Colector}s. 
-Le r\^ole de chaque composant dans l'API est pr\'esent\'e dans les sections suivante. Le chapitre pr\'esente \'egalement le code source d'un petit exemple, \TT{WordCount}, pour illustrer l'utilisation de l'API et l'effet des principales op\'erations.
+Ce chapitre pr\'esente l'API de \ppff. Sa conception permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e concernant les m\'ecanismes concurrents utilis\'es. La figure~\ref{ComponentsAPI.fig} pr\'esente une vue d'ensemble des principaux \'el\'ements de \ppff. Bas\'e sur la fonctionnalit\'e l'API --- l'interface avec laquelle interagit le d\'eveloppeur --- est divis\'ee en trois cat\'egories : les \TT{Source}s, les \TT{Transformation}s et les \TT{Colector}s. 
+Le r\^ole de chaque cat\'egorie dans l'API est pr\'esent\'e dans les sections suivante. Le chapitre pr\'esente \'egalement le code source d'un petit exemple, \TT{WordCount}, pour illustrer l'utilisation de l'API et l'effet des principales op\'erations.
 
 L'{API} de \PpFf{} est impl\'ement\'ee au-dessus de la biblioth\`eque \TT{FastFlow}, impl\'ementation qui sera d\'ecrite au prochain chapitre.
 
@@ -70,14 +70,7 @@ Les op\'erations subs\'equentes du pipeline sont les suivantes :
 \end{itemize}
 
 
-\section{Flux}
-
-\begin{figure}[H]
-\centering
-     \includegraphics[ height=13cm, width=9cm]{Figures/ClassDiagramme.jpg}
-      \caption{Les méthodes exposées par l'{API}.}
-       \label{ClassDiagramme.fig}
-\end{figure}
+\section{Les flux de donn\'ees: type \TT{Flow}}
 
 L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`e celle introduite pour les Streams de Java 8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes --- group\'es par leurs fonctionnalit\'es --- export\'ees par l'API.
 
@@ -107,7 +100,7 @@ L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui pe
 \hline
 \endlastfoot
 \hline
-	\multicolumn{3}{|c|}{Sources --- M\'ethodes pour g\'en\'erer un nouveau flux \`a partir d'une source}
+	\multicolumn{3}{|c|}{Source --- M\'ethodes pour g\'en\'erer un nouveau flux \`a partir d'une source}
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -126,7 +119,7 @@ L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui pe
 	Convertit un conteneur de type {STL} en flux.
     \\
 \hline
-	\multicolumn{3}{|c|}{Transformations --- M\'ethodes pour produire un flux \`a partir d'un flux existant}
+	\multicolumn{3}{|c|}{Transformation --- M\'ethodes pour produire un flux \`a partir d'un flux existant}
     \\    
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -190,7 +183,7 @@ L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui pe
     Retourne un flux compos\'e des \'el\'ements du flux d'entr\'ee, mais en omettant les \TT{n} premiers \'el\'ements.
     \\
 \hline
-	\multicolumn{3}{|c|}{Collectors --- M\'ethodes qui produisent une valeur, typiquement scalaire, \`a partir d'un flux}
+	\multicolumn{3}{|c|}{Collector --- M\'ethodes qui produisent une valeur, typiquement scalaire, \`a partir d'un flux}
     \\     
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -269,7 +262,7 @@ L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui pe
 	Retourne la somme des \'el\'ements du flux.
     \\
 \hline
-	\multicolumn{3}{|c|}{Collectors --- M\'ethodes qui produisent une collection \`a partir d'un flux}
+	\multicolumn{3}{|c|}{Collector --- M\'ethodes qui produisent une collection \`a partir d'un flux}
     \\     
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -356,7 +349,7 @@ Le listing~\ref{expressivite_api.c++} pr\'esente un extrait de code C++ qui donn
 
 
 
-\section{Source}
+\section{Les sources de donn\'ees: m\'ethodes \TT{source}}
 
 
 La source de donn\'ees est le premier op\'erateur ajout\'e dans un flux. Sans un tel op\'erateur, un flux ne peut pas \^etre ex\'ecut\'e puisqu'il n'y a pas de donn\'ees \`a traiter. 
@@ -387,9 +380,9 @@ std::vector<int> currentResult =
 Les deux m\'ethodes d'entr\'ee dans le flux sont illustr\'ees dans les exemples du listing~\ref{wordcount.c++} et respectivement~\ref{mapExample.c++}. La m\'ethode, \TT{linesFromFile} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier \TT{Words.txt}. Le param\`etre \TT{path} sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple fourni dans le listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} en fournissant les it\'erateure de d\'ebut et fin du \TT{vector elems}.
 
 
-\section{Transformations}
+\section{Les transformations de donn\'ees}
 
-Cette section d\'ecrite en d\'etail les plus importantes op\'erations prises en charge par le module \TT{Transformation}. Ces op\'erations permettent d'exprimer des requ\^etes de traitement de donn\'ees complexes telles que le filtrage et le mappage. Le tableau~\ref{methodes_api.tab} montre les signatures de ces méthodes. 
+Cette section d\'ecrite en d\'etail les plus importantes op\'erations prises en charge par la cat\'egorie \TT{Transformation}. Ces op\'erations permettent d'exprimer des requ\^etes de traitement de donn\'ees complexes telles que le filtrage et le mappage. Le tableau~\ref{methodes_api.tab} montre les signatures de ces méthodes. 
 
 
 \subsection{Map}
@@ -424,7 +417,7 @@ Une op\'eration courante dans l'informatique consiste \`a d\'eterminer si certai
 Un exemple qui illustre l'utilisation de la m\'ethode \TT{find} est pr\'esent\'e dans le listing~\ref{wordcount.c++}. La m\`ethode  s\'electionne tous les \'el\'ements du flux de type \TT{string} qui ne sont pas vides --- via un appel \`a la fonction \TT{notEmpty}.
 
 
-\section{Collector}
+\section{Les collecteurs}
 
 
 
