@@ -13,7 +13,7 @@
 #include <sstream>
 #include<fstream>
 #include <locale>
-#include <Pipe.hpp>
+#include <Flow.hpp>
 #include <unordered_map>
 #include <ctype.h>
 #include <iomanip>
@@ -92,8 +92,8 @@ int main(int argc, char* argv[]) {
     std::unordered_map<std::string, double> currentResult;
     for (uint32_t i = 0; i < nbIterations; ++i) {
         currentResult = 
-            Pipe()
-            .linesFromFile(inputFile)
+            Flow
+            ::source(inputFile)
             .parallel(nbThreads)
             .map<std::string, OptionData>(getOptionData)
             .map<OptionData, StockAndPrice>(calculateStockPrice)
