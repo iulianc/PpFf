@@ -23,9 +23,13 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
 
+/**
+ *
+ * @author iciobanu
+ */
 public class WordCount {
   static final int DEFAULT_NB_ITERATIONS = 5;
-  static final String DEFAULT_INPUT_FILE = "testdata/Words.txt";
+  static final String DEFAULT_INPUT_FILE = "testdata/78792Words.txt";
   static final String DEFAULT_OUTPUT_FILE_RESULT = "testdata/wordcount_benchmark_result.txt";
   static final int DEFAULT_NB_WORDS = 78792;
   
@@ -67,14 +71,16 @@ public class WordCount {
         .collect( Collectors.toList() );  
     }
     
-    long duration = (System.nanoTime() - startTime) / nbIterations;
+    //long duration = (System.nanoTime() - startTime) / nbIterations;
+	 long duration = (System.nanoTime() - startTime);
 
 	 for( Map.Entry<String, Integer> mapEntry : wordsCount) {
 		 outWords += mapEntry.getValue();
 	 }
     
     double milliseconds = (double) duration / 1000000;
-	 String outputResult = "Temps Java (" + String.format("%3d", nbIterations) + " it.;          " + String.format("%7d", nbWords) + " words):" + String.format("%6.0f", milliseconds) + " ms" + " {" + String.format("%5.0f", milliseconds / nbIterations) + " ms/it. }" + " {" + String.format("%6.0f", (outWords / (milliseconds / nbIterations)) * 1000) + " w/s. }";
+    //System.err.println("Temps Java: " + milliseconds + " ms");
+	 String outputResult = "Temps Java (" + String.format("%3d", nbIterations) + " it.;          " + String.format("%7d", nbWords) + " words):" + String.format("%6.0f", milliseconds) + " ms {" + String.format("%5.0f", milliseconds / nbIterations) + " ms/it. }" + " {" + String.format("%6.0f", (outWords / (milliseconds / nbIterations)) * 1000) + " w/s. }";
     System.err.println(outputResult); 
         
 	 // Write the result to file
@@ -93,4 +99,19 @@ public class WordCount {
   }
 }
 
-                             
+
+
+
+
+/*           
+// Methode2
+wordsCount = Files.lines(path).flatMap(line -> Arrays.stream(line.trim().split(" ")))
+.parallel()
+.map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
+.filter(word -> word.length() > 0)
+.collect(Collectors.toMap(s -> s, s -> 1, Integer::sum))  
+.entrySet()
+.stream()
+.sorted( Comparator.comparing(Map.Entry::getKey) )
+.collect( Collectors.toList() );   
+*/	                              

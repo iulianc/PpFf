@@ -20,8 +20,9 @@
 using namespace PpFf;
 
 #define DEFAULT_NB_ITERATIONS 5
-#define DEFAULT_INPUT_FILE 
-#define DEFAULT_OUTPUT_FILE_RESULT 
+//#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
+#define DEFAULT_INPUT_FILE "/home/iuly/WorkplaceEclipse/PpFf-OldVersion/tests/WordCount/testdata/78792Words.txt"
+#define DEFAULT_OUTPUT_FILE_RESULT "/home/iuly/WorkplaceEclipse/PpFf-OldVersion/tests/WordCount/testdata/wordcount_benchmark_result.txt"
 #define DEFAULT_NB_THREADS 1
 #define DEFAULT_NB_WORDS 78792
 typedef std::vector<std::string> Words;
@@ -96,7 +97,7 @@ int main(int argc, char* argv[]) {
         currentResult = 
             Flow
             ::source(inputFile)
-			.parallel(nbThreads)
+				.parallel(nbThreads)
             .flatMap<std::string, std::string, Words>(splitInWords)			
             .map<std::string, std::string>(toLowercaseLetters)			
             .find<std::string>(notEmpty)	
@@ -110,16 +111,18 @@ int main(int argc, char* argv[]) {
 		  outWords += it->second;
     }
 
+    //std::cerr << "Temps C++:  " << duration_ms / nbIterations << " ms" << std::endl;
     fprintf( stderr, "Temps C++  (%3d it.; %2d thr.; %7d words): %5ld ms {%5ld ms/it. } {%7ld w/s. }\n",
              nbIterations, nbThreads, nbWords, duration_ms, duration_ms / nbIterations, (outWords / (duration_ms / nbIterations)) * 1000 );
 
+  	 // Write result to file
 	 std::ofstream ofs;
 
   	 ofs.open (outputFileResult, std::ofstream::out | std::ofstream::app);
   	 
 	 char buffer[100];
-	 snprintf(buffer, sizeof(buffer), "Temps C++  (%3d it.; %2d thr.; %7d words): %5ld ms {%5ld ms/it. }\n", 
-												nbIterations, nbThreads, nbWords, duration_ms, duration_ms / nbIterations);
+	 snprintf(buffer, sizeof(buffer), "Temps C++  (%3d it.; %2d thr.; %7d words): %5ld ms {%5ld ms/it. } {%7ld w/s. }\n", 
+												nbIterations, nbThreads, nbWords, duration_ms, duration_ms / nbIterations, (outWords / (duration_ms / nbIterations)) * 1000 );
 	 ofs << buffer;
 	 ofs.close();
 

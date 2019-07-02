@@ -14,3 +14,137 @@ D\'ecrit dans la section.~\ref{descriptionWordCount.sect}, \TT{WordCount} est un
 
 \section{Stock Market}
 \label{stockprice.sect}
+
+Dans le monde informatique actuel, les institutions financi\`eres telles que les march\'es boursiers produisent d'\'enormes quantit\'es d'informations. L'un des probl\`emes les plus importants qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees boursi\`eres afin de recueillir des informations utiles sur le comportement du march\'e en matière de d\'ecisions d'investissement. Cette section pr\'esente une telle application qui calcule le prix maximum pour chaque stock d'un marché boursier. Les codes sources des applications \TT{StockPrice} dans \TT{PpFf} et \TT{Java} sont list\'es dans l'appendice~\ref{sourceCodeStockPricePpFf.ann} et l'appendice~\ref{sourceCodeStockPriceJava.ann} respectivement. Une telle application est compos\'ee en combinant cinq principales op\'erations.
+
+Les op\'erations d\'efinissant le pipeline sont les suivantes :
+
+\begin{itemize}
+
+\item La premi\`ere op\'eration d'un pipeline sert \`a d\'efinir la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier.
+
+\item La deuxi\`eme op\'eration permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}
+Toutes les \'etapes suivant cette op\'eration seront ex\'ecut\'ees en parall\`ele.
+
+\item La troisi\`eme op\'eration, l'op\'eration \TT{map} permet d'extraire le nom et les donn\'ees de chaque stock du march\'e boursier.
+
+\item Le prix pour chaque stock est calcul\'e dans la quatri\`eme op\'eration. L'algorithme utilis\'e est \TT{Black \& Scholes}.
+
+\item La derni\`ere op\'eration du flux permet d'extraire le prix maximum pour chaque stock du march\'e boursier.
+
+
+\end{itemize}
+
+
+\section{Mesures}
+
+
+\subsection{WordCount}
+
+\begin{tikzpicture}
+\begin{axis}[
+    title={WordCount - machine Java; sans JIT; 1 itération; PpFf-1 thread},
+    xlabel={Nombre de mots \`a l'entr\'ee du flux},
+    ylabel={Temps d'ex\'ecution en ms},
+    xmin=0, xmax=5500000,
+    ymin=0, ymax=25000,
+    ytick={0,5000,10000,15000,20000,25000},
+    xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+ 
+\addplot[
+    color=blue,
+    mark=square,
+    ]
+    coordinates {
+    (78792,106)(67941,205)(281307,322)(482636,508)(752856,883)(2614743,3320)(5247678,6126)
+    };
+\addplot[
+    color=red,
+    mark=square,
+    ]
+    coordinates {
+    (78792,1615)(167941,2319)(281307,3625)(482636,4906)(752856,7195)(2614743,116039)(5247678,226917)
+    };
+\legend{PpFf,Java}    
+\end{axis}
+\end{tikzpicture}
+
+
+
+
+\begin{tikzpicture}
+\begin{axis}[
+    title={WordCount - machine Japet; avec JIT; 1 itération; PpFf-8 thread},
+    xlabel={Nombre de mots \`a l'entr\'ee du flux},
+    ylabel={Temps d'ex\'ecution en ms},
+    xmin=0, xmax=5500000,
+    ymin=0, ymax=5500,
+    ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
+    xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+ 
+\addplot[
+    color=blue,
+    mark=square,
+    ]
+    coordinates {
+    (78792,174)(67941,117)(281307,263)(482636,405)(752856,429)(2614743,1625)(5247678,2798)
+    };
+\addplot[
+    color=red,
+    mark=square,
+    ]
+    coordinates {
+    (78792,368)(167941,443)(281307,501)(482636,603)(752856,730)(2614743,3889)(5247678,5312)
+    };
+\legend{PpFf,Java}    
+\end{axis}
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+\begin{tikzpicture}
+\begin{axis}[
+    title={WordCount - machine Japet; sans JIT; 1 itération; PpFf-8 thread},
+    xlabel={Nombre de mots \`a l'entr\'ee du flux},
+    ylabel={Temps d'ex\'ecution en ms},
+    xmin=0, xmax=5500000,
+    ymin=0, ymax=550000,
+    ytick={0,100000,150000,200000,250000,300000,350000,400000,450000,500000,550000},
+    xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+ 
+\addplot[
+    color=blue,
+    mark=square,
+    ]
+    coordinates {
+    (78792,67)(67941,162)(281307,268)(482636,480)(752856,637)(2614743,1765)(5247678,3135)
+    };
+\addplot[
+    color=red,
+    mark=square,
+    ]
+    coordinates {
+    (78792,3685)(167941,5685)(281307,8083)(482636,11258)(752856,14991)(2614743,285866)(5247678,541184)
+    };
+\legend{PpFf,Java}    
+\end{axis}
+\end{tikzpicture}
+
+

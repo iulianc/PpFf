@@ -2942,7 +2942,7 @@ Because the method getName returns a String, the stream outputted by the map met
 type Stream<String>.
 Let’s take a slightly different example to solidify your understanding of map. Given a list of
 words, you’d like to return a list of the number of characters for each word. How would you do it?
-You’d need to apply a function to each element of the list. This sounds like a job for the map
+You’d need to apply a function to each element of the list. This sounds like a job for the map
 method! The function to apply should take a word and return its length. You can solve this
 problem as follows by passing a method reference String::length to map:
 List<String> words = Arrays.asList("Java8", "Lambdas", "In", "Action");
