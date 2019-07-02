@@ -2,35 +2,81 @@
 \chapter{\'Etudes de cas et exp\'erimentations}
 \label{experiences.chap}
 
-Ce chapitre pr\'esente une \'evaluation exp\'erimentale de \TT{PpFf} afin d'analyser les possibilit\'es d'utilisation, en termes de performances, par rapport \`a d'autres approches d'ex\'ecution parall\`ele. Chaque exp\'erience est ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat stable. Dans un environnement de traitement de flux, les donn\'ees sont g\'en\'eralement transform\'ees au fur et \`a mesure de leur progression dans le \TT{pipeline}. Dans les sections suivantes, nous pr\'esentons deux applications de \TT{PpFf}. Ces cas d'utilisation ont \'et\'e choisis non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios r\'eels. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer la fr\'equence d'occurrence des mots dans un texte --- le <<\emph{Hello World!} des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne.
+\GT{Pas besoin de dire que c'est <<possibilit\'es d'utilisation>>. Tu
+as d\'evelopp\'e une bibloth\`eque, et tu veux voir comment elle se
+compare avec d'autres.}
+
+Ce chapitre pr\'esente une \'evaluation exp\'erimentale de \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele.   
+
+Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esentons deux applications de \TT{PpFf}. Ces cas d'utilisation ont \'et\'e choisis non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios r\'eels. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer la fr\'equence d'occurrence des mots dans un texte --- le <<\emph{Hello World!} des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne.
+
+Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos
+exp\'erimentations ont \'et\'e effectu\'ees.
+
+\section{M\'ethode utilis\'ee pour les exp\'erimentations}
+
+\GT{Ici, il faut donner une vue d'ensemble de la fa\c{c}on dont tu as
+proc\'ed\'e~: quelles machines (architecture, OS, etc. Parler comme tu
+fais ci-bas que chaque {\bf programme \emph{benchmark}} est ex\'ecut\'e
+plusieurs fois, comment ce temps est mesur\'e (de l'int\'erieur du
+programme par des appels syst\`emes internes), que la moyenne des
+temps d'ex\'ecution est calcul\'ee pour obtenir un r\'esultat plus
+juste/stable, etc.}
+
+\GT{Ensuite, tu pourras d\'ecrire les r\'esultats pour chacun des
+programmes.}
+
+Chaque exp\'erience est ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat stable. Dans un environnement de traitement de flux, les donn\'ees sont g\'en\'eralement transform\'ees au fur et \`a mesure de leur progression dans le \TT{pipeline}.
 
 
 \section{Word Count}
 \label{wordcount.sect}
 
-D\'ecrit dans la section.~\ref{descriptionWordCount.sect}, \TT{WordCount} est une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et apr\`es le traitement, sort un conteneur de type \TT{map<string, int>} où la valeur de la cl\'e repr\'esente un mot dans le fichier et la valeur du conteneur de type \TT{int} repr\'esente l'occurrence du mot dans le fichier. Les codes sources des applications \TT{WordCount} dans \TT{PpFf} et \TT{Java} sont list\'es dans l'appendice~\ref{sourceCodeWordCountPpFf.ann} et l'appendice~\ref{sourceCodeWordCountJava.ann} respectivement.
+D\'ecrit dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d''occurrences du mot dans le fichier. Les codes sources des applications \TT{WordCount} en \TT{PpFf} et~\TT{Java} sont pr\'esent\'es aux annexes~\ref{sourceCodeWordCountPpFf.ann} et~\ref{sourceCodeWordCountJava.ann} respectivement.
+
+\GT{En anglais, c'est <<appendix>> mais en fran\c{c}ais c'est annexe!}
+
+\GT{Je crois qu'il serait pr\'ef\'erable de pr\'esenter les mesures
+associ\'ees dans la m\^eme section, sinon ta section 4.2 sera courte
+et ce sera m\'elangeant d'avoir les r\'esultats \`a part.}
+
+\GT{Donc, 4.2 (idem pour 4.3) pourrait contenir: 4.2.1 Description de
+l'application; 4.2.2 Mesures obtenues; 4.2.3 Analyse des r\'esultats.}
 
 
 
 \section{Stock Market}
 \label{stockprice.sect}
 
-Dans le monde informatique actuel, les institutions financi\`eres telles que les march\'es boursiers produisent d'\'enormes quantit\'es d'informations. L'un des probl\`emes les plus importants qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees boursi\`eres afin de recueillir des informations utiles sur le comportement du march\'e en matière de d\'ecisions d'investissement. Cette section pr\'esente une telle application qui calcule le prix maximum pour chaque stock d'un marché boursier. Les codes sources des applications \TT{StockPrice} dans \TT{PpFf} et \TT{Java} sont list\'es dans l'appendice~\ref{sourceCodeStockPricePpFf.ann} et l'appendice~\ref{sourceCodeStockPriceJava.ann} respectivement. Une telle application est compos\'ee en combinant cinq principales op\'erations.
+\GT{En anglais <<stock>> est, en fran\c{c}ais, une <<action (boursi\`ere)>>.}
 
-Les op\'erations d\'efinissant le pipeline sont les suivantes :
+Dans le monde informatique actuel, les institutions financi\`eres, par ex., les march\'es boursiers, produisent d'\'enormes quantit\'es d'informations. L'un des probl\`emes les plus importants qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees afin de produire des informations utiles sur le comportement du march\'e, notamment pour prendre des d\'ecisions d'investissement. Cette section pr\'esente une telle application qui calcule le prix maximum pour diverses actions d'un marché boursier. Les codes sources des applications \TT{StockPrice} en \TT{PpFf} et~\TT{Java} sont pr\'esent\'es dans les annexes~\ref{sourceCodeStockPricePpFf.ann} et~\ref{sourceCodeStockPriceJava.ann} respectivement. 
+
+Cette application est compos\'ee en un pipeline combinant cinq principales op\'erations~: 
 
 \begin{itemize}
 
-\item La premi\`ere op\'eration d'un pipeline sert \`a d\'efinir la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier.
+\item La premi\`ere op\'eration sert \`a d\'efinir la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier.
 
-\item La deuxi\`eme op\'eration permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}
-Toutes les \'etapes suivant cette op\'eration seront ex\'ecut\'ees en parall\`ele.
 
-\item La troisi\`eme op\'eration, l'op\'eration \TT{map} permet d'extraire le nom et les donn\'ees de chaque stock du march\'e boursier.
+\GT{Tu devras donner un peu plus de d\'etail sur le fichier, notamment
+le nombre d'enregistrements, peut-\^etre aussi l'allure d'un tel
+enregistement.}
 
-\item Le prix pour chaque stock est calcul\'e dans la quatri\`eme op\'eration. L'algorithme utilis\'e est \TT{Black \& Scholes}.
 
-\item La derni\`ere op\'eration du flux permet d'extraire le prix maximum pour chaque stock du march\'e boursier.
+\item La deuxi\`eme op\'eration permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}.
+Toutes les \'etapes suivant cette op\'eration seront donc ex\'ecut\'ees en parall\`ele.
+
+\item La troisi\`eme op\'eration,  \TT{map}, permet d'extraire le nom et les donn\'ees de chaque action du march\'e boursier.
+
+\GT{En fait, que contient un enregistrement: les infos sur une action
+sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
+
+\item  Le prix de chaque action est calcul\'e dans la quatri\`eme op\'eration. L'algorithme utilis\'e est \TT{Black \& Scholes}~\cite{XSX}. 
+
+\GT{Il faut donner une r\'ef\'erence, ne serait-ce qu'un article Fastflow!?}
+
+\item La derni\`ere op\'eration permet d'extraire le prix maximum pour chaque action.
 
 
 \end{itemize}
