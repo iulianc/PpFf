@@ -2,7 +2,7 @@
 \chapter{\'Etudes de cas et exp\'erimentations}
 \label{experiences.chap}
 
-\GT{Pas besoin de dire que c'est <<possibilit\'es d'utilisation>>. Tu
+\gt{Pas besoin de dire que c'est <<possibilit\'es d'utilisation>>. Tu
 as d\'evelopp\'e une bibloth\`eque, et tu veux voir comment elle se
 compare avec d'autres.}
 
@@ -32,9 +32,7 @@ Chaque exp\'erience est ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat s
 \section{Word Count}
 \label{wordcount.sect}
 
-D\'ecrit dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d''occurrences du mot dans le fichier. Les codes sources des applications \TT{WordCount} en \TT{PpFf} et~\TT{Java} sont pr\'esent\'es aux annexes~\ref{sourceCodeWordCountPpFf.ann} et~\ref{sourceCodeWordCountJava.ann} respectivement.
-
-\GT{En anglais, c'est <<appendix>> mais en fran\c{c}ais c'est annexe!}
+\gt{En anglais, c'est <<appendix>> mais en fran\c{c}ais c'est annexe!}
 
 \GT{Je crois qu'il serait pr\'ef\'erable de pr\'esenter les mesures
 associ\'ees dans la m\^eme section, sinon ta section 4.2 sera courte
@@ -43,49 +41,18 @@ et ce sera m\'elangeant d'avoir les r\'esultats \`a part.}
 \GT{Donc, 4.2 (idem pour 4.3) pourrait contenir: 4.2.1 Description de
 l'application; 4.2.2 Mesures obtenues; 4.2.3 Analyse des r\'esultats.}
 
+\IC{Bonne id\'ee}
 
 
-\section{Stock Market}
-\label{stockprice.sect}
+\subsection{Description de l'application}
 
-\GT{En anglais <<stock>> est, en fran\c{c}ais, une <<action (boursi\`ere)>>.}
-
-Dans le monde informatique actuel, les institutions financi\`eres, par ex., les march\'es boursiers, produisent d'\'enormes quantit\'es d'informations. L'un des probl\`emes les plus importants qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees afin de produire des informations utiles sur le comportement du march\'e, notamment pour prendre des d\'ecisions d'investissement. Cette section pr\'esente une telle application qui calcule le prix maximum pour diverses actions d'un marché boursier. Les codes sources des applications \TT{StockPrice} en \TT{PpFf} et~\TT{Java} sont pr\'esent\'es dans les annexes~\ref{sourceCodeStockPricePpFf.ann} et~\ref{sourceCodeStockPriceJava.ann} respectivement. 
-
-Cette application est compos\'ee en un pipeline combinant cinq principales op\'erations~: 
-
-\begin{itemize}
-
-\item La premi\`ere op\'eration sert \`a d\'efinir la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier.
+D\'ecrit dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d''occurrences du mot dans le fichier. Les codes sources des applications \TT{WordCount} en \TT{PpFf} et~\TT{Java} sont pr\'esent\'es aux annexes~\ref{sourceCodeWordCountPpFf.ann} et~\ref{sourceCodeWordCountJava.ann} respectivement.
 
 
-\GT{Tu devras donner un peu plus de d\'etail sur le fichier, notamment
-le nombre d'enregistrements, peut-\^etre aussi l'allure d'un tel
-enregistement.}
+\subsection{Mesures obtenues}
 
 
-\item La deuxi\`eme op\'eration permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}.
-Toutes les \'etapes suivant cette op\'eration seront donc ex\'ecut\'ees en parall\`ele.
-
-\item La troisi\`eme op\'eration,  \TT{map}, permet d'extraire le nom et les donn\'ees de chaque action du march\'e boursier.
-
-\GT{En fait, que contient un enregistrement: les infos sur une action
-sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
-
-\item  Le prix de chaque action est calcul\'e dans la quatri\`eme op\'eration. L'algorithme utilis\'e est \TT{Black \& Scholes}~\cite{XSX}. 
-
-\GT{Il faut donner une r\'ef\'erence, ne serait-ce qu'un article Fastflow!?}
-
-\item La derni\`ere op\'eration permet d'extraire le prix maximum pour chaque action.
-
-
-\end{itemize}
-
-
-\section{Mesures}
-
-
-\subsection{WordCount}
+%Plots bar examples: http://pgfplots.net/tikz/examples/tag/bar-plots/
 
 \begin{tikzpicture}
 \begin{axis}[
@@ -156,11 +123,6 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 
 
 
-
-
-
-
-
 \begin{tikzpicture}
 \begin{axis}[
     title={WordCount - machine Japet; sans JIT; 1 itération; PpFf-8 thread},
@@ -192,5 +154,120 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 \legend{PpFf,Java}    
 \end{axis}
 \end{tikzpicture}
+
+
+
+
+\subsection{Analyse des r\'esultats}
+
+
+
+
+
+
+
+\section{Stock Market}
+\label{stockprice.sect}
+
+\gt{En anglais <<stock>> est, en fran\c{c}ais, une <<action (boursi\`ere)>>.}
+
+Dans le monde informatique actuel, les institutions financi\`eres, par ex., les march\'es boursiers, produisent d'\'enormes quantit\'es d'informations. L'un des probl\`emes les plus importants qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees afin de produire des informations utiles sur le comportement du march\'e, notamment pour prendre des d\'ecisions d'investissement. Cette section pr\'esente une telle application qui calcule le prix maximum pour diverses actions d'un marché boursier. Les codes sources des applications \TT{StockPrice} en \TT{PpFf} et~\TT{Java} sont pr\'esent\'es dans les annexes~\ref{sourceCodeStockPricePpFf.ann} et~\ref{sourceCodeStockPriceJava.ann} respectivement. 
+
+\subsection{Description de l'application}
+
+L'application \TT{Stock Market} calcule le prix d'une action en utilisant le modèle \TT{Black-Scholes}~\cite{macbeth1979empirical}. \TT{Black-Scholes} est un mod\`ele d'\'evaluation utilis\'e pour d\'eterminer le prix juste ou la valeur th\'eorique d'une option d'achat ou de vente en fonction de six variables telles que la valeur actuelle de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, la volatilit\'e du prix de l'action, la dur\'ee et le type d'option. 
+
+L'application \TT{Stock Market} est compos\'ee en un pipeline combinant cinq principales op\'erations~: 
+
+\begin{lstlisting}[
+label={exampleInfoActionFromFile},
+language=c++,
+caption={Un exemple illustrant l'information sur une action contenue dans un fichier.},
+frame=single,
+float]
+SNY	100.00 90.00 0.1000 0.00 0.10 1.00 C 0.00 18.6308591206674982
+\end{lstlisting}
+
+\begin{itemize}
+
+\item La premi\`ere op\'eration sert \`a d\'efinir la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier. Le listing~\ref{exampleInfoActionFromFile} montre un exemple avec un enregistrement contenu dans le fichier. Un tel enregistrement est identifi\'e par les informations suivantes : le nom de l'action, la valeur actuelle de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, taux de dividende, la volatilit\'e du prix de l'action, le temps qu'il reste \`a l'option avant son \'ech\'eance (exprim\'e en ann\'ees), le type d'option (C=CALL calcule le prix pour une option d'achat et P=PUT calcule le prix pour une option de vente), la valeur de dividende et la valeur de r\'ef\'erence \TT{DerivaGem}. 
+Les valeurs \TT{DerivaGem}, la valeur et le taux de dividende ne sont pas utilis\'es dans \TT{Stock Market} pour calculer le prix d'une action.
+
+
+
+\GT{Tu devras donner un peu plus de d\'etail sur le fichier, notamment
+le nombre d'enregistrements, peut-\^etre aussi l'allure d'un tel
+enregistement.}
+
+\IC{J'ai ajout\'e plus de d\'etails}
+
+
+\item La deuxi\`eme op\'eration permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}.
+Toutes les \'etapes suivant cette op\'eration seront donc ex\'ecut\'ees en parall\`ele.
+
+\item La troisi\`eme op\'eration,  \TT{map}, permet d'extraire le nom et les options de chaque action.
+
+\GT{En fait, que contient un enregistrement: les infos sur une action
+sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
+
+\IC{Bonne question. J'imagine qu'il s'agit d'actions enregistr\'ees \`a la suite de transaction boursi\`ere. J'ai regard\'e la description de Pico. Il n'y a pas beaucoup de d\'etails. https://github.com/alpha\-unito/pico/tree/master/examples/stock-market. (The stock\_pricing.cpp code is an example of batch pipeline (like word\-count), meaning file\-based I\/O. It takes in input a series of stock records and computes the maximum price for each stock name.) }
+
+\item  Le prix de chaque action est calcul\'e dans la quatri\`eme op\'eration. L'algorithme utilis\'e est \TT{Black \& Scholes}~\cite{macbeth1979empirical}. 
+
+\GT{Il faut donner une r\'ef\'erence, ne serait-ce qu'un article Fastflow!?}
+
+\IC{J'ai ajout\'e une r\'ef\'erence.}
+
+\item La derni\`ere op\'eration permet d'extraire le prix maximum pour chaque action.
+
+
+\end{itemize}
+
+\subsection{Mesures obtenues}
+
+
+\pgfplotstableread[row sep=\\,col sep=&]{
+    interval & PpFf & Java \\
+    Java-JIT  & 302 & 574 \\
+    Java-NO-JIT   & 504 & 2696 \\
+    Japet-JIT   & 357 & 402 \\
+    Japet-NO-JIT   & 350 & 5810 \\
+    }\mydata
+
+\begin{tikzpicture}
+    \begin{axis}[
+    		title = Temps d'ex\'ecution pour StockPrice,
+            ybar,
+            bar width=.5cm,
+            width=.7\textwidth,
+            height=.5\textwidth,
+            legend style={at={(0.5,1)},
+                anchor=north,legend columns=-1},
+            symbolic x coords={Java-JIT, Java-NO-JIT, Japet-JIT, Japet-NO-JIT},
+            xtick=data,
+            nodes near coords,
+            nodes near coords align={vertical},
+            ymin=0,ymax=6000,
+            ylabel={Temps d'ex\'ecution en ms},
+        ]
+        \addplot table[x=interval,y=PpFf]{\mydata};
+        \addplot table[x=interval,y=Java]{\mydata};
+        \legend{PpFf, Java}
+    \end{axis}
+\end{tikzpicture}
+
+
+
+\subsection{Analyse des r\'esultats}
+
+
+
+
+
+
+
+
+
+
 
 
