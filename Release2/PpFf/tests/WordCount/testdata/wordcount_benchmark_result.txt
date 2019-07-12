@@ -1,6 +1,0 @@
-
-Temps C++  (  1 it.;  1 thr.;   78792 words):   168 ms {  168 ms/it. }
-Temps C++  (  1 it.;  2 thr.;   78792 words):   107 ms {  107 ms/it. }
-Temps C++  (  1 it.;  3 thr.;   78792 words):    90 ms {   90 ms/it. }
-Temps Java (  1 it.;            78792 words):  3515 ms { 3515 ms/it. } { 22067 w/s. }
-
