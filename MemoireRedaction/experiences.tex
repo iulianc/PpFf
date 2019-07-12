@@ -56,13 +56,14 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 
 \begin{tikzpicture}
 \begin{axis}[
-    title={WordCount - machine Java; sans JIT; 1 itération; PpFf-1 thread},
-    xlabel={Nombre de mots \`a l'entr\'ee du flux},
-    ylabel={Temps d'ex\'ecution en ms},
+    title={WordCount - machine Java; sans JIT; 1 itération; PpFf-1 thread\bigskip},
+    xlabel={Nb.~mots},
+    ylabel={Temps d'ex\'ecution (ms)},
     xmin=0, xmax=5500000,
     ymin=0, ymax=25000,
     ytick={0,5000,10000,15000,20000,25000},
-    xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+    %xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
     legend pos=north west,
     ymajorgrids=true,
     grid style=dashed,
@@ -92,12 +93,13 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 \begin{tikzpicture}
 \begin{axis}[
     title={WordCount - machine Japet; avec JIT; 1 itération; PpFf-8 thread},
-    xlabel={Nombre de mots \`a l'entr\'ee du flux},
-    ylabel={Temps d'ex\'ecution en ms},
+    xlabel={Nb.~mots},
+    ylabel={Temps d'ex\'ecution (ms)},
     xmin=0, xmax=5500000,
     ymin=0, ymax=5500,
-    ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
-    xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+    %ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
+    ytick={0,1000,2000,3000,4000,5000,6000},
+    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
     legend pos=north west,
     ymajorgrids=true,
     grid style=dashed,
@@ -125,13 +127,14 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 
 \begin{tikzpicture}
 \begin{axis}[
-    title={WordCount - machine Japet; sans JIT; 1 itération; PpFf-8 thread},
-    xlabel={Nombre de mots \`a l'entr\'ee du flux},
-    ylabel={Temps d'ex\'ecution en ms},
+    title={WordCount - machine Japet; sans JIT; 1 itération; PpFf-8 thread\newline},
+    xlabel={Nb.~mots},
+    ylabel={Temps d'ex\'ecution (ms)},
     xmin=0, xmax=5500000,
     ymin=0, ymax=550000,
-    ytick={0,100000,150000,200000,250000,300000,350000,400000,450000,500000,550000},
-    xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+    %ytick={0,100000,150000,200000,250000,300000,350000,400000,450000,500000,550000},
+    ytick={0,100000,200000,300000,400000,500000,600000},
+    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
     legend pos=north west,
     ymajorgrids=true,
     grid style=dashed,
@@ -242,7 +245,7 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
             nodes near coords,
             nodes near coords align={vertical},
             ymin=0,ymax=6000,
-            ylabel={Temps d'ex\'ecution en ms},
+            ylabel={Temps d'ex\'ecution (ms)},
         ]
         \addplot table[x=interval,y=PpFf]{\mydata};
         \addplot table[x=interval,y=Java]{\mydata};
