@@ -191,11 +191,20 @@ L'application \TT{Stock Market} est compos\'ee en un pipeline combinant cinq pri
 \begin{lstlisting}[
 label={exampleInfoActionFromFile},
 language=c++,
-caption={Un exemple illustrant l'information sur une action contenue dans un fichier.},
+caption={Un exemple illustrant l'information sur des actions contenues dans le fichier.},
 frame=single,
 float]
 
 SNY	100.00 90.00 0.1000 0.00 0.10 1.00 C 0.00 18.6308591206674982
+JCI	100.00 100.00 0.1000 0.00 0.10 0.50 C 0.00 5.8502736042849798
+DSX	100.00 100.00 0.1000 0.00 0.10 1.00 C 0.00 10.3081472436668
+LILA	100.00 110.00 0.1000 0.00 0.10 0.10 C 0.00 0.003523074865
+NVS	100.00 110.00 0.1000 0.00 0.10 0.50 C 0.00 1.1407228438274099
+FLML	100.00 110.00 0.1000 0.00 0.10 1.00 C 0.00 4.216747020308
+TEF	100.00 90.00 0.1000 0.00 0.25 0.10 C 0.00 11.1352446183467002
+DXB	100.00 90.00 0.1000 0.00 0.25 0.50 C 0.00 16.0926388440922991
+HSEA	100.00 90.00 0.1000 0.00 0.25 1.00 C 0.00 21.16345465848
+LENS	100.00 100.00 0.1000 0.00 0.25 0.10 C 0.00 3.65996266031
 \end{lstlisting}
 
 \begin{itemize}
@@ -207,6 +216,8 @@ Les valeurs \TT{DerivaGem}, la valeur et le taux de dividende ne sont pas utilis
 
 \GT{Je sugg\`ere, dans le listing, de mettre quelques
 lignes/enregistrements, pas un seul --- disons une dizaine?}
+
+\IC{J'ai ajout\'e plus des lignes.}
 
 
 \item La deuxi\`eme op\'eration permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}.
