@@ -15,6 +15,11 @@ exp\'erimentations ont \'et\'e effectu\'ees.
 
 \section{M\'ethode utilis\'ee pour les exp\'erimentations}
 
+Chaque syst\`eme informatique a des caract\'eristiques propres. Les principaux facteurs qui influencent la performance d'un tel syst\`eme sont le processeur et la communication interne. Afin d'avoir de r\'esultats pr\'ecis, nous avons conduit nos exp\'eriences sur deux machines diff\'erentes. La premi\`ere machine est une machine avec 16 processeurs avec 2,6 GHz, chacun contenant 6 cœurs. Au total, nous avons une machine à 96 cœurs fonctionnant sous Linux avec la version 3.10.0. La deuxi\`eme machine est une machine avec 64 processeurs avec 2,3 GHz, chacun contenant 8 cœurs. Le système d'op\'eration pour la derni\`ere machine est Linux avec la version 3.10.0.
+
+Dans un environnement de traitement de flux, les donn\'ees sont g\'en\'eralement transform\'ees au fur et \`a mesure de leur progression dans le \TT{pipeline}. Chaque exp\'erience est ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat stable. Le nombre de r\'ep\'etitions de chaque exp\'erience a \'et\'e vari\'e. Dans les r\'esultats pr\'esent\'es dans les sections suivantes, nous avons pris le facteur de r\'ep\'etition pour les meilleurs r\'esultats obtenus. Donc, pour toutes les exp\'eriences ex\'ecut\'ees, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a 20. Le temps d'ex\'ecution de r\'ef\'erence pour les exp\'eriences est obtenu en divisant le temps total de l'ex\'ecution au nombre de r\'ep\'etitions.
+
+
 \GT{Ici, il faut donner une vue d'ensemble de la fa\c{c}on dont tu as
 proc\'ed\'e~: quelles machines (architecture, OS, etc. Parler comme tu
 fais ci-bas que chaque {\bf programme \emph{benchmark}} est ex\'ecut\'e
@@ -26,7 +31,8 @@ juste/stable, etc.}
 \GT{Ensuite, tu pourras d\'ecrire les r\'esultats pour chacun des
 programmes.}
 
-Chaque exp\'erience est ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat stable. Dans un environnement de traitement de flux, les donn\'ees sont g\'en\'eralement transform\'ees au fur et \`a mesure de leur progression dans le \TT{pipeline}.
+\IC{J'ai d\'ecrit un peu comment j'ai ex\'ecut\'e les tests.}
+
 
 
 \section{Word Count}
