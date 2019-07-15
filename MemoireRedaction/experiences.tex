@@ -15,12 +15,37 @@ exp\'erimentations ont \'et\'e effectu\'ees.
 
 \section{M\'ethode utilis\'ee pour les exp\'erimentations}
 
-Chaque syst\`eme informatique a des caract\'eristiques propres. Les principaux facteurs qui influencent la performance d'un tel syst\`eme sont le processeur et la communication interne. Afin d'avoir de r\'esultats pr\'ecis, nous avons conduit nos exp\'eriences sur deux machines diff\'erentes. La premi\`ere machine est une machine avec 16 processeurs avec 2,6 GHz, chacun contenant 6 cœurs. Au total, nous avons une machine à 96 cœurs fonctionnant sous Linux avec la version 3.10.0. La deuxi\`eme machine est une machine avec 64 processeurs avec 2,3 GHz, chacun contenant 8 cœurs. Le système d'op\'eration pour la derni\`ere machine est Linux avec la version 3.10.0.
+Chaque syst\`eme informatique a des caract\'eristiques propres. Les principaux facteurs qui influencent la performance d'un tel syst\`eme sont le type de processeur, le nombre de processeurs et le r\'eseau de communication. 
+
+
+\GT{Ne sp\'ecifie pas que tu as utilis\'e un nombre fixe de machines,
+parce que si des scripts gnuplots sont d\'efinis \`a un moment, je
+pourrais essayer de rouler les benchmarks aussi sur une de mes
+machines --- il me semble que sur ma machine Linux, les r\'esultats
+\'etaient mieux qu'ailleurs, non? Je ne suis plus certain!?}
+
+
+\GT{Une fa\c{c}on possible pour \'eviter l'ambiguit\'e machine Java
+vs.\ langage Java~: introduire un identificateur pour la machine, et
+ensuite utiliser cet identificateur dans les diagrammes?}
+
+
+Afin d'avoir de r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'eriences sur les machines suivantes~:
+
+\begin{description}
+\item[M1] = \TT{java.labunix.uqam.ca}~: Une machine avec 16 processeurs de 2,6 GHz, chacun contenant 6 cœurs. Au total, nous avons une machine à 96 cœurs fonctionnant sous Linux avec la version 3.10.0. 
+
+
+\item[M2] = \TT{japet.labunix.uqam.ca}~:  Une machine avec 64 processeurs de 2,3 GHz, chacun contenant 8 cœurs. Le système d'op\'eration pour la derni\`ere machine est Linux avec la version 3.10.0.
+
+\GT{Vraiment? Donc 512 coeurs en tout? Cela m'\'etonne!}
+
+\end{description}
 
 Dans un environnement de traitement de flux, les donn\'ees sont g\'en\'eralement transform\'ees au fur et \`a mesure de leur progression dans le \TT{pipeline}. Chaque exp\'erience est ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat stable. Le nombre de r\'ep\'etitions de chaque exp\'erience a \'et\'e vari\'e. Dans les r\'esultats pr\'esent\'es dans les sections suivantes, nous avons pris le facteur de r\'ep\'etition pour les meilleurs r\'esultats obtenus. Donc, pour toutes les exp\'eriences ex\'ecut\'ees, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a 20. Le temps d'ex\'ecution de r\'ef\'erence pour les exp\'eriences est obtenu en divisant le temps total de l'ex\'ecution au nombre de r\'ep\'etitions.
 
 
-\GT{Ici, il faut donner une vue d'ensemble de la fa\c{c}on dont tu as
+\gt{Ici, il faut donner une vue d'ensemble de la fa\c{c}on dont tu as
 proc\'ed\'e~: quelles machines (architecture, OS, etc. Parler comme tu
 fais ci-bas que chaque {\bf programme \emph{benchmark}} est ex\'ecut\'e
 plusieurs fois, comment ce temps est mesur\'e (de l'int\'erieur du
@@ -28,10 +53,27 @@ programme par des appels syst\`emes internes), que la moyenne des
 temps d'ex\'ecution est calcul\'ee pour obtenir un r\'esultat plus
 juste/stable, etc.}
 
-\GT{Ensuite, tu pourras d\'ecrire les r\'esultats pour chacun des
+\gt{Ensuite, tu pourras d\'ecrire les r\'esultats pour chacun des
 programmes.}
 
 \IC{J'ai d\'ecrit un peu comment j'ai ex\'ecut\'e les tests.}
+
+
+\GT{Ce n'est pas encore clair pour moi.  Tu as lanc\'e le m\^eme
+programme 20 fois, puis tu as calcul\'e la moyenne des 20 r\'esultats
+obtenus?  Ou bien chaque programme est ex\'ecut\'e une fois, mais en
+roulant son corps 20 fois?  Habituellement, c'est la premi\`ere
+approche qu'on utilise, parce qu'un lancement d'un programme varie
+d'une fois \`a une autre, selon la charge de la machine, du r\'eseau,
+etc. Donc, on lance le programme $NB$ fois (par ex., NB=10), on mesure
+le temps pour chaque ex\'ecution et on fait la moyenne des $NB$
+temps.}
+
+
+\GT{Je crois qu'il faut aussi que tu parles du JIT, que tu vas
+comparer l'ex\'ecution du programme Java avec le JIT activ\'e vs.\
+sans le JIT. Tu pourrais alors r\'ef\'erer, par exmple, \`a la machine
+\TT{M1+} avec JIT et \TT{M1-} sans JIT.}
 
 
 
@@ -194,17 +236,16 @@ language=c++,
 caption={Un exemple illustrant l'information sur des actions contenues dans le fichier.},
 frame=single,
 float]
-
-SNY	100.00 90.00 0.1000 0.00 0.10 1.00 C 0.00 18.6308591206674982
-JCI	100.00 100.00 0.1000 0.00 0.10 0.50 C 0.00 5.8502736042849798
-DSX	100.00 100.00 0.1000 0.00 0.10 1.00 C 0.00 10.3081472436668
-LILA	100.00 110.00 0.1000 0.00 0.10 0.10 C 0.00 0.003523074865
-NVS	100.00 110.00 0.1000 0.00 0.10 0.50 C 0.00 1.1407228438274099
-FLML	100.00 110.00 0.1000 0.00 0.10 1.00 C 0.00 4.216747020308
-TEF	100.00 90.00 0.1000 0.00 0.25 0.10 C 0.00 11.1352446183467002
-DXB	100.00 90.00 0.1000 0.00 0.25 0.50 C 0.00 16.0926388440922991
-HSEA	100.00 90.00 0.1000 0.00 0.25 1.00 C 0.00 21.16345465848
-LENS	100.00 100.00 0.1000 0.00 0.25 0.10 C 0.00 3.65996266031
+SNY 100.00 90.00 0.1000 0.00 0.10 1.00 C 0.00 18.6308591206674982
+JCI 100.00 100.00 0.1000 0.00 0.10 0.50 C 0.00 5.8502736042849798
+DSX 100.00 100.00 0.1000 0.00 0.10 1.00 C 0.00 10.3081472436668
+LILA 100.00 110.00 0.1000 0.00 0.10 0.10 C 0.00 0.003523074865
+NVS 100.00 110.00 0.1000 0.00 0.10 0.50 C 0.00 1.1407228438274099
+FLML 100.00 110.00 0.1000 0.00 0.10 1.00 C 0.00 4.216747020308
+TEF 100.00 90.00 0.1000 0.00 0.25 0.10 C 0.00 11.1352446183467002
+DXB 100.00 90.00 0.1000 0.00 0.25 0.50 C 0.00 16.0926388440922991
+HSEA 100.00 90.00 0.1000 0.00 0.25 1.00 C 0.00 21.16345465848
+LENS 100.00 100.00 0.1000 0.00 0.25 0.10 C 0.00 3.65996266031
 \end{lstlisting}
 
 \begin{itemize}
@@ -213,12 +254,6 @@ LENS	100.00 100.00 0.1000 0.00 0.25 0.10 C 0.00 3.65996266031
 
 Un enregistrement est identifi\'e par les informations suivantes : le nom de l'action, la valeur actuelle de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, le taux de dividende, la volatilit\'e du prix de l'action, le temps qu'il reste \`a l'option avant son \'ech\'eance (exprim\'e en ann\'ees), le type d'option (\TT{C=CALL}~: prix pour une option d'achat et \TT{P=PUT}~: prix pour une option de vente), la valeur de dividende et la valeur de r\'ef\'erence \TT{DerivaGem}. 
 Les valeurs \TT{DerivaGem}, la valeur et le taux de dividende ne sont pas utilis\'es dans \TT{Stock Market} pour calculer le prix d'une action.
-
-\GT{Je sugg\`ere, dans le listing, de mettre quelques
-lignes/enregistrements, pas un seul --- disons une dizaine?}
-
-\IC{J'ai ajout\'e plus des lignes.}
-
 
 \item La deuxi\`eme op\'eration permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}.
 Toutes les \'etapes suivant cette op\'eration seront donc ex\'ecut\'ees en parall\`ele.
@@ -230,7 +265,7 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 
 \ic{Bonne question. J'imagine qu'il s'agit d'actions enregistr\'ees \`a la suite de transaction boursi\`ere. J'ai regard\'e la description de Pico. Il n'y a pas beaucoup de d\'etails. https://github.com/alpha\-unito/pico/tree/master/examples/stock-market. (The stock\_pricing.cpp code is an example of batch pipeline (like word\-count), meaning file\-based I\/O. It takes in input a series of stock records and computes the maximum price for each stock name.) }
 
-\item  Le prix de chaque action est calcul\'e dans la quatri\`eme op\'eration. L'algorithme utilis\'e est \emph{Black \& Scholes}~\cite{macbeth1979empirical}. 
+\item  Le prix de chaque action est calcul\'e dans la quatri\`eme op\'eration. L'algorithme utilis\'e est celui de \emph{Black \& Scholes}~\citep{macbeth1979empirical}. 
 
 \item Finalement, la derni\`ere op\'eration permet d'extraire le prix maximum pour chaque action.
 
