@@ -1,7 +1,8 @@
 #ifndef SOURCEOPERATOR_HPP
 #define SOURCEOPERATOR_HPP
 
-#include <ff/node.hpp>
+//#include <ff/node.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 #include <operators/BaseOperator.hpp>
 

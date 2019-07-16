@@ -19,30 +19,45 @@ benchmarks: compile
 	@./StockPrice $(TEST_FILE) 1 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 1 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 1 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 1 8 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 1 16 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 1 32 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 2 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 2 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 2 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 2 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 2 8 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 2 16 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 2 32 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 4 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 4 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 4 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 4 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 4 8 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 4 16 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 4 32 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 8 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 8 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 8 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 8 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 8 8 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 8 16 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 8 32 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 8 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 	@echo
 	@./StockPrice $(TEST_FILE) 16 1 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 16 2 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 16 3 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@./StockPrice $(TEST_FILE) 16 4 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 8 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 16 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
+	@./StockPrice $(TEST_FILE) 16 32 $(OUTPUT_FILE_RESULT) | sort > obtenus-cpp.txt
 	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE) 16 $(OUTPUT_FILE_RESULT) | sort > obtenus-java.txt
 
 .IGNORE:
@@ -64,7 +79,7 @@ OBJ 		:= $(ROOT_TESTS:.cpp=.o)
 DEP 		:= $(OBJ:.o=.d)
 
 # Compiler
-CXX		= g++ -std=c++11 $(MAP_TYPE)
+CXX		= g++ -std=c++17 $(MAP_TYPE)
 # Specify preprocessor flags
 CPPFLAGS 	:= -I./ -I $(ROOT_PIPE)
 # Required flags to enable the automatic dependency generation by the compiler

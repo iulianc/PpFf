@@ -1,7 +1,8 @@
 #ifndef BASEOPERATOR_HPP
 #define BASEOPERATOR_HPP
 
-#include <ff/node.hpp>
+//#include <ff/node.hpp>
+#include <ff/ff.hpp>
 
 using namespace ff;
 

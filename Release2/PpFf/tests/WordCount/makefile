@@ -2,8 +2,8 @@
 #	make -f gt-makefile
 
 # Oter le commentaire de la 2e ligne pour desactiver JIT de Java
-AVEC_SANS_JIT=-Djava.compiler=NONE
-#AVEC_SANS_JIT=
+#AVEC_SANS_JIT=-Djava.compiler=NONE
+AVEC_SANS_JIT=
 
 NB_TIMES=1
 
@@ -22,7 +22,7 @@ OBJ 		:= $(ROOT_TESTS:.cpp=.o)
 DEP 		:= $(OBJ:.o=.d)
 
 # Compiler
-CXX		= g++ -std=c++11 $(MAP_TYPE)
+CXX		= g++ -std=c++17 $(MAP_TYPE)
 # Specify preprocessor flags
 CPPFLAGS 	:= -I./ -I $(ROOT_PIPE)
 # Required flags to enable the automatic dependency generation by the compiler

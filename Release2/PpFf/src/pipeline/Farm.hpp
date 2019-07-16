@@ -1,8 +1,9 @@
 #ifndef FARM_HPP
 #define FARM_HPP
 
-#include <ff/pipeline.hpp>
-#include <ff/farm.hpp>
+//#include <ff/pipeline.hpp>
+//#include <ff/farm.hpp>
+#include <ff/ff.hpp>
 #include <pipeline/Node.hpp>
 #include <pipeline/Worker.hpp>
 
@@ -14,7 +15,7 @@ namespace PpFf {
     public:
         Farm(unsigned int no_workers): no_workers(no_workers) {
             type = NodeTypeFarm;
-            farm = new ff_farm<>();
+            farm = new ff_farm();
             for (unsigned int i = 0 ; i < no_workers; i++) {
                 workers.push_back(new Worker());
             }
@@ -50,7 +51,7 @@ namespace PpFf {
     private:
         unsigned int no_workers;
         std::vector<Worker*> workers;
-        ff_farm<> *farm;
+        ff_farm *farm;
     };
 }
 
