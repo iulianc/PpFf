@@ -13,7 +13,7 @@
 #include <sstream>
 #include<fstream>
 #include <locale>
-#include <Pipe.hpp>
+#include <Flow.hpp>
 #include <unordered_map>
 #include <ctype.h>
 
@@ -60,8 +60,8 @@ int main(int argc, char* argv[]) {
         // EXECUTION PARALLELE.
         Reducer<int, int> reducer(0, plus1, std::plus<int>());
         obtenu = 
-            Pipe()
-            .source<int>(elems.begin(), elems.end())
+            Flow
+            ::source<int>(elems.begin(), elems.end())
             .parallel(nbThreads)
             .reduceByKey<int, int, int>(reducer);
     }

@@ -31,7 +31,7 @@ OBJ 		:= $(ROOT_TESTS:.cpp=.o)
 DEP 		:= $(OBJ:.o=.d)
 
 # Compiler
-CXX		= g++ -std=c++11
+CXX		= g++ -std=c++17
 # Specify preprocessor flags
 CPPFLAGS 	:= -I./ -I $(ROOT_PIPE)
 # Required flags to enable the automatic dependency generation by the compiler
@@ -46,6 +46,8 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 # Tell make that these target are not real files
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
+
+compile_maps: Maps
 
 compile: $(EXE)
 	@javac MapFilterMapJava.java
@@ -88,7 +90,7 @@ N=1000
 GRANULARITE=3
 NB_THREADS=2
 
-run_maps: compile
+run_maps: compile_maps
 	./run_maps.sh
 
 
