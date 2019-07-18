@@ -22,9 +22,8 @@ using namespace PpFf;
 #define DEFAULT_NB_ITERATIONS 5
 //#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
 #define DEFAULT_INPUT_FILE "/home/iuly/WorkplaceEclipse/PpFf-OldVersion/tests/WordCount/testdata/78792Words.txt"
-#define DEFAULT_OUTPUT_FILE_RESULT "/home/iuly/WorkplaceEclipse/PpFf-OldVersion/tests/WordCount/testdata/wordcount_benchmark_result.txt"
+
 #define DEFAULT_NB_THREADS 1
-#define DEFAULT_NB_WORDS 78792
 typedef std::vector<std::string> Words;
 
 Words* splitInWords(std::string* line) {
@@ -61,10 +60,7 @@ bool notEmpty(std::string* s) {
 int main(int argc, char* argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
     std::string inputFile = DEFAULT_INPUT_FILE;
-	 std::string outputFileResult = DEFAULT_OUTPUT_FILE_RESULT;
-	 uint32_t nbThreads = DEFAULT_NB_THREADS;
-	 uint32_t nbWords = DEFAULT_NB_WORDS;
-	 uint32_t outWords = 0;
+    uint32_t nbThreads = DEFAULT_NB_THREADS;
 
     if (argc >= 2) {
         inputFile = argv[1];
@@ -78,14 +74,6 @@ int main(int argc, char* argv[]) {
         nbThreads = atoi(argv[3]);
     }
 
-    if (argc >= 5) {
-        outputFileResult = argv[4];
-    }
-
-    if (argc >= 6) {
-        nbWords = atoi(argv[5]);
-    }
-
     Reducer<std::string, int> reducer(0, 
                                       [](int count, std::string _) { return count + 1; },
                                       std::plus<int>{} );
@@ -97,7 +85,7 @@ int main(int argc, char* argv[]) {
         currentResult = 
             Flow
             ::source(inputFile)
-				.parallel(nbThreads)
+            .parallel(nbThreads)
             .flatMap<std::string, std::string, Words>(splitInWords)			
             .map<std::string, std::string>(toLowercaseLetters)			
             .find<std::string>(notEmpty)	
@@ -107,37 +95,7 @@ int main(int argc, char* argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
-    for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
-		  outWords += it->second;
-    }
-
-    //std::cerr << "Temps C++:  " << duration_ms / nbIterations << " ms" << std::endl;
-    fprintf( stderr, "Temps C++  (%3d it.; %2d thr.; %7d words): %5ld ms {%5ld ms/it. } {%7ld w/s. }\n",
-             nbIterations, nbThreads, nbWords, duration_ms, duration_ms / nbIterations, (outWords / (duration_ms / nbIterations)) * 1000 );
-
-  	 // Write result to file
-	 std::ofstream ofs;
-
-  	 ofs.open (outputFileResult, std::ofstream::out | std::ofstream::app);
-  	 
-	 char buffer[100];
-	 snprintf(buffer, sizeof(buffer), "Temps C++  (%3d it.; %2d thr.; %7d words): %5ld ms {%5ld ms/it. } {%7ld w/s. }\n", 
-												nbIterations, nbThreads, nbWords, duration_ms, duration_ms / nbIterations, (outWords / (duration_ms / nbIterations)) * 1000 );
-	 ofs << buffer;
-	 ofs.close();
-
-    for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
-        std::string currentResultKey = it->first;
-        int currentResultValue = it->second;
-        std::cout << currentResultKey << " => " << currentResultValue << std::endl;
-    }
+    printf("%5ld ", duration_ms);
 
     return 0;
 }
-
-
-
-
-
-
-

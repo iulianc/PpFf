@@ -1,6 +1,7 @@
 .IGNORE:
 
-default:  run
+default:  compile
+	make -f gt-makefile run_bms
 
 TEST_FILE="testdata/1505712Words.txt"
 ATTENDUS="attendus-1505712.txt"
@@ -91,4 +92,7 @@ cleanall cleanxtra: clean
 
 # Include the dependency
 -include $(DEP)
+
+run_bms:
+	./run_bms.rb
 

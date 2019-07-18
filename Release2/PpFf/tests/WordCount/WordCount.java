@@ -30,14 +30,10 @@ import static java.util.stream.Collectors.toMap;
 public class WordCount {
   static final int DEFAULT_NB_ITERATIONS = 5;
   static final String DEFAULT_INPUT_FILE = "testdata/78792Words.txt";
-  static final String DEFAULT_OUTPUT_FILE_RESULT = "testdata/wordcount_benchmark_result.txt";
-  static final int DEFAULT_NB_WORDS = 78792;
   
   public static void main(String[] args) throws IOException {
     int nbIterations = DEFAULT_NB_ITERATIONS;
     String inputFile = DEFAULT_INPUT_FILE;
-	 String outputFileResult = DEFAULT_OUTPUT_FILE_RESULT;
-	 int nbWords = DEFAULT_NB_WORDS;
 	 int outWords = 0;
 
     if (args.length >= 1) {
@@ -46,14 +42,6 @@ public class WordCount {
 
     if (args.length >= 2) {
       nbIterations = Integer.parseInt(args[1]);
-    }
-
-    if (args.length >= 3) {
-       outputFileResult = args[2];
-    }
-
-    if (args.length >= 4) {
-       nbWords = Integer.parseInt(args[3]);
     }
 
     long startTime = System.nanoTime();
@@ -70,48 +58,10 @@ public class WordCount {
         .entrySet().stream()
         .collect( Collectors.toList() );  
     }
-    
-    //long duration = (System.nanoTime() - startTime) / nbIterations;
-	 long duration = (System.nanoTime() - startTime);
 
-	 for( Map.Entry<String, Integer> mapEntry : wordsCount) {
-		 outWords += mapEntry.getValue();
-	 }
-    
+    long duration = (System.nanoTime() - startTime);
     double milliseconds = (double) duration / 1000000;
-    //System.err.println("Temps Java: " + milliseconds + " ms");
-	 String outputResult = "Temps Java (" + String.format("%3d", nbIterations) + " it.;          " + String.format("%7d", nbWords) + " words):" + String.format("%6.0f", milliseconds) + " ms {" + String.format("%5.0f", milliseconds / nbIterations) + " ms/it. }" + " {" + String.format("%6.0f", (outWords / (milliseconds / nbIterations)) * 1000) + " w/s. }";
-    System.err.println(outputResult); 
-        
-	 // Write the result to file
-    try {
-		BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileResult, true));
-		writer.write(outputResult);
-		writer.write("\n");
-		writer.write("\n");
-		writer.close();
-	 }catch (IOException e) {
-		e.printStackTrace();
-	 }
-
-    wordsCount.forEach( x -> 
-                        System.out.println( x.getKey() + " => " + x.getValue() ) );   
+    String outputResult = String.format("%6.0f ", milliseconds);
+    System.out.print(outputResult); 
   }
 }
-
-
-
-
-
-/*           
-// Methode2
-wordsCount = Files.lines(path).flatMap(line -> Arrays.stream(line.trim().split(" ")))
-.parallel()
-.map(word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase().trim())
-.filter(word -> word.length() > 0)
-.collect(Collectors.toMap(s -> s, s -> 1, Integer::sum))  
-.entrySet()
-.stream()
-.sorted( Comparator.comparing(Map.Entry::getKey) )
-.collect( Collectors.toList() );   
-*/	                              

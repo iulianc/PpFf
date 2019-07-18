@@ -1,5 +1,5 @@
-#def:
-#	make -f gt-makefile
+def:
+	@make -f gt-makefile
 
 # Oter le commentaire de la 2e ligne pour desactiver JIT de Java
 #AVEC_SANS_JIT=-Djava.compiler=NONE
@@ -218,5 +218,3 @@ cleanall cleanxtra: clean
 
 # Include the dependency
 -include $(DEP)
-
-
