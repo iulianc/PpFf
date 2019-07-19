@@ -1,6 +1,8 @@
 .IGNORE:
+def:
+	./gnuplot-temps.sh
 
-default:  compile
+def_run:  compile
 	make -f gt-makefile run_bms
 
 TEST_FILE="testdata/1505712Words.txt"
@@ -94,5 +96,5 @@ cleanall cleanxtra: clean
 -include $(DEP)
 
 run_bms:
-	./run_bms.rb
+	./run_bms.rb | tee temps-wc.txt
 

@@ -11,7 +11,7 @@ else
 end
 
 if DEBUG
-  NB_MOTS = [10, 131, 377, 3805, 7610] # Pour debogage du script.
+  NB_MOTS = [10, 131, 377, 3805, 7610, 78792, 167941] # Pour debogage du script.
 else
   NB_MOTS = [78792, 167941, 281307, 482636, 752856, 2614743, 5247678]
 end
