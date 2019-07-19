@@ -1,6 +1,6 @@
 .IGNORE:
 def:
-	./gnuplot-temps.sh
+	./gnuplot-debit.sh
 
 def_run:  compile
 	make -f gt-makefile run_bms
