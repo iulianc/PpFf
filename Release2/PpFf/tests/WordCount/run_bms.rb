@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
-DEBUG = true
+DEBUG = false #true
 
 LARGEUR = 8
 
 if DEBUG
-  NB_REPETITIONS = 1 # Pour debogage: sinon 5!
+  NB_REPETITIONS = 1
 else
-  NB_REPETITIONS = 5
+  NB_REPETITIONS = 1  # Temporaire... sinon 3? 5?
 end
 
 if DEBUG
@@ -20,7 +20,7 @@ if DEBUG
   NB_THREADS = [1, 2]
 else
   # Sur japet, plante si plus que 64..
-  NB_THREADS = [1, 2, 4] # ????
+  NB_THREADS = [1, 2] # ????
 end
 
 
