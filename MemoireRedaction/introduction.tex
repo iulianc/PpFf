@@ -1,40 +1,38 @@
 \begin{introduction}
 
+Le traitement de flux de donn\'ees devient de plus en plus important en raison de la grande quantit\'e de donn\'ees continuellement g\'en\'er\'ees provenant de diverses sources telles que des capteurs, des indicateurs boursiers, des dispositifs de r\'eseau, etc. Afin de traiter rapidement une telle quantit\'e de donn\'ees, notamment en exploitant les capacit\'es des processeurs multi-cœurs modernes, une application doit \^etre con\c cue en parall\`ele. La conception et la mise en œuvre des applications parall\`eles efficientes pour fonctionner sur les flux de donn\'ees posent de d\'efis aux d\'eveloppeurs. Les co\^uts de communications \citep{amarasinghe2011ascr}, les conditions de course (data race en anglais) \citep{wu2015detecting}, les blocages r\'eciproques \citep{haque2006concurrent} et la distribution d\'es\'equilibr\'ee de la charge de travail \citep{amarasinghe2011ascr} entre les fils d'ex\'ecution sont quelques exemples de probl\`emes qui demandent des efforts suppl\'ementaires aux programmeurs. De plus, la complexit\'e du code peut diminuer la productivit\'e et, par cons\'equent, augmenter les co\^uts de d\'eveloppement. Ce m\'emoire vise \`a traiter de fa\c con simple et efficace les flux de donn\'ees en tentant de dissimuler cette complexit\'e.
 
-%\GT{L'introduction n'est pas un chapitre num\'erot\'e.}
+\section*{D\'efinition du probl\`eme}
 
-\label{introduction.chap}
+Une application qui traite les flux de données peut \^etre consid\'er\'ee comme un canal o\`u les donn\'ees sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme d'un tel flux consiste \`a r\'epliquer le m\^eme op\'erateur sur de partitions du m\^eme flux. Le tri, la transformation et la r\'eduction sont des exemples de tels op\'erateurs. Les applications parall\`eles disponibles sont g\'en\'eralement cod\'ees manuellement \`a l'aide d'outils qui traitent le flux de donn\'ees comme \TT{FastFlow} \citep{aamir20142014} ou \TT{TBB} \citep{blocks2007outfitting}. Bien que les mod\`eles offerts par ces outils aient pour but de simplifier le d\'eveloppement d'applications parall\`eles, ils n'offrent pas une abstraction de haut niveau et n\'ecessitent une r\'e\'ecriture de l'application sans possibilit\'e de r\'eutiliser le code s\'equentiel disponible.
 
-Blah blah \ldots
+R\'e\'ecrire une application est g\'en\'eralement co\^uteux en termes de temps pour le d\'eveloppement. Les approches visant \`a combattre ce d\'efaut sont des outils de programmations parall\`eles d\'evelopp\'es pour introduire le parall\'elisme dans du code s\'equentiel existant. Des exemples sont \TT{OpenMP} \citep{chapman2008portable} et \TT{OpenACC} \citep{farber2016parallel} qui utilisent une approche bas\'ee sur directives, et \TT{Cilk} \citep{leiserson1998programming} qui est une extension simple du langage C. Malheureusement, ces outils ne conviennent pas aux traitements de flux de donn\'ees.
 
-Signalons que l'utilisation du package \TT{inputenc} permet d'utiliser
-des caractères accentués normaux, plutôt que des caractères accentués
-dans l'ancien style (commandes pour les accents).\footnote{Le même
-texte écrit avec les accents en commande serait alors le suivant~:
-<<Signalons que l'utilisation du package \TT{fontenc} permet
-d'utiliser des caract\`eres accentu\'es normaux, plut\^ot que des
-caract\`eres accentu\'es dans l'ancien style (commandes pour les
-accents).>>}
-
-On remarquera aussi, dans la note en bas de page, l'utilisation des
-guillemets français, appelés aussi parfois des <<chevrons>>, qu'on
-doit utiliser plutôt que les ``guillemets anglais''.  Ces guillemets
-français s'obtiennent à l'aide des caractères
-\TT{<}\TT{<}\ldots\TT{>}\TT{>}.
-
-Une autre façon est de définir la macro suivante, puisqu'avec certains
-\emph{packages}, les caract\`eres \TT{<}\TT{<}\ldots\TT{>}\TT{>} ne
-semblent pas fonctionner~:
-{\small
-\begin{verbatim}
-  \newcommand{\QUOTE}[1]{\og #1 \fg{}}
-\end{verbatim}
-} 
+Des outils qui supportent le traitement de flux de donn\'ees peuvent \^etre rencontr\'es dans d'autres langages de programmation que \TT{C++}. Les plus connus sont \TT{Spark} \citep{frampton2015mastering}, \TT{Java Stream 8} \citep{warburton2014java} et \TT{Flink} \citep{flinkReferenceEnLigne}. Tandis que \TT{Java} supporte seulement le traitement par lot de données, \TT{Spark} et \TT{Flink} supportent aussi le traitement de flux de donn\'ees. L'avantage principal de notre \TT{API} par rapport aux outils mentionn\'es est que le code (\'ecrit \`a l'aide de templates \TT{C++}) est compil\'e directement en code machine optimis\'ee m\^eme avant d'\^etre ex\'ecut\'e. 
 
 
-\newpage
+\section*{Objectives}
 
-blah blah blah
+Dans le contexte du langage de programmation \TT{C++}, il y a plusieurs biblioth\`eques qui offrent des mod\`eles algorithmiques parall\`eles pour le traitement de donn\'ees. Cependant, tous les mod\`eles entrent dans la cat\'egorie des mod\`eles parall\`eles de donn\'ees, comme la transformation et la r\'eduction. Ce m\'emoire a comme objectif d'enrichir cette collection avec de nouveaux mod\`eles parall\`eles dans une interface simple \`a utiliser. Ceci, associ\'e \`a de nouvelles fonctionnalit\'es telles que les expressions lambda \citep{josuttis2012c++}, aide un programmeur d'\'ecrire des op\'erations complexes pour une s\'equence de donn\'ees. En ciblant la performance, l'\TT{API} est con\c cu avec la biblioth\`eque \TT{FastFlow} et impl\'ement\'e en \TT{C++}.
+
+Les performances de \TT{PpFf} sont \'evalu\'es en comparant son temps d'ex\'ecution avec \TT{Java Stream 8}. Les r\'esultats indiquent que \TT{PpFf} peut en effet traiter de donn\'ees \`a haut d\'ebit. En plus de mesurer les performances, nous illustrons \'egalement son expressivit\'e en impl\'ementant des sc\'enarios de cas d'utilisation r\'eels.
+
+
+\section*{Structuration de la m\'emoire}
+
+Cet ouvrage est structur\'e comme suit :
+
+Le chapitre 1 -- Outils existants pour le traitement des flux de donn\'ees -- pr\'esente les outils existants portant sur le traitement des flux de donn\'ees.  Tout d'abord, il introduit les architectures utilis\'ees par outils et ensuite il pr\'esente les mod\`eles de programmations permettant d'exprimer les traitements de donn\'ees.
+
+Le chapitre 2 -- Description de l'api de \TT{PpFf} -– pr\'esente les m\'ethodes expos\'ees par l'\TT{API}. Un r\'esum\'e sous forme de tableau de toutes les m\'ethodes implément\'ees est montr\'e au d\'ebut du chapitre. Accompagn\'e de quelques exemples, il d\'ecrit aussi plus en d\'etail les plus importantes m\'ethodes.
+
+Le chapitre 3 -- Mise en œuvre de \TT{PpFf} -- examine comment nous avons transform\'e la conception en syst\`eme r\'eel en discutant de la mise en œuvre de l'\TT{API}.
+
+Le chapitre 4 -- \'Etudes de cas et exp\'erimentations -- effectue une \'evaluation plus d\'etaill\'ee sur deux cas d'utilisation r\'ealistes. 
+
+Enfin, le chapitre 5 -– Conclusion -- conclut cet ouvrage et pr\'esente des perspectives de recherche.
+
+
 
 \end{introduction}
 
