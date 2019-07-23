@@ -41,9 +41,10 @@ est-ce le cas? --- que la r\'ef\'erence porte sur ces
 probl\'ematiques, pas sur MapReduce en g\'en\'eral, donc Hadoop est
 simplement une mise en oeuvre.}
 
+\IC{J'ai reformul\'e la description de Spark}
 
-\TT{Apache Spark}~\citep{apachSpark} est un outil de traitement par lots qui a aussi des capacit\'es de traitement de flux de donn\'ees. Conçu initialement pour r\'esoudre certaines problématiques de l'approche MapReduce (par ex., Hadoop \citep{white2012hadoop}), Spark se concentre principalement sur l'acc\'el\'eration du traitement des donn\'ees en gardant en m\'emoire les donn\'ees de travail,
-ce qui permet notamment l'acc\'el\'eration du traitement des algorithmes it\'eratifs.
+
+\TT{Apache Spark}~\citep{apachSpark} est un flux de traitement de donn\'ees rapide dot\'e avec un expressif \TT{API} qui permet aux d\'eveloppeurs d'ex\'ecuter efficacement plusieurs op\'erations sur un set de donn\'ees qui n\'ecessite un acc\`es it\'eratif rapide. \TT{Spark} est un outil de traitement par lots qui a aussi des capacit\'es de traitement de flux de donn\'ees. Il se concentre principalement sur l'acc\'el\'eration du traitement des donn\'ees en gardant en m\'emoire les donn\'ees de travail, ce qui permet notamment l'acc\'el\'eration du traitement des algorithmes it\'eratifs.
 
 Alors que le traitement en m\'emoire contribue consid\'erablement \`a la vitesse, Spark est \'egalement rapide avec le traitement de donn\'ees sur disques en raison de l'optimisation qui peut \^etre r\'ealis\'ee en analysant l'ensemble complet des t\^aches \`a l'avance. Ceci peut \^etre r\'ealis\'e en cr\'eant des graphes acycliques dirig\'es (DAG) qui repr\'esentent toutes les op\'erations qui doivent \^etre ex\'ecut\'ees, les donn\'ees \`a \^etre utilis\'ees, ainsi que les relations entre elles. \`A l'aide de ce m\'ecanisme, le syst\`eme d'ex\'ecution a la capacit\'e de planifier et ordonnancer le travail de fa\c{c}on plus efficace.
 
