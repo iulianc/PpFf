@@ -31,6 +31,13 @@ pas dans la figure 3.2. Et en relisant, je constate que dans la figure
 cela semble un peu m\'elangeant~:(}
 
 
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/CorrespondencePpFfToFastFlow.jpg}
+      \caption{La correspondance entre les \'el\'ements de \TT{PpFf} et ceux de  \TT{FastFlow}.}
+       \label{CorrespondencePpFfToFastFlow.fig}
+\end{figure}
+
 
 \begin{figure}[ht]
 \centering
@@ -38,6 +45,19 @@ cela semble un peu m\'elangeant~:(}
       \caption{La correspondance entre les \'el\'ements de \TT{PpFf} et ceux de  \TT{FastFlow}.}
        \label{MapToFastFlow.fig}
 \end{figure}
+
+
+\begin{figure}[ht]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/StagesClassDiagramme.jpg}
+      \caption{La diagramme de classe pour Stage.}
+       \label{StagesClassDiagramme.fig}
+\end{figure}
+
+
+
+
+
 
 PpFf est impl\'ement\'e au--dessus de la biblioth\`eque \TT{FastFlow}, de sorte que nous utilisons les constructions \TT{ff\_node}, \TT{ff\_pipeline} et \TT{ff\_farm} de \TT{FastFlow}. La figure~\ref{MapToFastFlow.fig} montre la correspondance entre les \'el\'ements de \TT{PpFf} et ceux de \TT{FastFlow}. Chaque classe susmentionn\'ee de \TT{FastFlow} a une association dans \TT{PpFf}. Par exemple l'impl\'ementation de la classe \TT{Node} de \TT{PpFf} est r\'ealis\'ee par l'entremise de la classe \TT{ff\_node} de \TT{FastFlow}. Ce m\'ecanisme a permis d'ajouter plus de fonctionnalit\'e \`a l'API tout en utilisant les performances offertes par \TT{FastFlow}.
 
