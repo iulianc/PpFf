@@ -184,39 +184,42 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 
 
 
-
-\begin{tikzpicture}
-\begin{axis}[
-    title={WordCount - machine Japet; avec JIT; 1 itération; PpFf-8 thread},
-    xlabel={Nb.~mots},
-    ylabel={Temps d'ex\'ecution (ms)},
-    xmin=0, xmax=5500000,
-    ymin=0, ymax=5500,
-    %ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
-    ytick={0,1000,2000,3000,4000,5000,6000},
-    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
-    legend pos=north west,
-    ymajorgrids=true,
-    grid style=dashed,
-]
+\begin{figure}[H]
+\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	    xlabel={Nb.~mots},
+    	ylabel={Temps d'ex\'ecution (ms)},
+	    xmin=0, xmax=5500000,
+    	ymin=0, ymax=5500,
+	    %ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
+    	ytick={0,1000,2000,3000,4000,5000,6000},
+	    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
+    	legend pos=north west,
+	    ymajorgrids=true,
+    	grid style=dashed,
+	]
  
-\addplot[
-    color=blue,
-    mark=square,
+	\addplot[
+    	color=blue,
+   	 	mark=square,
     ]
-    coordinates {
-    (78792,174)(67941,117)(281307,263)(482636,405)(752856,429)(2614743,1625)(5247678,2798)
-    };
-\addplot[
-    color=red,
-    mark=square,
+    	coordinates {
+    	(78792,174)(67941,117)(281307,263)(482636,405)(752856,429)(2614743,1625)(5247678,2798)
+    	};
+	\addplot[
+    	color=red,
+    	mark=square,
     ]
-    coordinates {
-    (78792,368)(167941,443)(281307,501)(482636,603)(752856,730)(2614743,3889)(5247678,5312)
-    };
-\legend{PpFf,Java}    
-\end{axis}
-\end{tikzpicture}
+    	coordinates {
+    	(78792,368)(167941,443)(281307,501)(482636,603)(752856,730)(2614743,3889)(5247678,5312)
+    	};
+	\legend{PpFf,Java}    
+	\end{axis}
+	\end{tikzpicture}
+    \caption{Temps d'ex\'ecution pour WordCount sur la machine Japet.}
+    \label{JapetExecutionWordCount.fig}	
+\end{figure}
 
 
 \begin{figure}[H]
@@ -227,7 +230,7 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 \end{figure}
 
 
-Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortir. Afin de conna\^itre l'impact de l'ampleur de donn\'ees, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenu dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78792 \`a 5247678 de mots. Pour toutes les exp\'eriences, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a 20.  Les r\'esultats peuvent \^etre vus dans les figures~\ref{GrapheTempsWordCount.fig} et (A AJOUTER R\'EF\'ERENCE AU GRAPH DE JAPET) respectivement. La figure~\ref{GrapheTempsWordCount.fig} montre les résultats obtenus sur la machine M1 et la figure (A AJOUTER R\'EF\'ERENCE AU GRAPH DE JAPET) montre les r\'esultats obtenus sur la machine M2 p.~\pageref{machines.sect}.
+Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortir. Afin de conna\^itre l'impact de l'ampleur de donn\'ees, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenu dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78792 \`a 5247678 de mots. Pour toutes les exp\'eriences, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a 20.  Les r\'esultats peuvent \^etre vus dans les figures~\ref{GrapheTempsWordCount.fig} et~\ref{JapetExecutionWordCount.fig} respectivement. La figure~\ref{GrapheTempsWordCount.fig} montre les résultats obtenus sur la machine M1 et la figure~\ref{JapetExecutionWordCount.fig} montre les r\'esultats obtenus sur la machine M2 p.~\pageref{machines.sect}.
 
 Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees dans le cas de \TT{Java}. L'une avec et l'autre sans \TT{JIT} p.~\pageref{jitDescription.sect}. Dans les deux exp\'eriences, l'ex\'ecution de \TT{WordCount} dans \TT{Java} sans \TT{JIT} est nettement sup\'erieure \`a celle avec \TT{JIT}.
 
@@ -290,27 +293,28 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 
 \end{itemize}
 
-\subsection{Mesures obtenues}
+\subsection{Mesures obtenues et analyse des r\'esultats}
 
 
 \pgfplotstableread[row sep=\\,col sep=&]{
     interval & PpFf & Java \\
-    Java-JIT  & 302 & 574 \\
-    Java-NO-JIT   & 504 & 2696 \\
-    Japet-JIT   & 357 & 402 \\
-    Japet-NO-JIT   & 350 & 5810 \\
+    M1+  & 302 & 574 \\
+    M1-   & 504 & 2696 \\
+    M2+   & 357 & 402 \\
+    M2-   & 350 & 5810 \\
     }\mydata
 
-\begin{tikzpicture}
-    \begin{axis}[
-    		title = Temps d'ex\'ecution pour StockPrice,
+\begin{figure}[H]
+\centering
+	\begin{tikzpicture}
+    	\begin{axis}[
             ybar,
             bar width=.5cm,
             width=.7\textwidth,
             height=.5\textwidth,
             legend style={at={(0.5,1)},
                 anchor=north,legend columns=-1},
-            symbolic x coords={Java-JIT, Java-NO-JIT, Japet-JIT, Japet-NO-JIT},
+            symbolic x coords={M1+, M1-, M2+, M2-},
             xtick=data,
             nodes near coords,
             nodes near coords align={vertical},
@@ -320,13 +324,14 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
         \addplot table[x=interval,y=PpFf]{\mydata};
         \addplot table[x=interval,y=Java]{\mydata};
         \legend{PpFf, Java}
-    \end{axis}
-\end{tikzpicture}
+    	\end{axis}
+	\end{tikzpicture}
+    \caption{Temps d'ex\'ecution pour l'application \TT{Stock Market}}
+    \label{executionTimesStockPrice.fig}
+\end{figure}
 
 
-
-\subsection{Analyse des r\'esultats}
-
+La deuxi\`eme s\'erie d'exp\'eriences pour analyser la performance de l'API est men\'ee pour l'application permettant de calculer des statistiques sur les prix d'indices boursiers. Les r\'esultats sont montr\'es dans la figure~\ref{executionTimesStockPrice.fig}. 
 
 
 
