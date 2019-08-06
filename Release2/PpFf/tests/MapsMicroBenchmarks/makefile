@@ -58,39 +58,38 @@ compile: $(EXE)
 
 run_maps: compile
 	#./run_maps.sh
-	#@MALLOC_CHECK_=0 ./Maps 1000 1 1 1
-	#@MALLOC_CHECK_=0 ./Maps 1000 1 1 2
-	#@MALLOC_CHECK_=0 ./Maps 1000 1 1 4
 	# Avec 1 maps et granularite = 4
-	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 1
-	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 2
-	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 4
-	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 8
-	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 16
+	@MALLOC_CHECK_=0 ./Maps 100000 1 4 1
+	@MALLOC_CHECK_=0 ./Maps 100000 1 4 2
+	@MALLOC_CHECK_=0 ./Maps 100000 1 4 4
+	@MALLOC_CHECK_=0 ./Maps 100000 1 4 8
+	@MALLOC_CHECK_=0 ./Maps 100000 1 4 16
+	# Avec 1 maps et granularite = 5
+	@MALLOC_CHECK_=0 ./Maps 100000 1 5 1
+	@MALLOC_CHECK_=0 ./Maps 100000 1 5 2
+	@MALLOC_CHECK_=0 ./Maps 100000 1 5 4
+	@MALLOC_CHECK_=0 ./Maps 100000 1 5 8
+	@MALLOC_CHECK_=0 ./Maps 100000 1 5 16
 
 
 run_fastflow_maps: compile
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 1 1
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 1 2
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 1 4
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 1 8
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 1 16
-	# Avec 1 maps et granularite = 2
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 2 1
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 2 2
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 2 4
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 2 8
-	#@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 2 16
 	# Avec 1 maps et granularite = 4
 	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 1
 	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 2
 	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 4
 	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 8
 	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 4 16
+	# Avec 1 maps et granularite = 5
+	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 5 1
+	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 5 2
+	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 5 4
+	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 5 8
+	@MALLOC_CHECK_=0 ./FastFlowMaps 100000 1 5 16
 
 
 run_java_maps: compile
 	@java -cp . JavaMaps 100000 1 4
+	@java -cp . JavaMaps 100000 1 5
 
 
 clean: 

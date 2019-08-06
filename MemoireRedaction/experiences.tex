@@ -331,14 +331,183 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 \end{figure}
 
 
-La deuxi\`eme s\'erie d'exp\'eriences pour analyser la performance de l'API est men\'ee pour l'application permettant de calculer des statistiques sur les prix d'indices boursiers. Les r\'esultats sont montr\'es dans la figure~\ref{executionTimesStockPrice.fig}. 
+La deuxi\`eme s\'erie d'exp\'eriences pour analyser la performance de l'API est men\'ee pour l'application permettant de calculer des statistiques sur les prix d'indices boursiers. Les r\'esultats sont montr\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences sont menées sur les deux machines M1, M2~\ref{machines.sect}. Dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}.
+
+
+\section{Les co\^uts introduits par \TT{PpFf}}
+\label{coutsPpFf.sect}
+
+D\'ecrit dans le chapitre~\ref{ implementation.chap}, \TT{PpFf} est impl\'ement\'e au--dessus de la biblioth\`eque \TT{FastFlow}. Cette section pr\'esente les co\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}. 
+
+
+\subsection{Description de l'application}
+
+Afin de r\'ealiser cette exp\'erience, nous avons cr\'e\'e un \TT{micro benchmark} constant d'un \TT{pipelin}e avec un seul op\'erateur. L'op\'erateur choisi pour cette exp\'erience est un \TT{map} qui fait un simple calcul d'addition d'une unit\'e pour chaque \'el\'ement d'une variable. La valeur de la variable est calcul\'ee dynamiquement comme suit : \[ x = 10^{granularity} \] ou la \TT{granularity} est une variable introduite en argument dans l'application. Le code source de l'application pour \TT{PpFf} et \TT{FastFlow} sont montr\'e dans les annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement. Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le \TT{pipeline}. La source de \TT{pipeline} est constitu\'ee d'une rang\'ee d'\'el\'ements. Pour cette exp\'erience la rangée\'e a \'et\'e choisie de 1 \`a 100000.  
+
+
+\subsection{Mesures obtenues et analyse des r\'esultats}
+
+Afin de montrer les co\^uts introduits par l'API par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees. L'une avec la granularit\'e 4 et l'autre avec la granularit\'e 5. Pour une rang\'ee de 1 \`a 100000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \TT{threads} sur deux machines diff\'erentes : M1 et M2~\ref{machines.sect}.  
+
+\begin{figure}[H]
+\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	    xlabel={Nombre de threads},
+    	ylabel={Temps d'ex\'ecution (ms)},
+	    xmin=0, xmax=18,
+    	ymin=0, ymax=3500,
+	    ytick={0,700,1400,2100,2800,3500},
+	    xtick={0,1,2,4,8,16},
+    	legend pos=north west,
+	    ymajorgrids=true,
+    	grid style=dashed,
+	]
+ 
+	\addplot[
+    	color=blue,
+   	 	mark=square,
+    ]
+    	coordinates {
+    	(1,3360)(2,2046)(4,1026)(8,526)(16,284)
+    	};
+	\addplot[
+    	color=red,
+    	mark=square,
+    ]
+    	coordinates {
+    	(1,3365)(2,2046)(4,1026)(8,532)(16,286)
+    	};
+	\legend{PpFf,FastFlow}    
+	\end{axis}
+	\end{tikzpicture}
+    \caption{Temps d'ex\'ecution pour MicroBenchmarkMaps Map 1 et granularit\'e 4 sur la machine Japet.}
+    \label{JapetExecutionMicroBenchmarkGr4.fig}	
+\end{figure}
+
+
+
+
+
+\begin{figure}[H]
+\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	    xlabel={Nombre de threads},
+    	ylabel={Temps d'ex\'ecution (ms)},
+	    xmin=0, xmax=18,
+    	ymin=0, ymax=35000,
+	    ytick={0,7000,14000,21000,28000,35000},
+	    xtick={0,1,2,4,8,16},
+    	legend pos=north west,
+	    ymajorgrids=true,
+    	grid style=dashed,
+	]
+ 
+	\addplot[
+    	color=blue,
+   	 	mark=square,
+    ]
+    	coordinates {
+    	(1,32905)(2,20100)(4,10107)(8,5154)(16,2718)
+    	};
+	\addplot[
+    	color=red,
+    	mark=square,
+    ]
+    	coordinates {
+    	(1,33028)(2,20246)(4,10055)(8,5189)(16,2740)
+    	};
+	\legend{PpFf,FastFlow}    
+	\end{axis}
+	\end{tikzpicture}
+    \caption{Temps d'ex\'ecution pour MicroBenchmarkMaps Map 1 et granularit\'e 5 sur la machine Japet.}
+    \label{JapetExecutionMicroBenchmarkGr5.fig}	
+\end{figure}
 
 
 
 
 
 
+\begin{figure}[H]
+\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	    xlabel={Nombre de threads},
+    	ylabel={Temps d'ex\'ecution (ms)},
+	    xmin=0, xmax=18,
+    	ymin=0, ymax=3500,
+	    ytick={0,700,1400,2100,2800,3500},
+	    xtick={0,1,2,4,8,16},
+    	legend pos=north west,
+	    ymajorgrids=true,
+    	grid style=dashed,
+	]
+ 
+	\addplot[
+    	color=blue,
+   	 	mark=square,
+    ]
+    	coordinates {
+    	(1,2333)(2,1268)(4,736)(8,566)(16,1150)
+    	};
+	\addplot[
+    	color=red,
+    	mark=square,
+    ]
+    	coordinates {
+    	(1,2431)(2,1208)(4,708)(8,497)(16,1058)
+    	};
+	\legend{PpFf,FastFlow}    
+	\end{axis}
+	\end{tikzpicture}
+    \caption{Temps d'ex\'ecution pour MicroBenchmarkMaps Map 1 et granularit\'e 4 sur la machine Java.}
+    \label{JavatExecutionMicroBenchmarkGr4.fig}	
+\end{figure}
 
+
+
+
+
+\begin{figure}[H]
+\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	    xlabel={Nombre de threads},
+    	ylabel={Temps d'ex\'ecution (ms)},
+	    xmin=0, xmax=18,
+    	ymin=0, ymax=35000,
+	    ytick={0,7000,14000,21000,28000,35000},
+	    xtick={0,1,2,4,8,16},
+    	legend pos=north west,
+	    ymajorgrids=true,
+    	grid style=dashed,
+	]
+ 
+	\addplot[
+    	color=blue,
+   	 	mark=square,
+    ]
+    	coordinates {
+    	(1,22377)(2,11872)(4,6242)(8,4695)(16,4778)
+    	};
+	\addplot[
+    	color=red,
+    	mark=square,
+    ]
+    	coordinates {
+    	(1,22879)(2,11630)(4,6590)(8,5037)(16,4529)
+    	};
+	\legend{PpFf,FastFlow}    
+	\end{axis}
+	\end{tikzpicture}
+    \caption{Temps d'ex\'ecution pour MicroBenchmarkMaps Map 1 et granularit\'e 5 sur la machine Java.}
+    \label{JavaExecutionMicroBenchmarkGr5.fig}	
+\end{figure}
+
+
+Les figures~\ref{JapetExecutionMicroBenchmarkGr4.fig} et~\ref{JapetExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine M2 et les figures~\ref{JavatExecutionMicroBenchmarkGr4.fig} et~\ref{JavaExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine M1. Un faible co\^ut introduit par l'API est visible sur la machine M1. \TT{FastFlow} obtient un meilleur temps d'ex\'ecution pour un nombre de \TT{threads} plus grand que 8. La plus grande diff\'erence obtenue entre les temps d'ex\'ecutions des deux applications \TT{PpFf} et \TT{FastFlow} est de 100 ms. En prenant en consid\'eration le volume de traitement de deux applications, les co\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles.
 
 
 

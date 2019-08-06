@@ -8,12 +8,12 @@ import java.util.Collections;
 public class JavaMaps {
     static int n = 10;
     static int nbMaps = 1;
-    static int granularite = 1;  
+    static int granularity = 1;  
     static int nbThreads = 1;  
     
     static int mapFunc(int in){
         int res = in;
-        int nb = (int)Math.pow(10, granularite);
+        int nb = (int)Math.pow(10, granularity);
         for (int i = 1; i <= nb; i++) {
             res += 1;
         }
@@ -31,7 +31,7 @@ public class JavaMaps {
     	}
 
     	if (args.length >= 3) {
-            granularite = Integer.parseInt(args[2]);
+            granularity = Integer.parseInt(args[2]);
     	}
 
     	if (args.length >= 4) {
@@ -44,7 +44,7 @@ public class JavaMaps {
         
         for(int i = 0; i < n; i++) {
             elems.add(i);
-            attendus.add((int)(nbMaps * Math.pow(10, granularite) + i));            
+            attendus.add((int)(nbMaps * Math.pow(10, granularity) + i));            
         }
         
         
@@ -73,7 +73,7 @@ public class JavaMaps {
             }
         }        
         
-        String outputResult = String.format("%5d %2d %2d %2d : %6.0f ", n, nbMaps, granularite, nbThreads, milliseconds);
+        String outputResult = String.format("%5d %2d %2d %2d : %6.0f ", n, nbMaps, granularity, nbThreads, milliseconds);
         System.out.print(outputResult);         
     }
     
