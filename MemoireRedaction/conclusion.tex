@@ -2,7 +2,28 @@
 \begin{conclusion}
 \label{conclusion.chap}
 
-Blah blah blah
+Dans cette th\`ese nous avons pr\'esent\'e \TT{PpFf}, une interface qui peut \^etre utilis\'e pour cr\'eer des applications de traitement de flux de donn\'ees. Impl\'ement\'e dans une solution compatible \TT{C++ 17}, l'\TT{API} exploite les fonctionnalit\'es modernes du \TT{C++} et les concepts de m\'eta programmation.
+
+Con\c cu au--dessus de la biblioth\`eque \TT{FastFlow}, \TT{PpFf} fournit une abstraction de programmation souple et expressive qui facilite le d\'eveloppement d'applications parall\`eles, masquant ainsi non seulement la complexit\'e pour les m\'ecanismes de traitement concurrent, mais aussi le mod\`ele et le traitement de donn\'ees utilis\'es. L'abstraction dans \TT{PpFf} vise \`a simplifier la mani\`ere dont une s\'equence de donn\'ees est visualis\'ee et trait\'ee permettant ainsi de r\'eutiliser les m\^emes op\'erateurs dans diff\'erents contextes et de r\'eutiliser les m\^emes algorithmes sur diff\'erents mod\`eles de donn\'ees (par exemple \TT{liste}, \TT{vector}, \TT{set} etc.). Ces aspects diff\'erencient notre \TT{API} des autres \TT{API} qui exposent diff\'erents types de donn\'ees \`a utiliser dans la m\^eme interface, ce qui oblige le d\'eveloppeur \`a r\'e\'evaluer ses op\'erations lorsque le contexte change.
+
+Avec un \TT{API} clair et simple, \TT{PpFf} a \'et\'e con\c cu dans un style fonctionnel. Il expose \`a l'utilisateur un ensemble de m\'ethodes qui peuvent \^etre cha\^in\'ees afin de transformer les donn\'ees dans un style purement fonctionnel.
+
+
+Les r\'esultats des exp\'eriences montrent que \TT{PpFf} peut en effet fournir des applications de traitement de flux de donn\'ees \`a haut d\'ebit. La bonne performance obtenue par \TT{PpFf} est due au fait qu'il b\'en\'eficie directement de la conception optimis\'ee de \TT{FastFlow}.
+
+En ex\'ecutants diff\'erents tests, \TT{PpFf} a d\'emontr\'e la facilit\'e avec laquelle son \TT{API} permette de r\'esoudre les probl\`emes classiques li\'es aux flux de donn\'ees. Son conception dans un mod\`ele de programmation abstrait permette d'utiliser de nombreux concepts de programmation fonctionnels comme par exemple \TT{lambdas} ou l'\'evaluation paresseuse. Ces aspects font de \TT{PpFf} un outil puissant.
+
+Dans le chapitre sur les exp\'eriences nous avons \'egalement prouv\'e que notre \TT{API} a obtenu de meilleurs temps d'ex\'ecution sur les tests effectu\'es par rapport \`a \TT{Java}, l'un des outils de traitement de donn\'ees le plus performant de nos jours.
+
+Avec \TT{PpFf}, nous croyons que \TT{C++} a une chance de rivaliser avec \TT{Java} qui est consid\'er\'e assez souvent comme plus convivial. 
+
+
+\section*{\textbf{Perspectives}}
+
+Les travaux de cette th\`ese peuvent \^etre \'etendus dans plusieurs directions, dont certaines sont d\'ecrites ci--dessous.
+
+\textbf{Enrichir les op\'erateurs avec de nouveaux mod\`eles parall\`eles} -- Afin de construire des requ\^etes compl\`etes sur une s\'equence de donn\'ees, nous pr\'evoyons d'\'etendre \TT{PpFf} pour prendre en charge davantage de mod\`eles parall\`eles de flux et de donn\'ees, tels que : \TT{distinct}, \TT{findAny}, \TT{findFirst}, \TT{forEach}, \TT{of}, etc. Cela donnerait \`a l'utilisateur une plus grande flexibilit\'e sur la manipulation de donn\'ees.
+
 
 \end{conclusion}
 
