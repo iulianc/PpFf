@@ -24,6 +24,8 @@ Les travaux de cette th\`ese peuvent \^etre \'etendus dans plusieurs directions,
 
 \textbf{Enrichir les op\'erateurs avec de nouveaux mod\`eles parall\`eles} -- Afin de construire des requ\^etes compl\`etes sur une s\'equence de donn\'ees, nous pr\'evoyons d'\'etendre \TT{PpFf} pour prendre en charge davantage de mod\`eles parall\`eles de flux et de donn\'ees, tels que : \TT{distinct}, \TT{findAny}, \TT{findFirst}, \TT{forEach}, \TT{of}, etc. Cela donnerait \`a l'utilisateur une plus grande flexibilit\'e sur la manipulation de donn\'ees.
 
+\textbf{Impl\'ementation d'un syst\`eme distribu\'e} -- La version actuelle de \TT{PpFf} est con\c cue pour fonctionner uniquement sur la m\'emoire partag\'ee. Plus pr\'ecis\'ement, \TT{PpFf} est un outil de traitement par lots (batch processing en anglais). Afin d'utiliser l'\TT{API} dans un environnement \TT{Big Data}, il faut impl\'ementer un module qui g\`ere la distribution du flux. Le module doit g\'erer les probl\`emes li\'es aux syst\`emes distribu\'es tels que la coordination des nœuds, la reprise apr\`es une panne, l'allocation des t\^aches, etc. Ce module sera facile \`a impl\'ementer dans \TT{PpFf} gr\^ace \`a \TT{FastFlow} qui prend d\'ej\`a en charge l'ex\'ecution sur des syst\`emes distribu\'es.
+
 
 \end{conclusion}
 
