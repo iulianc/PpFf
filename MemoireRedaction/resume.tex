@@ -1,7 +1,23 @@
 \begin{abstract}
 
-Les logiciels classiques de traitement de donn\'ees sont b\^atis sur le concept de persistance o\`u les donn\'ees, pr\'ealablement stock\'ees, sont interrog\'ees et mise \`a jour plusieurs fois tout au long de leur dur\'ee de vie. Cependant, pour plusieurs applications, les donn\'ees arrivent de fa\c con continue, \`a grande vitesse, et elles doivent \^etre trait\'ees de fa\c con incr\'ementale sans la possibilit\'e de faire plusieurs passages sur les donn\'ees. La complexit\'e de ces types d'applications augmente encore plus lorsque les donn\'ees sont trait\'ees en parall\`ele. Afin de traiter de fa\c con simple et efficace les flux de donn\'ees, ce m\`emoire propose un \TT{API} de haut niveau dans le langage \TT{C++}. En utilisant la biblioth\`eque \TT{FastFlow}, l'interface permet aux utilisateurs d'exposer facilement le parall\'elisme dans des applications s\'equentielles.
-	
-	
+\GT{\`A revoir --- {\bf mais plus tard, apr\`es relecture de
+l'ensemble du m\'emoire}.}
+
+\GT{Car pas certain que la premi\`ere phrase soit l'aspect important
+sur lequel insister --- plusieurs passages sur les donn\'ees. D'autant
+plus que ce n'est pas un aspect sur lequel tu insistes tellement dans
+le m\'emoire il me semble. De quelle(s) source(s) t'es-tu
+inspir\'ee(s) pour introduire ainsi?}
+
+\GT{Je crois qu'il serait pr\'ef\'erable d'insister sur l'aspect
+traitement de flux/s\'equences de donn\'ees avec une API simple,
+fonctionnelle, fond\'ee sur une approche <<diviser-pour-r\'egner>>
+mais non r\'ecursive.}
+
+
+
+
+Les logiciels classiques de traitement de donn\'ees sont b\^atis sur le concept de persistance o\`u les donn\'ees, pr\'ealablement stock\'ees, sont interrog\'ees et mises \`a jour plusieurs fois tout au long de leur dur\'ee de vie. Cependant, pour plusieurs applications, les donn\'ees arrivent de fa\c con continue, \`a grande vitesse, et elles doivent \^etre trait\'ees de fa\c con incr\'ementale sans la n\'ecessit\'e de faire plusieurs passages sur les donn\'ees. La complexit\'e de ces types d'applications augmente encore plus lorsque les donn\'ees doivent \^etre trait\'ees en parall\`ele. Afin de traiter de fa\c con simple et efficace les flux de donn\'ees, ce m\`emoire propose une \TT{PpFf}, un API de haut niveau en \TT{C++}. permet aux programmeurs d'exposer facilement le parall\'elisme dans des applications de traitement de donn\'ees --- autant du parall\'elisme de flux que du parall\'elisme de donn\'ees --- et ce en obtenant des performances int\'eressantes, ce qui est possible grace \`a une mise en \oe{}uvre qui utilise la biblioth\`eque \TT{FastFlow}, une biblioth\`eque de bas niveau de traitement de flux de donn\'ees en \TT{C++}.
+
 \end{abstract}
 
