@@ -1,38 +1,61 @@
 \begin{introduction}
 
-Le traitement de flux de donn\'ees devient de plus en plus important en raison de la grande quantit\'e de donn\'ees continuellement g\'en\'er\'ees provenant de diverses sources telles que des capteurs, des indicateurs boursiers, des dispositifs de r\'eseau, etc. Afin de traiter rapidement une telle quantit\'e de donn\'ees, notamment en exploitant les capacit\'es des processeurs multi-cœurs modernes, une application doit \^etre con\c cue en parall\`ele. La conception et la mise en œuvre des applications parall\`eles efficientes pour fonctionner sur les flux de donn\'ees posent de d\'efis aux d\'eveloppeurs. Les co\^uts de communications \citep{amarasinghe2011ascr}, les conditions de course (data race en anglais) \citep{wu2015detecting}, les blocages r\'eciproques \citep{haque2006concurrent} et la distribution d\'es\'equilibr\'ee de la charge de travail \citep{amarasinghe2011ascr} entre les fils d'ex\'ecution sont quelques exemples de probl\`emes qui demandent des efforts suppl\'ementaires aux programmeurs. De plus, la complexit\'e du code peut diminuer la productivit\'e et, par cons\'equent, augmenter les co\^uts de d\'eveloppement. Ce m\'emoire vise \`a traiter de fa\c con simple et efficace les flux de donn\'ees en tentant de dissimuler cette complexit\'e.
+Le traitement de flux de donn\'ees devient de plus en plus important en raison de la grande quantit\'e de donn\'ees continuellement g\'en\'er\'ees, provenant de diverses sources telles que des capteurs, des indicateurs boursiers, des dispositifs de r\'eseau, etc. Afin de traiter rapidement une telle quantit\'e de donn\'ees, notamment en exploitant les capacit\'es des processeurs multi-cœurs modernes, une application doit \^etre con\c cue en parall\`ele. La conception et la mise en œuvre d'applications parall\`eles efficientes pour traiter des flux de donn\'ees posent des d\'efis aux d\'eveloppeurs. Les co\^uts de communications~\citep{amarasinghe2011ascr}, les conditions de course (\emph{data race})~\citep{wu2015detecting}, les blocages r\'eciproques~\citep{haque2006concurrent} et les d\'es\'equilibres de charge de travail entre les fils d'ex\'ecution~\citep{amarasinghe2011ascr} sont quelques exemples de probl\`emes qui demandent des efforts suppl\'ementaires aux programmeurs. De plus, la complexit\'e du code peut diminuer la productivit\'e et, par cons\'equent, augmenter les co\^uts de d\'eveloppement. Ce m\'emoire vise \`a proposer une API (\emph{Application Programming Interface}) qui permet traiter de fa\c con simple et efficace les flux de donn\'ees en tentant de dissimuler cette complexit\'e.
 
 \section*{D\'efinition du probl\`eme}
 
-Une application qui traite les flux de données peut \^etre consid\'er\'ee comme un canal o\`u les donn\'ees sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme d'un tel flux consiste \`a r\'epliquer le m\^eme op\'erateur sur de partitions du m\^eme flux. Le tri, la transformation et la r\'eduction sont des exemples de tels op\'erateurs. Les applications parall\`eles disponibles sont g\'en\'eralement cod\'ees manuellement \`a l'aide d'outils qui traitent le flux de donn\'ees comme \TT{FastFlow} \citep{aamir20142014} ou \TT{TBB} \citep{blocks2007outfitting}. Bien que les mod\`eles offerts par ces outils aient pour but de simplifier le d\'eveloppement d'applications parall\`eles, ils n'offrent pas une abstraction de haut niveau et n\'ecessitent une r\'e\'ecriture de l'application sans possibilit\'e de r\'eutiliser le code s\'equentiel disponible.
+Une application qui traite les flux de données peut \^etre consid\'er\'ee comme un canal o\`u les donn\'ees sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme dans le traitement d'un tel flux consiste \`a traiter des \'el\'ements du flux de fa\c{c}on concurrente --- parall\'elisme de flux --- et \`a r\'epliquer un m\^eme op\'erateur sur des partitions d'\'el\'ements du flux --- parall\'elisme de donn\'ees. Le tri, la transformation et la r\'eduction sont des exemples d'op\'erateurs pour lesquels du parall\'elisme de donn\'ees peut \^etre exploit\'e. 
 
-R\'e\'ecrire une application est g\'en\'eralement co\^uteux en termes de temps pour le d\'eveloppement. Les approches visant \`a combattre ce d\'efaut sont des outils de programmations parall\`eles d\'evelopp\'es pour introduire le parall\'elisme dans du code s\'equentiel existant. Des exemples sont \TT{OpenMP} \citep{chapman2008portable} et \TT{OpenACC} \citep{farber2016parallel} qui utilisent une approche bas\'ee sur directives, et \TT{Cilk} \citep{leiserson1998programming} qui est une extension simple du langage C. Malheureusement, ces outils ne conviennent pas aux traitements de flux de donn\'ees.
+Les applications parall\`eles sont g\'en\'eralement cod\'ees \`a l'aide de biblioth\`eques comme \TT{FastFlow}~\citep{AldinucciEtAl14} ou \TT{TBB}~\citep{Reinders07}. Bien que les mod\`eles offerts par ces outils aient pour but de simplifier le d\'eveloppement d'applications parall\`eles, ils n'offrent pas une abstraction de haut niveau et n\'ecessitent une r\'e\'ecriture de l'application sans possibilit\'e de r\'eutiliser le code s\'equentiel disponible.
 
-Des outils qui supportent le traitement de flux de donn\'ees peuvent \^etre rencontr\'es dans d'autres langages de programmation que \TT{C++}. Les plus connus sont \TT{Spark} \citep{frampton2015mastering}, \TT{Java Stream 8} \citep{warburton2014java} et \TT{Flink} \citep{flinkReferenceEnLigne}. Tandis que \TT{Java} supporte seulement le traitement par lot de données, \TT{Spark} et \TT{Flink} supportent aussi le traitement de flux de donn\'ees. L'avantage principal de notre \TT{API} par rapport aux outils mentionn\'es est que le code (\'ecrit \`a l'aide de templates \TT{C++}) est compil\'e directement en code machine optimis\'ee m\^eme avant d'\^etre ex\'ecut\'e. 
+\GT{Pour la derni\`ere phrase du paragraphe pr\'ec\'edent, je ne crois
+pas que PpFF permette cela non plus.  Je crois que tu dois plut\^ot
+insister sur le fait qu'on veut introduire un mod\`ele simple, o\`u le
+programmeur cr\'ee un pipeline de transformations, et o\`u chaque
+transformation est relativement simple --- donc, application du
+principe <<diviser-pour-r\'egner>> mais de fa\c{c}on non r\'ecursive.}
 
-
-\section*{Objectives}
-
-Dans le contexte du langage de programmation \TT{C++}, il y a plusieurs biblioth\`eques qui offrent des mod\`eles algorithmiques parall\`eles pour le traitement de donn\'ees. Cependant, tous les mod\`eles entrent dans la cat\'egorie des mod\`eles parall\`eles de donn\'ees, comme la transformation et la r\'eduction. Ce m\'emoire a comme objectif d'enrichir cette collection avec de nouveaux mod\`eles parall\`eles dans une interface simple \`a utiliser. Ceci, associ\'e \`a de nouvelles fonctionnalit\'es telles que les expressions lambda \citep{josuttis2012c++}, aide un programmeur d'\'ecrire des op\'erations complexes pour une s\'equence de donn\'ees. En ciblant la performance, l'\TT{API} est con\c cu avec la biblioth\`eque \TT{FastFlow} et impl\'ement\'e en \TT{C++}.
-
-Les performances de \TT{PpFf} sont \'evalu\'es en comparant son temps d'ex\'ecution avec \TT{Java Stream 8}. Les r\'esultats indiquent que \TT{PpFf} peut en effet traiter de donn\'ees \`a haut d\'ebit. En plus de mesurer les performances, nous illustrons \'egalement son expressivit\'e en impl\'ementant des sc\'enarios de cas d'utilisation r\'eels.
-
-
-\section*{Structuration de la m\'emoire}
-
-Cet ouvrage est structur\'e comme suit :
-
-Le chapitre 1 -- Outils existants pour le traitement des flux de donn\'ees -- pr\'esente les outils existants portant sur le traitement des flux de donn\'ees.  Tout d'abord, il introduit les architectures utilis\'ees par outils et ensuite il pr\'esente les mod\`eles de programmations permettant d'exprimer les traitements de donn\'ees.
-
-Le chapitre 2 -- Description de l'api de \TT{PpFf} -– pr\'esente les m\'ethodes expos\'ees par l'\TT{API}. Un r\'esum\'e sous forme de tableau de toutes les m\'ethodes implément\'ees est montr\'e au d\'ebut du chapitre. Accompagn\'e de quelques exemples, il d\'ecrit aussi plus en d\'etail les plus importantes m\'ethodes.
-
-Le chapitre 3 -- Mise en œuvre de \TT{PpFf} -- examine comment nous avons transform\'e la conception en syst\`eme r\'eel en discutant de la mise en œuvre de l'\TT{API}.
-
-Le chapitre 4 -- \'Etudes de cas et exp\'erimentations -- effectue une \'evaluation plus d\'etaill\'ee sur deux cas d'utilisation r\'ealistes. 
-
-Enfin, le chapitre 5 -– Conclusion -- conclut cet ouvrage et pr\'esente des perspectives de recherche.
+R\'e\'ecrire une application est g\'en\'eralement co\^uteux en termes de temps de d\'eveloppement. Les approches visant \`a pallier ce d\'efaut sont souvent des outils de programmations parall\`eles d\'evelopp\'es pour introduire le parall\'elisme dans du code s\'equentiel existant. Des exemples sont \TT{OpenMP}~\citep{ChandraEtAl01} et \TT{OpenACC}~\citep{farber2016parallel} qui utilisent une approche bas\'ee sur l'ajout de directives --- des commentaires sp\'eciaux trait\'es par le compilateur, et \TT{Cilk}~\citep{leiserson1998programming} qui est une extension simple du langage~\TT{C}. Malheureusement, ces outils ne sont pas bien adapt\'es au traitement de flux de donn\'ees.
 
 
+Des outils qui supportent le traitement de flux de donn\'ees sont disponibles dans d'autres langages de programmation que \TT{C}/\TT{C++}. Les plus connus sont \TT{Spark}~\citep{frampton2015mastering} (Java, Scala et autres langages), les \TT{Stream}s de \TT{Java 8}~\citep{warburton2014java} et \TT{Flink}~\citep{flinkReferenceEnLigne} (Java et Scala). Un avantage principal de notre \TT{API} par rapport aux outils mentionn\'es est que le code (\'ecrit \`a l'aide de templates \TT{C++}) est compil\'e directement en code machine optimis\'ee m\^eme avant d'\^etre ex\'ecut\'e. 
+
+\GT{Ci-haut, derni\`ere phrase: pas certain que ce soit le bon
+avantage \`a mentionner.  Je crois qu'il faut \^etre clair \`a ce
+point que l'API est tr\`es semblable (!) \`a celle des Streams de Java
+8, mais en C++, et parfois/souvent plus simple \`a sp\'ecifier gr\^ace
+aux templates.}
+
+\section*{Objectifs}
+
+\GT{Ci-bas: je vais relire. Pas certain que ce soit tr\`es clair. De
+plus, tu utilises le terme <<mod\`ele algorithmique parall\`ele>> ou
+<<mod\`ele parall\`ele>>... sauf que je ne sais pas trop bien \`a quoi
+cela r\'ef\`ere. \'A quel terme anglais ce terme correspond-il? Quelle
+est la r\'ef\'erence?}
+
+Dans le contexte du langage de programmation \TT{C++}, il y a plusieurs biblioth\`eques qui offrent des mod\`eles algorithmiques parall\`eles pour le traitement de donn\'ees. Cependant, tous les mod\`eles entrent dans la cat\'egorie des mod\`eles parall\`eles de donn\'ees, comme la transformation et la r\'eduction. Ce m\'emoire a comme objectif d'enrichir cette collection avec de nouveaux mod\`eles parall\`eles avec une interface simple \`a utiliser. Ceci, associ\'e \`a de nouvelles fonctionnalit\'es telles que les expressions lambda~\citep{josuttis2012c++}, aide un programmeur d'\'ecrire des op\'erations complexes pour une s\'equence de donn\'ees. Cette nouvelle \TT{API} en \TT{C++}, appel\'ee \TT{PpFF},  est mise en \oe{}uvre avec la biblioth\`eque \TT{FastFlow}.
+
+Les performances de \TT{PpFf} sont \'evalu\'ees en les comparant celles des \TT{Stream} de \TT{Java 8}. Comme nous le verrons, les r\'esultats indiquent que \TT{PpFf} peut en effet traiter de donn\'ees \`a haut d\'ebit. En plus de mesurer les performances de notre API, nous illustrerons \'egalement son expressivit\'e en impl\'ementant certains cas d'utilisation typiques rencontr\'es dans les applications de traitement de flux de donn\'ees.
+
+
+\section*{Organisation du m\'emoire}
+
+Les chapitres qui forment le c\oe{}ur du m\'emoire sont organis\'es
+comme suit.
+
+
+\GT{Il ne faut pas mettre de num\'eros ou noms explicites, sinon ils
+ne seront plus corrects si tu les changes dans le corps du texte. De
+plus, la conclusion n'est pas un chapitre num\'erot\'e.}
+
+Le chapitre~\ref{outils_connus.chap} \nameref{outils_connus.chap} pr\'esente les outils existants portant sur le traitement des flux de donn\'ees.  Tout d'abord, il introduit les architectures utilis\'ees par divers outils et ensuite il pr\'esente les mod\`eles de programmations permettant d'exprimer les traitements de donn\'ees.
+
+Le chapitre~\ref{description.chap} \nameref{description.chap} pr\'esente les m\'ethodes expos\'ees par notre \TT{API}. Un r\'esum\'e sous forme de tableau de toutes les m\'ethodes implément\'ees est pr\'esent\'e au d\'ebut du chapitre. Accompagn\'e de quelques exemples, le chapitre d\'ecrit aussi plus en d\'etail les m\'ethodes les plus importantes.
+
+Le chapitre~\ref{implementation.chap} \nameref{implementation.chap} examine comment nous avons mis en œuvre notre \TT{API} en utilisant la biblioth\`eque bas niveau \TT{FastFlow}.
+
+Finalement, le chapitre~\ref{experiences.chap} \nameref{experiences.chap} pr\'esente une \'evaluation des performances sur deux cas d'utilisation typiques.
 
 \end{introduction}
 
