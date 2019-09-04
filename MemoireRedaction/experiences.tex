@@ -73,17 +73,17 @@ temps.}
 
 
 
-La structure de deux programmes \TT{Java} et \TT{PpFf} n'est pas pareille. Tandis que \TT{PpFf} nous permet de varier le nombre de fils d'ex\'ecution, \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, plusieurs exp\'eriences ont \'et\'e men\'ees en variant le nombre de \TT{threads}. Dans le cas de \TT{Java}, pour chaque exp\'erience, deux s\'eries de tests ont \'et\'e ex\'ecut\'ees. L'un avec et l'autre sans \TT{JIT} (\emph{just-in-time compiler} en anglais).
+La structure des programmes \TT{Java} et \TT{PpFf} n'est pas la m\^eme. Alors que \TT{PpFf} permet de varier le nombre de fils d'ex\'ecution, \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, plusieurs exp\'eriences ont \'et\'e men\'ees en variant le nombre de \emph{threads}. Dans le cas de \TT{Java}, pour chaque exp\'erience, deux s\'eries de tests ont \'et\'e ex\'ecut\'ees: une s\'erie avec le \emph{JIT} (\emph{Just-In-Time compiler}) et l'autre sans.
 
 \label{jitDescription.sect}
-\TT{JIT} \citep{cramer1997compiling} est un composant de l'environnement d'ex\'ecution qui am\'eliore les performances des applications \TT{Java} en compilant le \TT{bytecode} en code machine au moment de l'ex\'ecution. \TT{Bytecode} est un ensemble d'instructions pour \TT{JVM} qui permet aux applications d'\^etre roul\'ees sur plusieurs plates-formes. La mani\`ere de convertir le \TT{bytecode} en langage machine a un impact sur la vitesse d'ex\'ecution. Afin d'am\'eliorer les performances, \TT{JIT} interagit avec \TT{JVM} au moment de l'ex\'ecution et il compile les instructions en code machine.
+\emph{JIT}~\citep{cramer1997compiling} est un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le code-octet de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{code octet} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du code-octet en langage machine a un impact significatif sur la vitesse d'ex\'ecution.
 
-\GT{Je crois qu'il faut aussi que tu parles du JIT, que tu vas
+\gt{Je crois qu'il faut aussi que tu parles du JIT, que tu vas
 comparer l'ex\'ecution du programme Java avec le JIT activ\'e vs.\
 sans le JIT. Tu pourrais alors r\'ef\'erer, par exmple, \`a la machine
 \TT{M1+} avec JIT et \TT{M1-} sans JIT.}
 
-\IC{Ici plus haut, j'ai parl\'e de JIT.}
+\ic{Ici plus haut, j'ai parl\'e de JIT.}
 
 
 \section{Word Count}
@@ -230,11 +230,11 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 \end{figure}
 
 
-Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortir. Afin de conna\^itre l'impact de l'ampleur de donn\'ees, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenu dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78792 \`a 5247678 de mots. Pour toutes les exp\'eriences, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a 20.  Les r\'esultats peuvent \^etre vus dans les figures~\ref{GrapheTempsWordCount.fig} et~\ref{JapetExecutionWordCount.fig} respectivement. La figure~\ref{GrapheTempsWordCount.fig} montre les résultats obtenus sur la machine M1 et la figure~\ref{JapetExecutionWordCount.fig} montre les r\'esultats obtenus sur la machine M2 p.~\pageref{machines.sect}.
+Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: le nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortie. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenu dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78~792 \`a 5~247~678 de mots. Pour toutes les exp\'eriences, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a 20.  Les r\'esultats peuvent \^etre vus dans les figures~\ref{GrapheTempsWordCount.fig} et~\ref{JapetExecutionWordCount.fig} respectivement. La figure~\ref{GrapheTempsWordCount.fig} montre les résultats obtenus sur la machine M1 et la figure~\ref{JapetExecutionWordCount.fig} montre les r\'esultats obtenus sur la machine M2 (p.~\pageref{machines.sect}).
 
-Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees dans le cas de \TT{Java}. L'une avec et l'autre sans \TT{JIT} p.~\pageref{jitDescription.sect}. Dans les deux exp\'eriences, l'ex\'ecution de \TT{WordCount} dans \TT{Java} sans \TT{JIT} est nettement sup\'erieure \`a celle avec \TT{JIT}.
+Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees dans le cas de \TT{Java}. L'une avec \emph{JIT} et l'autre sans (p.~\pageref{jitDescription.sect}). On constate que le temps d'ex\'ecution de \TT{WordCount} sans \emph{JIT} est nettement sup\'erieure \`a celui avec \emph{JIT}.
 
-Dans le cas de \TT{PpFf} les exp\'eriences ont \'et\'e men\'ees en variant les nombres de \TT{threads}. Le temps d'ex\'ecution de \TT{PpFf} avec un \TT{thread} par rapport \`a celui avec 2 \TT{threads} est meilleur lorsque la charge du travail est petite. La m\^eme situation peut \^etre constat\'ee lorsque nous comparons le temps d'ex\'ecution de \TT{PpFf} avec celui de \TT{Java}. Pour un petit nombre de mots \`a traiter et compter, le temps d'ex\'ecution de \TT{Java} est meilleur. Cela peut s'expliquer par le mode de construction diff\'erent du pipeline entre les deux programmes. En comparaison avec \TT{Java}, \TT{PpFf} ex\'ecute chaque op\'eration de \TT{pipeline} sur un \TT{thread} diff\'erent. Par exemple, les cinq op\'erations de \TT{WordCount} : \TT{source}, \TT{flatMap}, \TT{map}, \TT{find} et \TT{reduceByKey} s'ex\'ecutent sur cinq \TT{threads} diff\'erents. Les co\^uts suppl\'ementaires introduits par ces \TT{threads} sont refl\'et\'es dans un mauvais temps d'ex\'ecution pour une petite charge du travail. Par contre lorsque la charge du traitement est grande, \TT{PpFf} obtient un meilleur temps d'ex\'ecution par rapport \`a \TT{Java}.
+Dans le cas de \TT{PpFf}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres de \emph{threads}. Le temps d'ex\'ecution de \TT{PpFf} avec un \emph{thread} par rapport \`a celui avec deux \emph{threads} est meilleur lorsque la charge du travail est petite. La m\^eme situation peut \^etre constat\'ee lorsque nous comparons le temps d'ex\'ecution de \TT{PpFf} avec celui de \TT{Java}. Pour un petit nombre de mots \`a traiter, le temps d'ex\'ecution de \TT{Java} est meilleur. Cela peut s'expliquer par le mode de construction diff\'erent du pipeline entre les deux programmes. En comparaison avec \TT{Java}, \TT{PpFf} ex\'ecute chaque op\'eration d'un \TT{pipeline} sur un \emph{thread} diff\'erent. Par exemple, les cinq op\'erations de \TT{WordCount} --- \TT{source}, \TT{flatMap}, \TT{map}, \TT{find} et \TT{reduceByKey} --- s'ex\'ecutent sur cinq \emph{threads} diff\'erents. Les co\^uts suppl\'ementaires introduits par ces \emph{threads} sont refl\'et\'es dans un moins bon temps d'ex\'ecution pour une petite charge du travail. Par contre, lorsque la charge du traitement est grande, \TT{PpFf} obtient un meilleur temps d'ex\'ecution que \TT{Java}.
 
 
 
@@ -331,23 +331,24 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 \end{figure}
 
 
-La deuxi\`eme s\'erie d'exp\'eriences pour analyser la performance de l'API est men\'ee pour l'application permettant de calculer des statistiques sur les prix d'indices boursiers. Les r\'esultats sont montr\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences sont menées sur les deux machines M1, M2~\ref{machines.sect}. Dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}.
+La deuxi\`eme s\'erie d'exp\'eriences pour analyser les performances de \PpFf{} est men\'ee pour l'application permettant de calculer des statistiques sur les prix d'indices boursiers. Les r\'esultats sont pr\'esent\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences sont menées sur les deux machines M1, M2 (Sect.~\ref{machines.sect}). Dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}.
 
 
 \section{Les co\^uts introduits par \TT{PpFf}}
 \label{coutsPpFf.sect}
 
-D\'ecrit dans le chapitre~\ref{ implementation.chap}, \TT{PpFf} est impl\'ement\'e au--dessus de la biblioth\`eque \TT{FastFlow}. Cette section pr\'esente les co\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}. 
+D\'ecrit dans le chapitre~\ref{implementation.chap}, \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \TT{FastFlow}. Cette section pr\'esente les co\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}. 
 
 
 \subsection{Description de l'application}
 
-Afin de r\'ealiser cette exp\'erience, nous avons cr\'e\'e un \TT{micro benchmark} constant d'un \TT{pipelin}e avec un seul op\'erateur. L'op\'erateur choisi pour cette exp\'erience est un \TT{map} qui fait un simple calcul d'addition d'une unit\'e pour chaque \'el\'ement d'une variable. La valeur de la variable est calcul\'ee dynamiquement comme suit : \[ x = 10^{granularity} \] ou la \TT{granularity} est une variable introduite en argument dans l'application. Le code source de l'application pour \TT{PpFf} et \TT{FastFlow} sont montr\'e dans les annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement. Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le \TT{pipeline}. La source de \TT{pipeline} est constitu\'ee d'une rang\'ee d'\'el\'ements. Pour cette exp\'erience la rangée\'e a \'et\'e choisie de 1 \`a 100000.  
+Afin de r\'ealiser cette exp\'erience, nous avons cr\'e\'e un \TT{micro benchmark} consistant en un \TT{pipeline} avec un seul op\'erateur. L'op\'erateur choisi pour cette exp\'erience est un \TT{map} qui fait un simple calcul d'addition d'une unit\'e pour chaque \'el\'ement d'une variable. La valeur de la variable est calcul\'ee dynamiquement comme suit : \[ x = 10^{granularity} \] 
+Ici, $granularity$ est une variable introduite en argument dans l'application. Le code source de cette application pour \TT{PpFf} et \TT{FastFlow} est pr\'esent\'e en annexe (Annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement). Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le \TT{pipeline}. La source du \TT{pipeline} est constitu\'ee d'une rang\'ee d'\'el\'ements. Pour cette exp\'erience, la rangée\'e a \'et\'e choisie de 1 \`a 100~000.  
 
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
-Afin de montrer les co\^uts introduits par l'API par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees. L'une avec la granularit\'e 4 et l'autre avec la granularit\'e 5. Pour une rang\'ee de 1 \`a 100000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \TT{threads} sur deux machines diff\'erentes : M1 et M2~\ref{machines.sect}.  
+Afin de montrer les co\^uts introduits par \PpFf{} par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees. L'une avec la granularit\'e 4 et l'autre avec la granularit\'e 5. Pour une rang\'ee de 1 \`a 100~000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \emph{threads} sur deux machines diff\'erentes : M1 et M2 (Sect.~\ref{machines.sect}).  
 
 \begin{figure}[H]
 \centering
@@ -507,7 +508,9 @@ Afin de montrer les co\^uts introduits par l'API par rapport \`a \TT{FastFlow}, 
 \end{figure}
 
 
-Les figures~\ref{JapetExecutionMicroBenchmarkGr4.fig} et~\ref{JapetExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine M2 et les figures~\ref{JavatExecutionMicroBenchmarkGr4.fig} et~\ref{JavaExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine M1. Un faible co\^ut introduit par l'API est visible sur la machine M1. \TT{FastFlow} obtient un meilleur temps d'ex\'ecution pour un nombre de \TT{threads} plus grand que 8. La plus grande diff\'erence obtenue entre les temps d'ex\'ecutions des deux applications \TT{PpFf} et \TT{FastFlow} est de 100 ms. En prenant en consid\'eration le volume de traitement de deux applications, les co\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles.
+\GT{Il serait pr\'ef\'erable de pr\'esenter dans l'ordre, tant les figures que la description dans le texte --- M1 avant M2.}
+
+Les figures~\ref{JapetExecutionMicroBenchmarkGr4.fig} et~\ref{JapetExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine M2 alors que les figures~\ref{JavatExecutionMicroBenchmarkGr4.fig} et~\ref{JavaExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine M1. Un faible co\^ut introduit par l'API est visible sur la machine M1. \TT{FastFlow} obtient un meilleur temps d'ex\'ecution pour un nombre de \emph{threads} plus grand que 8. La plus grande diff\'erence obtenue entre les temps d'ex\'ecutions de \TT{PpFf} et \TT{FastFlow} est de 100 ms. En prenant en consid\'eration le volume de traitement des deux applications, les co\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont donc faibles.
 
 
 
