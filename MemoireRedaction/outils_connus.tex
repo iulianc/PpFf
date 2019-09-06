@@ -24,23 +24,22 @@ la r\'ef\'erence soit compl\`etement entre parenth\`eses. Voir les
 exemples ci-haut et ci-bas.}
 
 
-\GT{A revoir plus tard: Je me demande s'il ne faudrait pas --- soit
-ici, soit dans l'introduction --- expliciter plus clairement la
-diff\'erence entre flux de donn\'ees par lot vs.\ flux incr\'emental
-de donn\'ees.  C'est mentionn\'e, mais je ne suis pas certain que la
-distinction soit clairement \'etablie.}
+\GT{Comme j'avais indiqu\'e dans ma remarque ant\'erieure (vieille
+version) il faudrait, dans l'introduction, expliciter plus clairement
+la diff\'erence entre flux de donn\'ees par lot vs.\ flux
+incr\'emental de donn\'ees. Voir ma remarque dans introduction.tex.}
 
 
-La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Il y a quelques ann\'ees, la principale fa\c{c}on d'ex\'ecuter un programme plus rapidement \'etait d'augmenter la vitesse d'horloge du processeur. De nos jours, la vitesse d'horloge a atteint ses limites et la performance d'un programme ne peut souvent \^etre am\'elior\'ee que si on l'ex\'ecute en parall\`ele. 
+La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Il y a quelques ann\'ees, la principale fa\c{c}on d'ex\'ecuter un programme plus rapidement \'etait d'augmenter la vitesse d'horloge du processeur. De nos jours, la vitesse d'horloge a atteint ses limites et les performances d'un programme ne peuvent souvent \^etre am\'elior\'ees que si on l'ex\'ecute en parall\`ele. 
 
 Le paradigme de programmation parall\`ele par flux de donn\'ees offre une approche prometteuse pour la programmation de syst\`emes multicœurs. Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
 
 
 
-Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apach Spark}, les \TT{Stream} de Java~8 et \TT{FastFlow}.  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, pr\'esent\'e aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
+Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark}, les \TT{Stream}s de Java~8 et \TT{FastFlow}.  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, pr\'esent\'e aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
 
 
-\section{Apach Spark}
+\section{Apache Spark}
 
 \gt{Ci-bas~: Si tu dis que Spark est pour r\'esoudre certaines
 probl\'ematiques de MapReduce, il faudrait que tu mentionnes
@@ -186,7 +185,7 @@ Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'e
 L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux compilateurs, notamment l'optimisation de l'exécution et les m\'ecanismes de nettoyage n\'ecessaires en arri\`ere-plan. Un autre avantage des it\'erations internes est l'efficacit\'e~: le traitement de donn\'ees peut \^etre plus efficace car il peut \^etre r\'eparti en parall\`ele parmi les cœurs de la machine.
 
 
-\begin{figure}[H]
+\begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ComparisonSequentialVsParallel.jpg}
       \caption[La comparaison entre le traitement s\'equentiel et parall\`ele.]{La comparaison entre le traitement s\'equentiel et parall\`ele. Les six \'el\'ements du flux, E1 \ldots E6, sont r\'epartis en quatre sous-flux. Chaque sous-flux est trait\'e avec l'un de quatre cœurs disponibles. Les r\'esultats sont combin\'es apr\`es le traitement.}
