@@ -66,7 +66,7 @@ Alors que le traitement en m\'emoire contribue consid\'erablement \`a obtenir de
 Nous expliquons ces deux mod\`eles dans les sous-sections qui suivent.
 
 
-\subsection*{\emph{Resilient Distributed Dataset} (\TT{RDD})}
+\subsection{\emph{Resilient Distributed Dataset} (\TT{RDD})}
 
 Un \TT{RDD} est une abstraction de donn\'ees en m\'emoire qui \'evite la r\'eplication de donn\'ees et minimise les acc\`es au disque. L'utilisation de \TT{RDD}s permet aux applications de mettre en cache des donn\'ees \`a travers diff\'erentes \'etapes de traitement, ce qui acc\'el\`ere consid\'erablement la r\'eutilisation pour les traitements futurs. De plus, les \TT{RDD}s m\'emorisent les op\'erations utilis\'ees pour les construire et utilisent un m\'ecanisme de \emph{checkpoint}. Lorsqu'une panne survient, les \TT{RDD}s requis peuvent \^etre reconstruits, et ce sans devoir tout refaire les calculs.
 
@@ -80,7 +80,7 @@ m\^eme chose...}
 Les \TT{RDD}s peuvent \^etre cr\'e\'es via d'autres \TT{RDD}s existants. Ce m\'ecanisme permet la reconstruction des partitions perdues, car chaque \TT{RDD} dispose d'informations suffisantes sur la reconstruction \`a partir d'autres \TT{RDD}s. Lorsqu'il y a une demande de mise en cache d'un \TT{RDD}, par d\'efaut \TT{Spark} stocke ces partitions en m\'emoire. Cependant, des partitions peuvent aussi \^etre stock\'ees sur disques, lorsque la m\'emoire est insuffisante.
 
 
-\subsection*{\emph{Discretized Streams}}
+\subsection{\emph{Discretized Streams}}
 
 \TT{Spark} traite un flux incr\'emental de donn\'ee par l'implémentation du mod\`ele \emph{Discretized Streams} (\TT{D-stream}s).   
 %
@@ -89,6 +89,43 @@ Les \TT{RDD}s peuvent \^etre cr\'e\'es via d'autres \TT{RDD}s existants. Ce m\'e
 Les \TT{D-stream}s repr\'esentent les flux de donn\'ees re\c{c}us en entr\'ee pour un traitement. 
 %
 TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
+
+
+\subsection{Exemple~: \TT{wordCount}}
+
+
+\begin{lstlisting}[
+basicstyle=\footnotesize\tt,
+label={wordCountSpark},
+language=java,
+caption={Un segment de code \TT{Spark/Java} pour compter le nombre d'occurrences de mots. Exemple provenant du site Web pour \TT{Apache Spark} (\url{https://spark.apache.org/examples.html}).},
+frame=single,
+escapechar=\#,
+float]
+JavaRDD<String> textFile = 
+    sc
+    .textFile("hdfs://...");
+
+JavaPairRDD<String, Integer> counts = 
+    textFile
+    .flatMap( s -> Arrays.asList(s.split(" ")).iterator() )
+    .mapToPair( word -> new Tuple2<>(word, 1) )
+    .reduceByKey( (a, b) -> a + b );
+
+counts
+    .saveAsTextFile("hdfs://...");
+\end{lstlisting}
+
+
+Afin d'illustrer le mod\`ele de programmation avec les \TT{RDD}s de \TT{Spark}, le listing~\ref{wordCountSpark} montre le code source d'un segment de code d\'ecompte des mots, code \'ecrit en \TT{Java}.%
+%
+\footnote{\url{https://spark.apache.org/examples.html}}
+%
+Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des divers mots dans un fichier texte et compos\'e de plusieurs op\'erations~: 
+\begin{itemize}
+\item Blah, blah
+\end{itemize}
+
 
 
 \section{\TT{Stream}s de \TT{Java} 8}
@@ -302,8 +339,12 @@ public static void main(String[] args) throws IOException {
 \end{lstlisting}
 
 
-Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'une application de d\'ecompte des mots --- plus pr\'ecis\'ement, l'application compte le nombre d'occurrences des divers mots dans un fichier texte. Cette application est compos\'ee de plusieurs op\'erations \emph{cha\^in\'ees} les unes \`a la suite des autres :
+\GT{Ci-bas: j'ai chang\'e des d\'etails des explications car ce n'est
+pas une application compl\`ete et \c{c}a traite pas un fichier texte
+mais juste une chaine.}
 
+
+Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'un segment de code \TT{Java} de d\'ecompte de mots. Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des mots dans un chaine et est compos\'ee de plusieurs op\'erations \emph{cha\^in\'ees} les unes \`a la suite des autres :
 
 \begin{itemize}
 	\item \TT{Files.lines}, qui renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
