@@ -30,16 +30,22 @@ la diff\'erence entre flux de donn\'ees par lot vs.\ flux
 incr\'emental de donn\'ees. Voir ma remarque dans introduction.tex.}
 
 
-La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Il y a quelques ann\'ees, la principale fa\c{c}on d'ex\'ecuter un programme plus rapidement \'etait d'augmenter la vitesse d'horloge du processeur. De nos jours, la vitesse d'horloge a atteint ses limites et les performances d'un programme ne peuvent souvent \^etre am\'elior\'ees que si on l'ex\'ecute en parall\`ele. 
+La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Il y a quelques ann\'ees, une des principales fa\c{c}ons d'ex\'ecuter un programme plus rapidement \'etait gr\^ace \`a l'augmentation de la vitesse d'horloge du processeur. De nos jours, la vitesse d'horloge a atteint ses limites et les performances d'un programme ne peuvent souvent \^etre am\'elior\'ees que si on l'ex\'ecute en parall\`ele. 
 
-Le paradigme de programmation parall\`ele par flux de donn\'ees offre une approche prometteuse pour la programmation de syst\`emes multicœurs. Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
+Le paradigme de programmation parall\`ele \emph{par flux de donn\'ees} offre une approche prometteuse pour la programmation de syst\`emes multicœurs. Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
+
+\GT{Ici, il faudrait dire quelques mots rapides sur ce qu'est le
+traitement par flux de donn\'ees --- m\^eme si tu l'as d\'ej\`a
+mentionn\'e dans l'introduction --- pour que ce soit plus
+complet/coh\'erent!}
 
 
-
-Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark}, les \TT{Stream}s de Java~8 et \TT{FastFlow}.  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, pr\'esent\'e aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
+Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
 
 
 \section{Apache Spark}
+
+\label{spark.sect}
 
 \gt{Ci-bas~: Si tu dis que Spark est pour r\'esoudre certaines
 probl\'ematiques de MapReduce, il faudrait que tu mentionnes
@@ -51,32 +57,44 @@ simplement une mise en oeuvre.}
 \ic{J'ai reformul\'e la description de Spark}
 
 
-\TT{Apache Spark}~\citep{apachSpark} est un engin de traitement de flux de donn\'ees dot\'e d'une API expressive qui permet aux d\'eveloppeurs d'ex\'ecuter efficacement plusieurs op\'erations sur un ensemble de donn\'ees. \TT{Spark} est un outil de traitement par lots, mais qui a aussi des capacit\'es de traitement de flux incr\'emental de donn\'ees. Il se concentre principalement sur l'acc\'el\'eration du traitement des donn\'ees en gardant en m\'emoire les donn\'ees de travail, ce qui permet notamment l'acc\'el\'eration du traitement des algorithmes it\'eratifs.
+\TT{Apache Spark}~\citep{apachSpark} est un engin de traitement de flux de donn\'ees dot\'e d'une API expressive qui permet aux d\'eveloppeurs d'ex\'ecuter efficacement plusieurs op\'erations sur une collection de donn\'ees. \TT{Spark} est un outil de traitement par lots, mais qui a aussi des capacit\'es de traitement de flux incr\'emental de donn\'ees. Il se concentre principalement sur l'acc\'el\'eration du traitement des donn\'ees en gardant en m\'emoire les donn\'ees de travail, ce qui permet notamment l'acc\'el\'eration du traitement des algorithmes it\'eratifs.
 
-Alors que le traitement en m\'emoire contribue consid\'erablement \`a obtenir de hautes performances, Spark est \'egalement rapide avec le traitement de donn\'ees sur disques en raison de l'optimisation qui peut \^etre r\'ealis\'ee en analysant l'ensemble complet des t\^aches \`a l'avance. Ceci peut \^etre r\'ealis\'e en cr\'eant des graphes acycliques dirig\'es (DAG) qui repr\'esentent toutes les op\'erations qui doivent \^etre ex\'ecut\'ees, les donn\'ees \`a \^etre utilis\'ees, ainsi que les relations entre elles. \`A l'aide de ce m\'ecanisme, le syst\`eme d'ex\'ecution a la capacit\'e de planifier et d'ordonnancer le travail de fa\c{c}on plus efficace.
+Alors que le traitement en m\'emoire contribue consid\'erablement \`a obtenir de hautes performances, Spark est \'egalement rapide avec le traitement de donn\'ees sur disques en raison de l'optimisation qui peut \^etre r\'ealis\'ee en analysant l'ensemble complet des t\^aches \`a l'avance. Ceci peut \^etre r\'ealis\'e en cr\'eant des graphes acycliques dirig\'es (DAG) qui repr\'esentent toutes les op\'erations qui doivent \^etre ex\'ecut\'ees, les donn\'ees \`a \^etre utilis\'ees, ainsi que les relations entre elles. \`A l'aide de ce graphe, le syst\`eme d'ex\'ecution a la capacit\'e de planifier et d'ordonnancer le travail de fa\c{c}on efficace.
 
-Spark utilise un mod\`ele appel\'e \emph{Resilient Distributed Datasets} (\TT{RDD})~\citep{Salloum2016} pour repr\'esenter les ensembles de donn\'ees, mod\`ele qui g\`ere efficacement la persistence lorsque les donn\'ees ne peuvent pas toutes \^etre trait\'ees en m\'emoire ou lorsqu'elles doivent \^etre pr\'eserv\'ees pour \'eviter des recalculs. De plus, Spark impl\'emente le mod\`ele \emph{Discretized Streams}~\citep{zaharia2013discretized} pour le traitement de flux incr\'emental de donn\'ees.
+\TT{Spark} utilise un mod\`ele appel\'e \emph{Resilient Distributed Datasets} (\TT{RDD})~\citep{Salloum2016} pour repr\'esenter les collections de donn\'ees, mod\`ele qui g\`ere efficacement la persistence lorsque les donn\'ees ne peuvent pas toutes \^etre trait\'ees en m\'emoire ou lorsqu'elles doivent \^etre pr\'eserv\'ees pour \'eviter des recalculs. De plus, \TT{Spark} impl\'emente le mod\`ele \emph{Discretized Streams}~\citep{zaharia2013discretized} pour le traitement de flux incr\'emental de donn\'ees.
 %
-Nous expliquons ces deux 
+Nous expliquons ces deux mod\`eles dans les sous-sections qui suivent.
 
 
 \subsection*{\emph{Resilient Distributed Dataset} (\TT{RDD})}
 
-Un \TT{RDD} est une abstraction de m\'emoire qui \'evite la r\'eplication de donn\'ees et minimise les acc\`es au disque. L'utilisation de  \TT{RDD} permet aux applications de mettre en cache des donn\'ees \`a travers diff\'erentes \'etapes de traitement, ce qui acc\'el\`ere consid\'erablement la r\'eutilisation pour les donn\'ees futures. De plus, les \TT{RDD} m\'emorisent les op\'erations utilis\'ees pour les construire et utilisent un m\'ecanisme de \emph{checkponint}. Lorsqu'une panne survient, les \TT{RDD} requis peuvent \^etre reconstruits, mais sans n\'ecessairement devoir tout refaire les calculs.
+Un \TT{RDD} est une abstraction de donn\'ees en m\'emoire qui \'evite la r\'eplication de donn\'ees et minimise les acc\`es au disque. L'utilisation de \TT{RDD}s permet aux applications de mettre en cache des donn\'ees \`a travers diff\'erentes \'etapes de traitement, ce qui acc\'el\`ere consid\'erablement la r\'eutilisation pour les traitements futurs. De plus, les \TT{RDD}s m\'emorisent les op\'erations utilis\'ees pour les construire et utilisent un m\'ecanisme de \emph{checkpoint}. Lorsqu'une panne survient, les \TT{RDD}s requis peuvent \^etre reconstruits, et ce sans devoir tout refaire les calculs.
 
-Les \TT{RDD} sont conçus pour \^etre partitionn\'es. Chaque partition contient des enregistrements qui peuvent \^etre cr\'e\'es par op\'erations de transformations. Les transformations incluent notamment les opérations \TT{map}, \TT{filter}, \TT{groupBy} et \TT{join}.
+Les \TT{RDD}s sont conçus pour \^etre partitionn\'es, donc r\'epartis sur diff\'erentes machines. Chaque partition contient des enregistrements qui peuvent \^etre cr\'e\'es par op\'erations de transformations. Les transformations incluent notamment les opérations \TT{map}, \TT{filter}, \TT{groupBy} et \TT{join}.
 
-Les \TT{RDD} peuvent \^etre cr\'e\'es via d'autres \TT{RDD} existants. Ce m\'ecanisme permet la reconstruction des partitions perdues, car chaque \TT{RDD} dispose d'informations suffisantes sur la reconstruction \`a partir d'autres \TT{RDD}. Lorsqu'il y a une demande de mise en cache d'un \TT{RDD}, par d\'efaut Spark stocke ces partitions en m\'emoire. Cependant, des partitions peuvent aussi \^etre stock\'ees sur disques, lorsque la m\'emoire est insuffisante.
+
+\GT{Je crois que le paragaphe qui suit est redondant par rapport \`a
+ce qui est \'ecrit plus haut, non? C'est-\`a-dire qu'il redit la
+m\^eme chose...}
+
+Les \TT{RDD}s peuvent \^etre cr\'e\'es via d'autres \TT{RDD}s existants. Ce m\'ecanisme permet la reconstruction des partitions perdues, car chaque \TT{RDD} dispose d'informations suffisantes sur la reconstruction \`a partir d'autres \TT{RDD}s. Lorsqu'il y a une demande de mise en cache d'un \TT{RDD}, par d\'efaut \TT{Spark} stocke ces partitions en m\'emoire. Cependant, des partitions peuvent aussi \^etre stock\'ees sur disques, lorsque la m\'emoire est insuffisante.
 
 
 \subsection*{\emph{Discretized Streams}}
 
-\TT{Spark} traite un flux de donn\'ee par l'implémentation du mod\`ele \emph{Discretized Streams (D-streams)}.  Les \TT{D-stream} repr\'esentent les flux de donn\'ees re\c{c}us en entr\'ee pour un traitement. \TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, slon de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans des \TT{DDR}. Ensuite, le \emph{micro-batch} est trait\'e et ses r\'esultats sont stock\'es dans des \TT{DDR} interm\'ediaires.
+\TT{Spark} traite un flux incr\'emental de donn\'ee par l'implémentation du mod\`ele \emph{Discretized Streams} (\TT{D-stream}s).   
+%
+\GT{Je ne comprends pas la phrase qui suit.}
+%
+Les \TT{D-stream}s repr\'esentent les flux de donn\'ees re\c{c}us en entr\'ee pour un traitement. 
+%
+TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
 
 
-\section{Java 8 et ses \TT{Stream}s}
+\section{Les \TT{Stream}s de \TT{Java} 8}
+\label{java8.sect}
 
-La version 8 de Java, qui a introduit les \TT{Stream}s, a chang\'e la façon dont les d\'eveloppeurs peuvent traiter, tant de fa\c{c}on s\'equentielle que parall\`ele, les collections de donn\'ees. La manipulation des \TT{Stream}s ressemble \`a un langage de requ\^ete de base de donn\'ees. Au lieu de parcourir explicitement les donn\'ees \`a l'aide de boucles (\TT{for}), les d\'eveloppeurs sp\'ecifient simplement des suites d'op\'erations \`a effectuer sur les \'el\'ements d'une collection. \cite{urma2014java} fournissent une description d\'etaill\'ee des nouveaux concepts introduits dans \TT{Java~8}. Les \TT{Stream}s et les \emph{expressions-lambdas} sont les fonctionnalit\'es les plus remarquables ajout\'ees dans l'API \citep{javaStreamAPI}. Ils sont con\c{c}us pour traiter les collections de donn\'ees de mani\`ere simple et efficace. Cette section d\'ecrit quelques-uns des concepts de \TT{Java~8}.
+La version 8 de \TT{Java}, qui a introduit les \TT{Stream}s, a chang\'e la façon dont les d\'eveloppeurs peuvent traiter, tant de fa\c{c}on s\'equentielle que parall\`ele, les collections de donn\'ees. La manipulation de collections de donn\'ees \`a l'aide de \TT{Stream}s ressemble \`a un langage de requ\^etes de base de donn\'ees. Au lieu de parcourir explicitement les donn\'ees \`a l'aide de boucles (\TT{for}), un d\'eveloppeur sp\'ecifie simplement une suite d'op\'erations \emph{fonctionnelles} \`a effectuer sur les \'el\'ements d'une collection. \cite{urma2014java} fournissent une description d\'etaill\'ee des nouveaux concepts introduits dans \TT{Java~8}. Les \TT{Stream}s et les \emph{expressions lambdas} sont les fonctionnalit\'es les plus remarquables ajout\'ees dans l'API \citep{javaStreamAPI}. Ils sont con\c{c}us pour traiter les collections de donn\'ees de mani\`ere simple et efficace. Les sous-sections qui suivent d\'ecrivent quelques-uns des concepts de \TT{Java~8}.
 
 
 \subsection{Expressions lambda}
@@ -97,13 +115,13 @@ pour les figures.}
 label={exLambda},
 language=java,
 gobble=4,
-caption={[Un exemple d'une expression lambda qui re\c{c}oit deux valeurs de type entier en argument.]Un exemple d'une expression lambda qui re\c{c}oit deux valeurs de type entier en argument, affect\'ee \`a la variable \TT{a}. Un appel est ensuite effectu\'ee et le r\'esultat est affect\'e \`a la variable \TT{result}.},
+caption={[Un exemple d'une expression lambda qui re\c{c}oit deux valeurs de type entier en argument.]Un exemple d'une expression lambda qui re\c{c}oit deux valeurs de type entier en argument, affect\'ee \`a la variable \TT{a}. Un appel est ensuite effectu\'e et le r\'esultat est affect\'e \`a la variable \TT{result}.},
 frame=single,
 float]
     interface Addable { int add (int x, int y); }
     
-    int y = 2;
     int x = 3;
+    int y = 2;
     
     // Affectation de l'expression lambda a une variable.
     Addable a = (int w, int z) -> { return w + z; };
@@ -114,7 +132,7 @@ float]
 
 
 
-Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- est un bloc de code avec des param\`etres qui peut \^etre d\'efini, comme n'importe quelle valeur, puis qui peut \^etre ex\'ecut\'e ult\'erieurement. Par exemple, la fonction anonyme du listing~\ref{exLambda}, qui re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme, est affect\'ee \`a la variable \TT{a}. Un appel \`a la m\'ethode \TT{add} --- de l'interface \TT{Addable} --- est ensuite effectu\'ee avec des arguments effectifs (\TT{x} et \TT{y}).
+Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- est un bloc de code avec des param\`etres qui peut \^etre d\'efini, comme n'importe quelle valeur, puis qui peut \^etre ex\'ecut\'e ult\'erieurement. Par exemple, la fonction anonyme du listing~\ref{exLambda}, qui re\c{c}oit deux valeurs de type entier en argument et renvoie leur somme, est affect\'ee \`a la variable \TT{a}. Un appel \`a la m\'ethode \TT{add} --- de l'interface \TT{Addable} --- est ensuite effectu\'e avec des arguments effectifs (\TT{x} et \TT{y}).
 
 
 \begin{lstlisting}[
@@ -127,13 +145,13 @@ float]
     // Specification d'un thread avec une classe interne anonyme.
 	Thread th = new Thread( new Runnable() {
 		public void run() {
-          ...
+          ... // Code a executer par le thread.
 		}
 	});
 
     // Specification d'un thread avec une expression lambda.
 	Thread th = new Thread( () -> {
-         ...
+         ... // Code a executer par le thread.
 	});
 \end{lstlisting}
 
@@ -144,7 +162,7 @@ Le concept d'expression lambda n'est pas nouveau. Il est utilis\'e depuis longte
 %
 Les expressions lambda rendent le code plus concis et, dans le cas de \TT{Java}, l'\'etendent avec des concepts de langages de programmation fonctionnelle. 
 
-Plus sp\'ecifiquement, en Java, ce concept est li\'e \`a celui d'interface fonctionnelle. Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listing~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{thread}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
+Plus sp\'ecifiquement, en \TT{Java}, ce concept est li\'e \`a celui d'interface fonctionnelle. Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listing~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{Thread th}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
 
 Dans une expression lambda, lors de la compilation, les types des arguments peuvent \^etre automatiquement d\'etermin\'es par le compilateur. Cette fonctionnalit\'e permet de passer des m\'ethodes comme arguments plut\^ot que de construire un objet d'une classe sp\'ecifique. Ceci permet \`a un programmeur de construire facilement des pipelines d'op\'erations fonctionnelles.
 
@@ -156,7 +174,7 @@ Dans une expression lambda, lors de la compilation, les types des arguments peuv
 label={comparisonInternVsExtern},
 language=java,
 gobble=4,
-caption={[Comparaison entre une it\'eration externe et interne.]Comparaison entre une it\'eration externe et interne~: dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<J>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{stream} qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
+caption={[Comparaison entre une it\'eration externe et interne.]Comparaison entre une it\'eration externe et interne. Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<\TT{J}>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{Stream} --- produit par l'appel <<\TT{myList.stream()}>> --- qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
 frame=single,
 float]
     List<String> myList =
@@ -180,20 +198,22 @@ float]
 \end{lstlisting}
 
 
-Une it\'eration est le processus qui consiste \`a traverser une s\'equence d'\'el\'ements pour traiter chacun d'entre eux. Avec les \TT{Stream}s \TT{Java}, une it\'eration peut \^etre ex\'ecut\'ee de deux mani\`eres : par une it\'eration \emph{externe} ou \emph{interne}. Une it\'eration est dite \emph{externe} lorsque le d\'eveloppeur contr\^ole la travers\'ee des \'el\'ements.  L'acc\`es et l'op\'eration sur chaque \'el\'ement de la collection sont d\'efinis par l'utilisateur. Par contre, une it\'eration est dite \emph{interne} lorsque la s\'equence contr\^ole elle-m\^eme tous les d\'etails du processus d'it\'eration. L'utilisateur fournit uniquement les op\'erations permettant de traiter les \'el\'ements, sans se soucier de la mani\`ere dont les \'el\'ements sont acc\'ed\'es et fournis. Le listing~\ref{comparisonInternVsExtern} montre un exemple d’une comparaison entre une itération externe et interne. 
+Une it\'eration est le processus qui consiste \`a traverser une collection d'\'el\'ements pour traiter chacun d'entre eux. Avec les \TT{Stream}s \TT{Java}, une it\'eration peut \^etre ex\'ecut\'ee de deux mani\`eres : par une it\'eration \emph{externe} ou \emph{interne}. 
 
-L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux compilateurs, notamment l'optimisation de l'exécution et les m\'ecanismes de nettoyage n\'ecessaires en arri\`ere-plan. Un autre avantage des it\'erations internes est l'efficacit\'e~: le traitement de donn\'ees peut \^etre plus efficace car il peut \^etre r\'eparti en parall\`ele parmi les cœurs de la machine.
+Une it\'eration est dite \emph{externe} lorsque le d\'eveloppeur contr\^ole la travers\'ee des \'el\'ements.  L'acc\`es et l'op\'eration sur chaque \'el\'ement de la collection sont d\'efinis par l'utilisateur. Par contre, une it\'eration est dite \emph{interne} lorsque la collection contr\^ole elle-m\^eme tous les d\'etails du processus d'it\'eration. L'utilisateur fournit uniquement les op\'erations permettant de traiter les \'el\'ements, sans se soucier de la mani\`ere dont les \'el\'ements sont acc\'ed\'es et fournis. Le listing~\ref{comparisonInternVsExtern} montre un exemple d’une comparaison entre une itération externe et interne. 
+
+L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux compilateurs, notamment l'optimisation de l'exécution et les m\'ecanismes de nettoyage n\'ecessaires en arri\`ere-plan. Un autre avantage des it\'erations internes est l'efficacit\'e, le traitement pouvant \^etre r\'eparti entre les cœurs de la machine pour une ex\'ecution parall\`ele.
 
 
 \begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ComparisonSequentialVsParallel.jpg}
-      \caption[La comparaison entre le traitement s\'equentiel et parall\`ele.]{La comparaison entre le traitement s\'equentiel et parall\`ele. Les six \'el\'ements du flux, E1 \ldots E6, sont r\'epartis en quatre sous-flux. Chaque sous-flux est trait\'e avec l'un de quatre cœurs disponibles. Les r\'esultats sont combin\'es apr\`es le traitement.}
+      \caption[Une comparaison entre traitement s\'equentiel et parall\`ele.]{Une comparaison entre traitement s\'equentiel et parall\`ele. Les six \'el\'ements du flux (\TT{E1}, \ldots,  \TT{E6}) sont r\'epartis dans quatre sous-flux. Chaque sous-flux est trait\'e par l'un de quatre cœurs disponibles. Les r\'esultats sont combin\'es apr\`es le traitement.}
        \label{ComparisonSequentialVsParallel.fig}
 \end{figure}
 
 
-Lorsqu'un flux s'ex\'ecute en parall\`ele, Java partitionne le flux en plusieurs sous-flux. Les op\'erations parcourent et traitent ces sous-flux en parall\`ele, puis combinent les r\'esultats. La figure~\ref{ComparisonSequentialVsParallel.fig} montre la comparaison entre  un traitement s\'equentiel et un traitement parall\`ele, dans cet exemple avec quatre c\oe{}urs. Les \'el\'ements du flux sont partitionn\'es en sous-flux et chaque sous-flux r\'esultant est trait\'e avec l'un de quatre cœurs disponibles.  
+Lorsqu'un flux s'ex\'ecute en parall\`ele, \TT{Java} partitionne le flux en plusieurs sous-flux. Les op\'erations parcourent et traitent ces sous-flux en parall\`ele, puis combinent les r\'esultats. La figure~\ref{ComparisonSequentialVsParallel.fig} montre la comparaison entre  un traitement s\'equentiel et un traitement parall\`ele, dans cet exemple avec quatre c\oe{}urs. Les \'el\'ements du flux sont partitionn\'es en sous-flux et chaque sous-flux r\'esultant est trait\'e par l'un de quatre cœurs disponibles.  
 
 
 
@@ -233,7 +253,7 @@ Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \TT{
 basicstyle=\footnotesize\tt,
 label={wordCountJava},
 language=java,
-caption={Le code source Java~8 d'une application de d\'ecompte du nombre d'occurrences des mots.},
+caption={Le code source \TT{Java}~8 d'une application de d\'ecompte du nombre d'occurrences des mots.},
 frame=single,
 escapechar=\#,
 float]
@@ -306,6 +326,7 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 
 
 \section{FastFlow}
+\label{fastflow.sect}
 
 \TT{FastFlow} est une biblioth\`eque \TT{C++} qui, \`a la base, offre un ensemble de m\'ecanismes de bas niveau pour supporter les flux de donn\'ees, s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement avec \TT{FastFlow} est rendue possible en utilisant un ensemble de \emph{squelettes algorithmiques} offerts par la biblioth\`eque. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. Les squelettes algorithmiques offerts par \TT{FastFlow} peuvent \^etre utilis\'es pour exprimer les mod\`eles les plus courants de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles hi\'erarchiques de parall\'elisme plus complexes.
 
