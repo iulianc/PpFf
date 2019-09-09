@@ -2,7 +2,13 @@
 #chmod +x run_gnuplot.sh
 #./run_gnuplot.sh
 
-ruby run_bms.rb
+# Il est preferable de ne pas lancer l'execution des benchmarks dans
+# le script des graphiques, pour permettre de plus facilement refaire
+# la presentation des graphes (comme j'ai fait) sans devoir lancer a
+# nouveau l'execution!
+#
+# ruby run_bms.rb
+
 
 fichier="temps-wc.txt"
 
