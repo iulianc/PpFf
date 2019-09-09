@@ -336,30 +336,30 @@ v\'erifier!}
 \end{itemize}
 
 
-\section{FastFlow}
+\section{\TT{FastFlow}}
 \label{fastflow.sect}
 
-\TT{FastFlow} est une biblioth\`eque \TT{C++} qui, \`a la base, offre un ensemble de m\'ecanismes de bas niveau pour supporter les flux de donn\'ees, s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement avec \TT{FastFlow} est rendue possible en utilisant un ensemble de \emph{squelettes algorithmiques} offerts par la biblioth\`eque. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. Les squelettes algorithmiques offerts par \TT{FastFlow} peuvent \^etre utilis\'es pour exprimer les mod\`eles les plus courants de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles hi\'erarchiques de parall\'elisme plus complexes.
+\TT{FastFlow} est une biblioth\`eque \TT{C++} qui, \`a la base, offre un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees et s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement avec \TT{FastFlow} est rendue possible en utilisant un ensemble de \emph{squelettes algorithmiques} offerts par la biblioth\`eque~\citep{AldinucciEtAl14}. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. Les squelettes algorithmiques offerts par \TT{FastFlow} peuvent \^etre utilis\'es pour exprimer les mod\`eles les plus courants de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles hi\'erarchiques de parall\'elisme plus complexes.
 
 \TT{FastFlow} a \'et\'e conçue selon plusieurs principes: conception en couches, efficacit\'e des communications et synchronisation, et support pour le parall\'elisme de flux.
 
 \subsection{Conception en couches}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/FastFlowLayers.jpg}
+      \caption[Les couches de \TT{FastFlow}.]{Les couches de \TT{FastFlow} --- figure tir\'ee de~\citep{Torquati15}.}
+       \label{FastFlowLayers.fig}
+\end{figure}
 
 
 \TT{FastFlow} a \'et\'e conçue sous la forme d'une pile de couches pour permettre d'impl\'ementer des m\'ecanismes d'abstraction et d'optimisation \`a plusieurs niveaux. La figure~\ref{FastFlowLayers.fig} montre les trois principales couches: \emph{High-level patterns}, \emph{Core patterns} et \emph{Building blocks}. 
 
 Le niveau le plus bas de la pile, \emph{Building blocks}, g\`ere les communications asynchrones entre les canaux de communication et g\`ere le cycle de vie des flux. Plus pr\'ecis\'ement, cette couche offre des services pour les couches sup\'erieures. Elle g\`ere les queues, les processeurs et les fils d'ex\'ecutions (\emph{threads}).
 
-Au-dessus de la couche \emph{Building blocks} se trouve la couche \emph{Core patterns}, qui fournit des squelettes (gabarits) pour mod\'eliser le parall\'elisme de flux. Les trois mod\`eles fournis dans cette couche sont \emph{task-farm}, \emph{pipeline} et \emph{feedback}, qui permettent de construire des flux parall\`eles. 
+Au-dessus de la couche \emph{Building blocks} se trouve la couche \emph{Core patterns}, qui fournit des squelettes (gabarits) pour mod\'eliser diff\'erentes formes de parall\'elisme de flux. Les trois mod\`eles fournis dans cette couche sont \emph{task-farm}, \emph{pipeline} et \emph{feedback}, qui permettent de construire des flux parall\`eles vari\'es. 
 
 Au sommet de la pile se trouve la couche \emph{High-level patterns}, qui permet d'exprimer le parall\'elisme de plus haut niveau. Elle fournit plusieurs m\'ethodes qui couvrent les paradigmes de programmation parall\`eles les plus courants : parall\'elisme de flux, parall\'elisme de donn\'ees et  parall\'elisme de t\^aches. 
-
-\begin{figure}[ht]
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/FastFlowLayers.jpg}
-      \caption[Les couches de \TT{FastFlow}.]{Les couches de \TT{FastFlow} --- figure tir\'ee de~\cite{Torquati15}.}
-       \label{FastFlowLayers.fig}
-\end{figure}
 
 \subsection{Efficacit\'e}
 
@@ -382,18 +382,17 @@ Dans \TT{FastFlow}, le parall\'elisme peut \^etre obtenu en exploitant directeme
 
 Dans \TT{FastFlow}, \TT{ff\_node} est la classe de base pour un noeud de traitement. Elle fournit les m\'ecanismes appropri\'es pour d\'efinir des activit\'es s\'equentielles pour le traitement de données apparaissant sur un canal d'entr\'ee et fournissant les r\'esultats correspondants sur un canal de sortie. 
 
+\goodbreak
+\begin{samepage}
 La classe \TT{ff\_node} d\'efinit plusieurs m\'ethodes, les trois plus importantes \'etant les suivantes :
 \begin{lstlisting}[language=c++]
-  class ff_node {
-    ...
     virtual void* svc(void* task) = 0
     virtual int svc_init() { return 0; } 
     virtual void svc_end() {} 
-    ...
-  }
 \end{lstlisting}
+\end{samepage}
 
-La premi\`ere m\'ethode (\TT{svc}, mn\'emonique <<service>>) est celle qui d\'efinit le comportement du nœud lors du traitement des \'el\'ements du flux d'entr\'ee. Les deux autres m\'ethodes sont automatiquement appel\'ees lorsque le traitement repr\'esent\'e par le nœud est d\'emarr\'e \TT{(svc\_init)} et juste avant qu'il soit termin\'e \TT{(svc\_end)}. Ces m\'ethodes virtuelles peuvent \^etre red\'efinies dans des sous-classes \TT{ff\_node} sp\'ecifi\'ees par le programmeur afin d'impl\'ementer le traitement, l'initialisation ou la finalisation du code.
+La premi\`ere m\'ethode, \TT{svc} (mn\'emonique <<service>>), est la plus importante car c'est celle qui d\'efinit le comportement du nœud lors du traitement des \'el\'ements du flux d'entr\'ee. Quant aux deux autres m\'ethodes, elles sont appel\'ees lorsque le traitement repr\'esent\'e par le nœud est d\'emarr\'e \TT{(svc\_init)} et juste avant qu'il soit termin\'e \TT{(svc\_end)}. Ces trois m\'ethodes virtuelles peuvent \^etre red\'efinies dans des sous-classes \TT{ff\_node} sp\'ecifi\'ees par le programmeur afin d'impl\'ementer le traitement, l'initialisation ou la finalisation du code.
 
 
 \subsubsection*{La classe \TT{ff\_pipeline}}
@@ -406,29 +405,21 @@ Un \emph{pipeline} est utilis\'e pour mod\'eliser les traitements exprim\'es par
 \subsubsection*{La classe \TT{ff\_farm}}
 \label{farm.sect}
 
-\begin{figure}[ht]
-\centering
-
-\gt{Quand une l\'egende (caption) est trop longue, avec plein
-d'explications, il est pr\'ef\'erable de mettre une version plus
-courte entre crochets~: c'est alors cette derni\`ere qui apparait dans
-la table des mati\`eres, plut\^ot que le long (long) texte. (Et voir
-aussi ci-haut comment on peut faire de m\^eme pour un lstlisting: avec
-crochets aussi mais un peu diff\'erent.)}
-
+\begin{figure}[htbp]
+     \centering
      \includegraphics[width=1.0\textwidth]{Figures/FastFlowFarm.jpg}
       \caption[Les trois parties d'un \emph{farm} de \TT{FastFlow}.]{Un \emph{farm} de \TT{FastFlow} est compos\'e de trois parties~:  l'\TT{Emitter (E)}, le \emph{pool} de \TT{workers} (W1\ldots\ Wn) et le \TT{Collector (C)}. Les canaux de communication sont impl\'ement\'es en assemblant des files de types \emph{Simple Producer/Simple Consumer (SPSC)} --- figure tir\'ee de~\citep{aldinucci2010efficient}.}
        \label{FastFlowFarm.fig}
 \end{figure}
 
-Un \emph{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow}, un \emph{farm} est repr\'esent\'e par un objet de la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig}, un \emph{farm} est compos\'e de trois parties distinctes: un \TT{Emitter}, un  \emph{pool} de \TT{workers} et un \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements du flux au \emph{pool} de \TT{workers}, lesquels traitent et produisent les donn\'ees de sortie; l'\TT{Emitter} distribue les \'el\'ements d'entr\'ee aux travailleurs selon une certaine politique d'ordonnancement afin d'\'equilibrer la charge des travailleurs. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire, tel que d\'ecrit pr\'ec\'edemment.
+Un \emph{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow}, un \emph{farm} est repr\'esent\'e par un objet de la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig}, un \emph{farm} est compos\'e de trois parties distinctes: un \TT{Emitter}, un  \emph{pool} de \TT{workers} et un \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements du flux au \emph{pool} de \TT{workers}, lesquels traitent et produisent les donn\'ees de sortie; l'\TT{Emitter} distribue les \'el\'ements d'entr\'ee aux travailleurs selon une certaine politique d'ordonnancement afin d'\'equilibrer la charge des travailleurs. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux de sortie. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire, tel que d\'ecrit pr\'ec\'edemment.
 
 
 \subsection{Exemple~: \TT{WordCount}}
 
 
 \begin{lstlisting}[language=c++, 
-caption={Le code source FastFlow d'une application de d\'ecompte du nombre d'occurrences des mots.},
+caption={Le code source \TT{FastFlow} d'une application pour compter le nombre d'occurrences de mots.},
 label={wordcountFastFlow},
 frame=single,
 float,
@@ -520,12 +511,12 @@ Cette section pr\'esente un exemple d'un programme r\'ealis\'e en \TT{FastFlow}.
 Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \TT{n} diff\'erents \TT{stages}; ensuite leurs r\'ef\'erences sont transmises dans le bon ordre au {pipeline}. Dans l'exemple du listing~\ref{wordcountFastFlow}, les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots --- lignes 66 \`a 69.  Les quatre op\'erations r\'ealisent les fonctions suivantes :
 
 \begin{itemize}
-    \item La premi\`ere op\'eration, \TT{linesFromFile}, renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est identifi\'e par le param\`etre \TT{inputFile} fourni en argument.
+    \item \TT{linesFromFile}, qui renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est identifi\'e par le param\`etre \TT{inputFile} fourni en argument.
 
-    \item La deuxi\`eme op\'eration, \TT{splitInWords}, divise chaque ligne en mots qui sont ensuite transmis en aval sous forme d'une collection de mots.
+    \item \TT{splitInWords}, qui divise chaque ligne en mots qui sont ensuite transmis en aval sous forme d'une collection de mots.
     
-    \item La troisi\`eme op\'eration, \TT{flat}, décompose la collection en mots individuels, lesquels sont ensuite transmis dans le flux en tant qu'éléments individuels de données.
+    \item \TT{flat}, qui décompose la collection en mots individuels, lesquels sont ensuite transmis dans le flux en tant qu'éléments individuels de données.
     
-    \item La derni\`ere op\'eration, \TT{groupByKey}, regroupe les mots similaires ensemble et ensuite compte le nombre d'occurrences de chaque mot.
+    \item \TT{groupByKey}, qui regroupe les mots similaires ensemble et ensuite compte le nombre d'occurrences de chaque mot.
     
 \end{itemize}
