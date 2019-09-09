@@ -2,7 +2,12 @@
 #chmod +x run_gnuplot.sh
 #./run_gnuplot.sh
 
-ruby run_bms.rb
+# Il est preferable de ne pas lancer l'execution des benchmarks dans
+# le script des graphiques, pour permettre de plus facilement refaire
+# la presentation des graphes (comme j'ai fait) sans devoir lancer a
+# nouveau l'execution!
+#
+# ruby run_bms.rb
 
 fichier="temps-maps.txt"
 
@@ -20,9 +25,9 @@ set xlabel "Nombre de threads"
 set ylabel "Temps d'exécution (log ms)"
 set title "Maps: Nombre de threads vs. (log) Temps d'exécution\n"
 plot [$taille_min:$taille_max][$temps_min:$temps_max] \
-	 "$fichier" using 1:2 title "PpFf-4" with linespoints,\
 	 "$fichier" using 1:3 title "PpFf-5" with linespoints,\
-	 "$fichier" using 1:4 title "FastFlow-4:" with linespoints,\
-	 "$fichier" using 1:5 title "FastFlow-5" with linespoints
+	 "$fichier" using 1:5 title "FastFlow-5" with linespoints,\
+	 "$fichier" using 1:2 title "PpFf-4" with linespoints,\
+	 "$fichier" using 1:4 title "FastFlow-4:" with linespoints
 EOF
 
