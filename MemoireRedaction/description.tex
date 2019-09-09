@@ -29,7 +29,7 @@ L'{API} de \PpFf{} est impl\'ement\'ee au-dessus de la biblioth\`eque \TT{FastFl
 
 
 
-\section{L'application WordCount}
+\section{Application \TT{WordCount}}
 \label{descriptionWordCount.sect}
 
 
@@ -103,7 +103,7 @@ flux avec les lignes du fichier. Le fichier est sp\'ecifi\'e par un nom de fichi
 \end{itemize}
 
 
-\section{Les flux de donn\'ees: type \TT{Flow}}
+\section{Flux de donn\'ees: type \TT{Flow}}
 
 L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`es celle introduite pour les Streams de Java 8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes export\'ees par l'API, regroup\'ees selon leur fonctionnalit\'e, puis en ordre alphab\'etique \`a l'int\'erieur d'une cat\'egorie.
 
@@ -381,7 +381,7 @@ Le listing~\ref{expressivite_api.c++} pr\'esente un extrait de code C++ qui donn
 
 
 
-\section{Les sources de donn\'ees: m\'ethodes \TT{source}}
+\section{Sources de donn\'ees: m\'ethodes \TT{source}}
 
 
 La source de donn\'ees est le premier op\'erateur utilis\'e pour cr\'eer un flux. 
@@ -414,7 +414,7 @@ std::vector<int> currentResult =
 Les deux m\'ethodes pour sp\'ecifier la source d'un flux sont illustr\'ees, respectivement, dans les exemples du listing~\ref{wordcount.c++} et~\ref{mapExample.c++}. La m\'ethode \TT{source} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier \TT{Words.txt}. Le param\`etre \TT{path} sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple fourni dans le listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} en fournissant les it\'erateure de d\'ebut et fin du \TT{vector elems}.
 
 
-\section{Les transformations de donn\'ees}
+\section{Transformations de donn\'ees}
 
 Cette section d\'ecrit plus en d\'etail les principales op\'erations de la cat\'egorie \TT{Transformation}. Ces op\'erations permettent d'exprimer des requ\^etes de traitement de donn\'ees complexes telles que le filtrage et le mappage. Le tableau~\ref{methodes_api.tab} montre les signatures de ces méthodes. 
 
@@ -452,7 +452,7 @@ Une op\'eration courante consiste \`a d\'eterminer si certains \'el\'ements d'un
 Un exemple qui illustre l'utilisation de la m\'ethode \TT{find} est pr\'esent\'e dans le listing~\ref{wordcount.c++}~: l'appel \`a la m\'ethode \TT{find}  s\'electionne tous les \'el\'ements du flux de type \TT{string} qui ne sont pas vides --- via un appel \`a la fonction \TT{notEmpty}.
 
 
-\section{Les collecteurs}
+\section{Collecteurs}
 
 La derni\`ere \'etape dans le traitement d'un flux est la collecte des \'el\'ements pour produire le r\'esultat. Les m\'ethodes fournies par l'API offrent quatre fonctionnalit\'es principales: 
 

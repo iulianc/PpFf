@@ -424,7 +424,7 @@ crochets aussi mais un peu diff\'erent.)}
 Un \emph{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow}, un \emph{farm} est repr\'esent\'e par un objet de la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig}, un \emph{farm} est compos\'e de trois parties distinctes: un \TT{Emitter}, un  \emph{pool} de \TT{workers} et un \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements du flux au \emph{pool} de \TT{workers}, lesquels traitent et produisent les donn\'ees de sortie; l'\TT{Emitter} distribue les \'el\'ements d'entr\'ee aux travailleurs selon une certaine politique d'ordonnancement afin d'\'equilibrer la charge des travailleurs. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire, tel que d\'ecrit pr\'ec\'edemment.
 
 
-\subsection{Un exemple~: \TT{WordCount}}
+\subsection{Exemple~: \TT{WordCount}}
 
 
 \begin{lstlisting}[language=c++, 
