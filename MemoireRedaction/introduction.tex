@@ -4,7 +4,7 @@ Le traitement de flux de donn\'ees devient de plus en plus important en raison d
 
 \section*{D\'efinition du probl\`eme}
 
-Une application qui traite un flux de données peut \^etre consid\'er\'ee comme un pipeline \`a travers lequel les donn\'ees du flux sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme dans le traitement d'un tel flux consiste \`a traiter des \'el\'ements distinct du flux de fa\c{c}on concurrente --- \emph{parall\'elisme de flux} --- et \`a r\'epliquer un m\^eme op\'erateur sur des sous-groupes d'\'el\'ements du flux --- \emph{parall\'elisme de donn\'ees}. La transformation, le tri ou la r\'eduction par un op\'erateur binaire sont des exemples d'op\'erations pour lesquelles du parall\'elisme de donn\'ees peut \^etre exploit\'e. 
+Une application qui traite un flux de données peut \^etre consid\'er\'ee comme un pipeline \`a travers lequel les donn\'ees du flux sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme dans le traitement d'un tel flux consiste \`a traiter des \'el\'ements distinct du flux de fa\c{c}on concurrente --- \emph{parall\'elisme de flux} (\emph{flow parallelism} ou \emph{stream parallelism}) --- et \`a r\'epliquer un m\^eme op\'erateur sur des sous-groupes d'\'el\'ements du flux --- \emph{parall\'elisme de donn\'ees} (\emph{data parallelism}). La transformation, le tri ou la r\'eduction par un op\'erateur binaire sont des exemples d'op\'erations pour lesquelles du parall\'elisme de donn\'ees peut \^etre exploit\'e. 
 
 
 \GT{C'est ici, il me semble, qu'il serait bien d'expliquer la
