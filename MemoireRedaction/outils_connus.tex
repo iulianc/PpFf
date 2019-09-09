@@ -91,7 +91,7 @@ Les \TT{D-stream}s repr\'esentent les flux de donn\'ees re\c{c}us en entr\'ee po
 TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
 
 
-\section{Les \TT{Stream}s de \TT{Java} 8}
+\section{\TT{Stream}s de \TT{Java} 8}
 \label{java8.sect}
 
 La version 8 de \TT{Java}, qui a introduit les \TT{Stream}s, a chang\'e la façon dont les d\'eveloppeurs peuvent traiter, tant de fa\c{c}on s\'equentielle que parall\`ele, les collections de donn\'ees. La manipulation de collections de donn\'ees \`a l'aide de \TT{Stream}s ressemble \`a un langage de requ\^etes de base de donn\'ees. Au lieu de parcourir explicitement les donn\'ees \`a l'aide de boucles (\TT{for}), un d\'eveloppeur sp\'ecifie simplement une suite d'op\'erations \emph{fonctionnelles} \`a effectuer sur les \'el\'ements d'une collection. \cite{urma2014java} fournissent une description d\'etaill\'ee des nouveaux concepts introduits dans \TT{Java~8}. Les \TT{Stream}s et les \emph{expressions lambdas} sont les fonctionnalit\'es les plus remarquables ajout\'ees dans l'API \citep{javaStreamAPI}. Ils sont con\c{c}us pour traiter les collections de donn\'ees de mani\`ere simple et efficace. Les sous-sections qui suivent d\'ecrivent quelques-uns des concepts de \TT{Java~8}.
@@ -174,7 +174,7 @@ Dans une expression lambda, lors de la compilation, les types des arguments peuv
 label={comparisonInternVsExtern},
 language=java,
 gobble=4,
-caption={[Comparaison entre une it\'eration externe et interne.]Comparaison entre une it\'eration externe et interne. Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<\TT{J}>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{Stream} --- produit par l'appel <<\TT{myList.stream()}>> --- qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
+caption={[Comparaison entre une it\'eration externe et interne.]Une comparaison entre une it\'eration externe et interne. Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<\TT{J}>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{Stream} --- produit par l'appel <<\TT{myList.stream()}>> --- qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
 frame=single,
 float]
     List<String> myList =
@@ -233,39 +233,45 @@ float]
 
 
 Un flux est d\'efini comme une s\'equence immuable d'\'el\'ements fournissant une vari\'et\'e d'op\'erateurs et de m\'ethodes permettant de traiter une collection de donn\'ees. Le flux prend en charge les op\'erations d'agr\'egation \citep{javaStreamAggregate} s\'equentielles et parall\`eles sans se soucier de la mani\`ere dont les \'el\'ements sont stock\'es ou accessibles. Pour effectuer un traitement, les op\'erations de flux sont compos\'ees dans un \TT{pipeline}. Un \TT{pipeline} est compos\'e d'une source, de z\'ero ou plusieurs op\'erations interm\'ediaires et d'une op\'eration terminale. Une source peut \^etre constitu\'ee d'une collection ou de tout objet impl\'ementant l'interface qui d\'efinit le m\'ecanisme permettant d'extraire les donn\'ees de la source. 
-Les op\'erations sur les flux adoptent un m\'ecanisme d'\'evaluation paresseuse. L'\'evaluation paresseuse est une m\'ethode d'optimisation du traitement qui retarde l'\'etape du calcul jusqu'\`a ce qu'il soit nécessaire. En \TT{Java}, le traitement sur les \'el\'ements du flux est r\'ealis\'e seulement \`a l'activation de l'op\'eration finale et les \'el\'ements source ne sont consomm\'es qu'au besoin. Cela permet au compilateur d'optimiser le traitement des donn\'ees dans le \TT{pipeline}.
-Une autre technique d'optimisation utilis\'ee par \TT{Java} est l'\'evaluation court-circuit\'ee (\emph{short-circuiting} en anglais). Dans un flux, seuls les \'el\'ements n\'ecessaires sont consomm\'es. Par exemple, dans le listing~\ref{findFirst}, l'opérateur \TT{findFirst} retourne le premier employ\'e trouv\'e dans une liste d'employ\'es~; les \'el\'ements restants du flux sont ignor\'es.
+Les op\'erations sur les flux adoptent un m\'ecanisme d'\'evaluation paresseuse. L'\'evaluation paresseuse est une m\'ethode d'optimisation du traitement qui retarde l'\'etape du calcul jusqu'\`a ce que le r\'esultat soit nécessaire. En \TT{Java}, le traitement sur les \'el\'ements du flux est r\'ealis\'e seulement \`a l'activation de l'op\'eration finale et les \'el\'ements source ne sont consomm\'es qu'au besoin. Cela permet au compilateur d'optimiser le traitement des donn\'ees dans le \TT{pipeline}.
+Une autre technique d'optimisation utilis\'ee par \TT{Java} est l'\'evaluation court-circuit\'ee (\emph{short-circuiting} en anglais). Dans un flux, une telle \'evaluation a pour effet que seuls les \'el\'ements n\'ecessaires sont consomm\'es.%
+%
+\footnote{L'\'evaluation court-circuit\'ee peut aussi \^etre vue comme une forme d'\'evaluation paresseuse, bien que la documentation \TT{Java} distingue ces deux formes d'optimisation.}
+%
+Par exemple, dans le listing~\ref{findFirst}, l'opérateur \TT{findFirst} retourne le premier employ\'e trouv\'e dans une liste d'employ\'es~; les \'el\'ements restants du flux sont ignor\'es.
 
 
 L'un des principaux avantages des flux est qu'ils peuvent \^etre \'evalu\'es soit de fa\c{c}on s\'equentielle, soit en parall\`ele. L'\'evaluation s\'equentielle est r\'ealis\'ee en ex\'ecutant toutes les op\'erations en \TT{pipeline} sur chaque \'el\'ement du flux. Lorsqu'un flux est \'evalu\'e en parall\`ele, il utilise un type sp\'ecial d'it\'erateur appel\'e \TT{Spliterator}. Ce dernier partitionne le flux de mani\`ere r\'ecursive en se divisant lui-m\^eme pour cr\'eer des flux enfants. Ce m\'ecanisme permet aux \emph{threads} de traverser plusieurs flux en parall\`ele. Les \emph{threads} sont g\'er\'es par un groupe de \emph{threads} de type \TT{fork/join}.
 
 
-\subsection{\emph{Threads} de type Fork/join}
+\subsection{\emph{Threads} de type \TT{fork/join}}
 
 Introduit en \TT{Java~7}, le \emph{framework} \TT{fork/join} permet aux d\'eveloppeurs de sp\'ecifier des t\^aches pouvant \^etre subdivis\'ees et ex\'ecut\'ees en parall\`ele sur des machines multicœurs. Il est bas\'e sur deux op\'erations : \TT{fork} et \TT{join}. L'op\'eration \TT{fork} a pour r\^ole de diviser une t\^ache en plus petites sous-t\^aches ind\'ependantes, et ce  r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees de mani\`ere ind\'ependante et asynchrone. L'op\'eration \TT{join} a pour r\^ole de fusionner les r\'esultats de toutes les sous-t\^aches de mani\`ere r\'ecursive en un seul r\'esultat.
-Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \TT{ForkJoinPool}. Ce dernier est composé d'un ensemble de travailleurs. Le nombre de travailleurs dans un \TT{ForkJoinPool} est g\'en\'eralement limit\'e par le nombre de cœurs de la machine. Chaque travailleur peut ex\'ecuter une t\^ache \`a la fois. Les t\^aches en attente d'ex\'ecution sont stock\'ees dans une file appartenant \`a un travailleur. Une t\^ache en cours d'ex\'ecution peut g\'en\'erer de nouvelles t\^aches, qui sont ensuite mises en file  pour une ex\'ecution ult\'erieure. Lorsqu'un travailleur a termin\'e l'ex\'ecution d'une t\^ache, il essaie de prendre une t\^ache des files des autres travailleurs \`a l'aide d'un algorithme de vol de travail (\emph{work stealing algorithm} en anglais). Cet algorithme permet un \'equilibrage efficace de la charge de travail entre les divers travailleurs.
+Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \TT{ForkJoinPool}. Ce dernier est composé d'un ensemble de travailleurs. Le nombre de travailleurs dans un \TT{ForkJoinPool} est g\'en\'eralement limit\'e par le nombre de cœurs de la machine. Chaque travailleur peut ex\'ecuter une t\^ache \`a la fois. Les t\^aches en attente d'ex\'ecution sont stock\'ees dans une file appartenant \`a un travailleur. Une t\^ache en cours d'ex\'ecution peut g\'en\'erer de nouvelles t\^aches, qui sont ensuite mises en file  pour une ex\'ecution ult\'erieure. Lorsqu'un travailleur a termin\'e l'ex\'ecution d'une t\^ache, il essaie de prendre une t\^ache des files des autres travailleurs \`a l'aide d'un algorithme de vol de travail (\emph{work stealing algorithm}~\cite{FrigoLeiRan98}). Cet algorithme permet un \'equilibrage efficace de la charge de travail entre les divers travailleurs.
 
 
-\subsection{Un exemple~: \TT{wordCount}}
+\subsection{Exemple~: \TT{wordCount}}
 
 
 \begin{lstlisting}[
 basicstyle=\footnotesize\tt,
 label={wordCountJava},
 language=java,
-caption={Le code source \TT{Java}~8 d'une application de d\'ecompte du nombre d'occurrences des mots.},
+caption={Un pipeline \TT{Java} pour compter le nombre d'occurrences de mots.},
 frame=single,
 escapechar=\#,
 float]
 public static void main(String[] args) throws IOException {
-  String text = 
-    "Lorem ipsum dolor sit amet, consectetur \n" +
-    " adipiscing elit. Lorem ipsum dolor sit amet, consectetur \n" +
-    " adipiscing elit. Lorem ipsum dolor sit amet.";
-  
+  // Le texte a analyser, sous forme d'une chaine.
+  String text = "Lorem ipsum dolor sit amet, consectetur \n" +
+                " adipiscing elit. Lorem ipsum dolor sit amet, consectetur \n" +
+                " adipiscing elit. Lorem ipsum dolor sit amet.";
+
+  // Le texte a analyser decompose en une liste de lignes.
   ArrayList<String> lines = 
 	new ArrayList<String>(Arrays.asList(text.split("\\n")));
-	
+
+  // Le pipeline qui traite la liste de lignes.	
   List<Map.Entry<String,Integer>> wordsCount = 
     lines
     .stream()
@@ -279,12 +285,11 @@ public static void main(String[] args) throws IOException {
     .stream()
     .collect(Collectors.toList());   	
   
-  wordsCount.forEach( x -> 
-    System.out.println("'" + x.getKey() + 
-                             "' => " + x.getValue()) );
+  wordsCount.forEach( x -> System.out.println("'" + x.getKey() + 
+                                              "' => " + x.getValue()) );
 }
+#\vspace{-1cm}#
 #\hrule#
-
 #\underline{R\'esultat de l'ex\'ecution:}#
   'dolor' => 3
   'lorem' => 3
@@ -297,29 +302,35 @@ public static void main(String[] args) throws IOException {
 \end{lstlisting}
 
 
-Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'une application de d\'ecompte des mots --- plus pr\'ecis\'ement, l'application compte le nombre d'occurrences des divers mots dans un fichier texte. Une telle application est compos\'ee de plusieurs op\'erations cha\^in\'ees les unes \`a la suite des autres :
+Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'une application de d\'ecompte des mots --- plus pr\'ecis\'ement, l'application compte le nombre d'occurrences des divers mots dans un fichier texte. Cette application est compos\'ee de plusieurs op\'erations \emph{cha\^in\'ees} les unes \`a la suite des autres :
 
 
 \begin{itemize}
-	\item La premi\`ere op\'eration, \TT{Files.lines}, renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
+	\item \TT{Files.lines}, qui renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
 
-	\item La deuxi\`eme op\'eration, \TT{parallel}, marque le flux en tant que flux parall\`ele. Cette op\'eration permet ainsi de partitionner et d'ex\'ecuter le \TT{pipeline} en parall\`ele.
+\GT{Tu utilises \TT{lines} qui est un \TT{ArrayList}, donc tu
+n'utilises par \TT{File.lines}! De plus, tu as aussi l'appel \`a
+\TT{stream}, donc tu ne parles pas.  Mais est-il vraiment
+n\'ecessaire, si c'est ensuite suivi de \TT{parallel}? \`A
+v\'erifier!}
 
-	\item L'op\'eration \TT{flatMap} divise chaque ligne en mots qui sont ensuite transmis en aval sous forme d'\'el\'ements de donn\'ees individuels.
-	
-	\item L'op\'eration \TT{map} supprime tous les caract\`eres qui ne sont pas des lettres puis transforme les lettres majuscules du mot en lettres minuscules.
-	
-	\item L'op\'eration \TT{filter} s\'electionne dans le flux seulement les mots qui ne sont pas vides.
-	
-	\item La deuxi\`eme op\'eration \TT{map} dans le pipeline cr\'ee une paire, de type \TT{Entry}, avec la cl\'e repr\'esent\'ee par le mot et une valeur associ\'ee \'egale \`a 1.
-	
-	\item L'op\'eration \TT{collect} collecte les \'el\'ements dans un \TT{Map} et additionne le nombre d'occurrences de chacun des mots \`a l'aide de l'expression lambda.
-	
-	\item L'op\'eration \TT{entrySet} renvoie un flux de type cl\'e--valeur. La cl\'e est le mot et la valeur est son nombre d'occurrences dans le fichier.
+	\item \TT{parallel}, qui marque le flux en tant que flux parall\`ele. Cette op\'eration permet ainsi de partitionner et d'ex\'ecuter le \TT{pipeline} en parall\`ele.
 
-	\item L'op\'eration \TT{stream} cr\'ee un nouveau flux de donn\'ees \`a partir de l'ensemble de paires.
+	\item \TT{flatMap}, qui divise chaque ligne en mots qui sont ensuite transmis en aval sous forme d'\'el\'ements de donn\'ees individuels.
 	
-	\item Finalement, la derni\`ere op\'eration, \TT{collect}, combine tous les \'el\'ements dans une liste.
+	\item \TT{map}, qui supprime tous les caract\`eres qui ne sont pas des lettres puis transforme les lettres majuscules du mot en minuscules.
+	
+	\item \TT{filter},  s\'electionne dans le flux seulement les mots qui ne sont pas vides.
+	
+	\item \TT{map}, qui cr\'ee une paire (de type \TT{Entry}) avec une cl\'e repr\'esent\'ee par le mot et une valeur associ\'ee \'egale \`a 1.
+	
+	\item \TT{collect},  collecte les \'el\'ements dans un \TT{Map} et additionne le nombre d'occurrences de chacun des mots \`a l'aide de l'expression lambda.
+	
+	\item \TT{entrySet},  renvoie un flux de type cl\'e--valeur. La cl\'e est le mot et la valeur est son nombre d'occurrences dans le fichier.
+
+	\item \TT{stream}, cr\'ee un nouveau flux de donn\'ees \`a partir de l'ensemble de paires.
+	
+	\item Finalement \TT{collect}, qui combine tous les \'el\'ements dans une liste.
 	
 	
 \end{itemize}
