@@ -195,7 +195,7 @@ Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les 
 \begin{figure}[ht]
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/StagesClassDiagramme.jpg}
-      \caption{La diagramme de classes pour \texttt{Stage}.}
+      \caption{Le diagramme de classes pour \texttt{Stage}.}
        \label{StagesClassDiagramme.fig}
 \end{figure}
 
@@ -275,7 +275,7 @@ Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code so
 \begin{figure}[ht]
 \centering
      \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecution.jpg}
-      \caption[Repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs.]{Repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs ex\'ecut\'es en parall\`ele. Du parall\'elisme de flux est appliqu\'e sur les deux premiers op\'erateurs et du parall\'elisme de donn\'ees est appliqu\'e sur les derniers op\'erateurs. Le \texttt{S} sur la boite pointill\'ee \`a droite indique un \emph{Stage}.}
+      \caption[Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs.]{Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs ex\'ecut\'es en parall\`ele. Du parall\'elisme de flux est appliqu\'e sur les deux premiers op\'erateurs et du parall\'elisme de donn\'ees est appliqu\'e sur les derniers op\'erateurs. Le \texttt{S} sur la boite pointill\'ee \`a droite indique un \emph{Stage}.}
        \label{ExempleRuntimeExecution.fig}
 \end{figure}
 
@@ -304,7 +304,7 @@ En outre, lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la ch
 \begin{figure}[htb]
 \centering
      \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecutionFF.jpg}
-      \caption[Repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erateurs d\'efinis par l'utilisateur : \TT{lineFromFile} (\texttt{Lff}), \TT{find} (\texttt{Find}), les deux \TT{map} (\texttt{Map}) et les deux \TT{collector} (\texttt{Collec}). Les cercles en jaunes repr\'esentent l'\TT{Emitter} et le \TT{Collector} du \TT{ff\_farm}.}
+      \caption[Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erateurs d\'efinis par l'utilisateur : \TT{lineFromFile} (\texttt{Lff}), \TT{find} (\texttt{Find}), les deux \TT{map} (\texttt{Map}) et les deux \TT{collector} (\texttt{Collec}). Les cercles en jaunes repr\'esentent l'\TT{Emitter} et le \TT{Collector} du \TT{ff\_farm}.}
        \label{ExempleRuntimeExecutionFF.fig}
 \end{figure}
 
