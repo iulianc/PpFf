@@ -7,14 +7,6 @@ Le traitement de flux de donn\'ees devient de plus en plus important en raison d
 Une application qui traite un flux de données peut \^etre consid\'er\'ee comme un pipeline \`a travers lequel les donn\'ees du flux sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme dans le traitement d'un tel flux consiste \`a traiter des \'el\'ements distinct du flux de fa\c{c}on concurrente --- \emph{parall\'elisme de flux} (\emph{flow parallelism} ou \emph{stream parallelism}) --- et \`a r\'epliquer un m\^eme op\'erateur sur des sous-groupes d'\'el\'ements du flux --- \emph{parall\'elisme de donn\'ees} (\emph{data parallelism}). La transformation, le tri ou la r\'eduction par un op\'erateur binaire sont des exemples d'op\'erations pour lesquelles du parall\'elisme de donn\'ees peut \^etre exploit\'e. 
 
 
-\GT{C'est ici, il me semble, qu'il serait bien d'expliquer la
-diff\'erence entre les applications qui traitent de grandes
-quantit\'es de donn\'ees par lots (en \emph{batch}, \emph{offline}),
-alors que d'autres les traitent en ligne (\emph{online}), de fa\c{c}on
-incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent
-disponibles.}
-
-
 Les applications parall\`eles sont g\'en\'eralement cod\'ees \`a l'aide de biblioth\`eques comme \TT{FastFlow}~\citep{AldinucciEtAl14} ou \TT{TBB}~\citep{Reinders07}. Bien que les mod\`eles offerts par ces outils aient pour but de simplifier le d\'eveloppement d'applications parall\`eles, ils n'offrent pas une abstraction de haut niveau et n\'ecessitent une r\'e\'ecriture de l'application sans possibilit\'e de r\'eutiliser le code s\'equentiel disponible.
 
 \GT{Pour la derni\`ere phrase du paragraphe pr\'ec\'edent, je ne crois

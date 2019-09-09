@@ -1,5 +1,5 @@
 
-\chapter{Outils existants de traitement de flux de donn\'ees~: \TT{Spark}, \TT{Java} et \TT{FastFlow}}
+\chapter{Langages existants de traitement de flux de donn\'ees~: \TT{Spark}, \TT{Java} et \TT{FastFlow}}
 \label{outils_connus}
 \label{outils_connus.chap}
 
@@ -24,20 +24,29 @@ la r\'ef\'erence soit compl\`etement entre parenth\`eses. Voir les
 exemples ci-haut et ci-bas.}
 
 
-\GT{Comme j'avais indiqu\'e dans ma remarque ant\'erieure (vieille
-version) il faudrait, dans l'introduction, expliciter plus clairement
-la diff\'erence entre flux de donn\'ees par lot vs.\ flux
-incr\'emental de donn\'ees. Voir ma remarque dans introduction.tex.}
+La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Jusqu'\`a il y a quelques ann\'ees, une des principales fa\c{c}ons d'ex\'ecuter un programme plus rapidement \'etait gr\^ace \`a l'augmentation de la vitesse d'horloge du processeur. De nos jours, la vitesse d'horloge a atteint ses limites et les performances d'un programme ne peuvent souvent \^etre am\'elior\'ees que si on l'ex\'ecute en parall\`ele. 
+
+Il existe de nombreuses approches et de nombreux langages de programmation parall\`ele.
+%
+Le paradigme de programmation parall\`ele \emph{par flux de donn\'ees} offre une approche prometteuse pour la programmation de syst\`emes multicœurs. C'est cette approche que nous allons bri\`evement d\'ecrire avant de pr\'esenter trois langages existants qui mettent en \oe{}uvre cette approche.
+
+\section{Parall\'elisme de flux de donn\'ees}
 
 
-La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'apparition des architectures multicœurs. Il y a quelques ann\'ees, une des principales fa\c{c}ons d'ex\'ecuter un programme plus rapidement \'etait gr\^ace \`a l'augmentation de la vitesse d'horloge du processeur. De nos jours, la vitesse d'horloge a atteint ses limites et les performances d'un programme ne peuvent souvent \^etre am\'elior\'ees que si on l'ex\'ecute en parall\`ele. 
-
-Le paradigme de programmation parall\`ele \emph{par flux de donn\'ees} offre une approche prometteuse pour la programmation de syst\`emes multicœurs. Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
+Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
 
 \GT{Ici, il faudrait dire quelques mots rapides sur ce qu'est le
 traitement par flux de donn\'ees --- m\^eme si tu l'as d\'ej\`a
 mentionn\'e dans l'introduction --- pour que ce soit plus
 complet/coh\'erent!}
+
+\GT{C'est aussi ici, il me semble, qu'il serait bien d'expliquer la
+diff\'erence entre les applications qui traitent de grandes
+quantit\'es de donn\'ees par lots (en \emph{batch}, \emph{offline}),
+alors que d'autres les traitent en ligne (\emph{online}), de fa\c{c}on
+incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent
+disponibles.}
+
 
 
 Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
