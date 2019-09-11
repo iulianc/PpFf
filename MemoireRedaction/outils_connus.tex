@@ -185,7 +185,7 @@ Une \emph{expression lambda} ---  appel\'ee aussi \emph{fonction anonyme} --- es
 label={lambdaAsFonctionalInterface},
 language=java,
 gobble=4,
-caption={Remplacement d'une classe anonyme avec une expression lambda.},
+caption={Un exemple de remplacement d'une classe anonyme par une expression lambda.},
 frame=single,
 float]
     // Specification d'un thread avec une classe interne anonyme.
@@ -220,7 +220,7 @@ Dans une expression lambda, lors de la compilation, les types des arguments peuv
 label={comparisonInternVsExtern},
 language=java,
 gobble=4,
-caption={[Comparaison entre une it\'eration externe et interne.]Une comparaison entre une it\'eration externe et interne. Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<\TT{J}>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{Stream} --- produit par l'appel <<\TT{myList.stream()}>> --- qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
+caption={[Un exemple comparant it\'eration externe et interne.]Un exemple comparant une it\'eration externe et interne. Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<\TT{J}>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{Stream} --- produit par l'appel <<\TT{myList.stream()}>> --- qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
 frame=single,
 float]
     List<String> myList =
@@ -270,7 +270,7 @@ Lorsqu'un flux s'ex\'ecute en parall\`ele, \TT{Java} partitionne le flux en plus
 label={findFirst},
 language=java,
 gobble=2,
-caption={Optimisation du traitement d'un flux en utilisant la technique d'\'evaluation court-circuit\'ee.},
+caption={Un exemple d'optimisation du traitement d'un flux en utilisant la technique d'\'evaluation court-circuit\'ee.},
 frame=single,
 float]
 	List<Employee> employees;
