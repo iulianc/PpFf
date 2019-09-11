@@ -7,7 +7,12 @@
 
 \ic{J'ai ajout\'e une petite introduction du chapitre.}
 
-\begin{figure}[ht]
+\GT{Je sugg\`ere de ne pas mettre [ht] pour le placement des figures,
+et de laisser \LaTeX\ faire le placement. Ensuite, lors de la version
+finale, si des figures sont vraiment mal plac\'ees, tu pourras mettre
+des sp\'ecifications de placement.}
+
+\begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/AllComponentsAPI.jpg}
       \caption{Les composants de \TT{PpFf}.}
@@ -15,12 +20,12 @@
 \end{figure}
 
 
-Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les stages sont d\'ecrits dans la quatri\`eme section. Le chapitre se termine par la description d'un exemple complet d\'ecrivant comment un programme PpFf est compil\'e et ex\'ecut\'e.
+Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les stages sont d\'ecrits dans la quatri\`eme section. Le chapitre se termine par la description d'un exemple complet d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e.
 
 
-\section{Mise en \oe{}uvre multi-couches de \PpFf{} via FastFlow}
+\section{Mise en \oe{}uvre multi-couches de \PpFf{} via \TT{FastFlow}}
 
-\GT{De quelle fa\c{c}on as-tu fait le diagramme?  Est-ce que ce serait
+\gt{De quelle fa\c{c}on as-tu fait le diagramme?  Est-ce que ce serait
 possible, dans la partie du haut surtout, de changer l'ordre de
 pr\'esentation des classes? Cela aurait plus de sens de mettre la
 classe Pipe en haut, puisque c'est la classe principale.  Et on ne
@@ -30,10 +35,10 @@ pas dans la figure 3.2. Et en relisant, je constate que dans la figure
 2.1, il y a Pipeline et Operateurs, mais il n'y a pas Stage.  Tout
 cela semble un peu m\'elangeant~:(}
 
-\IC{J'ai redessin\'e le diagramme et j'ai ajout\'e une autre pour les stages dans la section Stage~\ref{StagesClassDiagramme.fig}.}
+\ic{J'ai redessin\'e le diagramme et j'ai ajout\'e une autre pour les stages dans la section Stage~\ref{StagesClassDiagramme.fig}.}
 
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/CorrespondencePpFfToFastFlow.jpg}
       \caption{La correspondance entre les \'el\'ements de \TT{PpFf} et ceux de  \TT{FastFlow}.}
@@ -41,7 +46,7 @@ cela semble un peu m\'elangeant~:(}
 \end{figure}
 
 
-%\begin{figure}[ht]
+%\begin{figure}
 %\centering
 %     \includegraphics[width=1.0\textwidth]{Figures/MapToFastFlow.jpg}
 %      \caption{La correspondance entre les \'el\'ements de \TT{PpFf} et ceux de  \TT{FastFlow}.}
@@ -49,7 +54,7 @@ cela semble un peu m\'elangeant~:(}
 %\end{figure}
 
 
-PpFf est impl\'ement\'e au--dessus de la biblioth\`eque \TT{FastFlow}, de sorte que nous utilisons les constructions \TT{ff\_node}, \TT{ff\_pipeline} et \TT{ff\_farm} de \TT{FastFlow}. La figure~\ref{CorrespondencePpFfToFastFlow.fig} montre la correspondance entre les \'el\'ements de \TT{PpFf} et ceux de \TT{FastFlow}. Chaque classe susmentionn\'ee de \TT{FastFlow} a une association dans \TT{PpFf}. Par exemple l'impl\'ementation de la classe \TT{Node} de \TT{PpFf} est r\'ealis\'ee par l'entremise de la classe \TT{ff\_node} de \TT{FastFlow}. Ce m\'ecanisme a permis d'ajouter plus de fonctionnalit\'es \`a l'API tout en b\'en\'eficiant des performances offertes par \TT{FastFlow}.
+\ppff{} est impl\'ement\'e au--dessus de la biblioth\`eque \TT{FastFlow}, de sorte que nous utilisons les constructions \TT{ff\_node}, \TT{ff\_pipeline} et \TT{ff\_farm} de \TT{FastFlow}. La figure~\ref{CorrespondencePpFfToFastFlow.fig} montre la correspondance entre les \'el\'ements de \TT{PpFf} et ceux de \TT{FastFlow}. Chaque classe susmentionn\'ee de \TT{FastFlow} a une association dans \TT{PpFf}. Par exemple, l'impl\'ementation de la classe \TT{Node} de \TT{PpFf} est r\'ealis\'ee par l'entremise de la classe \TT{ff\_node} de \TT{FastFlow}. Ce m\'ecanisme a permis d'ajouter plus de fonctionnalit\'es \`a l'API tout en b\'en\'eficiant des performances offertes par \TT{FastFlow}.
 
 
 \GT{Ci-haut: le texte parle de correspodance, sauf qu'il n'y a pas du
@@ -63,17 +68,17 @@ sens (landscape)?}
 \IC{J'ai repr\'esent\'e la correspondance par une ligne pointill\'ee.}
 
 
-\section{Pipeline}
+\section{Mise en \oe{}uvre des pipelines}
 
-Tel que mentionn\'e au chapitre pr\'ec\'edent, un pipeline est compos\'e d'une cha\^ine de traitement appel\'e \TT{Pipeline}. Un \TT{Pipeline} est repr\'esent\'e essentiellement par une s\'erie d'op\'erateurs d\'efinis par l'utilisateur qui sont appliqu\'es aux \'el\'ements d'un flux. Comme on peut le voir dans la figure~\ref{CorrespondencePpFfToFastFlow.fig}, un \TT{Pipeline} utilise les fonctionnalit\'es de la classe \TT{ff\_pipeline} de \TT{FastFlow}. 
+Un pipeline, un objet de classe \TT{Pipeline}, repr\'esente une cha\^ine de traitement. Un \TT{Pipeline} est compos\'e par une s\'erie d'op\'erations sp\'ecifi\'ees par l'utilisateur qui sont appliqu\'es aux \'el\'ements d'un flux. Comme on peut le voir dans la figure~\ref{CorrespondencePpFfToFastFlow.fig}, un \TT{Pipeline} utilise les fonctionnalit\'es de la classe \TT{ff\_pipeline} de \TT{FastFlow}. 
 
-Les op\'erateurs qui composent un \TT{Pipeline} sont de deux types : les op\'erateurs sans \'etat ou avec \'etat. Un \TT{Pipeline} contient un ou plusieurs op\'erateurs sans \'etat et un seul op\'erateur avec \'etat. Lorsque ce dernier est ajout\'e dans le \TT{Pipeline}, la m\'ethode \TT{run()} est appel\'ee. \`A ce stade, un objet de type \TT{ff\_pipeline} correspondant au \TT{Pipeline} est cr\'e\'e. Ensuite, chaque op\'erateur d\'efini par l'utilisateur est visit\'e et, en fonction de la configuration \'etablie, des objets de type \TT{ff\_node} ou \TT{ff\_farm} sont ajout\'es dans l'objet \TT{ff\_pipeline}. Chaque nœud ainsi ajout\'e dans \TT{ff\_pipeline} sera ex\'ecut\'e dans un fil d'ex\'ecution ind\'ependant, une caract\'eristique de la mise en \oe{}uvre de \TT{FastFlow}.
-La cr\'eation d'un \TT{Pipeline} est r\'ealis\'ee \`a l'aide de la classe \TT{PipeManager}.
+Les op\'erations qui composent un \TT{Pipeline} sont de deux types : les op\'erations sans \'etat et ceux avec \'etat. Un \TT{Pipeline} contient une ou plusieurs op\'erations sans \'etat et une seule op\'eration avec \'etat. Lorsque ce dernier est ajout\'e dans le \TT{Pipeline}, la m\'ethode \TT{run()} du \TT{Pipeline} est appel\'ee. \`A ce stade, un objet de type \TT{ff\_pipeline} correspondant au \TT{Pipeline} est cr\'e\'e. Ensuite, chaque op\'eration sp\'ecifi\'ee par l'utilisateur est visit\'e et, en fonction de la configuration \'etablie, des objets de type \TT{ff\_node} ou \TT{ff\_farm} sont ajout\'es dans l'objet \TT{ff\_pipeline}. Chaque nœud ainsi ajout\'e dans \TT{ff\_pipeline} sera alors ex\'ecut\'e dans un fil d'ex\'ecution ind\'ependant (\emph{thread}), une caract\'eristique de la mise en \oe{}uvre de \TT{FastFlow}.
+%La cr\'eation d'un \TT{Pipeline} est r\'ealis\'ee \`a l'aide de la classe \TT{PipeManager}, dont les d\'etails sont omis.
 
 
-\section{Parall\'elisation}
+\section{\'Ex\'ecution parall\`ele avec parall\'elisme de flux ou de donn\'ees}
 
-La cr\'eation de code parall\`ele est g\'en\'eralement consid\'er\'ee du domaine d'experts. La complexit\'e de l'\'ecriture de code parall\`ele diminue la productivit\'e, ce qui peut augmenter les co\^uts de d\'eveloppement. \TT{PpFf} permet aux programmeurs de composer du code s\'equentiel et de l'ex\'ecuter en parall\`ele. Par l'interm\'ediaire d'une interface unique, l'API offre deux mod\`eles de parall\'elisme : le parall\'elisme de flux et le parall\'elisme de donn\'ees.
+La cr\'eation de code parall\`ele est g\'en\'eralement consid\'er\'ee du domaine d'experts. La complexit\'e de l'\'ecriture de code parall\`ele diminue la productivit\'e, ce qui peut augmenter les co\^uts de d\'eveloppement. Par contre, \TT{PpFf} permet aux programmeurs de composer des morceaux de code s\'equentiel --- des fonctions ou expressions lambdas --- et d'ex\'ecuter le tout en parall\`ele. Par l'interm\'ediaire d'une interface unique, l'API offre deux mod\`eles de parall\'elisme : le parall\'elisme de flux et le parall\'elisme de donn\'ees.
 
 \gt{Si tu parles de <<parall\'elisme de flux>>, alors tu devrais
 parler de <<parall\'elisme de t\^aches>>, ou <<parall\'elisme de
@@ -96,11 +101,17 @@ cons\'equence... mais ce sera \`a v\'erifier!}
 
 \subsection{Parall\'elisme de flux}
 
-Le parall\'elisme de flux consiste \`a ex\'ecuter plusieurs \'etapes d'un traitement s\'equentiel en parall\`ele en leur faisant traiter des donn\'ees diff\'erentes. Les donn\'ees se succ\`edent ainsi les unes aux autres dans les diff\'erentes \'etapes --- appel\'ees  aussi des \emph{stages} (cf.~Section~\ref{stages.sect}). \`A noter que ce type de parall\'elisme est appliqu\'e par d\'efaut dans notre API. Le traitement effectu\'e dans un \emph{stage} \`a un instant donn\'e peut d\'ependre des traitements effectu\'es par ce m\^eme \emph{stage} pour les donn\'ees pr\'ec\'edentes --- un \'etat interne peut donc \^etre conserv\'e. Ce fonctionnement permet de parall\'eliser des traitements avec de fortes d\'ependances entre les donn\'ees sans avoir recours \`a des synchronisations \emph{explicites} par le programmeur. 
+Le parall\'elisme de flux consiste \`a ex\'ecuter plusieurs \'etapes d'un traitement s\'equentiel en parall\`ele en leur faisant traiter des donn\'ees diff\'erentes. Les donn\'ees se succ\`edent ainsi les unes aux autres dans les diff\'erentes \'etapes --- appel\'ees  aussi des \emph{stages} (cf.~Section~\ref{stages.sect}).
+%
+Le traitement effectu\'e dans un \emph{stage} \`a un instant donn\'e peut d\'ependre, ou non, des traitements effectu\'es par ce m\^eme \emph{stage} pour les donn\'ees pr\'ec\'edentes --- un \'etat interne peut donc \^etre conserv\'e. 
+%
+\`A noter que ce type de parall\'elisme est appliqu\'e par d\'efaut dans notre API. 
+%
+Ce fonctionnement permet de parall\'eliser des traitements avec de fortes d\'ependances entre les donn\'ees sans avoir recours \`a des synchronisations \emph{explicites} par le programmeur. 
 
 \goodbreak
 \begin{samepage}
-Un flux compos\'e de $n$ \emph{stages} $S_1, S_2, \ldots, S_n$ o\`u le \emph{stage} $S_i$ ex\'ecute une op\'eration $O_i$ peut \^etre exprim\'e sous la forme d'une composition s\'equentielle d'op\'erateurs sur les \'el\'ements d'entr\'ee comme suit, et o\`u $W_i$ d\'enote le fil d'ex\'ecution (\emph{thread}) associ\'e au \emph{stage} $S_i$~: 
+Un flux compos\'e de $n$ \emph{stages} $S_1, S_2, \ldots, S_n$ o\`u le \emph{stage} $S_i$ ex\'ecute une op\'eration $O_i$ peut \^etre exprim\'e sous la forme d'une composition s\'equentielle d'op\'erations sur les \'el\'ements d'entr\'ee comme suit, o\`u $O(x)$ repr\'esente le traitement global d'un \'el\'ement $x$ du flux~: 
 %
 \[
 	O(x) = O_n( \ldots (O_k( \ldots O_1(x)) \ldots ) \ldots ));
@@ -108,59 +119,65 @@ Un flux compos\'e de $n$ \emph{stages} $S_1, S_2, \ldots, S_n$ o\`u le \emph{sta
 \end{samepage}
 
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ParallelismeDuFlux.jpg}
-      \caption[Une repr\'esentation graphique du parall\'elisme de flux.]{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$ \emph{stages} $S_1, S_2, \ldots, S_n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees de fa\c{c}on concurrente dans des diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$ ($W$ pour \emph{$W$orker}).}
+      \caption[Une repr\'esentation graphique du parall\'elisme de flux en \ppff.]{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$ \emph{stages} $S_1, S_2, \ldots, S_n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees de fa\c{c}on parall\`ele dans diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$ ($W$ pour \emph{$W$orker}).}
        \label{ParallelismeDuFlux.fig}
 \end{figure}
 
 
-Dans ce cas, le parall\'elisme est repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux. Cette solution n'acc\'el\`ere pas le calcul d'un seul \'el\'ement. Par contre, elle am\'eliore le d\'ebit de sortie.
+Si on note par $W_i$ le fil d'ex\'ecution (\emph{thread}) associ\'e au \emph{stage} $S_i$, alors
+le parall\'elisme de flux du pipeline peut \^etre repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique $O_i$. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux dans un tel pipeline. Signalons que cette solution n'acc\'el\`ere pas le calcul d'un seul \'el\'ement; par contre, elle am\'eliore \emph{le d\'ebit de sortie}.
 
 \subsection{Parall\'elisme de donn\'ees}
 
-Le parall\'elisme de donn\'ees impl\'ement\'e dans \TT{PpFf}  consiste \`a r\'epliquer un op\'erateur sur un ensemble de travailleurs identiques. Autrement dit, il vise \`a effectuer un traitement identique sur un ensemble de donn\'ees ind\'ependantes les unes des autres. 
+Le parall\'elisme de donn\'ees impl\'ement\'e dans \TT{PpFf}  consiste \`a r\'epliquer une op\'eration sur un ensemble de travailleurs identiques. Autrement dit, il vise \`a effectuer un traitement identique sur un ensemble de donn\'ees ind\'ependantes les unes des autres. 
 %
-Dans notre impl\'ementation de \PpFf, le parall\'elisme de donn\'ees est mis en \oe{}uvre avec les \emph{Task Farm} de FastFlow.
+Dans notre impl\'ementation de \PpFf, le parall\'elisme de donn\'ees est mis en \oe{}uvre avec les \emph{Task Farm} de \TT{FastFlow}.
 
 
-D\'ecrit \`a la section~\ref{farm.sect}, un \emph{Task Farm} est compos\'ee de trois entit\'es : un \TT{Emitter}, plusieurs instances de travailleurs (\emph{workers}) et un \TT{Collector}. Par d\'efaut, dans \PpFf{} les \'el\'ements sont r\'epartis par un \TT{Emitter} aux divers travailleurs selon une politique \emph{round robin}. Les travailleurs re\c{c}oivent les \'el\'ements d'entr\'ee et appliquent sur chacun l'op\'erateur d\'efini au pr\'ealable par l'utilisateur. Les r\'esultats sont ensuite envoy\'es vers le \TT{Collector} charg\'e de les collecter --- i.e., de les combiner --- puis de les transmettre sur le flux de sortie.
-
-Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee selon le principe \emph{FIFO}. La collection de plusieurs r\'esultats \`a l'aide de cette approche r\'esulte dans un flux sans ordre sur ses \'el\'ements. En effet, le \TT{Collector} transmet les \'el\'ements au flux de sortie dans l'ordre d'arriv\'ee. \'Etant donn\'e que plusieurs flux ind\'ependants sont impliqu\'es, cet ordre ne peut pas \^etre pr\'ed\'etermin\'e. Si le respect d'un  ordre sp\'ecifique est requis, l'utilisateur de l'API peut ajouter un op\'erateur qui produit cet ordre. Par exemple, la m\'ethode \TT{sort} de l'API, d\'efinie dans le tableau~\ref{methodes_api.tab}, effectue le tri des \'el\'ements du flux selon l'ordre sp\'ecifi\'e par la fonction \TT{compare} envoy\'e en param\`etre.
-
-\goodbreak
+D\'ecrit \`a la section~\ref{farm.sect}, un \emph{Task Farm} est compos\'ee de trois entit\'es : un \emph{Emitter}, plusieurs instances de travailleurs (\emph{workers}) et un \emph{Collector}. Par d\'efaut, dans \PpFf{}, les \'el\'ements sont r\'epartis par un \emph{Emitter} aux divers travailleurs selon une politique \emph{round robin}.%
 %
-\begin{samepage}
-\GT{Je vais relire cette partie et clarifier certaines choses au
-niveau du mod\`ele avec les $W$, $X_i$, etc., car cela me semble
-incomplet}
-
-L'impl\'ementation parall\`ele de ce mod\`ele peut \^etre formellement
-exprim\'ee sous la forme d'un ensemble de travailleurs $W_1, W_2,\ldots, W_n$ qui
-appliquent l'op\'erateur $O$ sur les \'el\'ements~$X$ apparaissant dans
-le flux d'entr\'ee pour produire un ensemble d'\'el\'ements~$Y$ en sortie~:
+\footnote{Politique \emph{round robin}~: \GT{Dire quelques mots sur ce que cela signifie.}}
 %
-\[
-	W_1, W_2,\ldots, W_n
-\]
-%
-\[
-	O : X_i \rightarrow Y_i
-\]
-\end{samepage}
+Les travailleurs re\c{c}oivent les \'el\'ements d'entr\'ee et appliquent sur chacun l'op\'eration sp\'ecifi\'ee au pr\'ealable par l'utilisateur. Les r\'esultats sont ensuite envoy\'es vers le \emph{Collector} charg\'e de les collecter --- i.e., de les combiner --- puis de les transmettre sur le flux de sortie.
 
-\begin{figure}[ht]
+Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee selon le principe \emph{FIFO}. La collection de plusieurs r\'esultats \`a l'aide de cette approche r\'esulte dans un flux sans ordre sur ses \'el\'ements. En effet, le \emph{Collector} transmet les \'el\'ements au flux de sortie dans l'ordre d'arriv\'ee. \'Etant donn\'e que plusieurs flux ind\'ependants sont impliqu\'es, cet ordre ne peut pas \^etre pr\'ed\'etermin\'e. Si le respect d'un  ordre sp\'ecifique est requis, l'utilisateur de l'API peut ajouter une op\'eration qui produit cet ordre. Par exemple, la m\'ethode \TT{sort} de l'API (cf.~Tableau~\ref{methodes_api.tab}, p.~\pageref{sort.page}), effectue le tri des \'el\'ements du flux selon l'ordre sp\'ecifi\'e par la fonction \TT{compare} envoy\'e en param\`etre.
+
+\begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/DataParallelisme.jpg}
-      \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. La m\^eme op\'eration $O$ est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Le traitement associ\'e est repr\'esent\'e logiquement par le stage $S_1$. Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur ($E$\emph{mitter}). Les divers r\'esultats sont ensuite combin\'es par le collecteur $C$.}
+      \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees en \ppff.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. La m\^eme op\'eration~$O$ est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Le traitement associ\'e est repr\'esent\'e par le stage $S_i$. Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur $E$ ($E$\emph{mitter}) puis les divers r\'esultats sont combin\'es par le collecteur $C$ ($C$\emph{ollector}).}
        \label{DataParallelisme.fig}
 \end{figure}
 
+\GT{Pour la figure, je sugg\`ere de laisser tomber les X et Y sur les
+fl\`eches internes et de plut\^ot mettre $x_1, \ldots, x_k$ sur la
+fl\`eche d'entr\'ee et $y_1, \ldots, y_k$ sur la fl\`eche de sortie.
+%
+Parce que sinon \c{c}a donne l'impression que les $k/n$ premiers
+\'el\'ements sont envoy\'es \`a $W_1$, les $k/n$ suivants \`a $W_2$,
+etc., ce qui n'est pas du tout le cas. On pourrait formaliser par le
+biais d'une partition... mais ce serait inutilement compliqu\'e je
+crois.}
 
-Le r\'esultat $Y_i$ est g\'en\'er\'e en appliquant l'op\'erateur $O$ sur l'\'el\'ement $X_i$. La figure~\ref{DataParallelisme.fig} montre une repr\'esentation graphique du parall\'elisme de donn\'ees, o\`u le m\^eme op\'erateur est ex\'ecut\'e par les travailleurs $W_1, W_2,\ldots, W_n$. 
+\GT{Si possible aussi: mettre un peu plus d'espace entre la boite pour W2 et celle pour Wn, en mettant plus explicitement des petits points entre les deux.}
 
-Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Si ce param\`etre n'est pas sp\'ecifi\'e, un seul travailleur est activ\'e. Cette approche de permettre d'augmenter le nombre de travailleurs fait en sorte qu'on peut augmenter le d\'ebit du traitement des donn\'ees si appropri\'e, c'est-\`a-dire, augmenter le nombre de donn\'ees qui peuvent \^etre trait\'ees en un temps donn\'e si le nombre de c\oe{}urs ou processeurs le permet.
+L'impl\'ementation parall\`ele de ce mod\`ele peut \^etre
+exprim\'ee sous la forme d'un ensemble de $n$ travailleurs $W_1, W_2,\ldots, W_n$ qui
+appliquent une op\'eration $O$ sur les divers \'el\'ements~$X = \{x_1, \ldots, x_k\}$ apparaissant dans
+le flux d'entr\'eepour produire en sortie un ensemble d'\'el\'ements~$Y = \{y_1, \ldots, y_k\}$, o\`u $y_i = O(x_i)$.
+%
+Les divers \'el\'ements $x_i~(i=1, \ldots, k)$ sont r\'epartis entre
+les travailleurs $W_j~(j=1, \ldots, n)$ d'une fa\c{c}on
+ind\'etermin\'ee, qui d\'epend notamment de la vitesse de traitement
+de chaque $x_i$.
+%
+
+La figure~\ref{DataParallelisme.fig} montre une repr\'esentation graphique du parall\'elisme de donn\'ees, o\`u la m\^eme op\'eration est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$. 
+
+Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Si ce param\`etre n'est pas sp\'ecifi\'e, un seul travailleur est activ\'e. Permettre ainsi d'augmenter le nombre de travailleurs fait en sorte qu'on peut augmenter le d\'ebit du traitement des donn\'ees si appropri\'e, c'est-\`a-dire, augmenter le nombre de donn\'ees qui peuvent \^etre trait\'ees en un temps donn\'e si le nombre de c\oe{}urs ou processeurs le permet.
 
 
 
@@ -170,49 +187,57 @@ Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a util
 
 \GT{Bon, je vais devoir faire une autre lecture de cette partie plus tard, car je ne suis pas certain encore de bien comprendre \frownie}
 
-\IC{Dans le cas du parall\'elisme de donn\'ees, on applique un Farm. Un Farm est compos\'e d'un Emmiter, les workers et un Collector. Lorsque le parall\'elisme est appliqu\'e sur les op\'erateurs finals (op\'erateurs avec \'etat) j'ai enlev\'e le Collector. Par exemple si on applique une op\'erateur de r\'eduction sur 4 threads, chaque thread va contenir le r\'esultat partiel de la r\'eduction. Afin de combiner les 4 r\'esultats, j’avais besoin d'un m\'ecanisme qui envoyait ces valeurs au Collector \`a la fin du flux. Dans FastFlow la fin du flux est signal\'ee par la valeur EOS. Lorsque cette valeur est propag\'ee dans le flux, le flux s'arr\^ete. J'ai essay\'e la variante suivante : v\'erifier si cette valeur est envoy\'ee dans le flux et dans le cas affirmatif envoyer les 4 r\'esultats au Collector, mais cette solution n'a pas fonctionn\'e. Si je me rappelle bien, le Collector \'etait \`a vide.} 
+\IC{Dans le cas du parall\'elisme de donn\'ees, on applique un Farm. Un Farm est compos\'e d'un Emmiter, les workers et un Collector. Lorsque le parall\'elisme est appliqu\'e sur les op\'erations finales (op\'erations avec \'etat) j'ai enlev\'e le Collector. Par exemple si on applique une op\'eration de r\'eduction sur 4 threads, chaque thread va contenir le r\'esultat partiel de la r\'eduction. Afin de combiner les 4 r\'esultats, j’avais besoin d'un m\'ecanisme qui envoyait ces valeurs au Collector \`a la fin du flux. Dans FastFlow la fin du flux est signal\'ee par la valeur EOS. Lorsque cette valeur est propag\'ee dans le flux, le flux s'arr\^ete. J'ai essay\'e la variante suivante : v\'erifier si cette valeur est envoy\'ee dans le flux et dans le cas affirmatif envoyer les 4 r\'esultats au Collector, mais cette solution n'a pas fonctionn\'e. Si je me rappelle bien, le Collector \'etait \`a vide.} 
 
 \IC{La solution que j'ai trouv\'ee \'etait d'enlever le Collector et de combiner les 4 r\'esultats dans l'impl\'ementation de la class Stage.}
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
      \includegraphics[width=0.8\textwidth]{Figures/StageDataParallel.jpg}
-      \caption[Un exemple d'application de l'op\'erateur \TT{reduce} sur diff\'erents sous-flux de donn\'ees.]{Un exemple d'application de l'op\'erateur \TT{reduce} sur diff\'erents sous-flux de donn\'ees. L'\TT{Emitter} E distribue  les \'el\'ements des sous-flux de donn\'ees aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
+      \caption[Un exemple d'application de l'op\'eration \TT{reduce} sur diff\'erents sous-flux de donn\'ees.]{Un exemple d'application de l'op\'eration \TT{reduce} sur diff\'erents sous-flux de donn\'ees. L'\emph{emitter} \TT{E} distribue  les \'el\'ements des sous-flux de donn\'ees aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
        \label{StageDataParallel.fig}
 \end{figure}
 
-Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les performances du pipeline en utilisant les diff\'erents cœurs ou processeurs de la machine. Cependant, il existe une limitation lorsque le parall\'elisme de donn\'ees est appliqu\'e sur certains op\'erateurs. Dans un flux, seuls les op\'erateurs sans \'etat peuvent \^etre parall\'elis\'es en toute s\'ecurit\'e. Par contre, quand il est n\'ecessaire de parall\'eliser un op\'erateur avec \'etat, les choses deviennent un peu plus compliqu\'ees parce que le r\'esultat du calcul est obtenu en traitant un ensemble d'\'el\'ements d'entr\'ee appartenant \`a un ou plusieurs flux de donn\'ees. Par exemple, la figure~\ref{StageDataParallel.fig} montre un exemple o\`u l'op\'erateur \TT{reduce} est appliqu\'e en parall\`ele. Le r\'esultat global est obtenu en combinant les r\'esultats du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Afin d'optimiser le traitement, nous avons introduit les \emph{stages}.
 
-%Comme la plupart des traitements consistent en une combinaison d'op\'erateurs avec ou sans \'etat, un traitement parall\`ele ne peut pas \^etre effectu\'e. Une solution consiste alors \`a parall\'eliser les op\'erateurs sans \'etat et \`a utiliser un op\'erateur \TT{Collector} pour fusionner les flux parall\`eles avant d'appliquer un op\'erateur avec \'etat. Cette solution implique l'utilisation d'un autre cœur de la machine. De plus, le traitement pour les op\'erateurs avec \'etat est effectu\'e de fa\c{c}on s\'equentielle. Afin d'optimiser le traitement, nous avons introduit les \emph{stages}.
+\GT{M\^eme remarque que ci-haut concernant la figure~: Si possible
+mettre un peu plus d'espace entre la boite pour W2 et celle pour Wn,
+en mettant plus explicitement des petits points entre les deux.}
 
-\begin{figure}[ht]
+
+Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les performances du pipeline en utilisant les diff\'erents cœurs ou processeurs de la machine. Cependant, il existe une limitation lorsque le parall\'elisme de donn\'ees est appliqu\'e sur certaines op\'erations. Dans un flux, seules les op\'erations sans \'etat peuvent \^etre parall\'elis\'ees sans probl\`eme --- parce que sans interf\'erence. Par contre, quand il est n\'ecessaire de parall\'eliser une op\'eration avec \'etat, les choses deviennent un peu plus compliqu\'ees parce que le r\'esultat du calcul est obtenu en traitant un ensemble d'\'el\'ements d'entr\'ee appartenant \`a un ou plusieurs flux de donn\'ees. Par exemple, la figure~\ref{StageDataParallel.fig} montre un exemple o\`u l'op\'eration \TT{reduce} est appliqu\'ee en parall\`ele. Or, le r\'esultat global correct doit \^etre obtenu \emph{en combinant les r\'esultats du traitement de chacun des sous-flux} trait\'es dans un fil d'ex\'ecution ind\'ependant. Afin d'optimiser ce traitement, nous avons introduit les \emph{stages}.
+
+%Comme la plupart des traitements consistent en une combinaison d'op\'erations avec ou sans \'etat, un traitement parall\`ele ne peut pas \^etre effectu\'e. Une solution consiste alors \`a parall\'eliser les op\'erations sans \'etat et \`a utiliser un op\'eration \emph{Collector} pour fusionner les flux parall\`eles avant d'appliquer une op\'eration avec \'etat. Cette solution implique l'utilisation d'un autre cœur de la machine. De plus, le traitement pour les op\'erations avec \'etat est effectu\'e de fa\c{c}on s\'equentielle. Afin d'optimiser le traitement, nous avons introduit les \emph{stages}.
+
+\begin{figure}
 \centering
      \includegraphics[width=0.8\textwidth]{Figures/Stages.jpg}
-      \caption[Le groupement logique de $n$ op\'erateurs $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.]{Le groupement logique de $n$ op\'erateurs $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.  L'\TT{Emitter} E distribue les \'el\'ements du flux aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
+      \caption[Le groupement logique de $n$ op\'erations $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.]{Le groupement logique de $n$ op\'erations $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.  L'\emph{Emitter} E distribue les \'el\'ements du flux aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$.}
        \label{Stages.fig}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/StagesClassDiagramme.jpg}
-      \caption{Le diagramme de classes pour \texttt{Stage}.}
+      \caption{Le diagramme de classes pour la classe \texttt{Stage} et les classes associ\'ees.}
        \label{StagesClassDiagramme.fig}
 \end{figure}
 
 
-Un \emph{stage} repr\'esente le groupement logique d'un ou plusieurs op\'erateurs d'une \'etape dans la cha\^ine de traitement d'un pipeline. La figure~\ref{Stages.fig} montre plusieurs op\'erateurs finaux group\'es logiquement dans un stage.  \`A noter que ce module n'est pas visible \`a l'utilisateur. Dans \TT{PpFf}, nous distinguons deux types de \emph{stages} : les \emph{stages} interm\'ediaires et les \emph{stages} finaux. Comme leur nom le sugg\`ere, les \emph{stages} interm\'ediaires groupent seulement les op\'erateurs sans \'etat et les \emph{stages} finaux groupent les op\'erateurs finaux. La figure~\ref{StagesClassDiagramme.fig} montre la diagramme de classe pour \emph{stages}. Dans le cas du traitement parall\`ele, les \emph{stages} finaux ont pour r\^ole de r\'eduire l'\'etat d'op\'erateurs finaux de chaque fil d'ex\'ecution selon l'op\'eration donn\'ee. La valeur issue du flux repr\'esente le r\'esultat du traitement du flux de donn\'ees.
+Un \emph{stage} repr\'esente le groupement logique d'une ou plusieurs op\'erations d'une \'etape dans la cha\^ine de traitement d'un pipeline. La figure~\ref{Stages.fig} montre plusieurs op\'erations finales group\'ees logiquement dans un stage.  \`A noter que cette classe n'est pas visible \`a l'utilisateur. 
+
+Dans notre mise en \oe{}uvre, nous distinguons deux types de \emph{stages} : les \emph{stages} interm\'ediaires et les \emph{stages} finaux. Comme leur nom le sugg\`ere, les \emph{stages} interm\'ediaires groupent seulement les op\'erations sans \'etat et les \emph{stages} finaux groupent les op\'erations finales. La figure~\ref{StagesClassDiagramme.fig} montre la diagramme de classes pour la classe \TT{Stage} et les classes associ\'ees. Dans le cas du traitement parall\`ele, les \emph{stages} finaux ont pour r\^ole de r\'eduire l'\'etat d'op\'erations finales de chaque fil d'ex\'ecution selon l'op\'eration sp\'ecifi\'ee (cf.~Sect.~\ref{reducer.sect}). La valeur issue du flux repr\'esente le r\'esultat global du traitement du flux de donn\'ees.
 
 
 
-\section{Impl\'ementation de \TT{PpFf} avec FastFlow: Un exemple}
+\section{Impl\'ementation de \TT{PpFf} avec \TT{FastFlow} : un exemple}
 
 \begin{lstlisting}[
 label={listingExampleImplementationPpFf},
 language=c++,
-caption={[Le code source d'une petite application illustrant le fonctionnement de \ppff.]Le code source d'une petite application utilis\'ee pour d\'ecrire le fonctionnement interne de \ppff.},
+caption={[Le code source d'une petite application illustrant le fonctionnement de \ppff.]Le code source d'une petite application utilis\'ee pour d\'ecrire le fonctionnement de \ppff.},
 frame=single,
 float]
-// Predicat qui identifie les chaines non-vides.
+// Determine si une chaine est non-vide.
 auto not_empty = [](std::string* s) {
   return s->size() > 0;
 };
@@ -254,17 +279,21 @@ lambda-expression utilis\'ee dans le find.}
 
 \GT{J'ai chang\'e un peu le nom des fonctions et je les ai mises dans l'ordre d'utilisation.}
 
-Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code source d'une petite application. Illustr\'ee dans le listing~\ref{listingExampleImplementationPpFf}, l'application est compos\'ee des op\'erations suivantes :
+Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code source d'une petite application. Illustr\'ee dans le listing~\ref{listingExampleImplementationPpFf}, l'application est compos\'ee des \'el\'ements suivants :
 \begin{itemize}
-	\item L'op\'eration \TT{linesFromFile} g\'en\`ere un flux s\'equentiel de lignes \`a partir d'un fichier --- le fichier est identifi\'e par le param\`etre \TT{path} fourni en argument;
+	\item  \TT{linesFromFile}, qui g\'en\`ere un flux s\'equentiel de lignes \`a partir d'un fichier --- le fichier est identifi\'e par le param\`etre \TT{path} fourni en argument;
 
-	\item L'op\'eration \TT{find} s\'electionne dans le flux d'entr\'ee les mots qui ne sont pas vides (\texttt{not\_empty});
+\GT{Oops! Utilise linesFromFile. Est-ce que cela ne devrait pas \^etre
+Flow::source? Cela apparait \`a plusieurs endroits dans les
+explications ci-bas, ainsi que dans la figure finale.}
 
-	\item L'op\'eration \TT{parallel} indique que les op\'erations subs\'equentes doivent \^etre ex\'ecut\'ees en parall\`ele, ici, avec deux (2) \emph{threads};
+	\item  \TT{find}, qui s\'electionne dans le flux d'entr\'ee les mots qui ne sont pas vides (\texttt{not\_empty});
+
+	\item \TT{parallel}, qui indique que les op\'erations subs\'equentes doivent \^etre ex\'ecut\'ees en parall\`ele, ici, avec deux (2) \emph{threads};
 	
-	\item L'op\'eration \TT{map} transforme les lettres majuscules du mot en lettres minuscules (\texttt{to\_lowercase});
+	\item \TT{map}, qui transforme les lettres majuscules du mot en lettres minuscules (\texttt{to\_lowercase});
 	
-	\item Finalement, l'op\'eration \TT{collect} combine tous les \'el\'ements obtenus dans un conteneur de type \TT{vector}.
+	\item Finalement, \TT{collect}, qui combine tous les \'el\'ements obtenus dans un conteneur de type \TT{vector}.
 \end{itemize}
 
 \gt{Je crois qu'il serait pr\'ef\'erable, <<par souci de compl\'etude>> et pour assurer que le lecteur comprenne bien ce que fait le programme, de fournir aussi ces fonctions, quitte \`a les d\'efinir simplement sous forme d'expression-lambda.}
@@ -272,10 +301,10 @@ Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code so
 \ic{J'ai impl\'ement\'e les fonctions sous forme d'expression-lambda.}
 
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
      \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecution.jpg}
-      \caption[Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs.]{Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erateurs ex\'ecut\'es en parall\`ele. Du parall\'elisme de flux est appliqu\'e sur les deux premiers op\'erateurs et du parall\'elisme de donn\'ees est appliqu\'e sur les derniers op\'erateurs. Le \texttt{S} sur la boite pointill\'ee \`a droite indique un \emph{Stage}.}
+      \caption[Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erations.]{Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erations ex\'ecut\'ees en parall\`ele. Du parall\'elisme de flux est appliqu\'e sur les deux premi\`eres op\'erations et du parall\'elisme de donn\'ees est appliqu\'e sur les derni\`eres op\'erations. Le~\texttt{S}~sur la boite pointill\'ee \`a droite indique un \emph{Stage}.}
        \label{ExempleRuntimeExecution.fig}
 \end{figure}
 
@@ -287,47 +316,48 @@ FastFlow (ff\_node, ff\_pipeline, ff\_farm, etc.) et leurs liens.}
 
 \ic{J'ai r\'epresent\'e les objets fastflow dans la figure~\ref{ExempleRuntimeExecutionFF.fig}}
 
-La figure~\ref{ExempleRuntimeExecution.fig} montre la repr\'esentation graphique d'un \TT{Pipeline} compos\'e des op\'erateurs d\'ecrits dans le listing~\ref{listingExampleImplementationPpFf}.
+La figure~\ref{ExempleRuntimeExecution.fig} montre la repr\'esentation graphique d'un \TT{Pipeline} compos\'e des op\'erations d\'ecrites dans le listing~\ref{listingExampleImplementationPpFf}.
  
 
 La classe \TT{Pipeline} de l'API repr\'esente l'entit\'e principale de l'application. \`A l'ex\'ecution, un \TT{Pipeline} correspond \`a une classe \TT{ff\_pipeline} de \TT{FastFlow}. Un \TT{Pipeline} est compos\'e de plusieurs nœuds de type \TT{ff\_node} ou \TT{ff\_farm}. 
 
-Dans un \TT{Pipeline}, le premier op\'erateur est toujours un op\'erateur d'entr\'ee, lequel est impl\'ement\'e sous forme d'un \TT{ff\_node}. Dans notre exemple, \TT{linesFromFile} renvoie un flux s\'equentiel de lignes \`a partir d'un fichier. De plus, l'op\'erateur d'entr\'ee a aussi la t\^ache d'envoyer un signal \TT{EOS} (\emph{\texttt{E}nd \texttt{O}f \texttt{S}tream}) lorsque la g\'en\'eration d'entr\'ee est termin\'ee~: \TT{EOS} indique aux nœuds \TT{ff\_node}s de \TT{FastFlow} de terminer leur ex\'ecution apr\`es la r\'eception de celui-ci.
+Dans un \TT{Pipeline}, la premi\`ere op\'eration est toujours une op\'eration d'entr\'ee, laquelle est impl\'ement\'ee sous forme d'un \TT{ff\_node}. Dans notre exemple, \TT{linesFromFile} renvoie un flux s\'equentiel de lignes \`a partir d'un fichier. De plus, l'op\'eration d'entr\'ee a aussi la t\^ache d'envoyer un signal \TT{EOS} (\emph{\texttt{E}nd \texttt{O}f \texttt{S}tream}) lorsque la g\'en\'eration du flux d'entr\'ee est termin\'ee~: \TT{EOS} indique aux nœuds \TT{ff\_node}s de \TT{FastFlow} de terminer leur ex\'ecution apr\`es la r\'eception de celui-ci.
 
-La classe repr\'esentant chaque nœud dans un \TT{Pipeline} contient les informations concernant son r\^ole dans la chaine de traitement. Par exemple, l'op\'erateur \TT{find} du listing~\ref{listingExampleImplementationPpFf} a pour r\^ole de s\'electionner dans le flux seulement les mots qui ne sont pas vides. Ce r\^ole est d\'efini par l'utilisateur \`a la cr\'eation du \TT{Pipeline}, en fournissant une fonction ou lambda-expression \`a \TT{find}.
+La classe repr\'esentant chaque nœud dans un \TT{Pipeline} contient les informations concernant son r\^ole dans la chaine de traitement. Par exemple, l'op\'eration \TT{find} du listing~\ref{listingExampleImplementationPpFf} a pour r\^ole de s\'electionner dans le flux seulement les mots qui ne sont pas vides. Ce r\^ole est d\'efini par l'utilisateur \`a la cr\'eation du \TT{Pipeline}, en fournissant une fonction ou une expression lambda \`a \TT{find}.
 
 
-Les divers op\'erateurs d'un \TT{Pipeline} sont toujours ex\'ecut\'es en parall\`ele~: dans \TT{FastFlow}, chaque \TT{ff\_node} est associ\'e \`a un \emph{thread} ind\'ependant, donc le mod\`ele de parall\'elisme de flux est appliqu\'e par d\'efaut. 
+Les divers op\'erations d'un \TT{Pipeline} sont toujours ex\'ecut\'ees en parall\`ele~: dans \TT{FastFlow}, chaque \TT{ff\_node} est associ\'e \`a un \emph{thread} ind\'ependant, donc le mod\`ele de parall\'elisme de flux est appliqu\'e par d\'efaut. 
 
-En outre, lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la chaine du traitement d'un \TT{Pipeline}, les op\'erateurs subs\'equents sont ex\'ecut\'es en parall\`ele, et ce en utilisant du parall\'elisme de donn\'ees. Dans l'exemple du listing~\ref{listingExampleImplementationPpFf}, les deux premiers op\'erateurs sont ex\'ecut\'es en parall\`ele, avec du parall\'elisme de flux, alors que du parall\'elisme de flux et du parall\'elisme de donn\'ees sont aussi utilis\'es pour les op\'erateurs suivants (apr\`es \TT{parallel}). 
+En outre, lorsqu'un appel \`a la m\'ethode \TT{parallel} est ajout\'e dans la chaine du traitement d'un \TT{Pipeline}, les op\'erations subs\'equentes sont ex\'ecut\'ees en parall\`ele, et ce en utilisant du parall\'elisme de donn\'ees. Dans l'exemple du listing~\ref{listingExampleImplementationPpFf}, les deux premi\`eres op\'erations sont ex\'ecut\'ees en parall\`ele, avec du parall\'elisme de flux, alors que du parall\'elisme de flux et du parall\'elisme de donn\'ees sont aussi utilis\'es pour les op\'erations suivantes (apr\`es \TT{parallel}). 
 
-\begin{figure}[htb]
+Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en œuvre avec la classe \TT{ff\_farm} de \TT{FastFlow}. La cr\'eation du flux de traitement en utilisant le mod\`ele de parall\'elisme de donn\'ees est simple. Lorsque la m\'ethode \TT{parallel()} est invoqu\'ee, une instance de la classe \TT{ff\_farm} est ajout\'ee dans le \TT{Pipeline}. Pour chaque \emph{worker} de \TT{ff\_farm}, un nouveau \TT{ff\_pipeline} est cr\'e\'e. Les op\'erations ajout\'ees dans la chaine du traitement  sont ajout\'ees comme nœuds dans les nouveaux \TT{ff\_pipeline} cr\'e\'es. Par exemple, les op\'erations \TT{map} et \TT{collect} du listing~\ref{listingExampleImplementationPpFf} sont ajout\'ees dans le \TT{pipeline} de chaque \TT{worker} de \TT{ff\_farm}. 
+
+
+\begin{figure}
 \centering
      \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecutionFF.jpg}
-      \caption[Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erateurs d\'efinis par l'utilisateur : \TT{lineFromFile} (\texttt{Lff}), \TT{find} (\texttt{Find}), les deux \TT{map} (\texttt{Map}) et les deux \TT{collector} (\texttt{Collec}). Les cercles en jaunes repr\'esentent l'\TT{Emitter} et le \TT{Collector} du \TT{ff\_farm}.}
+      \caption[Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{lineFromFile} (\texttt{Lff}), \TT{find} (\texttt{Find}), les deux \TT{map} (\texttt{Map}) et les deux \TT{collector} (\texttt{Collec}). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} du \TT{ff\_farm}.}
        \label{ExempleRuntimeExecutionFF.fig}
 \end{figure}
 
 
-Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en œuvre avec la classe \TT{ff\_farm} de \TT{FastFlow}. La cr\'eation du flux de traitement en utilisant le mod\`ele de parall\'elisme de donn\'ees est simple. Lorsque la m\'ethode \TT{parallel()} est invoqu\'ee, une instance de la classe \TT{ff\_farm} est ajout\'ee dans le \TT{Pipeline}. Pour chaque \emph{worker} de \TT{ff\_farm}, un nouveau \TT{ff\_pipeline} est cr\'e\'e. Les op\'erateurs ajout\'es dans la chaine du traitement  sont ajout\'es comme nœuds dans les nouveaux \TT{ff\_pipeline} cr\'e\'es. Par exemple, les op\'erateurs \TT{map} et \TT{collect} du listing~\ref{listingExampleImplementationPpFf} sont ajout\'es dans le \TT{pipeline} de chaque \TT{worker} de \TT{ff\_farm}. 
-
-La figure~\ref{ExempleRuntimeExecutionFF.fig} montre la repr\'esentation graphique du pipeline \TT{FastFlow} qui met en \oe{}uvre le pipeline \PpFf\ de la figure~\ref{ExempleRuntimeExecution.fig}. Chaque cercle est une classe de type \TT{ff\_node}. Les cercles en bleu repr\'esentent les op\'erateurs d\'efinis par l'utilisateur : \TT{lineFromFile} (Lff), \TT{find} (Find), les deux \TT{map} (Map) et les deux \TT{collector} (Collec). Les cercles en jaunes repr\'esentent l'\TT{Emitor} et le \TT{Collector} de \TT{ff\_farm}. 
+La figure~\ref{ExempleRuntimeExecutionFF.fig} montre la repr\'esentation graphique du pipeline \TT{FastFlow} qui met en \oe{}uvre le pipeline \PpFf\ de la figure~\ref{ExempleRuntimeExecution.fig}. Chaque cercle est une classe de type \TT{ff\_node}. Les cercles en bleu repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{lineFromFile} (Lff), \TT{find} (Find), les deux \TT{map} (Map) et les deux \TT{collector} (Collec). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} de l'objet \TT{ff\_farm}. 
 
 
-\gt{Ce serait int\'eressant --- est-ce possible ou trop compliqu\'e? --- de montrer une repr\'esentation graphique du pipeline FastFlow ainsi g\'en\'er\'e! Dans ce cas, on verrait alors mieux les \'el\'ements FastFlow qui correspondent aux op\'erateurs PpFf.}
+\gt{Ce serait int\'eressant --- est-ce possible ou trop compliqu\'e? --- de montrer une repr\'esentation graphique du pipeline FastFlow ainsi g\'en\'er\'e! Dans ce cas, on verrait alors mieux les \'el\'ements FastFlow qui correspondent aux op\'erations \ppff.}
 
 \ic{J’ai ajout\'e un diagramme pour montrer le flux dans FastFlow.}
 
 \GT{Excellente figure!}
 
-L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'ethode \TT{run\_and\_wait\_end()} de la classe \TT{ff\_pipeline} de \TT{FastFlow}. Chaque \TT{ff\_node} de \TT{ff\_pipeline} est une instance de la classe C++ \TT{ff\_node} qui, dans sa m\'ethode \TT{svc()},  ex\'ecute une boucle de traitement qui va comme suit:
+L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'ethode \TT{run\_and\_wait\_end()} de la classe \TT{ff\_pipeline} de \TT{FastFlow}. Chaque \TT{ff\_node} de \TT{ff\_pipeline} est une instance de la classe C++ \TT{ff\_node} qui ex\'ecute une boucle de traitement qui va comme suit:
 \begin{itemize}
 	\item obtient du canal d'entr\'ee (via un pointeur) un \'el\'ement \`a traiter;
-	\item ex\'ecute le code sur l'\'el\'ement;
+	\item ex\'ecute le code sur l'\'el\'ement, code indiqu\'e dans la m\'ethode \TT{svc()};
 	\item \'emet dans le canal de sortie (via un pointeur)  l'\'el\'ement produit.
 \end{itemize}
 
-Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS}. \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es \`a du parall\'elisme de donn\'ees, le r\'esultat global de l'op\'erateur est obtenu en combinant les r\'esultats des sous-flux produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'erateur \TT{collect} repr\'esent\'e dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires.
+Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS}. \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es \`a du parall\'elisme de donn\'ees, le r\'esultat global de l'op\'eration est obtenu en combinant les r\'esultats des sous-flux produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'eration \TT{collect} repr\'esent\'ee dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires.
 
 \GT{Je crois qu'il faudrait indiquer/rappeler de quelle fa\c{c}on ces
 r\'esultats interm\'ediaires sont combin\'es.}
