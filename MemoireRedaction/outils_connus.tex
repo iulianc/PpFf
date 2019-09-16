@@ -47,6 +47,10 @@ alors que d'autres les traitent en ligne (\emph{online}), de fa\c{c}on
 incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent
 disponibles.}
 
+\IC{J'ai ajout\'e le paragraphe ci-dessous.}
+
+Le traitement de flux de donn\'ees repr\'esente la conversion des donn\'ees en entr\'ee du flux sous une forme utilisable et souhait\'ee. Cette conversion s'effectue \`a l'aide d'une s\'equence d'op\'erations pr\'ed\'efinie. Les op\'erations courantes de traitement de flux des donn\'ees comprennent le tri, le calcul, le filtrage et la transformation des donn\'ees. Les traitements de flux de donn\'ees peuvent \^etre group\'es dans deux grandes cat\'egories : le traitement de donn\'ees par lot (batch en anglais) et le traitement de donn\'ees en ligne de fa\c con incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent disponibles. Alors que le mod\`ele de traitement par lots n\'ecessite que les donn\'ees soient collect\'ees au fil du temps, le traitement en continu n\'ecessite que les donn\'ees soient introduites dans le flux en temps r\'eel.
+
 
 
 Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
@@ -86,7 +90,10 @@ Les \TT{RDD}s sont conçus pour \^etre partitionn\'es, donc r\'epartis sur diff\
 ce qui est \'ecrit plus haut, non? C'est-\`a-dire qu'il redit la
 m\^eme chose...}
 
-Les \TT{RDD}s peuvent \^etre cr\'e\'es via d'autres \TT{RDD}s existants. Ce m\'ecanisme permet la reconstruction des partitions perdues, car chaque \TT{RDD} dispose d'informations suffisantes sur la reconstruction \`a partir d'autres \TT{RDD}s. Lorsqu'il y a une demande de mise en cache d'un \TT{RDD}, par d\'efaut \TT{Spark} stocke ces partitions en m\'emoire. Cependant, des partitions peuvent aussi \^etre stock\'ees sur disques, lorsque la m\'emoire est insuffisante.
+\IC{J'ai effac\'e le paragraphe redondant}
+
+
+%Les \TT{RDD}s peuvent \^etre cr\'e\'es via d'autres \TT{RDD}s existants. Ce m\'ecanisme permet la reconstruction des partitions perdues, car chaque \TT{RDD} dispose d'informations suffisantes sur la reconstruction \`a partir d'autres \TT{RDD}s. Lorsqu'il y a une demande de mise en cache d'un \TT{RDD}, par d\'efaut \TT{Spark} stocke ces partitions en m\'emoire. Cependant, des partitions peuvent aussi \^etre stock\'ees sur disques, lorsque la m\'emoire est insuffisante.
 
 
 \subsection{\emph{Discretized Streams}}
@@ -94,10 +101,12 @@ Les \TT{RDD}s peuvent \^etre cr\'e\'es via d'autres \TT{RDD}s existants. Ce m\'e
 \TT{Spark} traite un flux incr\'emental de donn\'ee par l'implémentation du mod\`ele \emph{Discretized Streams} (\TT{D-stream}s).   
 %
 \GT{Je ne comprends pas la phrase qui suit.}
+
+\IC{J'ai reformul\'e la phrase.}
 %
-Les \TT{D-stream}s repr\'esentent les flux de donn\'ees re\c{c}us en entr\'ee pour un traitement. 
+Le mod\`ele \TT{D-stream} est une abstraction de \TT{Spark}. Il s'agit essentiellement d'un flux de RDD dont les \'el\'ements sont les donn\'ees re\c cues par flux en entr\'ee pour le traitement par lots.
 %
-TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
+\TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
 
 
 \subsection{Exemple~: \TT{wordCount}}
@@ -348,7 +357,7 @@ public static void main(String[] args) throws IOException {
 \end{lstlisting}
 
 
-\GT{Ci-bas: j'ai chang\'e des d\'etails des explications car ce n'est
+\gt{Ci-bas: j'ai chang\'e des d\'etails des explications car ce n'est
 pas une application compl\`ete et \c{c}a traite pas un fichier texte
 mais juste une chaine.}
 
@@ -356,13 +365,15 @@ mais juste une chaine.}
 Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'un segment de code \TT{Java} de d\'ecompte de mots. Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des mots dans un chaine et est compos\'ee de plusieurs op\'erations \emph{cha\^in\'ees} les unes \`a la suite des autres :
 
 \begin{itemize}
-	\item \TT{Files.lines}, qui renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
+	\item \TT{lines}, qui renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
 
 \GT{Tu utilises \TT{lines} qui est un \TT{ArrayList}, donc tu
 n'utilises par \TT{File.lines}! De plus, tu as aussi l'appel \`a
 \TT{stream}, donc tu ne parles pas.  Mais est-il vraiment
 n\'ecessaire, si c'est ensuite suivi de \TT{parallel}? \`A
 v\'erifier!}
+
+\IC{J'ai remplac\'e <<Files.lines>> par <<lignes>>}
 
 	\item \TT{parallel}, qui marque le flux en tant que flux parall\`ele. Cette op\'eration permet ainsi de partitionner et d'ex\'ecuter le \TT{pipeline} en parall\`ele.
 

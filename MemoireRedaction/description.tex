@@ -10,6 +10,8 @@ Cet aspect me semble un d\'etail li\'e \`a la mise en oeuvre. Dans la
 description de l'API, il suffit de parler des m\'ethodes
 elles-m\^emes!}
 
+\IC{Il semble correct.}
+
 
 \gt{Partout ci-bas dans les extraits de code, j'ai remplac\'e
 <<\TT{Flux}>> par <<\TT{Flow}>>!  Et j'ai remplac\'e <<\TT{Flow()}>>
@@ -33,6 +35,8 @@ soit coll\'e sur \TT{Flow}. \`A v\'erifier!}
 \GT{Dans la figure: linesFromFile apparait encore. Est-elle encore
 pr\'esente dans l'API? Car elle n'apparait plus dans le tableau 2.1!}
 
+\IC{Elle n'est plus pr\'esente dans l'API. J'ai oubli\'e de modifier la figure.}
+
 \GT{Apr\`es relecture, je trouve que les noms des cat\'egories ne sont
 pas tout \`a fait justes et uniformes --- parfois un substantif passif
 (transformation), parfois actif (collector). 
@@ -44,6 +48,8 @@ parall\'elisme, pas juste de la concurrence!
 Apr\`es r\'eflexion, je propose les cat\'egories suivantes~: Source,
 Transformation, Aggregation, Execution. J'ai fait diverses
 modifications en ce sens... mais il faut aussi modifier la figure!}
+
+\IC{J'ai modifi\'e la figure.}
 
 
 
@@ -922,4 +928,8 @@ La m\'ethode \TT{reduceByKey} conserve les \'el\'ements dans un conteneur de typ
 \GT{Il faut aussi dire quelques mots sur cette cat\'egorie, m\^eme si
 elle ne contient qu'une seule m\'ethode --- par souci de
 compl\'etude!}
+
+\IC{J'ai ajout\'e quelques mots.}
+
+La m\'ethode \TT{parallel} d\'efinie dans cette cat\'egorie d\'etermine le comportement d'ex\'ecution du flux. Lorsqu'elle est ajout\'ee dans le flux, toutes les op\'erations suivant cette m\'ethode seront ex\'ecut\'ees en parall\`ele. La signature pour la m\'ethode \TT{parallel} est donn\'ee dans le tableau~\ref{methodes_api.tab}. La valeur de type enti\`ere fournie en argument permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}. Par exemple, dans le listing~\ref{wordcount.c++}, la méthode \TT{parallel(4)} permet de r\'epartir les \'el\'ements du flux entre quatre \emph{threads} et donc d'ex\'ecuter les \'etapes qui suivent en parall\`ele.
 
