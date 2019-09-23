@@ -7,46 +7,54 @@ Le traitement de flux de donn\'ees devient de plus en plus important en raison d
 Une application qui traite un flux de données peut \^etre consid\'er\'ee comme un pipeline \`a travers lequel les donn\'ees du flux sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme dans le traitement d'un tel flux consiste \`a traiter des \'el\'ements distinct du flux de fa\c{c}on concurrente --- \emph{parall\'elisme de flux} (\emph{flow parallelism} ou \emph{stream parallelism}) --- et \`a r\'epliquer un m\^eme op\'erateur sur des sous-groupes d'\'el\'ements du flux --- \emph{parall\'elisme de donn\'ees} (\emph{data parallelism}). La transformation, le tri ou la r\'eduction par un op\'erateur binaire sont des exemples d'op\'erations pour lesquelles du parall\'elisme de donn\'ees peut \^etre exploit\'e. 
 
 
-Les applications parall\`eles sont g\'en\'eralement cod\'ees \`a l'aide de biblioth\`eques comme \TT{FastFlow}~\citep{AldinucciEtAl14} ou \TT{TBB}~\citep{Reinders07}. Ces outils permettent aux utilisateurs d'implémenter des solutions robustes et portables avec une abstraction de haut niveau qui masque la complexit\'e des m\'ecanismes de concurrence, tels que la gestion des threads et les synchronisations. Bien que les mod\`eles offerts par ces outils aient pour but de simplifier le d\'eveloppement d'applications parall\`eles, ils n'offrent pas une interface standard. Notre API veut introduire un mod\`ele simple, o\`u le programmeur cr\'ee un pipeline de transformations par interm\`ede d'une interface qui expose clairement les op\'erations de transformation, et o\`u chaque transformation est relativement simple --- donc, application du
+Les applications parall\`eles sont g\'en\'eralement cod\'ees \`a l'aide de biblioth\`eques comme \TT{FastFlow}~\citep{AldinucciEtAl14} ou \TT{TBB}~\citep{Reinders07}. Ces outils permettent aux utilisateurs d'implémenter des solutions robustes et portables avec une abstraction de haut niveau qui masque la complexit\'e des m\'ecanismes de concurrence, tels que la gestion des \emph{threads} et les synchronisations. Bien que les mod\`eles offerts par ces outils aient pour but de simplifier le d\'eveloppement d'applications parall\`eles, ils n'offrent pas une interface standard. Notre API veut introduire un mod\`ele simple, o\`u le programmeur cr\'ee un pipeline par l'interm\'ediaire d'une interface qui expose clairement les op\'erations de transformation, et o\`u chaque transformation est relativement simple --- ce qui correspond \`a une application du
 principe <<diviser-pour-r\'egner>> mais de fa\c{c}on non r\'ecursive.
 
-\GT{Pour la derni\`ere phrase du paragraphe pr\'ec\'edent, je ne crois
+\gt{Pour la derni\`ere phrase du paragraphe pr\'ec\'edent, je ne crois
 pas que PpFF permette cela non plus.  Je crois que tu dois plut\^ot
 insister sur le fait qu'on veut introduire un mod\`ele simple, o\`u le
 programmeur cr\'ee un pipeline de transformations, et o\`u chaque
 transformation est relativement simple --- donc, application du
 principe <<diviser-pour-r\'egner>> mais de fa\c{c}on non r\'ecursive.}
 
-\IC{J'ai reformul\'e le paragraphe. J'ai ajout\'e plus d'explications pour les outils \TT{TBB} et \TT{FastFlow}, et j'ai copi\'e la derni`ere phrase de vos remarques. Peut-\^etre j'aurais d\^u la d\'eévelopper, mais je l'ai trouv\'ee tr\`es bien formul\'ee.}
+\ic{J'ai reformul\'e le paragraphe. J'ai ajout\'e plus d'explications pour les outils \TT{TBB} et \TT{FastFlow}, et j'ai copi\'e la derni`ere phrase de vos remarques. Peut-\^etre j'aurais d\^u la d\'eévelopper, mais je l'ai trouv\'ee tr\`es bien formul\'ee.}
 
 R\'e\'ecrire une application est g\'en\'eralement co\^uteux en termes de temps de d\'eveloppement. Les approches visant \`a pallier ce d\'efaut sont souvent des outils de programmations parall\`eles d\'evelopp\'es pour introduire le parall\'elisme dans du code s\'equentiel existant. Des exemples sont \TT{OpenMP}~\citep{ChandraEtAl01} et \TT{OpenACC}~\citep{farber2016parallel} qui utilisent une approche bas\'ee sur l'ajout de directives --- des commentaires sp\'eciaux trait\'es par le compilateur---, et \TT{Cilk}~\citep{leiserson1998programming} qui est une extension simple du langage~\TT{C}. Malheureusement, ces outils ne sont pas bien adapt\'es au traitement de flux de donn\'ees.
 
-Des outils qui supportent le traitement de flux de donn\'ees sont disponibles dans d'autres langages de programmation que \TT{C}/\TT{C++}. Les plus connus sont \TT{Spark}~\citep{frampton2015mastering} (Java, Scala et autres langages), les \TT{Stream}s de \TT{Java 8}~\citep{warburton2014java} et \TT{Flink}~\citep{flinkReferenceEnLigne} (Java et Scala). Notre \TT{API} est tr\`es semblable \`a celle des Streams de Java 8, mais en C++, et parfois / souvent plus simple \`a sp\'ecifier gr\^ace aux templates.
+Des outils qui supportent le traitement de flux de donn\'ees sont disponibles dans d'autres langages de programmation que \TT{C}/\TT{C++}. Parmi les plus connus on retrouve \TT{Spark}~\citep{frampton2015mastering} (Java, Scala et autres langages), les \TT{Stream}s de \TT{Java 8}~\citep{warburton2014java} et \TT{Flink}~\citep{flinkReferenceEnLigne} (Java et Scala). Notre \TT{API} est semblable \`a celle des \TT{Stream}s de \TT{Java}~8, mais en \TT{C++}, mais elle est souvent plus simple \`a sp\'ecifier notamment gr\^ace aux \emph{templates}.
 
 
-\GT{Ci-haut, derni\`ere phrase: pas certain que ce soit le bon
+\gt{Ci-haut, derni\`ere phrase: pas certain que ce soit le bon
 avantage \`a mentionner.  Je crois qu'il faut \^etre clair \`a ce
 point que l'API est tr\`es semblable (!) \`a celle des Streams de Java
 8, mais en C++, et parfois/souvent plus simple \`a sp\'ecifier gr\^ace
 aux templates.}
 
-\IC{Encore une fois j'ai copi\'e votre suggestion. Tr\`es bon point.}
+\ic{Encore une fois j'ai copi\'e votre suggestion. Tr\`es bon point.}
 
 \section*{Objectifs}
 
-\GT{Ci-bas: je vais relire. Pas certain que ce soit tr\`es clair. De
+\gt{Ci-bas: je vais relire. Pas certain que ce soit tr\`es clair. De
 plus, tu utilises le terme <<mod\`ele algorithmique parall\`ele>> ou
 <<mod\`ele parall\`ele>>... sauf que je ne sais pas trop bien \`a quoi
 cela r\'ef\`ere. \'A quel terme anglais ce terme correspond-il? Quelle
 est la r\'ef\'erence?}
 
-\IC{Le terme anglais pour <<mod\`ele algorithmique parall\`ele>> correspond \`a <<parallel algorithms>>. Je me suis inspir\'e de l'article suivant : Adapting parallel algorithms to the W-Stream model, with applications to graph problems. (https://www.sciencedirect.com/science/article/pii/S0304397510004652) }
+\ic{Le terme anglais pour <<mod\`ele algorithmique parall\`ele>> correspond \`a <<parallel algorithms>>. Je me suis inspir\'e de l'article suivant : Adapting parallel algorithms to the W-Stream model, with applications to graph problems. (https://www.sciencedirect.com/science/article/pii/S0304397510004652) }
 
-\IC{J'ai reformul\'e le paragraphe.}
+\ic{J'ai reformul\'e le paragraphe.}
 
-Dans le contexte du langage de programmation \TT{C++}, il existe plusieurs biblioth\`eques qui offrent des algorithmes de traitement de flux de donn\'ees. Cependant, la plupart des algorithmes se réduisent \`a des op\'erations de transformation et et de r\'eduction. Ce m\'emoire a comme objectif d'enrichir cette collection avec de nouvelles op\'erations dans une interface simple \`a utiliser. Ceci, associ\'e \`a de nouvelles fonctionnalit\'es telles que les expressions lambda~\citep{josuttis2012c++}, aide un programmeur \`a \'ecrire des op\'erations complexes pour un flux de donn\'ees. Cette nouvelle \TT{API} en \TT{C++}, appel\'ee \TT{PpFF},  est mise en \oe{}uvre avec la biblioth\`eque \TT{FastFlow}.
 
-Les performances de \TT{PpFf} sont \'evalu\'ees en les comparant \`a celles des \TT{Stream}s de \TT{Java 8}. Comme nous le verrons, les r\'esultats indiquent que \TT{PpFf} peut en effet traiter de donn\'ees \`a haut d\'ebit. En plus de mesurer les performances de notre API, nous illustrerons \'egalement son expressivit\'e en impl\'ementant certains cas d'utilisation typiques rencontr\'es dans les applications de traitement de flux de donn\'ees.
+Dans le contexte du langage de programmation \TT{C++}, il existe plusieurs biblioth\`eques qui offrent des algorithmes de traitement de flux de donn\'ees. Cependant, plusieurs des constructions pour exprimer des algorithmes parall\`eles se limitent \`a des op\'erations de transformation et et de r\'eduction. Ce m\'emoire a comme objectif d'enrichir ces op\'erations avec de nouvelles op\'erations, et ce dans une interface simple \`a utiliser. Ceci, associ\'e \`a de nouvelles fonctionnalit\'es telles que les expressions lambda~\citep{josuttis2012c++}, aide un programmeur \`a \'ecrire des op\'erations complexes pour un flux de donn\'ees. Cette nouvelle \TT{API} en \TT{C++}, appel\'ee \TT{PpFF},  est mise en \oe{}uvre avec la biblioth\`eque \TT{FastFlow}.
+
+
+\'Etant donn\'e la ressemblance avec les \TT{Stream}s de \TT{Java~8},
+les performances de \TT{PpFf} seront \'evalu\'ees en les comparant \`a celles des \TT{Stream}s. Comme nous le verrons, les r\'esultats indiquent que \TT{PpFf} peut en effet traiter de donn\'ees \`a haut d\'ebit.
+%
+Nous comparerons aussi les performances de \ppff\ avec celles de
+\TT{FastFlow}, afin d'analyser les surco\^uts introduits par notre API.
+%
+En plus de mesurer les performances de notre API, nous illustrerons \'egalement son expressivit\'e en impl\'ementant certains cas d'utilisation typiques rencontr\'es dans les applications de traitement de flux de donn\'ees.
 
 
 \section*{Organisation du m\'emoire}
@@ -55,11 +63,11 @@ Les chapitres qui forment le c\oe{}ur du m\'emoire sont organis\'es
 comme suit.
 
 
-\GT{Il ne faut pas mettre de num\'eros ou noms explicites, sinon ils
+\gt{Il ne faut pas mettre de num\'eros ou noms explicites, sinon ils
 ne seront plus corrects si tu les changes dans le corps du texte. De
 plus, la conclusion n'est pas un chapitre num\'erot\'e.}
 
-\IC{Bonne remarque!!!}
+\ic{Bonne remarque!!!}
 
 Le chapitre~\ref{outils_connus.chap} \nameref{outils_connus.chap} pr\'esente les outils existants portant sur le traitement des flux de donn\'ees.  Tout d'abord, il introduit les architectures utilis\'ees par divers outils, puis il pr\'esente les mod\`eles de programmations permettant d'exprimer les traitements de donn\'ees.
 
