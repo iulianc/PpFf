@@ -1,7 +1,10 @@
 
-\chapter{Langages existants de traitement de flux de donn\'ees~: \TT{Spark}, \TT{Java} et \TT{FastFlow}}
+\chapter{APIs de traitement de flux de donn\'ees~: \TT{Spark}, \TT{Java} et \TT{FastFlow}}
 \label{outils_connus}
 \label{outils_connus.chap}
+
+\GT{J'ai chang\'e le titre car  ce ne sont pas vraiment des \underline{langages}!}
+
 
 \gt{Un nouveau chapitre doit (habituellement) avoir quelques
 paragraphes d'introduction, qui indiquent ce dont va traiter le
@@ -32,15 +35,44 @@ Le paradigme de programmation parall\`ele \emph{par flux de donn\'ees} offre une
 
 \section{Parall\'elisme de flux de donn\'ees}
 
+\GT{Je r\'ealise qu'il manque quelque chose: avant de dire que les
+flux de donn\'ees sont utilis\'es \`a plusieurs endroits et dans
+plusieurs domaines, il faut commencer par expliquer un peu plus c'est
+quoi un flux de donn\'ees!  Par exemple, voir:
+\url{https://en.wikipedia.org/wiki/Streaming_data}
+%
+OU
+%
+\url{https://fr.wikipedia.org/wiki/Flux_(informatique)}
+OU
+\url{https://en.wikipedia.org/wiki/Flow-based_programming}
+}
+
+
+\GT{Il me semble qu'il faudrait aussi mentionner le fait qu'on peut
+traiter une collection de donn\'ees comme un flux, m\^eme si cette
+collection n'est pas a priori un <<vrai>> flux --- pas une suite
+infinie de valeurs.  Donc, ma suggestion serait d'expliquer tout
+d'abord l'id\'ee de flux de donn\'ees au sens des \emph{streams},
+i.e., des s\'eries potentiellement infinies de donn\'ees --- qui
+doivent n\'ecessairement \^etre trait\'es de fa\c{c}on incr\'ementale
+--- trait\'es par des processus interconnect\'es.  Ensuite,
+d'expliquer que l'id\'ee de tels traitements peut aussi \^etre
+utilis\'ee pour des collections \textbf{finies} de donn\'ees.  Est-ce
+clair? Si non, on peut en jaser \`a un moment par Skype...}
+
+
+\ACOMPLETER{Un \emph{flux de donn\'ees} --- au sens de \emph{data
+stream} --- \ldots\ }
 
 Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
 
-\GT{Ici, il faudrait dire quelques mots rapides sur ce qu'est le
+\gt{Ici, il faudrait dire quelques mots rapides sur ce qu'est le
 traitement par flux de donn\'ees --- m\^eme si tu l'as d\'ej\`a
 mentionn\'e dans l'introduction --- pour que ce soit plus
 complet/coh\'erent!}
 
-\GT{C'est aussi ici, il me semble, qu'il serait bien d'expliquer la
+\gt{C'est aussi ici, il me semble, qu'il serait bien d'expliquer la
 diff\'erence entre les applications qui traitent de grandes
 quantit\'es de donn\'ees par lots (en \emph{batch}, \emph{offline}),
 alors que d'autres les traitent en ligne (\emph{online}), de fa\c{c}on
@@ -48,6 +80,9 @@ incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent
 disponibles.}
 
 \IC{J'ai ajout\'e le paragraphe ci-dessous.}
+
+\GT{Je ne comprends pas trop la premi\`ere phrase~:( Peut-\^etre
+revoir les URLs ci-haut!}
 
 Le traitement de flux de donn\'ees repr\'esente la conversion des donn\'ees en entr\'ee du flux sous une forme utilisable et souhait\'ee. Cette conversion s'effectue \`a l'aide d'une s\'equence d'op\'erations pr\'ed\'efinie. Les op\'erations courantes de traitement de flux des donn\'ees comprennent le tri, le calcul, le filtrage et la transformation des donn\'ees. Les traitements de flux de donn\'ees peuvent \^etre group\'es dans deux grandes cat\'egories : le traitement de donn\'ees par lot (batch en anglais) et le traitement de donn\'ees en ligne de fa\c con incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent disponibles. Alors que le mod\`ele de traitement par lots n\'ecessite que les donn\'ees soient collect\'ees au fil du temps, le traitement en continu n\'ecessite que les donn\'ees soient introduites dans le flux en temps r\'eel.
 
@@ -86,11 +121,11 @@ Un \TT{RDD} est une abstraction de donn\'ees en m\'emoire qui \'evite la r\'epli
 Les \TT{RDD}s sont conçus pour \^etre partitionn\'es, donc r\'epartis sur diff\'erentes machines. Chaque partition contient des enregistrements qui peuvent \^etre cr\'e\'es par op\'erations de transformations. Les transformations incluent notamment les opérations \TT{map}, \TT{filter}, \TT{groupBy} et \TT{join}.
 
 
-\GT{Je crois que le paragaphe qui suit est redondant par rapport \`a
+\gt{Je crois que le paragaphe qui suit est redondant par rapport \`a
 ce qui est \'ecrit plus haut, non? C'est-\`a-dire qu'il redit la
 m\^eme chose...}
 
-\IC{J'ai effac\'e le paragraphe redondant}
+\ic{J'ai effac\'e le paragraphe redondant}
 
 
 %Les \TT{RDD}s peuvent \^etre cr\'e\'es via d'autres \TT{RDD}s existants. Ce m\'ecanisme permet la reconstruction des partitions perdues, car chaque \TT{RDD} dispose d'informations suffisantes sur la reconstruction \`a partir d'autres \TT{RDD}s. Lorsqu'il y a une demande de mise en cache d'un \TT{RDD}, par d\'efaut \TT{Spark} stocke ces partitions en m\'emoire. Cependant, des partitions peuvent aussi \^etre stock\'ees sur disques, lorsque la m\'emoire est insuffisante.
@@ -98,14 +133,11 @@ m\^eme chose...}
 
 \subsection{\emph{Discretized Streams}}
 
-\TT{Spark} traite un flux incr\'emental de donn\'ee par l'implémentation du mod\`ele \emph{Discretized Streams} (\TT{D-stream}s).   
+\TT{Spark} traite un flux incr\'emental de donn\'ees \`a l'aide du mod\`ele \emph{Discretized Streams} --- \TT{D-stream}s.   
 %
-\GT{Je ne comprends pas la phrase qui suit.}
-
-\IC{J'ai reformul\'e la phrase.}
-%
-Le mod\`ele \TT{D-stream} est une abstraction de \TT{Spark}. Il s'agit essentiellement d'un flux de RDD dont les \'el\'ements sont les donn\'ees re\c cues par flux en entr\'ee pour le traitement par lots.
-%
+Ce mod\`ele est une autre abstraction introduite en \TT{Spark}. 
+% Il s'agit essentiellement d'un flux de RDD dont les \'el\'ements sont les donn\'ees re\c cues par flux en entr\'ee pour le traitement par lots.
+% %
 \TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
 
 
@@ -373,7 +405,7 @@ n'utilises par \TT{File.lines}! De plus, tu as aussi l'appel \`a
 n\'ecessaire, si c'est ensuite suivi de \TT{parallel}? \`A
 v\'erifier!}
 
-\IC{J'ai remplac\'e <<Files.lines>> par <<lignes>>}
+\ic{J'ai remplac\'e <<Files.lines>> par <<lignes>>}
 
 	\item \TT{parallel}, qui marque le flux en tant que flux parall\`ele. Cette op\'eration permet ainsi de partitionner et d'ex\'ecuter le \TT{pipeline} en parall\`ele.
 
