@@ -3,7 +3,7 @@
 \label{outils_connus}
 \label{outils_connus.chap}
 
-\GT{J'ai chang\'e le titre car  ce ne sont pas vraiment des \underline{langages}!}
+\gt{J'ai chang\'e le titre car  ce ne sont pas vraiment des \underline{langages}!}
 
 
 \gt{Un nouveau chapitre doit (habituellement) avoir quelques
@@ -61,11 +61,13 @@ d'expliquer que l'id\'ee de tels traitements peut aussi \^etre
 utilis\'ee pour des collections \textbf{finies} de donn\'ees.  Est-ce
 clair? Si non, on peut en jaser \`a un moment par Skype...}
 
+\IC{J'ai modifi\'e un peu les explicationsh.}
 
-\ACOMPLETER{Un \emph{flux de donn\'ees} --- au sens de \emph{data
-stream} --- \ldots\ }
 
-Les flux de donn\'ees sont utilis\'es dans plusieurs domaines, par exemple, traitement d'images, de donn\'ees r\'eseau, de donn\'ees et transactions boursi\`eres, de donn\'ees de trafic routier, etc.
+Un \emph{flux de donn\'ees} est une s\'erie potentiellement infinie de donn\'ees g\'en\'er\'ees par diff\'erentes sources qui doivent n\'ecessairement \^etre trait\'ees de fa\c {c}on incr\'ementale par des processus interconnect\'es. Le traitement des donn\'ees dans un flux s'effectue \`a l'aide d'une s\'equence d'op\'erations pr\'ed\'efinie. Les op\'erations courantes de traitement de flux des donn\'ees comprennent le tri, le calcul, le filtrage et la transformation des donn\'ees. Lorsque ces op\'erations sont ex\'ecut\'ees avec diff\'erents \TT{threads}, on parle du parall\'elisme de flux de donn\'ees. Le traitement complet est atteint pour les donn\'ees en les faisant migrer d'une op\'eration \`a une autre dans l'ordre dans lequel elles apparaissent dans le traitement.
+
+Un tel traitement peut aussi \^etre utilis\'e pour des collections finies de donn\'ees. Connu comme le mod\`ele de traitement par lots (batch en anglais), ce traitement n\'ecessite que les donn\'ees soient collect\'ees au fil du temps avant d'\^etre trait\'ees.
+
 
 \gt{Ici, il faudrait dire quelques mots rapides sur ce qu'est le
 traitement par flux de donn\'ees --- m\^eme si tu l'as d\'ej\`a
@@ -79,13 +81,10 @@ alors que d'autres les traitent en ligne (\emph{online}), de fa\c{c}on
 incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent
 disponibles.}
 
-\IC{J'ai ajout\'e le paragraphe ci-dessous.}
+\ic{J'ai ajout\'e le paragraphe ci-dessous.}
 
-\GT{Je ne comprends pas trop la premi\`ere phrase~:( Peut-\^etre
+\gt{Je ne comprends pas trop la premi\`ere phrase~:( Peut-\^etre
 revoir les URLs ci-haut!}
-
-Le traitement de flux de donn\'ees repr\'esente la conversion des donn\'ees en entr\'ee du flux sous une forme utilisable et souhait\'ee. Cette conversion s'effectue \`a l'aide d'une s\'equence d'op\'erations pr\'ed\'efinie. Les op\'erations courantes de traitement de flux des donn\'ees comprennent le tri, le calcul, le filtrage et la transformation des donn\'ees. Les traitements de flux de donn\'ees peuvent \^etre group\'es dans deux grandes cat\'egories : le traitement de donn\'ees par lot (batch en anglais) et le traitement de donn\'ees en ligne de fa\c con incr\'ementale, au fur et \`a mesure o\`u ces donn\'ees deviennent disponibles. Alors que le mod\`ele de traitement par lots n\'ecessite que les donn\'ees soient collect\'ees au fil du temps, le traitement en continu n\'ecessite que les donn\'ees soient introduites dans le flux en temps r\'eel.
-
 
 
 Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
@@ -173,9 +172,18 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{RDD}s de \TT{Spark}, 
 %
 Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des divers mots dans un fichier texte et compos\'e de plusieurs op\'erations~: 
 \begin{itemize}
-\item \ACOMPLETER{Blah, blah}
+
+\item \TT{textFile}, qui lire les lignes \`a partir d'un fichier. Le fichier est rep\'er\'e par le param\`etre fourni en argument \`a \TT{textFile}.
+
+\item \TT{flatMap}, qui divise chaque ligne en mots qui sont ensuite transmis en aval sous forme d'\'el\'ements de donn\'ees individuels.
+
+\item \TT{mapToPair}, qui cr\'ee une paire (de type Tuple2) avec une cl\'e repr\'esent\'ee par le mot et une valeur associ\'ee \'egale \`a 1.
+
+\item \TT{reduceByKey}, qui regroupe les mots similaires ensemble et compte le nombre d'occurrences de chaque mot.
+
 
 \GT{Ci-haut: il faut compl\'eter les explications~;)} 
+\IC{J'ai compl\'et\'e les explications.}
 \end{itemize}
 
 

@@ -39,6 +39,8 @@ Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'erie
 \GT{J'ai introduit une macro M/Machine,  pour que la forme soit
 toujours la m\^eme partout.}
 
+\IC{Tr\`es utile.}
+
 \begin{description}
 \item[\M1] = \TT{java.labunix.uqam.ca}~: Une machine avec 16 processeurs de 2,6 GHz, chacun contenant 6 cœurs. Le syst\`eme d'exploitation est Linux version 3.10.0. 
 
@@ -55,9 +57,11 @@ toujours la m\^eme partout.}
 
 \GT{Ci-bas: est-ce ok comment j'ai modifi\'e?}
 
+\IC{Beaucoup mieux. J'ai chang\'e seulement le nombre de r\'ep\'etition. J'ai chang\'e 20 pour 10.}
+
 Chaque exp\'erience --- i.e., le lancement d'un programme --- a \'et\'e ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat stable, puisque le temps varie habituellement beaucoup d'une ex\'ecution \`a une autre. Le facteur de r\'ep\'etitions de chaque exp\'erience a \'et\'e vari\'e, puis nous avons pris le facteur de r\'ep\'etitions pour les meilleurs r\'esultats obtenus.
 %
-Donc, pour les r\'esultats pr\'esent\'es dans les sections suivantes, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a~20; le temps d'ex\'ecution de r\'ef\'erence pour une exp\'erience \'etant alors la \emph{moyenne} des temps des 20 ex\'ecutions.
+Donc, pour les r\'esultats pr\'esent\'es dans les sections suivantes, le facteur de r\'ep\'etition a \'et\'e \'etabli \`a~10; le temps d'ex\'ecution de r\'ef\'erence pour une exp\'erience \'etant alors la \emph{moyenne} des temps des 10 ex\'ecutions.
 
 
 \gt{Ici, il faut donner une vue d'ensemble de la fa\c{c}on dont tu as
@@ -124,129 +128,99 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 
 %Plots bar examples: http://pgfplots.net/tikz/examples/tag/bar-plots/
 
-\begin{tikzpicture}
-\begin{axis}[
-    title={WordCount - machine Java; sans JIT; 1 itération; PpFf-1 thread\bigskip},
-    xlabel={Nb.~mots},
-    ylabel={Temps d'ex\'ecution (ms)},
-    xmin=0, xmax=5500000,
-    ymin=0, ymax=25000,
-    ytick={0,5000,10000,15000,20000,25000},
-    %xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
-    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
-    legend pos=north west,
-    ymajorgrids=true,
-    grid style=dashed,
-]
- 
-\addplot[
-    color=blue,
-    mark=square,
-    ]
-    coordinates {
-    (78792,106)(67941,205)(281307,322)(482636,508)(752856,883)(2614743,3320)(5247678,6126)
-    };
-\addplot[
-    color=red,
-    mark=square,
-    ]
-    coordinates {
-    (78792,1615)(167941,2319)(281307,3625)(482636,4906)(752856,7195)(2614743,116039)(5247678,226917)
-    };
-\legend{PpFf,Java}    
-\end{axis}
-\end{tikzpicture}
+
+%
+%\begin{tikzpicture}
+%\begin{axis}[
+%    title={WordCount - machine Java; sans JIT; 1 itération; PpFf-1 thread\bigskip},
+%    xlabel={Nb.~mots},
+%    ylabel={Temps d'ex\'ecution (ms)},
+%    xmin=0, xmax=5500000,
+%    ymin=0, ymax=25000,
+%    ytick={0,5000,10000,15000,20000,25000},
+%    %xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
+%    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
+%    legend pos=north west,
+%    ymajorgrids=true,
+%    grid style=dashed,
+%]
+% 
+%\addplot[
+%    color=blue,
+%    mark=square,
+%    ]
+%    coordinates {
+%    (78792,106)(67941,205)(281307,322)(482636,508)(752856,883)(2614743,3320)(5247678,6126)
+%    };
+%\addplot[
+%    color=red,
+%    mark=square,
+%    ]
+%    coordinates {
+%    (78792,1615)(167941,2319)(281307,3625)(482636,4906)(752856,7195)(2614743,116039)(5247678,226917)
+%    };
+%\legend{PpFf,Java}    
+%\end{axis}
+%\end{tikzpicture}
 
 
-
-\begin{tikzpicture}
-\begin{axis}[
-    title={WordCount - machine Japet; sans JIT; 1 itération; PpFf-8 thread\newline},
-    xlabel={Nb.~mots},
-    ylabel={Temps d'ex\'ecution (ms)},
-    xmin=0, xmax=5500000,
-    ymin=0, ymax=550000,
-    %ytick={0,100000,150000,200000,250000,300000,350000,400000,450000,500000,550000},
-    ytick={0,100000,200000,300000,400000,500000,600000},
-    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
-    legend pos=north west,
-    ymajorgrids=true,
-    grid style=dashed,
-]
- 
-\addplot[
-    color=blue,
-    mark=square,
-    ]
-    coordinates {
-    (78792,67)(67941,162)(281307,268)(482636,480)(752856,637)(2614743,1765)(5247678,3135)
-    };
-\addplot[
-    color=red,
-    mark=square,
-    ]
-    coordinates {
-    (78792,3685)(167941,5685)(281307,8083)(482636,11258)(752856,14991)(2614743,285866)(5247678,541184)
-    };
-\legend{PpFf,Java}    
-\end{axis}
-\end{tikzpicture}
-
-
-
-
-
-
-\begin{figure}[H]
-\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	    xlabel={Nb.~mots},
-    	ylabel={Temps d'ex\'ecution (ms)},
-	    xmin=0, xmax=5500000,
-    	ymin=0, ymax=5500,
-	    %ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
-    	ytick={0,1000,2000,3000,4000,5000,6000},
-	    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
-    	legend pos=north west,
-	    ymajorgrids=true,
-    	grid style=dashed,
-	]
- 
-	\addplot[
-    	color=blue,
-   	 	mark=square,
-    ]
-    	coordinates {
-    	(78792,174)(67941,117)(281307,263)(482636,405)(752856,429)(2614743,1625)(5247678,2798)
-    	};
-	\addplot[
-    	color=red,
-    	mark=square,
-    ]
-    	coordinates {
-    	(78792,368)(167941,443)(281307,501)(482636,603)(752856,730)(2614743,3889)(5247678,5312)
-    	};
-	\legend{PpFf,Java}    
-	\end{axis}
-	\end{tikzpicture}
-    \caption{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine Japet.}
-    \label{JapetExecutionWordCount.fig}	
-\end{figure}
+%
+%\begin{figure}[H]
+%\centering
+%	\begin{tikzpicture}
+%	\begin{axis}[
+%	    xlabel={Nb.~mots},
+%    	ylabel={Temps d'ex\'ecution (ms)},
+%	    xmin=0, xmax=5500000,
+%    	ymin=0, ymax=5500,
+%	    %ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
+%    	ytick={0,1000,2000,3000,4000,5000,6000},
+%	    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
+%    	legend pos=north west,
+%	    ymajorgrids=true,
+%    	grid style=dashed,
+%	]
+% 
+%	\addplot[
+%    	color=blue,
+%   	 	mark=square,
+%    ]
+%    	coordinates {
+%    	(78792,174)(67941,117)(281307,263)(482636,405)(752856,429)(2614743,1625)(5247678,2798)
+%    	};
+%	\addplot[
+%    	color=red,
+%    	mark=square,
+%    ]
+%    	coordinates {
+%    	(78792,368)(167941,443)(281307,501)(482636,603)(752856,730)(2614743,3889)(5247678,5312)
+%    	};
+%	\legend{PpFf,Java}    
+%	\end{axis}
+%	\end{tikzpicture}
+%    \caption{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine Japet.}
+%    \label{JapetExecutionWordCount.fig}	
+%\end{figure}
 
 
 \begin{figure}[H]
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/GrapheTempsWordCount.png}
+     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Java_WordCount.png}
       \caption{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1.}
-       \label{GrapheTempsWordCount.fig}
+       \label{GrapheTempsWordCountJava.fig}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Japet_WordCount.png}
+      \caption{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2.}
+       \label{GrapheTempsWordCountJapet.fig}
+\end{figure}
 
 \GT{Ci-bas: ultimement, il faudra pr\'esenter dans le texte dans le
 m\^eme ordre que les num\'eros, donc 4.1 avant 4.2!}
 
-Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: le nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortie. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenus dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78~792 \`a 5~247~678. Pour toutes les exp\'eriences, le facteur de r\'ep\'etitions a \'et\'e \'etabli \`a 20.  Les r\'esultats sont pr\'esent\'es dans les figures~\ref{GrapheTempsWordCount.fig} et~\ref{JapetExecutionWordCount.fig} respectivement. La figure~\ref{GrapheTempsWordCount.fig} montre les résultats obtenus sur la machine \M1\ et la figure~\ref{JapetExecutionWordCount.fig} montre les r\'esultats obtenus sur la machine M2 (p.~\pageref{machines.sect}).
+Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: le nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortie. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenus dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78~792 \`a 5~247~678. Pour toutes les exp\'eriences, le facteur de r\'ep\'etitions a \'et\'e \'etabli \`a 10.  Les r\'esultats sont pr\'esent\'es dans les figures~\ref{GrapheTempsWordCountJava.fig} et~\ref{GrapheTempsWordCountJapet.fig} respectivement. La figure~\ref{GrapheTempsWordCountJava.fig} montre les résultats obtenus sur la machine \M1\ et la figure~\ref{GrapheTempsWordCountJapet.fig} montre les r\'esultats obtenus sur la machine M2 (p.~\pageref{machines.sect}).
 
 Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees dans le cas de \TT{Java}. L'une avec \emph{JIT} et l'autre sans (p.~\pageref{jitDescription.sect}). On constate que le temps d'ex\'ecution de \TT{WordCount} sans \emph{JIT} est nettement sup\'erieure \`a celui avec \emph{JIT}.
 
@@ -320,6 +294,7 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
     M2-   & 350 & 5810 \\
     }\mydata
 
+
 \begin{figure}[H]
 \centering
 	\begin{tikzpicture}
@@ -378,169 +353,27 @@ Ici, \TT{granularity} est un param\`etre sp\'ecifi\'e en argument lors du lancem
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
-Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees~: une avec \TT{granularity = 4}, l'autre avec \TT{granularity~=~5}. Pour la suite d'entiers allant de 1 \`a 100~000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \emph{threads} sur deux machines diff\'erentes : \M1\ et M2\ (Sect.~\ref{machines.sect}).  
+Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees~: une avec \TT{granularity = 4}, l'autre avec \TT{granularity~=~5}. Pour la suite d'entiers allant de 1 \`a 100~000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \emph{threads} sur deux machines diff\'erentes : \M1\ et \M2\ (Sect.~\ref{machines.sect}).  
+
 
 \begin{figure}[H]
 \centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	    xlabel={Nombre de threads},
-    	ylabel={Temps d'ex\'ecution (ms)},
-	    xmin=0, xmax=18,
-    	ymin=0, ymax=3500,
-	    ytick={0,700,1400,2100,2800,3500},
-	    xtick={0,1,2,4,8,16},
-    	legend pos=north west,
-	    ymajorgrids=true,
-    	grid style=dashed,
-	]
- 
-	\addplot[
-    	color=blue,
-   	 	mark=square,
-    ]
-    	coordinates {
-    	(1,3360)(2,2046)(4,1026)(8,526)(16,284)
-    	};
-	\addplot[
-    	color=red,
-    	mark=square,
-    ]
-    	coordinates {
-    	(1,3365)(2,2046)(4,1026)(8,532)(16,286)
-    	};
-	\legend{PpFf,FastFlow}    
-	\end{axis}
-	\end{tikzpicture}
-    \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} Map 1 et granularit\'e 4 sur la machine Japet.}
-    \label{JapetExecutionMicroBenchmarkGr4.fig}	
+     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Java_Maps.png}
+      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M1.}
+       \label{GrapheTempsMapsJava.fig}
 \end{figure}
 
-
-
-
-
 \begin{figure}[H]
 \centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	    xlabel={Nombre de threads},
-    	ylabel={Temps d'ex\'ecution (ms)},
-	    xmin=0, xmax=18,
-    	ymin=0, ymax=35000,
-	    ytick={0,7000,14000,21000,28000,35000},
-	    xtick={0,1,2,4,8,16},
-    	legend pos=north west,
-	    ymajorgrids=true,
-    	grid style=dashed,
-	]
- 
-	\addplot[
-    	color=blue,
-   	 	mark=square,
-    ]
-    	coordinates {
-    	(1,32905)(2,20100)(4,10107)(8,5154)(16,2718)
-    	};
-	\addplot[
-    	color=red,
-    	mark=square,
-    ]
-    	coordinates {
-    	(1,33028)(2,20246)(4,10055)(8,5189)(16,2740)
-    	};
-	\legend{PpFf,FastFlow}    
-	\end{axis}
-	\end{tikzpicture}
-    \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} Map 1 et granularit\'e 5 sur la machine Japet.}
-    \label{JapetExecutionMicroBenchmarkGr5.fig}	
-\end{figure}
-
-
-
-
-
-
-\begin{figure}[H]
-\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	    xlabel={Nombre de threads},
-    	ylabel={Temps d'ex\'ecution (ms)},
-	    xmin=0, xmax=18,
-    	ymin=0, ymax=3500,
-	    ytick={0,700,1400,2100,2800,3500},
-	    xtick={0,1,2,4,8,16},
-    	legend pos=north west,
-	    ymajorgrids=true,
-    	grid style=dashed,
-	]
- 
-	\addplot[
-    	color=blue,
-   	 	mark=square,
-    ]
-    	coordinates {
-    	(1,2333)(2,1268)(4,736)(8,566)(16,1150)
-    	};
-	\addplot[
-    	color=red,
-    	mark=square,
-    ]
-    	coordinates {
-    	(1,2431)(2,1208)(4,708)(8,497)(16,1058)
-    	};
-	\legend{PpFf,FastFlow}    
-	\end{axis}
-	\end{tikzpicture}
-    \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} Map 1 et granularit\'e 4 sur la machine Java.}
-    \label{JavatExecutionMicroBenchmarkGr4.fig}	
-\end{figure}
-
-
-
-
-
-\begin{figure}[H]
-\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	    xlabel={Nombre de threads},
-    	ylabel={Temps d'ex\'ecution (ms)},
-	    xmin=0, xmax=18,
-    	ymin=0, ymax=35000,
-	    ytick={0,7000,14000,21000,28000,35000},
-	    xtick={0,1,2,4,8,16},
-    	legend pos=north west,
-	    ymajorgrids=true,
-    	grid style=dashed,
-	]
- 
-	\addplot[
-    	color=blue,
-   	 	mark=square,
-    ]
-    	coordinates {
-    	(1,22377)(2,11872)(4,6242)(8,4695)(16,4778)
-    	};
-	\addplot[
-    	color=red,
-    	mark=square,
-    ]
-    	coordinates {
-    	(1,22879)(2,11630)(4,6590)(8,5037)(16,4529)
-    	};
-	\legend{PpFf,FastFlow}    
-	\end{axis}
-	\end{tikzpicture}
-    \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} Map 1 et granularit\'e 5 sur la machine Java.}
-    \label{JavaExecutionMicroBenchmarkGr5.fig}	
+     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Japet_Maps.png}
+      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M2.}
+       \label{GrapheTempsMapstJapet.fig}
 \end{figure}
 
 
 \GT{Il serait pr\'ef\'erable de pr\'esenter dans l'ordre, tant les figures que la description dans le texte --- \M1\ avant M2.}
 
-Les figures~\ref{JapetExecutionMicroBenchmarkGr4.fig} et~\ref{JapetExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine \M2\ alors que les figures~\ref{JavatExecutionMicroBenchmarkGr4.fig} et~\ref{JavaExecutionMicroBenchmarkGr5.fig} montrent les r\'esultats des exp\'eriences sur la machine \M1. On constate un faible surco\^ut introduit par \PpFf\ sur la machine \M1. \TT{FastFlow} obtient un meilleur temps d'ex\'ecution pour un nombre de \emph{threads} plus grand que 8. La plus grande diff\'erence obtenue entre les temps d'ex\'ecutions de \TT{PpFf} et \TT{FastFlow} est de 100 ms. En prenant en consid\'eration le volume de traitement des deux applications, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont donc faibles.
+La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut introduit par \PpFf\ sur la machine \M1. \TT{FastFlow} obtient un meilleur temps d'ex\'ecution pour un nombre de \emph{threads} plus grand que 8. La plus grande diff\'erence obtenue entre les temps d'ex\'ecutions de \TT{PpFf} et \TT{FastFlow} est de 100 ms. En prenant en consid\'eration le volume de traitement des deux applications, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont donc faibles.
 
 
 
