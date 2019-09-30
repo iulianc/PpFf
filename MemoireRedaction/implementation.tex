@@ -247,7 +247,47 @@ Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les 
 
 Un \emph{stage} repr\'esente le groupement logique d'une ou plusieurs op\'erations d'une \'etape dans la cha\^ine de traitement d'un pipeline. La figure~\ref{Stages.fig} montre plusieurs op\'erations finales group\'ees logiquement dans un \emph{stage}.  \`A noter que cette classe n'est pas visible \`a l'utilisateur. 
 
+\begin{lstlisting}[
+label={ImplementationOverridingOperator},
+language=c++,
+caption={[Le code source de l'op\'erateur \TT{operator+} de la classe \TT{CollectorOperator}.]Le code source de l'op\'erateur \TT{operator+} pour la classe \TT{CollectorOperator}.},
+frame=single,
+float]
+template <typename T, typename TContainer>
+class CollectorOperator: public FinalOperator {
+public:
+  CollectorOperator& operator+=(const CollectorOperator& other) {
+    for (T elem: other.container) {
+      container.push_back(elem);
+    }
+
+    return *this ;
+  }	
+  
+private:
+  TContainer container{};
+};
+\end{lstlisting}
+
+
+\label{stages-finaux.sect}
+%
 Dans notre mise en \oe{}uvre, nous distinguons deux types de \emph{stages} : les \emph{stages} interm\'ediaires et les \emph{stages} finaux. Comme leur nom le sugg\`ere, les \emph{stages} interm\'ediaires groupent seulement les op\'erations sans \'etat et les \emph{stages} finaux groupent les op\'erations finales. La figure~\ref{StagesClassDiagramme.fig} montre la diagramme de classes pour la classe \TT{Stage} et les classes associ\'ees. Dans le cas du traitement parall\`ele, les \emph{stages} finaux ont pour r\^ole de r\'eduire l'\'etat d'op\'erations finales de chaque fil d'ex\'ecution selon l'op\'eration sp\'ecifi\'ee (cf.~Sect.~\ref{reducer.sect}). La valeur issue du flux repr\'esente le r\'esultat global du traitement du flux de donn\'ees.
+
+Plus pr\'ecis\'ement, la valeur finale est obtenue en utilisant la
+fonction \TT{operator+=} d\'efinie dans la classe \TT{BaseCollector}
+(surcharg\'ee (\emph{overriden}) dans chaque \TT{Node}).
+%
+Lorsqu'un \TT{pipeline} termine son traitement, l'objet \TT{Stage}
+associ\'e produit donc le r\'esultat final en appelant l'op\'erateur
+\TT{operator+=} de chaque \TT{Node} associ\'e au \TT{Stage}. Le
+listing~\ref{ImplementationOverridingOperator} montre
+l'impl\'ementation de \TT{operator+=} dans l'un des op\'erateurs
+finaux de \TT{PpFf}, \TT{CollectorOperator}. Dans ce cas, chaque
+\'el\'ement du r\'esultat partiel (\TT{other.container}) produit par
+chaque \emph{thread} est ajout\'e dans un conteneur~STL
+\TT{container}, cr\'e\'e dans le constructeur de la classe \TT{Stage}.
+
 
 
 
@@ -382,60 +422,24 @@ L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'
 \end{itemize}
 
 
-
-\begin{figure}
-\centering
-
-\gt{Tu as omis le e final dans \TT{ff\_node}!}
-
-\gt{Dans le diagramme tu indiques <<operator+>>.  Idem dans le texte
-ci-bas (dernier paragraphe).  Par contre, dans le code, c'est
-l'op\'erateur <<operator+=>> qui est pr\'esent\'e!}
-
-\GT{Je relirai \`a nouveau plus tard: pas certain que cette figure
-soit utile/n\'ecessaire!? Ou, si on la conserve, qu'elle soit au bon
-endroit!?}
-
-\GT{Idem pour le listing 3.2!? Je me demande si cela ne devrait pas
-plut\^ot aller dans la section 3.4 sur les Stage!?}
-
-\ic{J'ai mis \`a jour la figure et le texte.}
-
-     \includegraphics[width=.33\linewidth]{Figures/StructureCollectorOperator.jpg}
-      \caption{Le diagramme de classes pour les op\'erations finales de \TT{PpFf}.}
-       \label{InheritanceCollectorOperator.fig}
-\end{figure}
+%
+% GT: Je crois que cette figure n'est pas utile.
+%
+% \begin{figure}
+% \centering
+% %
+% \GT{Je relirai \`a nouveau plus tard: pas certain que cette figure
+% soit utile/n\'ecessaire!? Ou, si on la conserve, qu'elle soit au bon
+% endroit!?}
+% %
+% \GT{Idem pour le listing 3.2!? Je me demande si cela ne devrait pas
+% plut\^ot aller dans la section 3.4 sur les Stage!?}
+% %
+%     \includegraphics[width=.33\linewidth]{Figures/StructureCollectorOperator.jpg}
+%       \caption{Le diagramme de classes pour les op\'erations finales de \TT{PpFf}.}
+%        \label{InheritanceCollectorOperator.fig}
+% \end{figure}
 
 
-\begin{lstlisting}[
-label={ImplementationOverridingOperator},
-language=c++,
-caption={[Le code source de l'op\'erateur \TT{operator+} de la classe \TT{CollectorOperator}.]Le code source de l'implémentation de l'op\'erateur \TT{operator+} de la classe \TT{CollectorOperator}.},
-frame=single,
-float]
-template <typename T, typename TContainer>
-class CollectorOperator: public FinalOperator {
-public:
-  CollectorOperator& operator+=(const CollectorOperator& other) {
-    for (T elem: other.container) {
-      container.push_back(elem);
-    }
+Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS}. \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es \`a du parall\'elisme de donn\'ees, le r\'esultat global de l'op\'eration est obtenu en combinant les r\'esultats des sous-flux produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'eration \TT{collect} repr\'esent\'ee dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires, tel qu'expliqu\'e \`a la section~\ref{stages-finaux.sect}
 
-    return *this ;
-  }	
-  
-private:
-  TContainer container{};
-};
-\end{lstlisting}
-
-Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS}. \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es \`a du parall\'elisme de donn\'ees, le r\'esultat global de l'op\'eration est obtenu en combinant les r\'esultats des sous-flux produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'eration \TT{collect} repr\'esent\'ee dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires. 
-
-%Chaque nœud final d'un \TT{pipeline} (classe \TT{Node} de \TT{Ppff}) h\'erite de \TT{ff\_node} et de la classe \TT{BaseCollector}. La figure~\ref{InheritanceCollectorOperator.fig} montre la structure de classes. L'\TT{operator+=} d\'efini dans la classe \TT{BaseCollector} est surcharg\'e (\emph{overrided}) dans chaque \TT{Node}. De cette fa\c {c}on, chaque \TT{Node} qui h\'erite de cette classe peut impl\'ementer sa propre fonctionnalit\'e. Lorsque le \TT{pipeline} termine son traitement, la classe \TT{Stage} compose le r\'esultat final en appelant l'op\'erateur \TT{operator+=} de chaque \TT{Node} dans une boucle. Le listing~\ref{ImplementationOverridingOperator} montre l'impl\'ementation de l'\TT{operator+=} dans l'un des op\'erateurs finaux de \TT{PpFf}, \TT{Collector}. Dans ce cas, le r\'esultat partiel produit par chaque thread est ajout\'e dans un conteneur~STL, cr\'e\'e dans la classe \TT{Stage}. \ldots \GT{dire o\`u ce container est cr\'e\'e!} \IC{J\'e complet\'e la phrese.}
-
-\IC{J'ai mis en commentaire le texte pour l'instant. Je ne sais pas de quoi parler. Je dois r\'efl\'echir.}
-
-\gt{Je crois qu'il faudrait indiquer/rappeler de quelle fa\c{c}on ces
-r\'esultats interm\'ediaires sont combin\'es.}
-
-\ic{J'ai d\'ecrit en quelques mots le processus pour la composition du r\'esultat final.}
