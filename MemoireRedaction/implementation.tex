@@ -158,7 +158,7 @@ Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee
        \label{DataParallelisme.fig}
 \end{figure}
 
-\GT{Pour la figure, je sugg\`ere de laisser tomber les X et Y sur les
+\gt{Pour la figure, je sugg\`ere de laisser tomber les X et Y sur les
 fl\`eches internes et de plut\^ot mettre $x_1, \ldots, x_k$ sur la
 fl\`eche d'entr\'ee et $y_1, \ldots, y_k$ sur la fl\`eche de sortie.
 %
@@ -168,7 +168,7 @@ etc., ce qui n'est pas du tout le cas. On pourrait formaliser par le
 biais d'une partition... mais ce serait inutilement compliqu\'e je
 crois.}
 
-\GT{Compl\'ement \`a la remarque ci-haut, qui n'\'etait peut-\^etre pas
+\gt{Compl\'ement \`a la remarque ci-haut, qui n'\'etait peut-\^etre pas
 claire: 1)~il faudrait supprimer les X1, ..., Xk des fl\`eches
 \underline{internes}. Et idem pour les Y.  2)~Il faudrait mettre
 <<$x_1, \ldots, x_k$>> sur la fl\`eche \underline{\`a gauche} de la
@@ -177,7 +177,7 @@ C!}
 
 \gt{Si possible aussi: mettre un peu plus d'espace entre la boite pour W2 et celle pour Wn, en mettant plus explicitement des petits points entre les deux.}
 
-\IC{J'ai modifié la figure.}
+\ic{J'ai modifié la figure.}
 
 L'impl\'ementation parall\`ele de ce mod\`ele peut \^etre
 exprim\'ee sous la forme d'un ensemble de $n$ travailleurs $W_1, W_2,\ldots, W_n$ qui
@@ -206,10 +206,10 @@ Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a util
 
 \ic{La solution que j'ai trouv\'ee \'etait d'enlever le Collector et de combiner les 4 r\'esultats dans l'impl\'ementation de la class Stage.}
 
-\GT{Dans la figure 3.5: Comme l'autre plus haut, ajouter <<$x_1,
+\gt{Dans la figure 3.5: Comme l'autre plus haut, ajouter <<$x_1,
 \ldots, x_k$>> sur la fl\`eche \`a gauche de la boite pour E.}
 
-\IC{J'ai ajout\'e <<$x_1, \ldots, x_k$>> sur la figure.}
+\ic{J'ai ajout\'e <<$x_1, \ldots, x_k$>> sur la figure.}
 
 \begin{figure}
 \centering
@@ -224,10 +224,10 @@ Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les 
 
 %Comme la plupart des traitements consistent en une combinaison d'op\'erations avec ou sans \'etat, un traitement parall\`ele ne peut pas \^etre effectu\'e. Une solution consiste alors \`a parall\'eliser les op\'erations sans \'etat et \`a utiliser un op\'eration \emph{Collector} pour fusionner les flux parall\`eles avant d'appliquer une op\'eration avec \'etat. Cette solution implique l'utilisation d'un autre cœur de la machine. De plus, le traitement pour les op\'erations avec \'etat est effectu\'e de fa\c{c}on s\'equentielle. Afin d'optimiser le traitement, nous avons introduit les \emph{stages}.
 
-\GT{Dans la figure 3.6: Comme l'autre plus haut, ajouter <<$x_1,
+\gt{Dans la figure 3.6: Comme l'autre plus haut, ajouter <<$x_1,
 \ldots, x_k$>> sur la fl\`eche \`a gauche de la boite pour E.}
 
-\IC{J'ai ajout\'e <<$x_1, \ldots, x_k$>> sur la figure.}
+\ic{J'ai ajout\'e <<$x_1, \ldots, x_k$>> sur la figure.}
 
 \begin{figure}
 \centering
@@ -386,9 +386,9 @@ L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'
 \begin{figure}
 \centering
 
-\GT{Tu as omis le e final dans \TT{ff\_node}!}
+\gt{Tu as omis le e final dans \TT{ff\_node}!}
 
-\GT{Dans le diagramme tu indiques <<operator+>>.  Idem dans le texte
+\gt{Dans le diagramme tu indiques <<operator+>>.  Idem dans le texte
 ci-bas (dernier paragraphe).  Par contre, dans le code, c'est
 l'op\'erateur <<operator+=>> qui est pr\'esent\'e!}
 
@@ -399,7 +399,7 @@ endroit!?}
 \GT{Idem pour le listing 3.2!? Je me demande si cela ne devrait pas
 plut\^ot aller dans la section 3.4 sur les Stage!?}
 
-\IC{J'ai mis \`a jour la figure et le texte.}
+\ic{J'ai mis \`a jour la figure et le texte.}
 
      \includegraphics[width=.33\linewidth]{Figures/StructureCollectorOperator.jpg}
       \caption{Le diagramme de classes pour les op\'erations finales de \TT{PpFf}.}
