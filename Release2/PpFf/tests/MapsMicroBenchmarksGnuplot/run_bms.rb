@@ -1,6 +1,19 @@
 #!/usr/bin/env ruby
 
 DEBUG = false #true
+$server = 'japet'	#'java'
+$nb_thtreads = 1
+$fichier = 'test.txt'
+
+if $server == 'java'
+	$fichier = 'temps-java-maps.txt'
+	$nb_thtreads = [1, 2, 4, 8, 16, 32]
+else
+	$fichier = "temps-japet-maps.txt"
+
+	# Sur japet, plante si plus que 64..
+	$nb_thtreads = [1, 2, 4, 8, 16, 32]
+end
 
 LARGEUR = 10
 
@@ -15,9 +28,7 @@ else
 end
 
 if DEBUG
-  NB_THREADS = [1, 2] # Pour debogage du script.
-else
-  NB_THREADS = [1, 2, 4, 8, 16]
+  $nb_thtreads = [1, 2]
 end
 
 if DEBUG
@@ -52,7 +63,7 @@ end
 print "\n"
 
 result = '';
-NB_THREADS.each do  |nb_threads|
+$nb_thtreads.each do  |nb_threads|
   partial_result = " #{format("%#{LARGEUR}d", nb_threads)}"
 
  
@@ -71,4 +82,4 @@ NB_THREADS.each do  |nb_threads|
   result = result + partial_result + "\n"
 end
 
-File.open("temps-maps.txt", 'w') { |file| file.write(result) }
+File.open($fichier, 'w') { |file| file.write(result) }

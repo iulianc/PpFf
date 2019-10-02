@@ -19,8 +19,7 @@
 
 using namespace PpFf;
 
-#define DEFAULT_NB_ITERATIONS 5
-//#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
+#define DEBUG_MODE false
 #define DEFAULT_INPUT_FILE "/home/iuly/WorkplaceEclipse/PpFf-OldVersion/tests/WordCount/testdata/78792Words.txt"
 
 #define DEFAULT_NB_THREADS 1
@@ -58,7 +57,7 @@ bool notEmpty(std::string* s) {
 }
 
 int main(int argc, char* argv[]) {
-    uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
+    bool debug = DEBUG_MODE;
     std::string inputFile = DEFAULT_INPUT_FILE;
     uint32_t nbThreads = DEFAULT_NB_THREADS;
 
@@ -67,35 +66,45 @@ int main(int argc, char* argv[]) {
     }
 
     if (argc >= 3) {
-        nbIterations = atoi(argv[2]);
+        nbThreads = atoi(argv[2]);
     }
 
+    // utiliser pour vérifier le bon fonctionnement
+    // du programme
     if (argc >= 4) {
-        nbThreads = atoi(argv[3]);
+        if(atoi(argv[3]) == 1){
+	debug = true;
+        }
     }
 
     Reducer<std::string, int> reducer(0, 
                                       [](int count, std::string _) { return count + 1; },
                                       std::plus<int>{} );
-    
+
     auto begin = std::chrono::high_resolution_clock::now();
 
     std::unordered_map<std::string, int> currentResult;
-    for (uint32_t i = 0; i < nbIterations; ++i) {
-        currentResult = 
-            Flow
-            ::source(inputFile)
-            .parallel(nbThreads)
-            .flatMap<std::string, std::string, Words>(splitInWords)			
-            .map<std::string, std::string>(toLowercaseLetters)			
-            .find<std::string>(notEmpty)	
-            .reduceByKey<std::string, std::string, int>(reducer);
+    currentResult = 
+        Flow
+        ::source(inputFile)
+        .parallel(nbThreads)
+        .flatMap<std::string, std::string, Words>(splitInWords)			
+        .map<std::string, std::string>(toLowercaseLetters)			
+        .find<std::string>(notEmpty)	
+        .reduceByKey<std::string, std::string, int>(reducer);  
 
-    }
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
-    printf("%5ld ", duration_ms);
+    if(!debug){
+        printf("%5ld ", duration_ms);
+    } else{
+        for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
+            std::string currentResultKey = it->first;
+            int currentResultValue = it->second;
+            std::cout << currentResultKey << " => " << currentResultValue << std::endl;
+        }
+    } 
 
     return 0;
 }

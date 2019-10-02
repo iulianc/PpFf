@@ -9,7 +9,19 @@
 #
 # ruby run_bms.rb
 
-fichier="temps-maps.txt"
+server="java"	#"japet"
+fichier="test.txt"
+output_graph="graph.png"
+
+if [ $server == "java" ]
+then
+    fichier="temps-java-maps.txt"
+    output_graph='graphe_temps_Java_Maps.png'
+else
+    fichier="temps-japet-maps.txt"	
+    output_graph='graphe_temps_Japet_Maps.png'
+fi
+
 
 temps_min=$(ruby min_temps.rb <$fichier)
 temps_max=$(ruby max_temps.rb <$fichier)
@@ -19,7 +31,7 @@ taille_max=$(ruby max_taille.rb <$fichier)
 
 gnuplot -persist <<EOF
 set terminal png
-set output 'graphe_temps_Maps.png'
+set output '$output_graph'
 set logscale y
 set xlabel "Nombre de threads"
 set ylabel "Temps d'exécution (log ms)"

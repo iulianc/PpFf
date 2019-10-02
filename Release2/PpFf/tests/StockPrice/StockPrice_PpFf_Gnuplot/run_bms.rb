@@ -21,7 +21,7 @@ LARGEUR = 8
 if DEBUG
   NB_REPETITIONS = 1
 else
-  NB_REPETITIONS = 1  # Temporaire... sinon 3? 5?
+  NB_REPETITIONS = 10  # Temporaire... sinon 3? 5?
 end
 
 if DEBUG

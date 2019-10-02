@@ -5,22 +5,25 @@ def:
 def_run:  compile
 	make -f gt-makefile run_bms
 
-TEST_FILE="testdata/1505712Words.txt"
-ATTENDUS="attendus-1505712.txt"
 
-TEST_FILE="testdata/78792Words.txt"
-ATTENDUS="attendus-78792.txt"
 
-#TEST_FILE="testdata/loremipsum.txt"
-#ATTENDUS="attendus-loremipsum.txt"
+TEST_FILE_78792="testdata/78792Words.txt"
+ATTENDUS_78792="attendus-78792.txt"
+
+TEST_FILE_loremipsum="testdata/loremipsum.txt"
+ATTENDUS_loremipsum="attendus-loremipsum.txt"
+
+TEST_FILE_752856="testdata/752856Words.txt"
+ATTENDUS_752856="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
-NB_TIMES=5
+
+DEBUG=1
 
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class # WordCountSeq 
+EXE 		:= WordCount WordCount.class WordCountSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -52,28 +55,38 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 compile: $(EXE)
 
-run: run_cpp run_java #run_seq
-
-run_sh:
-	@echo "*** Execution wc.sh"
-	@time (cat $(TEST_FILE) | ./wc.sh | sort > obtenus-sh.txt) 2> temps-sh.txt
-	@diff obtenus-sh.txt $(ATTENDUS)
-	@./real-to-ms.rb `cat temps-sh.txt | grep real | sed s/real//`
+run: run_cpp_seq run_cpp run_java
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
-	@./WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
-	@diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCount $(TEST_FILE_loremipsum) 1 $(DEBUG) | sort > obtenus-cpp.txt
+	@diff obtenus-cpp.txt $(ATTENDUS_loremipsum)
 
-run_seq: compile
-	@echo "*** Execution seq. *** "
-	@@./WordCountSeq $(TEST_FILE) $(NB_TIMES) | sort > obtenus-seq.txt
-	@@diff obtenus-seq.txt $(ATTENDUS)
+	@./WordCount $(TEST_FILE_78792) 2 $(DEBUG) | sort > obtenus-cpp.txt
+	@diff obtenus-cpp.txt $(ATTENDUS_78792)
+
+	@./WordCount $(TEST_FILE_752856) 2 $(DEBUG) | sort > obtenus-cpp.txt
+	@diff obtenus-cpp.txt $(ATTENDUS_752856)
+
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
-	@diff obtenus-java.txt $(ATTENDUS)
+	@java -cp . WordCount $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-java.txt
+	@diff obtenus-java.txt $(ATTENDUS_loremipsum)
+
+	@java -cp . WordCount $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-java.txt
+	@diff obtenus-java.txt $(ATTENDUS_78792)
+
+	@java -cp . WordCount $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-java.txt
+	@diff obtenus-java.txt $(ATTENDUS_752856)
+
+
+run_cpp_seq: compile
+	@echo "*** Generation de fichiers attendus C++ *** "
+	@./WordCountSeq $(TEST_FILE_loremipsum) | sort > $(ATTENDUS_loremipsum)
+	@./WordCountSeq $(TEST_FILE_78792) | sort > $(ATTENDUS_78792)
+	@./WordCountSeq $(TEST_FILE_752856) | sort > $(ATTENDUS_752856)
+
 
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
