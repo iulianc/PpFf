@@ -220,11 +220,20 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 \GT{Ci-bas: ultimement, il faudra pr\'esenter dans le texte dans le
 m\^eme ordre que les num\'eros, donc 4.1 avant 4.2!}
 
-Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: le nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortie. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenus dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78~792 \`a 5~247~678. Pour toutes les exp\'eriences, le facteur de r\'ep\'etitions a \'et\'e \'etabli \`a 10.  Les r\'esultats sont pr\'esent\'es dans les figures~\ref{GrapheTempsWordCountJava.fig} et~\ref{GrapheTempsWordCountJapet.fig} respectivement. La figure~\ref{GrapheTempsWordCountJava.fig} montre les résultats obtenus sur la machine \M1\ et la figure~\ref{GrapheTempsWordCountJapet.fig} montre les r\'esultats obtenus sur la machine M2 (p.~\pageref{machines.sect}).
+\IC{J'ai r\'evis\'e l'analyse selon les nouveaux r\'esultats des exp\'eriences.}
+
+Dans cette section, nous présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous \'evaluons l'application \TT{WordCount} \`a l'aide des m\'etriques suivantes: le nombre de mots comme valeur d'entr\'ee et le temps en millisecondes comme valeur de sortie. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees est repr\'esent\'e par un nombre de mots contenus dans un fichier sur disque. Les nombres de mots de chaque fichier varient de 78~792 \`a 2~614~743. Pour toutes les exp\'eriences, le facteur de r\'ep\'etitions a \'et\'e \'etabli \`a 10.  Les r\'esultats sont pr\'esent\'es dans les figures~\ref{GrapheTempsWordCountJava.fig} et~\ref{GrapheTempsWordCountJapet.fig} respectivement. La figure~\ref{GrapheTempsWordCountJava.fig} montre les résultats obtenus sur la machine \M1\ et la figure~\ref{GrapheTempsWordCountJapet.fig} montre les r\'esultats obtenus sur la machine M2 (p.~\pageref{machines.sect}).
 
 Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees dans le cas de \TT{Java}. L'une avec \emph{JIT} et l'autre sans (p.~\pageref{jitDescription.sect}). On constate que le temps d'ex\'ecution de \TT{WordCount} sans \emph{JIT} est nettement sup\'erieure \`a celui avec \emph{JIT}.
 
-Dans le cas de \TT{PpFf}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres de \emph{threads}. Le temps d'ex\'ecution de \TT{PpFf} avec un \emph{thread} par rapport \`a celui avec deux \emph{threads} est meilleur lorsque la charge du travail est petite. La m\^eme situation peut \^etre constat\'ee lorsqu'on compare le temps d'ex\'ecution de \TT{PpFf} avec celui de \TT{Java}. Pour un petit nombre de mots \`a traiter, le temps d'ex\'ecution de \TT{Java} est meilleur. Cela peut s'expliquer par le mode de construction diff\'erent du pipeline entre les deux programmes. En comparaison avec \TT{Java}, \TT{PpFf} ex\'ecute chaque op\'eration d'un \TT{pipeline} sur un \emph{thread} diff\'erent. Par exemple, les cinq op\'erations de \TT{WordCount} --- \TT{source}, \TT{flatMap}, \TT{map}, \TT{find} et \TT{reduceByKey} --- s'ex\'ecutent sur cinq \emph{threads} diff\'erents. Les co\^uts suppl\'ementaires introduits par ces \emph{threads} sont refl\'et\'es dans un moins bon temps d'ex\'ecution pour une petite charge du travail. Par contre, lorsque la charge du traitement est grande, \TT{PpFf} obtient un meilleur temps d'ex\'ecution que \TT{Java}.
+Dans le cas de \TT{PpFf}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres de \emph{threads}. Les exp\'eriences men\'ees sur la machine \M1\ montre que le temps d'ex\'ecution de \TT{PpFf} avec un \emph{thread} par rapport \`a celui avec deux \emph{threads} est meilleur lorsque la charge du travail est petite. Cela peut s'expliquer par les co\^uts suppl\'ementaires introduits par la construction de nouveaux \emph{threads}. 
+
+En comparant les temps d'ex\'ecutions entre \TT{PpFf} et \TT{Java}, on constate que, pour une petite charge de travail, \TT{PpFf} obtienne de meilleurs temps d'ex\'ecution. Lorsque la charge du travail augmente, \TT{Java} se comporte mieux. Cela peut \^etre observ\'e dans la figure~\ref{GrapheTempsWordCountJava.fig}. \TT{Java} obtient de meilleurs temps d'ex\'ecution par rapport \`a \TT{PpFf--1}. 
+
+La gestion interne de \emph{threads} entre les deux programmes diff\`ere. \TT{PpFf} ex\'ecute chaque op\'eration d'un \TT{pipeline} sur un \emph{thread} diff\'erent. Par exemple, les cinq op\'erations de \TT{WordCount} --- \TT{source}, \TT{flatMap}, \TT{map}, \TT{find} et \TT{reduceByKey} --- s'ex\'ecutent sur cinq \emph{threads} diff\'erents. D'autre part, \TT{Java} g\`ere la cr\'eation de threads par interm\`ede du \TT{framework fork/join}. D\'ecrit dans le chapitre~\ref{outils_connus.chap}, Section~\ref{forkjoin.sect}, le \TT{framework} divise une t\^ache en plus petites sous-t\^aches ind\'ependantes, et ce r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees. Ce m\'ecanisme permet \`a \TT{Java} d'\^etre plus efficace que \TT{PpFf--1}. \TT{PpFf} est plus rapide que \TT{Java} lorsqu'on augmente le nombre de \emph{threads}. On peut observer cela dans la figure~\ref{GrapheTempsWordCountJava.fig}. \TT{PpFf--2} obtient de meilleurs temps d'ex\'ecution que \TT{Java} pour une charge de travail plus grande.
+
+Les m\^emes exp\'eriences ont \'et\'e men\'ees sur la machine \M2\. Par rapport \`a la machine \M1\, la machine \M2\ dispose de plusieurs processeurs. Cela nous a permis d'ex\'ecuter plusieurs s\'eries d'exp\'eriences en faisant osciller le nombre de \emph{threads} dans le programme \TT{PpFf}. La figure~\ref{GrapheTempsWordCountJapet.fig} montre les r\'esultats obtenus pour les deux programmes. On peut constater que \TT{PpFf} obtienne de meilleurs temps d'ex\'ecution  par rapport \`a \TT{Java}. 
+
 
 
 
@@ -285,13 +294,47 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
+%
+%\pgfplotstableread[row sep=\\,col sep=&]{
+%    interval & PpFf & Java \\
+%    M1+  & 302 & 574 \\
+%    M1-   & 504 & 2696 \\
+%    M2+   & 357 & 402 \\
+%    M2-   & 350 & 5810 \\
+%    }\mydata
+%
+%
+%\begin{figure}[H]
+%\centering
+%	\begin{tikzpicture}
+%    	\begin{axis}[
+%            ybar,
+%            bar width=.5cm,
+%            width=.7\textwidth,
+%            height=.5\textwidth,
+%            legend style={at={(0.5,1)},
+%                anchor=north,legend columns=-1},
+%            symbolic x coords={M1+, M1-, M2+, M2-},
+%            xtick=data,
+%            nodes near coords,
+%            nodes near coords align={vertical},
+%            ymin=0,ymax=6000,
+%            ylabel={Temps d'ex\'ecution (ms)},
+%        ]
+%        \addplot table[x=interval,y=PpFf]{\mydata};
+%        \addplot table[x=interval,y=Java]{\mydata};
+%        \legend{PpFf, Java}
+%    	\end{axis}
+%	\end{tikzpicture}
+%    \caption{Les temps d'ex\'ecution pour l'application \TT{Stock Market}.}
+%    \label{executionTimesStockPrice.fig}
+%\end{figure}
+
 
 \pgfplotstableread[row sep=\\,col sep=&]{
     interval & PpFf & Java \\
-    M1+  & 302 & 574 \\
-    M1-   & 504 & 2696 \\
-    M2+   & 357 & 402 \\
-    M2-   & 350 & 5810 \\
+    M1  & 232 & 1629 \\
+    M2  & 304 & 411 \\
     }\mydata
 
 
@@ -305,11 +348,11 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
             height=.5\textwidth,
             legend style={at={(0.5,1)},
                 anchor=north,legend columns=-1},
-            symbolic x coords={M1+, M1-, M2+, M2-},
+            symbolic x coords={M1, M2},
             xtick=data,
             nodes near coords,
             nodes near coords align={vertical},
-            ymin=0,ymax=6000,
+            ymin=0,ymax=2000,
             ylabel={Temps d'ex\'ecution (ms)},
         ]
         \addplot table[x=interval,y=PpFf]{\mydata};
@@ -321,7 +364,10 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
     \label{executionTimesStockPrice.fig}
 \end{figure}
 
-\GT{Quand tu parles des exp\'eriences que tu as faites --- donc dans
+
+
+
+\gt{Quand tu parles des exp\'eriences que tu as faites --- donc dans
 le pass\'e --- tu dois \'ecrire au pass\'e.  Par contre, tu peux
 \'ecrire au pr\'esent pour l'analyse des r\'esultats.}
 
@@ -332,6 +378,8 @@ La deuxi\`eme s\'erie d'exp\'eriences pour analyser les performances de \PpFf{} 
 \label{coutsPpFf.sect}
 
 \GT{On parle ici de <<surco\^uts>> --- \emph{overhead}.}
+
+\IC{Oui. C'est le temps suppl\'ementaire introduit par PpFf par rapport \`a FastFow.}
 
 D\'ecrit dans le chapitre~\ref{implementation.chap}, \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \TT{FastFlow}. Cette section pr\'esente les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}. 
 
@@ -371,9 +419,10 @@ Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastF
 \end{figure}
 
 
-\GT{Il serait pr\'ef\'erable de pr\'esenter dans l'ordre, tant les figures que la description dans le texte --- \M1\ avant M2.}
+\gt{Il serait pr\'ef\'erable de pr\'esenter dans l'ordre, tant les figures que la description dans le texte --- \M1\ avant M2.}
 
-La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut introduit par \PpFf\ sur la machine \M1. \TT{FastFlow} obtient un meilleur temps d'ex\'ecution pour un nombre de \emph{threads} plus grand que 8. La plus grande diff\'erence obtenue entre les temps d'ex\'ecutions de \TT{PpFf} et \TT{FastFlow} est de 100 ms. En prenant en consid\'eration le volume de traitement des deux applications, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont donc faibles.
+La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut
+introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles. La plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de presque 300 ms. En prenant en consid\'eration le grand volume de traitement des deux applications, ces 300 ms sont presque n\'egligeables.
 
 
 

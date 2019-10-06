@@ -70,7 +70,7 @@ Un \'el\'ement de donn\'ee doit donc parcourir plusieurs \'etapes de traitement,
 
 Un tel traitement en pipeline peut aussi \^etre utilis\'e pour des collections \emph{finies} de donn\'ees. Connu comme le mod\`ele de traitement par lots (\emph{batch processing}), le traitement de telles collections peut se faire en traitant chaque collection comme un tout, ou se faire \'el\'ement par \'el\'ement \`a travers un pipeline d'op\'erations et avec du parall\'elisme de flux de donn\'ees.
 
-\GT{J'ai ajout\'e/modifi\'e la partie ci-haut, sinon cela allait en
+\gt{J'ai ajout\'e/modifi\'e la partie ci-haut, sinon cela allait en
 contradiction avec ce que tu fais dans ton m\'emoire.}
 
 
@@ -345,6 +345,7 @@ L'un des principaux avantages des flux est qu'ils peuvent \^etre \'evalu\'es soi
 
 
 \subsection{\emph{Threads} de type \TT{fork/join}}
+\label{forkjoin.sect}
 
 Introduit en \TT{Java~7}, le \emph{framework} \TT{fork/join} permet aux d\'eveloppeurs de sp\'ecifier des t\^aches pouvant \^etre subdivis\'ees et ex\'ecut\'ees en parall\`ele sur des machines multicœurs. Il est bas\'e sur deux op\'erations : \TT{fork} et \TT{join}. L'op\'eration \TT{fork} a pour r\^ole de diviser une t\^ache en plus petites sous-t\^aches ind\'ependantes, et ce  r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees de mani\`ere ind\'ependante et asynchrone. L'op\'eration \TT{join} a pour r\^ole de fusionner les r\'esultats de toutes les sous-t\^aches de mani\`ere r\'ecursive en un seul r\'esultat.
 Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \TT{ForkJoinPool}. Ce dernier est composé d'un ensemble de travailleurs. Le nombre de travailleurs dans un \TT{ForkJoinPool} est g\'en\'eralement limit\'e par le nombre de cœurs de la machine. Chaque travailleur peut ex\'ecuter une t\^ache \`a la fois. Les t\^aches en attente d'ex\'ecution sont stock\'ees dans une file appartenant \`a un travailleur. Une t\^ache en cours d'ex\'ecution peut g\'en\'erer de nouvelles t\^aches, qui sont ensuite mises en file  pour une ex\'ecution ult\'erieure. Lorsqu'un travailleur a termin\'e l'ex\'ecution d'une t\^ache, il essaie de prendre une t\^ache des files des autres travailleurs \`a l'aide d'un algorithme de vol de travail (\emph{work stealing algorithm}~\cite{FrigoLeiRan98}). Cet algorithme permet un \'equilibrage efficace de la charge de travail entre les divers travailleurs.
