@@ -8,9 +8,10 @@ compare avec d'autres.}
 
 Ce chapitre pr\'esente une \'evaluation exp\'erimentale de \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele, plus sp\'ecifiquement avec \TT{Java} et \TT{FastFlow}.
 %
-Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esentons deux applications \'ecrites avec \PpFf. Ces applications ont \'et\'e choisies non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios typiques. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer le nombre d'occurrences des mots dans un texte --- le <<\emph{Hello World!}>> des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}).
+Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esentons deux applications \'ecrites avec \PpFf. Ces applications ont \'et\'e choisies non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios typiques. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer le nombre d'occurrences des mots dans un texte --- le <<\emph{Hello World!}>> des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}). La derni\`ere section, la section~\ref{coutsPpFf.sect}, pr\'esente une application permettant de d\'eterminer les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} --- un \emph{micro benchmark} consistant en un pipeline avec un seul op\'erateur.
 %
 \GT{Il faut aussi mentionner la section~\ref{coutsPpFf.sect}.}
+\IC{J'ai mentionn\'e la derni\`ere section.}
 %
 Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos
 exp\'erimentations ont \'et\'e effectu\'ees.
@@ -126,6 +127,7 @@ l'application; 4.2.2 Mesures obtenues; 4.2.3 Analyse des r\'esultats.}
 \GT{J'ai chang\'e <<Stock Market>> pour <<Stock Price>> car c'est ce
 que tu semblais utiliser dans le code et \`a plusieurs endroits.}
 
+\IC{C'est vrai. Je n'ai pas accord\'e attention \`a la diff\'erence entre les deux titres.}
 
 Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Le code source des applications \TT{WordCount} en~\TT{PpFf} et~\TT{Java} est pr\'esent\'e dans les annexes~\ref{sourceCodeWordCountPpFf.ann} et~\ref{sourceCodeWordCountJava.ann} respectivement.
 
@@ -231,7 +233,10 @@ m\^eme ordre que les num\'eros, donc 4.1 avant 4.2!}
 
 Dans cette section, nous 
 % présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous
-\'evaluons l'application \TT{WordCount} en examinant le temps d'ex\'ecution requis en fonction du nombre de mots. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees --- un fichier sur disque --- contient un nombre croissant de mots. Ces nombres de mots varient de 78~792 \`a 2~614~743. Pour toutes les exp\'eriences, le facteur de r\'ep\'etitions a \'et\'e \'etabli \`a 10.  Les r\'esultats sont pr\'esent\'es dans les figures~\ref{GrapheTempsWordCountJava.fig} et~\ref{GrapheTempsWordCountJapet.fig} respectivement: la figure~\ref{GrapheTempsWordCountJava.fig} montre les résultats obtenus sur la machine \M1\ alors que la figure~\ref{GrapheTempsWordCountJapet.fig} montre ceux obtenus sur la machine M2.
+\'evaluons l'application \TT{WordCount} en examinant le temps d'ex\'ecution requis en fonction du nombre de mots. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees --- un fichier sur disque --- contient un nombre croissant de mots. Ces nombres de mots varient de 78~792 \`a 2~614~743. Pour toutes les exp\'eriences, le facteur de r\'ep\'etitions a \'et\'e \'etabli \`a 10.  Les r\'esultats sont pr\'esent\'es dans les figures~\ref{GrapheTempsWordCountJava.fig} et~\ref{GrapheTempsWordCountJapet.fig} respectivement: la figure~\ref{GrapheTempsWordCountJava.fig} montre les résultats obtenus sur la machine \M1\ alors que la figure~\ref{GrapheTempsWordCountJapet.fig} montre ceux obtenus sur la machine M2. Repr\'esent\'es sur les deux axes des diagrammes, les r\'esultats sont interpr\'et\'es \`a l'aide des deux m\'etriques : le nombre de mots sur l'axe x et le temps d'ex\'ecution sur l'axe y.  Afin de visualiser l'ensemble des exp\'eriences sur une m\^eme figure, l'\'echelle pour le temps d'ex\'ecution est logarithmique. 
+
+Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees dans le cas de \TT{Java}. L'une avec \emph{JIT} et l'autre sans. Les r\'esultats de ces exp\'eriences sont marqu\'es dans les deux diagrammes par \TT{Java+} et \TT{Java-} respectivement. Dans le cas de \TT{PpFf}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres de \emph{threads}. Deux \emph{threads} ont \'et\'e utilis\'es sur la machine \M1\ et huit sur la machine \M2. Le suffixe de type int\`egre dans les notations de \TT{PpFf} de deux diagrammes repr\'esente le nombre de \emph{threads} utilis\'es dans les exp\'eriences. Par exemple dans la notation \TT{PpFf-2}, deux \emph{threads} ont \'et\'e utilis\'es et dans la notation \TT{PpFf-4}, quatre \emph{threads} ont \'et\'e utilis\'es.
+
 
 \GT{Il faut expliquer un peu plus ces figures, notamment: i) le fait
 que l'\'echelle pour le temps d'ex\'ecution est logarithmique (pour
@@ -239,11 +244,9 @@ permettre de voir l'ensemble des exp\'eriences sur une m\^eme
 figure. ii) expliquer bri\`evement les \'etiquettes utilis\'ees~:
 Java- vs. Java+, PpFf-*}
 
+\IC{J'ai ajout\'e des explications suppl\'ementaires.}
 
-
-Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees dans le cas de \TT{Java}. L'une avec \emph{JIT} et l'autre sans. On constate que le temps d'ex\'ecution de \TT{WordCount} sans \emph{JIT} est nettement sup\'erieur \`a celui avec \emph{JIT}.
-
-Dans le cas de \TT{PpFf}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres de \emph{threads}. Les exp\'eriences men\'ees sur la machine \M1\ montrent que le temps d'ex\'ecution de \TT{PpFf} avec un \emph{thread} par rapport \`a celui avec deux \emph{threads} est meilleur lorsque la charge du travail est petite. Cela peut s'expliquer par les surco\^uts suppl\'ementaires introduits par la cr\'eation de \emph{threads}. 
+Les exp\'eriences men\'ees sur la machine \M1\ montrent que le temps d'ex\'ecution de \TT{Java} sans \TT{JIT} est nettement sup\'erieur \`a celui avec \TT{JIT}. Dans le cas de \TT{PpFf}, le temps d'ex\'ecution avec un \emph{thread} par rapport \`a celui avec deux \emph{threads} est meilleur lorsque la charge du travail est petite. Cela peut s'expliquer par les surco\^uts suppl\'ementaires introduits par la cr\'eation de \emph{threads}.
 
 En comparant les temps d'ex\'ecutions entre \TT{PpFf} et \TT{Java}, on constate que, pour une petite charge de travail, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution. Lorsque la charge du travail augmente, \TT{Java} se comporte mieux. Cela peut \^etre observ\'e dans la figure~\ref{GrapheTempsWordCountJava.fig}, o\`u \TT{Java} obtient de meilleurs temps d'ex\'ecution par rapport \`a \TT{PpFf--1}. 
 
@@ -256,6 +259,7 @@ Les m\^emes exp\'eriences ont \'et\'e men\'ees sur la machine \M2. Par rapport \
 l'augmentation du temps d'ex\'ecution augmente de fa\c{c}on lin\'eaire
 avec l'augmentation du nombre de mots trait\'es?}
 
+\IC{Je ne sais pas exactement de ce que je dois parler. Est-ce que je dois parler d'une seule s\'erie d'exp\'eriences? Par exemple, en prenant PpFf-8, je d\'etermine le nombre de mots trait\'e par ms pour chaque fichier et ensuite je d\'etermine si ce r\'esultat est lin\'eaire. Je ne sais pas ce que je dois montrer avec ce r\'esultat. Ou je dois arriver ? }
 
 \section{\emph{Stock Price}}
 \label{stockprice.sect}
@@ -392,10 +396,12 @@ le pass\'e --- tu dois \'ecrire au pass\'e.  Par contre, tu peux
 \'ecrire au pr\'esent pour l'analyse des r\'esultats.}
 
 Les r\'esultats  pour l'application \TT{Stock Price}
-sont pr\'esent\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences ont aussi \'et\'e menées sur les machines \M1, \M2. Dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}.
+sont pr\'esent\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences ont aussi \'et\'e menées sur les machines \M1, \M2. Dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}. Sur la machine \M1, \TT{PpFf} est plus de 7 fois plus rapide que \TT{Java}. Tandis que \TT{PpFf} trouve le prix maximum de l'action en seulement 232~ms, Java requiert 1~629~ms pour la m\^eme t\^ache. Un meilleur temps d'ex\'ecution est obtenu par \TT{Java} sur la machine \M2. Avec un temps d'ex\'ecution de 411~ms, \TT{Java} est presque 4 fois plus rapide en comparaison avec le r\'esultat obtenu sur la machine \M1. M\^eme si \TT{Java} se comporte mieux sur cette machine, son ex\'ecution n'est pas meilleure que celle de \TT{PpFf}. Avec 304~ms, \TT{PpFf} est toujours plus rapide que \TT{Java}. 
 
 \GT{ll faut expliquer plus cette figure, la signification des nombres
 sur l'\'echelle des X!}
+
+\IC{J'ai ajout\'e plus d'explications.}
 
 
 \section{Surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}}
@@ -445,9 +451,10 @@ Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastF
 \gt{Il serait pr\'ef\'erable de pr\'esenter dans l'ordre, tant les figures que la description dans le texte --- \M1\ avant M2.}
 
 La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut
-introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref, que les lignes du graph pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de presque 300~ms. Or, en prenant en consid\'eration le grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
+introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref, que les lignes du graph pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de presque 300~ms. Le volume de traitement des deux applications est tr\`es grand. Le pipeline est compos\'e de 100~000 \'el\'ements et l'algorithme de calcul appliqu\'e \`a chaque \'el\'ement consiste \`a incr\'ementer une valeur de 0 \`a 10~000 dans le cas avec la granularit\'e 4 et de 0 \`a 100~000 avec la granularit\'e 5. Or, en prenant en consid\'eration ce grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
 
 \GT{Tu parles de grand volume de traitement. Il faudrait expliquer un peu plus pourquoi/comment ce volume est grand = 100~000 \'el\'ements trait\'es dans un pipeline plusieurs fois??}
 
+\IC{J'ai expliqu\'e un petit peu le volume de traitement.}
 
 
