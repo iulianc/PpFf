@@ -255,11 +255,77 @@ La gestion de \emph{threads} entre les deux programmes diff\`ere. \TT{PpFf} ex\'
 Les m\^emes exp\'eriences ont \'et\'e men\'ees sur la machine \M2. Par rapport \`a la machine \M1\, \M2\ dispose de plusieurs processeurs. Cela nous a permis d'ex\'ecuter plusieurs s\'eries d'exp\'eriences en faisant varier le nombre de \emph{threads} dans le programme \TT{PpFf}. La figure~\ref{GrapheTempsWordCountJapet.fig} montre les r\'esultats obtenus pour les deux programmes. On peut constater que \TT{PpFf} obtient de meilleurs temps d'ex\'ecution  que \TT{Java}. 
 
 
+\begin{center}
+\footnotesize
+\begin{longtable}{|l|l|p{5cm}|}
+\caption{Les nombres de mots trait\'es par unit\'e de temps de~\PpFf-2.\label{experiencesPpFf2.tab}}\\
+\hline
+\textbf{Nombre de mots} & \textbf{Temps d'ex\'ecution en ms} & \textbf{Nombres de mots trait\'es par unit\'e de temps}\\
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{\tablename\ \thetable\ Les méthodes publiques de l'API (\textit{suite})} \\
+\hline
+\textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
+\hline
+\endhead
+\hline \multicolumn{3}{r}{\textit{Suite page suivante}} \\
+\endfoot
+\hline
+\endlastfoot
+\hline
+	78~792 &
+	151 & 
+    522
+    \\
+\hline
+	167~941 &
+	291 & 
+    577
+    \\ 
+\hline
+	281~307 &
+	474 & 
+    593
+    \\ 
+\hline
+	482~636 &
+	793 & 
+    609
+    \\ 
+\hline
+	752856 &
+	1263 & 
+    596
+    \\ 
+\hline
+	1~639~684 &
+	2~724 & 
+    602
+    \\ 
+\hline
+	2137758 &
+	4124 & 
+    518
+    \\ 
+\hline
+	2~614~743 &
+	4~724 & 
+    554
+    \\                      
+\hline    
+\end{longtable}
+\normalsize
+\end{center}    
+
+Une autre remarque int\'eressante qui peut \^etre observ\'ee dans ce diagramme est que le temps d'ex\'ecution augmente de fa\c {c}on lin\'eaire en fonction du nombre de mots trait\'es. En prenant comme exemple le diagramme de \TT{PpFf-2}, le tableau~\ref{experiencesPpFf2.tab} montre les temps d'ex\'ecutions obtenus par \TT{PpFf-2} et les nombres de mots trait\'es par unit\'e de temps. Dans ce tableau on peut observer que pour la plus petite charge de travail, \TT{PpFf} traite 521 mots par ms et 553 pour le plus gros fichier. Cela d\'emontre que \TT{PpFf} est efficace non seulement pour un petit volume de travail, mais aussi pour de grands traitements de donn\'ees.  
+
+
 \GT{Surtout pour \M2, ce serait bien de voir/discuter si
 l'augmentation du temps d'ex\'ecution augmente de fa\c{c}on lin\'eaire
 avec l'augmentation du nombre de mots trait\'es?}
 
-\IC{Je ne sais pas exactement de ce que je dois parler. Est-ce que je dois parler d'une seule s\'erie d'exp\'eriences? Par exemple, en prenant PpFf-8, je d\'etermine le nombre de mots trait\'e par ms pour chaque fichier et ensuite je d\'etermine si ce r\'esultat est lin\'eaire. Je ne sais pas ce que je dois montrer avec ce r\'esultat. Ou je dois arriver ? }
+\IC{J'ai discut\'e un peu du temps d'ex\'ecution}
 
 \section{Analyse de l'application \TT{StockPrice}}
 \label{stockprice.sect}
@@ -395,9 +461,6 @@ sp\'ecifique? Ou une transaction boursi\`ere? \`A clarifier!}
 le pass\'e --- tu dois \'ecrire au pass\'e.  Par contre, tu peux
 \'ecrire au pr\'esent pour l'analyse des r\'esultats.}
 
-Les r\'esultats  pour l'application \TT{StockPrice}
-sont pr\'esent\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences ont aussi \'et\'e menées sur les machines \M1, \M2. 
-%
 \GT{Ici, avant de comparer Java/PpFF sur les deux machine, il faut
 dire --- parce que ce n'est pas clair --- ce que repr\'esente le
 nombre indiqu\'e.  Est-ce que 232 est le temps total d'ex\'ecution?
@@ -407,8 +470,9 @@ programme en traite un grand nombre. Ce n'est pas clair!  Parce que le
 texte ci-bas semble laisser penser que c'est le temps pour traiter une
 (1) seule action. Est-ce vraiment le cas?}
 
-On remarque que
-dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}. Sur la machine \M1, \TT{PpFf} est plus de 7 fois plus rapide que \TT{Java}. Tandis que \TT{PpFf} trouve le prix maximum de l'action en seulement 232~ms, Java requiert 1~629~ms pour la m\^eme t\^ache. Un meilleur temps d'ex\'ecution est obtenu par \TT{Java} sur la machine \M2. Avec un temps d'ex\'ecution de 411~ms, \TT{Java} est presque 4 fois plus rapide en comparaison avec le r\'esultat obtenu sur la machine \M1. M\^eme si \TT{Java} se comporte mieux sur cette machine, son ex\'ecution n'est pas meilleure que celle de \TT{PpFf}. Avec 304~ms, \TT{PpFf} est toujours plus rapide que \TT{Java}. 
+\IC{J'ai ajout\'e plus de d\'etails. Je ne sais pas si c'est plus clair.}
+
+Les r\'esultats  pour l'application \TT{StockPrice} sont pr\'esent\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences ont aussi \'et\'e menées sur les machines \M1, \M2. Elles sont repr\'esent\'ees sur l'axe x de la figure~\ref{executionTimesStockPrice.fig}. Chaque programme calcule le prix maximum pour plusieurs actions. Le temps d'ex\'ecution r\'esultant est repr\'esent\'e sur l'axe y de la m\^eme figure~\ref{executionTimesStockPrice.fig}. On remarque que dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}. Sur la machine \M1, \TT{PpFf} est plus de 7 fois plus rapide que \TT{Java}. Tandis que \TT{PpFf} trouve le prix maximum de l'action en seulement 232~ms, Java requiert 1~629~ms pour la m\^eme t\^ache. Un meilleur temps d'ex\'ecution est obtenu par \TT{Java} sur la machine \M2. Avec un temps d'ex\'ecution de 411~ms, \TT{Java} est presque 4 fois plus rapide en comparaison avec le r\'esultat obtenu sur la machine \M1. M\^eme si \TT{Java} se comporte mieux sur cette machine, son ex\'ecution n'est pas meilleure que celle de \TT{PpFf}. Avec 304~ms, \TT{PpFf} est toujours plus rapide que \TT{Java}. 
 
 \gt{ll faut expliquer plus cette figure, la signification des nombres
 sur l'\'echelle des X!}
