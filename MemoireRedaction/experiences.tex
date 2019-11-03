@@ -8,13 +8,7 @@ compare avec d'autres.}
 
 Ce chapitre pr\'esente une \'evaluation exp\'erimentale de \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele, plus sp\'ecifiquement avec \TT{Java} et \TT{FastFlow}.
 %
-Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esentons deux applications \'ecrites avec \PpFf. Ces applications ont \'et\'e choisies non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios typiques. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer le nombre d'occurrences des mots dans un texte --- le <<\emph{Hello World!}>> des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}). Finalement, la section~\ref{coutsPpFf.sect} pr\'esente une application permettant de d\'eterminer les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} --- un \emph{micro benchmark} consistant en un pipeline avec un seul op\'erateur.
-%
-\gt{Il faut aussi mentionner la section~\ref{coutsPpFf.sect}.}
-\ic{J'ai mentionn\'e la derni\`ere section.}
-%
-Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos
-exp\'erimentations ont \'et\'e effectu\'ees.
+Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esentons deux applications \'ecrites avec \PpFf. Ces applications ont \'et\'e choisies non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios typiques. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer le nombre d'occurrences des mots dans un texte --- le <<\emph{Hello World!}>> des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}). Finalement, la section~\ref{coutsPpFf.sect} pr\'esente une application permettant de d\'eterminer les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} --- un \emph{micro benchmark} consistant en un pipeline avec un seul op\'erateur. Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos exp\'erimentations ont \'et\'e effectu\'ees.
 
 \section{M\'ethode utilis\'ee pour les exp\'erimentations}
 \label{usedMethodsForBenchmarks.chap}
@@ -502,7 +496,7 @@ Pour cette exp\'erience, nous avons cr\'e\'e un \emph{micro benchmark} consistan
 \end{lstlisting}
 } 
 
-Ici, \TT{granularity} est un param\`etre sp\'ecifi\'e en argument lors du lancement de l'application. Le code source de cette application pour~\TT{PpFf} et~\TT{FastFlow} est pr\'esent\'e en annexe (Annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement). Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le pipeline, o\`u a source est constitu\'ee d'une suite d'\'el\'ements. Plus sp\'ecifiquement, pour cette exp\'erience, la suite est compos\'ee des entiers allant de 1 \`a 100~000.  
+Ici, \TT{granularity} est un param\`etre sp\'ecifi\'e en argument lors du lancement de l'application. Le code source de cette application pour~\TT{PpFf} et~\TT{FastFlow} est pr\'esent\'e en annexe (Annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement). Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le pipeline, o\`u la source est constitu\'ee d'une suite d'\'el\'ements. Plus sp\'ecifiquement, pour cette exp\'erience, la suite est compos\'ee des entiers allant de 1 \`a 100~000.  
 
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
@@ -528,7 +522,7 @@ Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastF
 \gt{Il serait pr\'ef\'erable de pr\'esenter dans l'ordre, tant les figures que la description dans le texte --- \M1\ avant M2.}
 
 La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut
-introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref, que les lignes du graph pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de presque 300~ms. Le volume de traitement des deux applications est tr\`es grand. Le pipeline traite 100~000 \'el\'ements et l'algorithme de calcul appliqu\'e \`a chaque \'el\'ement consiste \`a incr\'ementer une valeur de 0 \`a 10~000 dans le cas avec la granularit\'e 4, ou de 0 \`a 100~000 avec la granularit\'e 5. Or, en prenant en consid\'eration ce grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
+introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref{GrapheTempsMapstJapet.fig}, que les lignes du graph pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de presque 300~ms. Le volume de traitement des deux applications est tr\`es grand. Le pipeline traite 100~000 \'el\'ements et l'algorithme de calcul appliqu\'e \`a chaque \'el\'ement consiste \`a incr\'ementer une valeur de 0 \`a 10~000 dans le cas avec la granularit\'e 4, ou de 0 \`a 100~000 avec la granularit\'e 5. Or, en prenant en consid\'eration ce grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
 
 \gt{Tu parles de grand volume de traitement. Il faudrait expliquer un peu plus pourquoi/comment ce volume est grand = 100~000 \'el\'ements trait\'es dans un pipeline plusieurs fois??}
 
