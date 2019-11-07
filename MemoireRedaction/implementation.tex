@@ -22,7 +22,7 @@ des sp\'ecifications de placement.}
 \end{figure}
 
 
-Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les \emph{stages} sont d\'ecrits dans la quatri\`eme section. Le chapitre se termine par la description d'un exemple complet d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e.
+Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les \emph{stages} sont d\'ecrits dans la quatri\`eme section. La cinqui\`eme section pr\'esente la description d'un exemple complet d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e. Le chapitre termine en pr\'esentant quelques statistiques sur le code de cette mise en \oe{}uvre.
 
 
 \section{Mise en \oe{}uvre multi-couches de \PpFf{} via \TT{FastFlow}}
@@ -443,3 +443,16 @@ L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'
 
 Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS}. \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es \`a du parall\'elisme de donn\'ees, le r\'esultat global de l'op\'eration est obtenu en combinant les r\'esultats des sous-flux produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'eration \TT{collect} repr\'esent\'ee dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires, tel qu'expliqu\'e \`a la section~\ref{stages-finaux.sect}
 
+
+\section{Quelques statistiques sur la mise en \oe{}uvre}
+
+\GT{Je crois qu'ici, il serait bien de donner une id\'ee de {\bf
+l'envergure} de ta mise en oeuvre~: combien de fichiers et de lignes
+de code pour la sp\'ecificatioan de l'API?  nombre de fichiers, lignes
+de code et nombre de tests pour les tests unitaires et tests
+fonctionnels (programmes complets).  Je trouve important de donner une
+id\'ee de \c{c}a, pour montrer que le travail r\'ealis\'e est loin
+d'\^etre trivial (quantit\'e de code), et aussi qu'il a \'et\'e fait
+de fa\c{c}on <<professionnelle>>, avec de nombreux tests unitaires
+pour assurer que les diverses m\'ethodes de l'API produisent les bons
+r\'esultats.}

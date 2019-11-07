@@ -141,7 +141,7 @@ flux avec les lignes du fichier. Le fichier est sp\'ecifi\'e par un nom de fichi
 
 \section{Flux de donn\'ees: type \TT{Flow}}
 
-L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface suit d'assez pr\`es celle introduite pour les \TT{Stream}s de \TT{Java} 8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes export\'ees par l'API, regroup\'ees selon leur fonctionnalit\'e, puis en ordre alphab\'etique \`a l'int\'erieur d'une cat\'egorie.
+L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface s'inspire de celle introduite pour les \TT{Stream}s de \TT{Java} 8. Le tableau~\ref{methodes_api.tab} d\'ecrit bri\`evement les m\'ethodes export\'ees par l'API, regroup\'ees selon leur fonctionnalit\'e, puis en ordre alphab\'etique \`a l'int\'erieur d'une cat\'egorie.
 
 
 %\begin{landscape}
@@ -483,7 +483,11 @@ std::vector<std::string> result =
 \end{lstlisting}
 
 
-La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en un autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
+La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en un autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. 
+%
+\GT{Je crois qu'il faudrait ajouter quelques explications sur le fait que ce sont toujours des pointeurs qui sont transmis, et expliquer bri\`evement pourquoi, i.e., contrainte li\'ee \`a la mise en \oe{}uvre avec Fastflow, non?}
+%
+Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
 
 
 \subsection{M\'ethode \TT{flatMap}}
@@ -799,7 +803,7 @@ NOMS_EMPLOYES_PAR_AGE expected = {
 \end{lstlisting}
 
 
-La m\'ethode \TT{groupByKey} comporte en fait deux param\`etres, mais le deuxi\`eme param\`etre est optionnel. Ce param\`etre est une fonction qui s'applique sur les \'el\'ements s\'electionn\'es pour produire les \'el\'ements du \TT{map}. Par exemple,  le listing~\ref{groupByKeyExample2.c++} pr\'esente presque le m\^eme exemple que dans le listing~\ref{groupByKeyExample.c++}, o\`u les employ\'es sont regroup\'es selon leur \^age, mais dans ce deuxi\`eme cas, la valeur r\'esultante ajout\'ee au conteneur est le nom de l'employ\'e --- et non l'employ\'e lui-m\^eme. On obtient donc un \TT{map} o\`u la cl\'e est un \^age et la valeur est un \TT{vector} des noms d'employ\'es ayant cet \^age --- et non un \TT{vector} des employ\'es ayant le m\^eme \^age.
+La m\'ethode \TT{groupByKey} comporte en fait deux param\`etres, mais le deuxi\`eme param\`etre est optionnel. Ce param\`etre est une fonction qui s'applique sur les \'el\'ements s\'electionn\'es pour produire les \'el\'ements du \TT{map}. Par exemple,  le listing~\ref{groupByKeyExample2.c++} pr\'esente presque le m\^eme exemple que dans le listing~\ref{groupByKeyExample.c++}, o\`u les employ\'es sont regroup\'es selon leur \^age, mais dans ce deuxi\`eme cas, la valeur r\'esultante ajout\'ee au conteneur est le nom de l'employ\'e --- et non l'employ\'e lui-m\^eme. On obtient donc un \TT{map} o\`u la cl\'e est un \^age et la valeur est un \TT{vector} \emph{des noms d'employ\'es} ayant cet \^age --- et non un \TT{vector} des employ\'es.
 
 
 La description formelle de \TT{groupByKey} --- d\'ecrite par mon directeur de recherche --- est pr\'esent\'ee \`a la Figure~\ref{group-by-key-spec.fig}.
