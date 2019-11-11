@@ -483,10 +483,10 @@ std::vector<std::string> result =
 \end{lstlisting}
 
 
-La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en une autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. Le r\'esultat renvoy\'e par cette expression lambda est un pointeur. PpFf s'appuie sur le mod\`ele de programmation \TT{FastFlow}. Ce mod\`ele est bas\'e sur le d\'ecouplage des donn\'ees de la synchronisation, o\`u seuls les pointeurs sont transmis au lieu de donn\'es.
+La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en une autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. Le r\'esultat renvoy\'e par cette expression lambda est un pointeur. \PpFf{} s'appuie sur le mod\`ele de programmation de \TT{FastFlow}, tel que d\'ecrit dans le prochain chapitre. Ce mod\`ele est bas\'e sur le d\'ecouplage des donn\'ees et de la synchronisation, et o\`u seuls des pointeurs vers les donn\'ees sont transmis plut\^ot que les donn\'ees elles-m\^emes.
 %
-\GT{Je crois qu'il faudrait ajouter quelques explications sur le fait que ce sont toujours des pointeurs qui sont transmis, et expliquer bri\`evement pourquoi, i.e., contrainte li\'ee \`a la mise en \oe{}uvre avec Fastflow, non?}
-\IC{J'ai ajout\'e quelques explications}
+\gt{Je crois qu'il faudrait ajouter quelques explications sur le fait que ce sont toujours des pointeurs qui sont transmis, et expliquer bri\`evement pourquoi, i.e., contrainte li\'ee \`a la mise en \oe{}uvre avec Fastflow, non?}
+\ic{J'ai ajout\'e quelques explications}
 %
 Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
 
