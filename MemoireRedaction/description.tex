@@ -129,7 +129,7 @@ flux avec les lignes du fichier. Le fichier est sp\'ecifi\'e par un nom de fichi
 
 
 
-\item L'op\'eration \TT{flatMap} d\'ecompose chaque ligne en mots individuels en appliquant la fonction \TT{splitInWords} sur chacune des lignes;
+\item L'op\'eration \TT{flatMap} d\'ecompose chaque ligne en mots individuels en appliquant la fonction \TT{splitInWords} sur chacune des lignes.
 
 \item L'op\'eration \TT{map} transforme chacun des mots en rempla\c{c}ant les lettres majuscules d'un mot en lettres minuscules en appliquant la fonction \TT{toLowerCase}.
 
@@ -435,13 +435,13 @@ Plus pr\'ecis\'ement,
 l'API fournit deux m\'ethodes {\bf statiques} pour cr\'eer un \TT{Flux} \`a partir de diverses sources, telles que des collections ou des fichiers de donn\'ees. Des travaux futurs pourraient \'etendre l'interface pour prendre en charge plus des sources de donn\'ees.
 
 
-Les signatures pour les deux m\'ethodes sont donn\'ees dans le tableau~\ref{methodes_api.tab} (p.~\pageref{source.page}). Tandis que la premi\`ere m\'ethode, \TT{source(path)}, produit les donn\'ees d'un flux \`a partir de contenu (les lignes) d'un fichier texte, la deuxi\`eme m\'ethode, \TT{source(begin\_iterator, end\_iterator)}, produit les donn\'ees d'un flux \`a partir des \'el\'ements d'un conteneur STL.
+Les signatures pour les deux m\'ethodes sont donn\'ees dans le tableau~\ref{methodes_api.tab} (p.~\pageref{source.page}). Tandis que la premi\`ere m\'ethode, \TT{source(path)}, produit les donn\'ees d'un flux \`a partir du contenu (les lignes) d'un fichier texte, la deuxi\`eme m\'ethode, \TT{source(begin\_iterator, end\_iterator)}, produit les donn\'ees d'un flux \`a partir des \'el\'ements d'un conteneur STL.
 
 
 \begin{lstlisting}[
 label={mapExample.c++},
 language=c++,
-caption={La transformation d'une collection d'entiers en un autre collection d'entiers en appliquant une expression lambda sur chacun des \'el\'ements.},
+caption={La transformation d'une collection d'entiers en une autre collection d'entiers en appliquant une expression lambda sur chacun des \'el\'ements.},
 frame=single,
 float]
 std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -454,7 +454,7 @@ std::vector<int> currentResult =
 
 
 
-Les deux m\'ethodes pour sp\'ecifier la source d'un flux sont illustr\'ees, respectivement, dans les exemples du listing~\ref{wordcount.c++} et~\ref{mapExample.c++}. La m\'ethode \TT{source} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier \TT{/home/Words.txt}. Le param\`etre \TT{path} de la m\'ethode sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple fourni dans le listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} en fournissant les it\'erateure de d\'ebut et fin du \TT{vector elems}.
+Les deux m\'ethodes pour sp\'ecifier la source d'un flux sont illustr\'ees, respectivement, dans les exemples des listings~\ref{wordcount.c++} et~\ref{mapExample.c++}. La m\'ethode \TT{source} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier \TT{/home/Words.txt}. Le param\`etre \TT{path} de la m\'ethode sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple du listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} en fournissant les it\'erateure de d\'ebut et fin du \TT{vector elems}.
 
 
 \section{Cat\'egorie \TT{Transformation}}
@@ -472,7 +472,7 @@ Cette section d\'ecrit plus en d\'etail les principales op\'erations de la cat\'
 \begin{lstlisting}[
 label={mapExample2.c++},
 language=c++,
-caption={La s\'election des noms de tous les employ\'es d'une collection.},
+caption={La g\'en\'eration des noms de tous les employ\'es d'une collection.},
 frame=single,
 float]
 std::vector<std::string> result =
@@ -483,9 +483,10 @@ std::vector<std::string> result =
 \end{lstlisting}
 
 
-La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en un autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. 
+La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en une autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. Le r\'esultat renvoy\'e par cette expression lambda est un pointeur. PpFf s'appuie sur le mod\`ele de programmation \TT{FastFlow}. Ce mod\`ele est bas\'e sur le d\'ecouplage des donn\'ees de la synchronisation, o\`u seuls les pointeurs sont transmis au lieu de donn\'es.
 %
 \GT{Je crois qu'il faudrait ajouter quelques explications sur le fait que ce sont toujours des pointeurs qui sont transmis, et expliquer bri\`evement pourquoi, i.e., contrainte li\'ee \`a la mise en \oe{}uvre avec Fastflow, non?}
+\IC{J'ai ajout\'e quelques explications}
 %
 Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
 
@@ -668,7 +669,7 @@ float]
 \end{lstlisting}
 
 
-Le troisi\`eme param\`etre du constructeur d'un \TT{Reducer}, la fonction \TT{combiner}, est utilis\'e lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel} montre un exemple d'utilisation d'un \TT{Reducer} mais ex\'ecut\'e en parall\`ele. Dans cet exemple, \`a des fins d'illustration, une valeur initiale est sp\'ecifi\'ee, \'egale \`a \TT3 et, alors que les fonctions \TT{combiner} et \TT{accumulator} sont toutes deux indiqu\'ees explicitement comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
+Le troisi\`eme param\`etre du constructeur d'un \TT{Reducer}, la fonction \TT{combiner}, est utilis\'e lorsque le flux est trait\'e en parall\`ele, par plusieurs \emph{threads}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque \emph{thread} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les divers \emph{threads} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel} montre un exemple d'utilisation d'un \TT{Reducer} mais ex\'ecut\'e en parall\`ele. Dans cet exemple, \`a des fins d'illustration, une valeur initiale est sp\'ecifi\'ee, \'egale \`a \TT3, alors que les fonctions \TT{combiner} et \TT{accumulator} sont toutes deux indiqu\'ees explicitement comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
 
 \begin{figure}
 

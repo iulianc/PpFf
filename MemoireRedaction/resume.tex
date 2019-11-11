@@ -2,9 +2,10 @@
 
 Les applications de traitement de flux sont utilis\'ees pour traiter et analyser les donn\'ees qui arrivent de fa\c {c}on continue provenant de sources diff\'erentes. Celles-ci incluent des applications de s\'ecurit\'e, des applications informatiques g\'en\'erant des capteurs, divers types d'applications de surveillance, des applications du domaine de la finance, de la gestion de r\'eseau informatique et des t\'el\'ecommunications. Ces applications sont, dans de nombreux cas, complexes. Leur complexit\'e augmente encore plus lorsque les donn\'ees doivent \^etre trait\'ees en parall\`ele. 
 
-Afin de traiter de fa\c {c}on simple et efficace les flux de donn\'ees, ce m\'emoire propose \TT{PpFf}, une \emph{API} \TT{C++} simple, de style fonctionnelle, fond\'ee sur une approche <<diviser-pour-r\'egner>> mais non r\'ecursive.
+Afin de traiter de fa\c {c}on simple et efficace les flux de donn\'ees, ce m\'emoire propose \TT{PpFf}, une \emph{API} \TT{C++} simple, de style fonctionnelle, fond\'ee sur une approche <<diviser-pour-r\'egner>> mais non r\'ecursive, qui peut traiter des donn\'ees en flux incr\'emental, mais aussi des collections en lot/batch.
 %
 \GT{Je crois qu'il faudrait aussi mentionner que \ppff\ peut traiter des donn\'ees en flux incr\'emental, mais aussi des collections en lot/batch.}
+\IC{J'ai modifi\'e la sentence.}
 %
 \ppff\ permet aussi aux programmeurs d'exposer facilement le parall\'elisme dans des applications de traitement de donn\'ees --- autant du parall\'elisme de flux que du parall\'elisme de donn\'ees --- et ce en obtenant des performances int\'eressantes, ce qui est possible grace \`a une mise en \oe{}uvre qui utilise la biblioth\`eque \TT{FastFlow}, une biblioth\`eque de bas niveau de traitement de flux de donn\'ees en \TT{C++}. 
 

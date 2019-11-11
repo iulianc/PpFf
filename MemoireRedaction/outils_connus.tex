@@ -92,7 +92,7 @@ disponibles.}
 revoir les URLs ci-haut!}
 
 
-Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisis de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
+Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisi de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
 
 
 \section{Apache Spark}
@@ -122,7 +122,7 @@ Nous expliquons ces deux mod\`eles dans les sous-sections qui suivent.
 
 Un \TT{RDD} est une abstraction de donn\'ees en m\'emoire qui \'evite la r\'eplication de donn\'ees et minimise les acc\`es au disque. L'utilisation de \TT{RDD}s permet aux applications de mettre en cache des donn\'ees \`a travers diff\'erentes \'etapes de traitement, ce qui acc\'el\`ere consid\'erablement la r\'eutilisation pour les traitements futurs. De plus, les \TT{RDD}s m\'emorisent les op\'erations utilis\'ees pour les construire et utilisent un m\'ecanisme de \emph{checkpoint}. Lorsqu'une panne survient, les \TT{RDD}s requis peuvent \^etre reconstruits, et ce sans devoir tout refaire les calculs.
 
-Les \TT{RDD}s sont conçus pour \^etre partitionn\'es, donc r\'epartis sur diff\'erentes machines. Chaque partition contient des enregistrements qui peuvent \^etre cr\'e\'es par op\'erations de transformations. Les transformations incluent notamment les opérations \TT{map}, \TT{filter}, \TT{groupBy} et \TT{join}.
+Les \TT{RDD}s sont conçus pour \^etre partitionn\'es, donc r\'epartis sur diff\'erentes machines. Chaque partition contient des enregistrements qui peuvent \^etre cr\'e\'es par des op\'erations de transformations. Les transformations incluent notamment les opérations \TT{map}, \TT{filter}, \TT{groupBy} et \TT{join}.
 
 
 \gt{Je crois que le paragaphe qui suit est redondant par rapport \`a
@@ -171,11 +171,11 @@ counts
 \end{lstlisting}
 
 
-Afin d'illustrer le mod\`ele de programmation avec les \TT{RDD}s de \TT{Spark}, le listing~\ref{wordCountSpark} montre le code source d'un segment de code d\'ecompte des mots, code \'ecrit en \TT{Java}.%
+Afin d'illustrer le mod\`ele de programmation avec les \TT{RDD}s de \TT{Spark}, le listing~\ref{wordCountSpark} montre le code source d'un segment de code de d\'ecompte des mots, code \'ecrit en \TT{Java}.%
 %
 \footnote{\url{https://spark.apache.org/examples.html}}
 %
-Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des divers mots dans un fichier texte et compos\'e de plusieurs op\'erations~: 
+Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des divers mots dans un fichier texte et est compos\'e de plusieurs op\'erations~: 
 \begin{itemize}
 
 \item \TT{textFile}, qui lit les lignes \`a partir d'un fichier. Le fichier est identifi\'e par le param\`etre fourni en argument \`a \TT{textFile}.
@@ -313,7 +313,7 @@ L'approche interne est attrayante pour les opportunit\'es qu'elle offre aux comp
 \end{figure}
 
 
-Lorsqu'un flux s'ex\'ecute en parall\`ele, \TT{Java} partitionne le flux en plusieurs sous-flux. Les op\'erations parcourent et traitent ces sous-flux en parall\`ele, puis combinent les r\'esultats. La figure~\ref{ComparisonSequentialVsParallel.fig} montre la comparaison entre  un traitement s\'equentiel et un traitement parall\`ele, dans cet exemple avec quatre c\oe{}urs. Les \'el\'ements du flux sont partitionn\'es en sous-flux et chaque sous-flux r\'esultant est trait\'e par l'un de quatre cœurs disponibles.  
+Lorsqu'un flux s'ex\'ecute en parall\`ele, \TT{Java} partitionne le flux en plusieurs sous-flux. Les op\'erations parcourent et traitent ces sous-flux en parall\`ele, puis combinent les r\'esultats. La figure~\ref{ComparisonSequentialVsParallel.fig} illustre la comparaison entre  un traitement s\'equentiel et un traitement parall\`ele, dans cet exemple avec quatre c\oe{}urs. Les \'el\'ements du flux sont partitionn\'es en sous-flux et chaque sous-flux r\'esultant est trait\'e par l'un de quatre cœurs disponibles.  
 
 
 
@@ -408,7 +408,7 @@ pas une application compl\`ete et \c{c}a traite pas un fichier texte
 mais juste une chaine.}
 
 
-Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'un segment de code \TT{Java} de d\'ecompte de mots. Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des mots dans un chaine et est compos\'ee de plusieurs op\'erations \emph{cha\^in\'ees} les unes \`a la suite des autres :
+Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~8}, le listing~\ref{wordCountJava} montre le code source d'un segment de code \TT{Java} de d\'ecompte de mots. Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des mots dans un chaine et est compos\'e de plusieurs op\'erations \emph{cha\^in\'ees} les unes \`a la suite des autres :
 
 \begin{itemize}
 	\item \TT{lines}, qui renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est rep\'er\'e par le param\`etre \TT{inputFile} fourni en argument.
