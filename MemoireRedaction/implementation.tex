@@ -22,7 +22,7 @@ des sp\'ecifications de placement.}
 \end{figure}
 
 
-Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les \emph{stages} sont d\'ecrits dans la quatri\`eme section. La cinqui\`eme section pr\'esente la description d'un exemple complet d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e. Le chapitre termine en pr\'esentant quelques statistiques sur le code de cette mise en \oe{}uvre.
+Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les \emph{stages} sont d\'ecrits dans la quatri\`eme section. La cinqui\`eme section pr\'esente la description d'un exemple complet d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e. Le chapitre se termine en pr\'esentant quelques statistiques sur le code de cette mise en \oe{}uvre.
 
 
 \section{Mise en \oe{}uvre multi-couches de \PpFf{} via \TT{FastFlow}}
@@ -74,9 +74,9 @@ sens (landscape)?}
 
 \section{Mise en \oe{}uvre des pipelines}
 
-Un pipeline, un objet de classe \TT{Pipeline}, repr\'esente une cha\^ine de traitement. Un \TT{Pipeline} est compos\'e par une s\'erie d'op\'erations sp\'ecifi\'ees par l'utilisateur qui sont appliqu\'es aux \'el\'ements d'un flux. Comme on peut le voir dans la figure~\ref{CorrespondencePpFfToFastFlow.fig}, un \TT{Pipeline} utilise les fonctionnalit\'es de la classe \TT{ff\_pipeline} de \TT{FastFlow}. 
+Un pipeline, un objet de classe \TT{Pipeline}, repr\'esente une cha\^ine de traitement. Un \TT{Pipeline} est compos\'e par une s\'erie d'op\'erations sp\'ecifi\'ees par l'utilisateur qui sont appliqu\'ees aux \'el\'ements d'un flux. Comme on peut le voir dans la figure~\ref{CorrespondencePpFfToFastFlow.fig}, un \TT{Pipeline} utilise les fonctionnalit\'es de la classe \TT{ff\_pipeline} de \TT{FastFlow}. 
 
-Les op\'erations qui composent un \TT{Pipeline} sont de deux types : les op\'erations sans \'etat et ceux avec \'etat. Un \TT{Pipeline} contient une ou plusieurs op\'erations sans \'etat et une seule op\'eration avec \'etat. Lorsque ce dernier est ajout\'e dans le \TT{Pipeline}, la m\'ethode \TT{run()} du \TT{Pipeline} est appel\'ee. \`A ce stade, un objet de type \TT{ff\_pipeline} correspondant au \TT{Pipeline} est cr\'e\'e. Ensuite, chaque op\'eration sp\'ecifi\'ee par l'utilisateur est visit\'e et, en fonction de la configuration \'etablie, des objets de type \TT{ff\_node} ou \TT{ff\_farm} sont ajout\'es dans l'objet \TT{ff\_pipeline}. Chaque nœud ainsi ajout\'e dans \TT{ff\_pipeline} sera alors ex\'ecut\'e dans un fil d'ex\'ecution ind\'ependant (\emph{thread}), une caract\'eristique de la mise en \oe{}uvre de \TT{FastFlow}.
+Celles qui composent un \TT{Pipeline} sont de deux types : les op\'erations sans \'etat et avec \'etat. Un \TT{Pipeline} contient une ou plusieurs op\'erations sans \'etat et une seule op\'eration avec \'etat. Lorsque cette derni\`ere est ajout\'ee dans le \TT{Pipeline}, la m\'ethode \TT{run()} du \TT{Pipeline} est appel\'ee. \`A ce stade, un objet de type \TT{ff\_pipeline} correspondant au \TT{Pipeline} est cr\'e\'e. Ensuite, chaque op\'eration sp\'ecifi\'ee par l'utilisateur est visit\'ee et, en fonction de la configuration \'etablie, des objets de type \TT{ff\_node} ou \TT{ff\_farm} sont ajout\'es dans l'objet \TT{ff\_pipeline}. Chaque nœud ainsi ajout\'e dans \TT{ff\_pipeline} sera alors ex\'ecut\'e dans un fil d'ex\'ecution ind\'ependant (\emph{thread}), une caract\'eristique de la mise en \oe{}uvre de \TT{FastFlow}.
 %La cr\'eation d'un \TT{Pipeline} est r\'ealis\'ee \`a l'aide de la classe \TT{PipeManager}, dont les d\'etails sont omis.
 
 
@@ -113,7 +113,7 @@ Le traitement effectu\'e dans un \emph{stage} \`a un instant donn\'e peut d\'epe
 %
 \`A noter que ce type de parall\'elisme est appliqu\'e par d\'efaut dans notre API. 
 %
-Ce fonctionnement permet de parall\'eliser des traitements avec de fortes d\'ependances entre les donn\'ees sans avoir recours \`a des synchronisations \emph{explicites} par le programmeur. 
+Ce fonctionnement permet de parall\'eliser des traitements avec des d\'ependances entre les donn\'ees sans avoir recours \`a des synchronisations \emph{explicites} par le programmeur. 
 
 \goodbreak
 \begin{samepage}
@@ -400,12 +400,12 @@ Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en 
 \begin{figure}
 \centering
      \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecutionFF.jpg}
-      \caption[Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{lineFromFile} (\texttt{Lff}), \TT{find} (\texttt{Find}), les deux \TT{map} (\texttt{Map}) et les deux \TT{collector} (\texttt{Collec}). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} du \TT{ff\_farm}.}
+      \caption[Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{linesFromFile} (\texttt{Lff}), \TT{find} (\texttt{Find}), les deux \TT{map} (\texttt{Map}) et les deux \TT{collector} (\texttt{Collec}). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} du \TT{ff\_farm}.}
        \label{ExempleRuntimeExecutionFF.fig}
 \end{figure}
 
 
-La figure~\ref{ExempleRuntimeExecutionFF.fig} montre la repr\'esentation graphique du pipeline \TT{FastFlow} qui met en \oe{}uvre le pipeline \PpFf\ de la figure~\ref{ExempleRuntimeExecution.fig}. Chaque cercle est une classe de type \TT{ff\_node}. Les cercles en bleu repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{lineFromFile} (Lff), \TT{find} (Find), les deux \TT{map} (Map) et les deux \TT{collector} (Collec). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} de l'objet \TT{ff\_farm}. 
+La figure~\ref{ExempleRuntimeExecutionFF.fig} montre la repr\'esentation graphique du pipeline \TT{FastFlow} qui met en \oe{}uvre le pipeline \PpFf\ de la figure~\ref{ExempleRuntimeExecution.fig}. Chaque cercle est une classe de type \TT{ff\_node}. Les cercles en bleu repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{linesFromFile} (Lff), \TT{find} (Find), les deux \TT{map} (Map) et les deux \TT{collector} (Collec). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} de l'objet \TT{ff\_farm}. 
 
 
 \gt{Ce serait int\'eressant --- est-ce possible ou trop compliqu\'e? --- de montrer une repr\'esentation graphique du pipeline FastFlow ainsi g\'en\'er\'e! Dans ce cas, on verrait alors mieux les \'el\'ements FastFlow qui correspondent aux op\'erations \ppff.}
