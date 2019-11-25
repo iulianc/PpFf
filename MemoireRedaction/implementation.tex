@@ -456,3 +456,51 @@ d'\^etre trivial (quantit\'e de code), et aussi qu'il a \'et\'e fait
 de fa\c{c}on <<professionnelle>>, avec de nombreux tests unitaires
 pour assurer que les diverses m\'ethodes de l'API produisent les bons
 r\'esultats.}
+
+\IC{J’ai ajouté quelques mots concernant la statistique. Est-ce que vous croyez que je dois ajouter plus de détails sur les tests?}
+
+\begin{center}
+\footnotesize
+\begin{longtable}{|r|r|r|r|r|r|}
+\caption{Statistiques sur la mise en \oe uvre.\label{statistiquesPpFf.tab}}\\
+\hline
+\textbf{Module} & \textbf{pipeline} & \textbf{operateors} & \textbf{stages} & \textbf{utilities} & \textbf{collections}\\
+\hline
+\endhead
+\hline
+	\textbf{Nombre de fichiers par module} &	
+	5 &
+	26 &
+	6 &
+	3 &
+	1
+    \\
+\hline
+	\textbf{Nombre total de lignes par module} &
+	297 &
+	1225 &
+	201 &
+	42 &
+	124
+    \\                 
+\hline    
+\end{longtable}
+\normalsize
+\end{center} 
+
+Cette section pr\'esente un aper\c {c}u sur l'envergure de projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} montre une vue d'ensemble sur la statistique de la mise en \oe uvre – nombre de fichiers et lignes de code utilis\'e dans chaque module. 
+
+Le module \TT{pipeline} est le c\oe ur du traitement du flux. Avec 297 de lignes de code sur cinq fichiers, ce module g\`ere la cr\'eation du \TT{pipeline}, le traitement en parall\`ele et la communication entre les n\oe uds composant un \TT{pipeline}. Il g\`ere aussi la communication entre \TT{FastFlow} et \TT{PpFf}.
+
+Le plus grand module du projet est le module \TT{operators}. Totalisant 1225 de lignes de code, ce module d\'efinit la logique pour toutes les op\'erations de l'\TT{API}. 
+
+Le module stages g\`ere le groupement logique d'une ou plusieurs op\'erations d'une \'etape dans la cha\^ine de traitement d'un \TT{pipeline}. Ce module est compos\'e de 6 fichiers totalisant 201 de lignes de code. 
+
+Assez souvent un projet a besoin des objets et des fonctionnalit\'es qui sont partag\'es parmi d'autres modules. Dans \TT{PpFf}, ces objets sont regroup\'es dans le module \TT{utilities}. Avec 42 de lignes de code, le module \TT{utilities} est plus petit module de l'\TT{API}.
+
+Le dernier module, \TT{collections}, g\`ere l'acc\`es au regroupement logique des \'el\'ements n\'ecessaires au traitement interne de l'\TT{API}. 
+
+L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees. Ces m\'ethodes sont d\'efinies dans le fichier \TT{Flow.hpp}.  Avec 345 de ligne de code, ce fichier est le point d'entr\'ee dans le programme. Regroup\'ees selon leur fonctionnalit\'e, les m\'ethodes export\'ees par l'API sont d\'ecrites bri\`evement dans le tableau~\ref{methodes_api.tab}. Chaque m\'ethode d\'efinie dans l'interface est minutieusement test\'ee avec des tests unitaires. 
+
+
+
