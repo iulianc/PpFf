@@ -462,7 +462,7 @@ r\'esultats.}
 \begin{center}
 \footnotesize
 \begin{longtable}{|l|r|r|r|r|r|r|}
-\caption{Statistiques sur la mise en \oe uvre --- modules et fichier \TT{Flow.hpp}.\label{statistiquesPpFf.tab}}\\
+\caption{Statistiques sur la mise en \oe uvre~: les modules et le fichier \TT{Flow.hpp}.\label{statistiquesPpFf.tab}}\\
 \hline
 
 & \multicolumn{5} {c|}{\textbf{Module}}&\\
@@ -497,33 +497,45 @@ r\'esultats.}
 \gt{Pas besoin, il me semble, de r\'ep\'eter le nombre de lignes ou
 fichiers pour chaque module. Peut-\^etre juste le plus gros.}
 
-Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques statistiques sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. Il faut noter que les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte lors du décompte de lignes de code.
+Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques statistiques sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. Il faut noter que les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte lors du calcul des nombres de lignes de code.
 
-\GT{Il faudrait clarifier ce que tu as compt\'e dans les lignes de
+\gt{Il faudrait clarifier ce que tu as compt\'e dans les lignes de
 code: les lignes blanches aussi? les lignes de commentaires?  C'est ok
 de les compter, mais il faut juste l'indiquer clairement.}
 
-\IC{Les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte. Je les ai compt\'ees automatiquement \`a l'aide d'un programme en c++.}
+\ic{Les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte. Je les ai compt\'ees automatiquement \`a l'aide d'un programme en c++.}
 
-Le module \TT{pipeline} est le c\oe ur du traitement des flux~: il g\`ere la cr\'eation des \TT{pipeline}s, le traitement en parall\`ele et la communication entre les n\oe uds composant un \TT{pipeline}~; il g\`ere aussi la communication entre \TT{FastFlow} et \TT{PpFf}.
+\begin{itemize}
+\item Le module \TT{pipeline} est le c\oe ur du traitement des flux~: il g\`ere la cr\'eation des \TT{pipeline}s, le traitement en parall\`ele et la communication entre les n\oe uds composant un \TT{pipeline}~; il g\`ere aussi la communication entre \TT{FastFlow} et \TT{PpFf}.
 
-Le plus grand module du projet est  \TT{operators}. Totalisant 1225 de lignes de code, ce module d\'efinit la logique de traitement de chacune des op\'erations de l'\TT{API}. 
+\item Le plus grand module du projet est  \TT{operators}. Totalisant 1225 de lignes de code, ce module d\'efinit la logique de traitement de chacune des op\'erations de l'\TT{API}. 
 
-Le module \TT{stages} g\`ere le groupement logique d'une ou plusieurs op\'erations d'une \'etape dans la cha\^ine de traitement d'un \TT{pipeline}. 
+\item Le module \TT{stages} g\`ere le groupement logique d'une ou plusieurs op\'erations d'une \'etape dans la cha\^ine de traitement d'un \TT{pipeline}. 
 
-Tout projet a besoin d'objets et de fonctionnalit\'es qui sont partag\'es par d'autres modules. Dans \TT{PpFf}, ces objets sont regroup\'es dans le module \TT{utilities}, le plus petit module de l'\TT{API}.
+\item Tout projet a besoin d'objets et de fonctionnalit\'es qui sont partag\'es par d'autres modules. Dans \TT{PpFf}, ces objets sont regroup\'es dans le module \TT{utilities}, le plus petit module de l'\TT{API}.
 
-Le dernier module dans le traitement du flux, le module \TT{collections}, g\`ere l'acc\`es au regroupement logique des \'el\'ements n\'ecessaires au traitement interne de l'\TT{API}.
+\item Le dernier module dans le traitement du flux, le module \TT{collections}, \textcolor{green}{g\`ere l'acc\`es au regroupement logique des \'el\'ements n\'ecessaires au traitement interne de l'\TT{API}}.
 
-\GT{Je ne comprends pas la phrase qui pr\'ec\`ede. \`A r\'eviser!}
+\GT{Je ne comprends toujours pas la phrase qui pr\'ec\`ede --- la derni\`ere partie en vert. \`A r\'eviser!}
 
-\IC{J’ai reformulé la phrase.}
 
-Les m\'ethodes permettant \`a l'utilisateur de manipuler des flux de donn\'ees sont regroup\'ees dans le fichier Flow.hpp. Avec 345 lignes de code, ce fichier est le point d'entr\'ee de l'API. Plus pr\'ecis\'ement, c'est l'interface utilisateur de \TT{PpFf}. Chaque fonctionnalit\'e d\'efinie dans cette interface est minutieusement test\'ee avec des tests unitaires. L'outil utilis\'e pour les tests unitaire c'est \TT{catch}. %
+\item Les m\'ethodes permettant \`a l'utilisateur de manipuler des flux de donn\'ees sont regroup\'ees dans le fichier \TT{Flow.hpp}. Avec 345 lignes de code, ce fichier est le point d'entr\'ee de l'API. Plus pr\'ecis\'ement, c'est l'interface utilisateur de \TT{PpFf}. 
+
+\end{itemize}
+
+\GT{Ci-bas: il faudrait indiquer l'URL du site web de catch.}
+
+Chaque fonctionnalit\'e d\'efinie dans l'interface de \ppff\ est test\'ee avec des tests unitaires. L'outil utilis\'e est \TT{catch},%
 %
-\footnote{Un cadre de test en C++ pour les tests unitaires. Avec seulement un fichier en t\^ete, il peut \^etre utilis\'e avec l'approche TDD--Test Driven Development ou BDD-Behavior Driven Development.}
+\footnote{\url{URL pour catch}}
 %
-Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques statistiques sur les tests cr\'e\'es.
+un cadre de tests unitaires en \TT{C++} qui utilise un unique fichier
+d'en-t\^ete.
+%
+\TT{catch} peut \^etre utilis\'e avec une approche de tests TDD
+(\emph{Test-Driven Development}) avec assertions, 
+ou avec une approche BDD (\emph{Behavior Driven Development}), avec \TT{Given--When--Then}.
+
 
 \begin{center}
 \footnotesize
@@ -531,17 +543,19 @@ Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques statistiques sur l
 \caption{Statistiques sur les tests unitaires.\label{statistiquesUnitTest.tab}}\\
 \hline
 
-\textbf{Nombre de m\'ethodes de l'API} & \textbf{Nombre de cas de tests} & \textbf{Nombre de assertions}\\
+\textbf{Nombre de m\'ethodes de l'API} & \textbf{Nombre de cas de tests} & \textbf{Nombre d'assertions}\\
 \hline
 %\endhead
 \hline
 	21 &
 	123 &
-	13895
+	13~895
     \\                   
 \hline    
 \end{longtable}
 \normalsize
 \end{center} 
 
-Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs sc\'enarios de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 de cas de tests en utilisant 13895 d'assertions.
+Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques statistiques sur les tests cr\'e\'es.
+
+Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs sc\'enarios de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 cas de tests, qui g\'en\`erent 13~895 assertions --- \GT{Il faudrait expliquer pourquoi le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests: utilisation de boucles pour tester des structures de donn\'ees, etc.}.
