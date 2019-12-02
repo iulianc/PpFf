@@ -494,14 +494,16 @@ r\'esultats.}
 \end{center} 
 
 
-\GT{Pas besoin, il me semble, de r\'ep\'eter le nombre de lignes ou
+\gt{Pas besoin, il me semble, de r\'ep\'eter le nombre de lignes ou
 fichiers pour chaque module. Peut-\^etre juste le plus gros.}
 
-Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques statistiques sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. 
+Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques statistiques sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. Il faut noter que les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte lors du décompte de lignes de code.
 
 \GT{Il faudrait clarifier ce que tu as compt\'e dans les lignes de
 code: les lignes blanches aussi? les lignes de commentaires?  C'est ok
 de les compter, mais il faut juste l'indiquer clairement.}
+
+\IC{Les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte. Je les ai compt\'ees automatiquement \`a l'aide d'un programme en c++.}
 
 Le module \TT{pipeline} est le c\oe ur du traitement des flux~: il g\`ere la cr\'eation des \TT{pipeline}s, le traitement en parall\`ele et la communication entre les n\oe uds composant un \TT{pipeline}~; il g\`ere aussi la communication entre \TT{FastFlow} et \TT{PpFf}.
 
@@ -511,11 +513,35 @@ Le module \TT{stages} g\`ere le groupement logique d'une ou plusieurs op\'eratio
 
 Tout projet a besoin d'objets et de fonctionnalit\'es qui sont partag\'es par d'autres modules. Dans \TT{PpFf}, ces objets sont regroup\'es dans le module \TT{utilities}, le plus petit module de l'\TT{API}.
 
-Le dernier module, \TT{collections}, g\`ere l'acc\`es au regroupement logique des \'el\'ements n\'ecessaires au traitement interne de l'\TT{API}. 
+Le dernier module dans le traitement du flux, le module \TT{collections}, g\`ere l'acc\`es au regroupement logique des \'el\'ements n\'ecessaires au traitement interne de l'\TT{API}.
 
 \GT{Je ne comprends pas la phrase qui pr\'ec\`ede. \`A r\'eviser!}
 
-L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees. Ces m\'ethodes sont d\'efinies dans le fichier \TT{Flow.hpp}.  Avec 345 de ligne de code, ce fichier est le point d'entr\'ee de l'API. Regroup\'ees selon leur fonctionnalit\'e, les m\'ethodes export\'ees par l'API sont d\'ecrites bri\`evement dans le tableau~\ref{methodes_api.tab}. Chaque m\'ethode d\'efinie dans l'interface est minutieusement test\'ee avec des tests unitaires. 
+\IC{J’ai reformulé la phrase.}
 
+Les m\'ethodes permettant \`a l'utilisateur de manipuler des flux de donn\'ees sont regroup\'ees dans le fichier Flow.hpp. Avec 345 lignes de code, ce fichier est le point d'entr\'ee de l'API. Plus pr\'ecis\'ement, c'est l'interface utilisateur de \TT{PpFf}. Chaque fonctionnalit\'e d\'efinie dans cette interface est minutieusement test\'ee avec des tests unitaires. L'outil utilis\'e pour les tests unitaire c'est \TT{catch}. %
+%
+\footnote{Un cadre de test en C++ pour les tests unitaires. Avec seulement un fichier en t\^ete, il peut \^etre utilis\'e avec l'approche TDD--Test Driven Development ou BDD-Behavior Driven Development.}
+%
+Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques statistiques sur les tests cr\'e\'es.
 
+\begin{center}
+\footnotesize
+\begin{longtable}{|r|r|r|}
+\caption{Statistiques sur les tests unitaires.\label{statistiquesUnitTest.tab}}\\
+\hline
 
+\textbf{Nombre de m\'ethodes de l'API} & \textbf{Nombre de cas de tests} & \textbf{Nombre de assertions}\\
+\hline
+%\endhead
+\hline
+	21 &
+	123 &
+	13895
+    \\                   
+\hline    
+\end{longtable}
+\normalsize
+\end{center} 
+
+Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs sc\'enarios de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 de cas de tests en utilisant 13895 d'assertions.
