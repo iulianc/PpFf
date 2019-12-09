@@ -514,28 +514,15 @@ de les compter, mais il faut juste l'indiquer clairement.}
 
 \item Tout projet a besoin d'objets et de fonctionnalit\'es qui sont partag\'es par d'autres modules. Dans \TT{PpFf}, ces objets sont regroup\'es dans le module \TT{utilities}, le plus petit module de l'\TT{API}.
 
-\item Le dernier module dans le traitement du flux, le module \TT{collections}, \textcolor{green}{g\`ere l'acc\`es au regroupement logique des \'el\'ements n\'ecessaires au traitement interne de l'\TT{API}}.
-
+\item Le module \TT{collections} est le dernier module dans le traitement de flux. Il g\`ere la collecte des \'el\'ements du flux dans un conteneur apr\`es leur traitement.  
+ 
 \GT{Je ne comprends toujours pas la phrase qui pr\'ec\`ede --- la derni\`ere partie en vert. \`A r\'eviser!}
 
+\IC{La derni\`ere fois, j'ai chang\'e la phrase suivante et non la pr\'ec\'edente. Cette fois, j'ai chang\'e la bonne phrase.}
 
 \item Les m\'ethodes permettant \`a l'utilisateur de manipuler des flux de donn\'ees sont regroup\'ees dans le fichier \TT{Flow.hpp}. Avec 345 lignes de code, ce fichier est le point d'entr\'ee de l'API. Plus pr\'ecis\'ement, c'est l'interface utilisateur de \TT{PpFf}. 
 
 \end{itemize}
-
-\GT{Ci-bas: il faudrait indiquer l'URL du site web de catch.}
-
-Chaque fonctionnalit\'e d\'efinie dans l'interface de \ppff\ est test\'ee avec des tests unitaires. L'outil utilis\'e est \TT{catch},%
-%
-\footnote{\url{URL pour catch}}
-%
-un cadre de tests unitaires en \TT{C++} qui utilise un unique fichier
-d'en-t\^ete.
-%
-\TT{catch} peut \^etre utilis\'e avec une approche de tests TDD
-(\emph{Test-Driven Development}) avec assertions, 
-ou avec une approche BDD (\emph{Behavior Driven Development}), avec \TT{Given--When--Then}.
-
 
 \begin{center}
 \footnotesize
@@ -556,6 +543,29 @@ ou avec une approche BDD (\emph{Behavior Driven Development}), avec \TT{Given--W
 \normalsize
 \end{center} 
 
+\GT{Ci-bas: il faudrait indiquer l'URL du site web de catch.}
+
+\IC{J'ai ajout\'e l'URL pour catch.}
+
+Chaque fonctionnalit\'e d\'efinie dans l'interface de \ppff\ est test\'ee avec des tests unitaires. L'outil utilis\'e est \TT{catch},%
+%
+\footnote{\url{https://github.com/catchorg/Catch2}}
+%
+un cadre de tests unitaires en \TT{C++} qui utilise un unique fichier
+d'en-t\^ete.
+%
+\TT{catch} peut \^etre utilis\'e avec une approche de tests TDD
+(\emph{Test-Driven Development}) avec assertions, 
+ou avec une approche BDD (\emph{Behavior Driven Development}), avec \TT{Given--When--Then}.
+
+
+
+
 Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques statistiques sur les tests cr\'e\'es.
 
-Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs sc\'enarios de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 cas de tests, qui g\'en\`erent 13~895 assertions --- \GT{Il faudrait expliquer pourquoi le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests: utilisation de boucles pour tester des structures de donn\'ees, etc.}.
+Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs sc\'enarios de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 cas de tests. Plusieurs assertions sont g\'en\'er\'ees pour chaque sc\'enario de test. En nombre de 13 895, le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests. Elles sont n\'ecessaires pour tester la structure de donn\'ees.
+
+
+\GT{Il faudrait expliquer pourquoi le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests: utilisation de boucles pour tester des structures de donn\'ees, etc.}.
+
+\IC{J'ai ajout\'e quelques mots pour expliquer la diff\'erence entre le nombre de cas de tests et le nombre d'assertions.}
