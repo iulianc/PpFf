@@ -22,7 +22,7 @@ des sp\'ecifications de placement.}
 \end{figure}
 
 
-Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les \emph{stages} sont d\'ecrits dans la quatri\`eme section. La cinqui\`eme section pr\'esente la description d'un exemple complet d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e. Le chapitre se termine en pr\'esentant quelques statistiques sur le code de cette mise en \oe{}uvre.
+Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. Une vue d'ensemble des composants de \TT{PpFff} est pr\'esent\'ee \`a la figure~\ref{AllComponentsAPI.fig}. De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre est bas\'ee sur la biblioth\`eque \TT{FastFlow}, h\'eritant et \'etendant plusieurs de ses classes. La premi\`ere section montre les couches de l'API et les liens entre elles.  La deuxi\`eme section d\'ecrit comment le pipeline du flux est mis en œuvre. La section suivante examine comment la parall\'elisation du flux est r\'ealis\'ee. Les \emph{stages} sont d\'ecrits dans la quatri\`eme section. La cinqui\`eme section pr\'esente la description d'un exemple complet d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e. Le chapitre se termine en pr\'esentant quelques donn\'ees sur le code de cette mise en \oe{}uvre.
 
 
 \section{Mise en \oe{}uvre multi-couches de \PpFf{} via \TT{FastFlow}}
@@ -444,7 +444,7 @@ L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'
 Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS}. \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es \`a du parall\'elisme de donn\'ees, le r\'esultat global de l'op\'eration est obtenu en combinant les r\'esultats des sous-flux produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'eration \TT{collect} repr\'esent\'ee dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires, tel qu'expliqu\'e \`a la section~\ref{stages-finaux.sect}
 
 
-\section{Quelques statistiques sur la mise en \oe{}uvre}
+\section{Quelques donn\'ees sur la mise en \oe{}uvre}
 
 \gt{Je crois qu'ici, il serait bien de donner une id\'ee de {\bf
 l'envergure} de ta mise en oeuvre~: combien de fichiers et de lignes
@@ -462,7 +462,7 @@ r\'esultats.}
 \begin{center}
 \footnotesize
 \begin{longtable}{|l|r|r|r|r|r|r|}
-\caption{Statistiques sur la mise en \oe uvre~: les modules et le fichier \TT{Flow.hpp}.\label{statistiquesPpFf.tab}}\\
+\caption{Donn\'ees sur la mise en \oe uvre~: les modules et le fichier \TT{Flow.hpp}.\label{statistiquesPpFf.tab}}\\
 \hline
 
 & \multicolumn{5} {c|}{\textbf{Module}}&\\
@@ -497,7 +497,7 @@ r\'esultats.}
 \gt{Pas besoin, il me semble, de r\'ep\'eter le nombre de lignes ou
 fichiers pour chaque module. Peut-\^etre juste le plus gros.}
 
-Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques statistiques sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. Il faut noter que les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte lors du calcul des nombres de lignes de code.
+Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques donn\'ees sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. Il faut noter que les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte lors du calcul des nombres de lignes de code.
 
 \gt{Il faudrait clarifier ce que tu as compt\'e dans les lignes de
 code: les lignes blanches aussi? les lignes de commentaires?  C'est ok
@@ -516,9 +516,9 @@ de les compter, mais il faut juste l'indiquer clairement.}
 
 \item Le module \TT{collections} est le dernier module dans le traitement de flux. Il g\`ere la collecte des \'el\'ements du flux dans un conteneur apr\`es leur traitement.  
  
-\GT{Je ne comprends toujours pas la phrase qui pr\'ec\`ede --- la derni\`ere partie en vert. \`A r\'eviser!}
+\gt{Je ne comprends toujours pas la phrase qui pr\'ec\`ede --- la derni\`ere partie en vert. \`A r\'eviser!}
 
-\IC{La derni\`ere fois, j'ai chang\'e la phrase suivante et non la pr\'ec\'edente. Cette fois, j'ai chang\'e la bonne phrase.}
+\ic{La derni\`ere fois, j'ai chang\'e la phrase suivante et non la pr\'ec\'edente. Cette fois, j'ai chang\'e la bonne phrase.}
 
 \item Les m\'ethodes permettant \`a l'utilisateur de manipuler des flux de donn\'ees sont regroup\'ees dans le fichier \TT{Flow.hpp}. Avec 345 lignes de code, ce fichier est le point d'entr\'ee de l'API. Plus pr\'ecis\'ement, c'est l'interface utilisateur de \TT{PpFf}. 
 
@@ -527,10 +527,10 @@ de les compter, mais il faut juste l'indiquer clairement.}
 \begin{center}
 \footnotesize
 \begin{longtable}{|r|r|r|}
-\caption{Statistiques sur les tests unitaires.\label{statistiquesUnitTest.tab}}\\
+\caption{Donn\'ees sur les tests unitaires.\label{statistiquesUnitTest.tab}}\\
 \hline
 
-\textbf{Nombre de m\'ethodes de l'API} & \textbf{Nombre de cas de tests} & \textbf{Nombre d'assertions}\\
+\textbf{Nb.\ de m\'ethodes de l'API} & \textbf{Nb.\ de cas de tests} & \textbf{Nb.\ d'assertions \'evalu\'ees}\\
 \hline
 %\endhead
 \hline
@@ -543,9 +543,9 @@ de les compter, mais il faut juste l'indiquer clairement.}
 \normalsize
 \end{center} 
 
-\GT{Ci-bas: il faudrait indiquer l'URL du site web de catch.}
+\gt{Ci-bas: il faudrait indiquer l'URL du site web de catch.}
 
-\IC{J'ai ajout\'e l'URL pour catch.}
+\ic{J'ai ajout\'e l'URL pour catch.}
 
 Chaque fonctionnalit\'e d\'efinie dans l'interface de \ppff\ est test\'ee avec des tests unitaires. L'outil utilis\'e est \TT{catch},%
 %
@@ -561,11 +561,11 @@ ou avec une approche BDD (\emph{Behavior Driven Development}), avec \TT{Given--W
 
 
 
-Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques statistiques sur les tests cr\'e\'es.
+Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques donn\'ees sur les tests cr\'e\'es.
 
-Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs sc\'enarios de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 cas de tests. Plusieurs assertions sont g\'en\'er\'ees pour chaque sc\'enario de test. En nombre de 13 895, le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests. Elles sont n\'ecessaires pour tester la structure de donn\'ees.
+Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs cas de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 cas de tests. Plusieurs assertions sont g\'en\'er\'ees pour chaque cas de test. Au nombre de 13~895, le nombre d'assertions \'evalu\'ees est beaucoup plus grand que le nombre de cas de tests, et ce \`a cause de la fa\c{c}on dont sont test\'ees les structures de donn\'ees --- par ex., chaque \'el\'ement d'un tableau g\'en\'ere l'\'evaluation d'une assertion.
 
 
-\GT{Il faudrait expliquer pourquoi le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests: utilisation de boucles pour tester des structures de donn\'ees, etc.}.
+\gt{Il faudrait expliquer pourquoi le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests: utilisation de boucles pour tester des structures de donn\'ees, etc.}.
 
-\IC{J'ai ajout\'e quelques mots pour expliquer la diff\'erence entre le nombre de cas de tests et le nombre d'assertions.}
+\ic{J'ai ajout\'e quelques mots pour expliquer la diff\'erence entre le nombre de cas de tests et le nombre d'assertions.}
