@@ -1,11 +1,12 @@
 #
 
-if [[ $# == 0 ]]; then
-    echo "Quel commit?"
-    exit
-fi
+COMMIT_DEFAUT="f7ae18e169edc699bf8cc4c39e2960fe58715dc3"
 
-COMMIT=$1
+if [[ $# == 0 ]]; then
+    COMMIT="$COMMIT_DEFAUT"
+else
+    COMMIT="$1"
+fi
 
 echo "On checkout le commit $COMMIT"
 git co $COMMIT

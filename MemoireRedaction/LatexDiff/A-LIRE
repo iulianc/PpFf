@@ -1,0 +1,21 @@
+Répertoire avec fichiers auxiliaires latexdiff
+
+- latexdiff est utilisé pour la génération d'un PDF qui contient les
+  différences entre la version courante et une version antérieure.
+
+- latexpand.pl: Script qui sert à générer un unique fichier plat, donc
+  sans input/include, ce qui semble nécessaire (?) pour traitement
+  correct avec latexdiff
+
+- ld.cfg: Fichier de configuration pour latexdiff, pour que les
+  éléments contenus dans les listings soient ignorés.
+
+  Pour que ça fonctionne correctement en ignorant le contenu, ces
+  listings ne doivent pas utiliser le caractère spécial '%' comme
+  escapechar, sinon ça fait planter.
+
+  Note: Si on supprime lstlisting de ld.cfg, ça roule correctement,
+  sauf que les informations de diff, qui sont des commandes, sont
+  incluses directement dans le listing, i.e., sous forme d'appels à
+  des macros -- donc pas pertinent :(
+
