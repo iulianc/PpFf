@@ -562,17 +562,17 @@ L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \
 
 \label{reducer.sect}
 
-\begin{lstlisting}[
-label={olderEmployeeWithReduceExample.c++},
+\begin{lstlisting}
 language=c++,
+label={olderEmployeeWithReduceExample.c++},
 caption={Un autre pipeline pour identifier l'employ\'e le plus ag\'e, mais avec un \TT{Reducer}.},
 frame=single,
 gobble=4,
-escapechar=\%,
+escapechar=\#,
 float]
     Reducer<Employee, Employee> 
            reducer( [](Employee e1, Employee e2) 
-                      { return e1.age > e2.age %?% e1 : e2; } );
+                      { return e1.age > e2.age #?# e1 : e2; } );
 
     Employee currentResult =
       Flow::source<Employee>(employees.begin(), employees.end())
