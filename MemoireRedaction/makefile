@@ -35,3 +35,6 @@ clean cleanxtra:
 xv:
 	evince $(MAIN).pdf &
 
+
+diff:
+	./mkdiff.sh
