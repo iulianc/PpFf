@@ -3,24 +3,6 @@
 \label{description.chap}
 
 
-\gt{Ci-bas (\`a rev\'erifier partout dans ce chapitre!!). J'ai
-supprim\'e les r\'ef\'erences \`a la notion de <<Op\'erateur>> ---
-i.e., la classe associ\'ee \`a une m\'ethode --- sauf pour Reducer.
-Cet aspect me semble un d\'etail li\'e \`a la mise en oeuvre. Dans la
-description de l'API, il suffit de parler des m\'ethodes
-elles-m\^emes!}
-
-\ic{Il semble correct.}
-
-
-\gt{Partout ci-bas dans les extraits de code, j'ai remplac\'e
-<<\TT{Flux}>> par <<\TT{Flow}>>!  Et j'ai remplac\'e <<\TT{Flow()}>>
-par <<\TT{Flow}>> lorsque c'\'etait suivi d'un appel \`a
-\TT{source}. Parce qu'il s'agit d'une m\'ethode statique.  J'ai aussi
-modifi\'e un peu la mise en forme, pour que l'appel \`a \TT{::source}
-soit coll\'e sur \TT{Flow}. \`A v\'erifier!}
-
-\ic{Une petite n\'egligence de ma part qui fait une grande diff\'erence. Je me rappelle. J'ai remplac\'e Pipe par Flux.}
 
 
 \begin{figure}
@@ -31,25 +13,6 @@ soit coll\'e sur \TT{Flow}. \`A v\'erifier!}
        \label{MethodesAPI.fig}
 \end{figure}
 
-
-\gt{Dans la figure: linesFromFile apparait encore. Est-elle encore
-pr\'esente dans l'API? Car elle n'apparait plus dans le tableau 2.1!}
-
-\ic{Elle n'est plus pr\'esente dans l'API. J'ai oubli\'e de modifier la figure.}
-
-\gt{Apr\`es relecture, je trouve que les noms des cat\'egories ne sont
-pas tout \`a fait justes et uniformes --- parfois un substantif passif
-(transformation), parfois actif (collector). 
-%
-En outre, j'avais propos\'e (je crois) ConcurrentExecution mais ce
-serait plus ParallelExecution, car on veut vraiment obtenir du
-parall\'elisme, pas juste de la concurrence!
-%
-Apr\`es r\'eflexion, je propose les cat\'egories suivantes~: Source,
-Transformation, Aggregation, Execution. J'ai fait diverses
-modifications en ce sens... mais il faut aussi modifier la figure!}
-
-\ic{J'ai modifi\'e la figure.}
 
 
 
@@ -484,9 +447,6 @@ std::vector<std::string> result =
 
 
 La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en une autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. Le r\'esultat renvoy\'e par cette expression lambda est un pointeur. \PpFf{} s'appuie sur le mod\`ele de programmation de \TT{FastFlow}, tel que d\'ecrit dans le prochain chapitre. Ce mod\`ele est bas\'e sur le d\'ecouplage des donn\'ees et de la synchronisation, et o\`u seuls des pointeurs vers les donn\'ees sont transmis plut\^ot que les donn\'ees elles-m\^emes.
-%
-\gt{Je crois qu'il faudrait ajouter quelques explications sur le fait que ce sont toujours des pointeurs qui sont transmis, et expliquer bri\`evement pourquoi, i.e., contrainte li\'ee \`a la mise en \oe{}uvre avec Fastflow, non?}
-\ic{J'ai ajout\'e quelques explications}
 %
 Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
 
@@ -929,12 +889,6 @@ La m\'ethode \TT{reduceByKey} conserve les \'el\'ements dans un conteneur de typ
 
 \label{execution.sect}
 
-
-\gt{Il faut aussi dire quelques mots sur cette cat\'egorie, m\^eme si
-elle ne contient qu'une seule m\'ethode --- par souci de
-compl\'etude!}
-
-\ic{J'ai ajout\'e quelques mots.}
 
 La m\'ethode \TT{parallel}, l'unique m\'ethode d\'efinie dans cette cat\'egorie, sp\'ecifie le comportement \`a l'ex\'ecution. Lorsqu'elle est ajout\'ee au pipeline, toutes les op\'erations qui suivent seront ex\'ecut\'ees \emph{en parall\`ele}.
 

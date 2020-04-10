@@ -14,3 +14,6 @@
 *.loc
 *.lof
 *.lol
+diff.*
+flat.tex
+

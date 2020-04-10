@@ -29,6 +29,8 @@ colored_links:
 
 clean cleanxtra:
 	rm -f *~ Text/*~ $(MAIN).log $(MAIN).lol $(MAIN).lot $(MAIN).lof $(MAIN).toc *.aux $(MAIN).aux $(MAIN).blg Text/*.bak $(MAIN).pdf $(MAIN).bbl *.bak $(MAIN).out
+	rm -f diff.*
+	rm -f flat.tex
 
 xv:
 	evince $(MAIN).pdf &

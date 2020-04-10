@@ -3,17 +3,6 @@
 \label{implementation.chap}
 
 
-\gt{Avant d'avoir une subsection, tu dois avoir une section. Donc, v\'erifie la structure de ce chapitre!}
-
-\ic{J'ai ajout\'e une petite introduction du chapitre.}
-
-\gt{Je sugg\`ere de ne pas mettre [ht] pour le placement des figures,
-et de laisser \LaTeX\ faire le placement. Ensuite, lors de la version
-finale, si des figures sont vraiment mal plac\'ees, tu pourras mettre
-des sp\'ecifications de placement.}
-
-\ic{J'ai cherch\'e toutes les autres figures et j'ai supprim\'e [ht]}
-
 \begin{figure}
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/AllComponentsAPI.jpg}
@@ -26,18 +15,6 @@ Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{Pp
 
 
 \section{Mise en \oe{}uvre multi-couches de \PpFf{} via \TT{FastFlow}}
-
-\gt{De quelle fa\c{c}on as-tu fait le diagramme?  Est-ce que ce serait
-possible, dans la partie du haut surtout, de changer l'ordre de
-pr\'esentation des classes? Cela aurait plus de sens de mettre la
-classe Pipe en haut, puisque c'est la classe principale.  Et on ne
-comprend pas trop pourquoi il y a Pipe, PipeManager et Pipeline?
-D'autant plus que dans la figure 3.1, il y aussi Stage, qui n'apparait
-pas dans la figure 3.2. Et en relisant, je constate que dans la figure
-2.1, il y a Pipeline et Operateurs, mais il n'y a pas Stage.  Tout
-cela semble un peu m\'elangeant~:(}
-
-\ic{J'ai redessin\'e le diagramme et j'ai ajout\'e une autre pour les stages dans la section Stage~\ref{StagesClassDiagramme.fig}.}
 
 
 \begin{figure}
@@ -59,18 +36,6 @@ cela semble un peu m\'elangeant~:(}
 \ppff{} est impl\'ement\'e au--dessus de la biblioth\`eque \TT{FastFlow}, de sorte que nous utilisons les constructions \TT{ff\_node}, \TT{ff\_pipeline} et \TT{ff\_farm} de \TT{FastFlow}. La figure~\ref{CorrespondencePpFfToFastFlow.fig} montre la correspondance entre les \'el\'ements de \TT{PpFf} et ceux de \TT{FastFlow}. Chaque classe susmentionn\'ee de \TT{FastFlow} a une association dans \TT{PpFf}. Par exemple, l'impl\'ementation de la classe \TT{Node} de \TT{PpFf} est r\'ealis\'ee par l'entremise de la classe \TT{ff\_node} de \TT{FastFlow}. Ce m\'ecanisme a permis d'ajouter plus de fonctionnalit\'es \`a l'API tout en b\'en\'eficiant des performances offertes par \TT{FastFlow}.
 
 
-\gt{Ci-haut: le texte parle de correspodance, sauf qu'il n'y a pas du
-tout de lien (graphique) entre les deux niveaux~:( Peut-\^etre
-faudrait-il montrer des liens graphiques? Par exemple, pour Farm, au
-lieu d'avoir un attribut \TT{ff\_farm}, faudrait-il avoir un lien vers
-la classe \TT{ff\_farm}? C'est certain que le graphique serait plus
-compliqu\'e, donc peut-\^etre le faire par morceau? Ou dans l'autre
-sens (landscape)?}
-
-\ic{J'ai repr\'esent\'e la correspondance par une ligne pointill\'ee.}
-
-\ic{J'ai mis \`a jour la figure.}
-
 
 \section{Mise en \oe{}uvre des pipelines}
 
@@ -84,25 +49,6 @@ Celles qui composent un \TT{Pipeline} sont de deux types : les op\'erations sans
 
 La cr\'eation de code parall\`ele est g\'en\'eralement consid\'er\'ee du domaine d'experts. La complexit\'e de l'\'ecriture de code parall\`ele diminue la productivit\'e, ce qui peut augmenter les co\^uts de d\'eveloppement. Par contre, \TT{PpFf} permet aux programmeurs de composer des morceaux de code s\'equentiel --- des fonctions ou expressions lambdas --- et d'ex\'ecuter le tout en parall\`ele. Par l'interm\'ediaire d'une interface unique, l'API offre deux mod\`eles de parall\'elisme : le parall\'elisme de flux et le parall\'elisme de donn\'ees.
 
-\gt{Si tu parles de <<parall\'elisme de flux>>, alors tu devrais
-parler de <<parall\'elisme de t\^aches>>, ou <<parall\'elisme de
-donn\'ees>>. Un Task-Farm est un m\'ecanisme sp\'ecifique pour mettre
-en \oe{}uvre une de ces deux derni\`eres formes de parall\'elisme.}
-
-\ic{J'ai d\'ecrit le parall\'elisme de t\^aches et parall\'elisme de donn\'ees plut\^ot que le parall\'elisme de flux.}
-
-\gt{Apr\`es relecture de ma remarque et de ton texte, je n'ai peut-être
-pas \'et\'e clair dans ma remarque pr\'ec\'edente. C'est vrai que certaines
-formes de parall\'elisme ne sont pas toujours bien clairement
-distingu\'ees --- tâches vs. flux, que certains auteurs mettent
-ensemble.  Dans ce que tu d\'ecris, je crois que la façon la plus claire
-d'expliquer tout cela est de distinguer entre parall\'elisme de flux
-(pipeline) et parall\'elisme de donn\'ees (farm) --- d'autant plus que
-dans le chapitre I, c'est bien de parall\'elisme de flux que tu
-discutes. Donc, je crois avoir fait les modifications en
-cons\'equence... mais ce sera \`a v\'erifier!}
-
-\ic{Vous avez fait quelques changements. Maintenant, c'est beaucoup plus clair.}
 
 
 \subsection{Parall\'elisme de flux}
@@ -158,26 +104,6 @@ Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee
        \label{DataParallelisme.fig}
 \end{figure}
 
-\gt{Pour la figure, je sugg\`ere de laisser tomber les X et Y sur les
-fl\`eches internes et de plut\^ot mettre $x_1, \ldots, x_k$ sur la
-fl\`eche d'entr\'ee et $y_1, \ldots, y_k$ sur la fl\`eche de sortie.
-%
-Parce que sinon \c{c}a donne l'impression que les $k/n$ premiers
-\'el\'ements sont envoy\'es \`a $W_1$, les $k/n$ suivants \`a $W_2$,
-etc., ce qui n'est pas du tout le cas. On pourrait formaliser par le
-biais d'une partition... mais ce serait inutilement compliqu\'e je
-crois.}
-
-\gt{Compl\'ement \`a la remarque ci-haut, qui n'\'etait peut-\^etre pas
-claire: 1)~il faudrait supprimer les X1, ..., Xk des fl\`eches
-\underline{internes}. Et idem pour les Y.  2)~Il faudrait mettre
-<<$x_1, \ldots, x_k$>> sur la fl\`eche \underline{\`a gauche} de la
-boite E, et <<$y_1, \ldots, y_k$>> \underline{\`a droite} de la boite
-C!}
-
-\gt{Si possible aussi: mettre un peu plus d'espace entre la boite pour W2 et celle pour Wn, en mettant plus explicitement des petits points entre les deux.}
-
-\ic{J'ai modifié la figure.}
 
 L'impl\'ementation parall\`ele de ce mod\`ele peut \^etre
 exprim\'ee sous la forme d'un ensemble de $n$ travailleurs $W_1, W_2,\ldots, W_n$ qui
@@ -200,17 +126,6 @@ Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a util
 \section{Stages}
 \label{stages.sect}
 
-\gt{Bon, je vais devoir faire une autre lecture de cette partie plus tard, car je ne suis pas certain encore de bien comprendre \frownie}
-
-\ic{Dans le cas du parall\'elisme de donn\'ees, on applique un Farm. Un Farm est compos\'e d'un Emmiter, les workers et un Collector. Lorsque le parall\'elisme est appliqu\'e sur les op\'erations finales (op\'erations avec \'etat) j'ai enlev\'e le Collector. Par exemple si on applique une op\'eration de r\'eduction sur 4 threads, chaque thread va contenir le r\'esultat partiel de la r\'eduction. Afin de combiner les 4 r\'esultats, j’avais besoin d'un m\'ecanisme qui envoyait ces valeurs au Collector \`a la fin du flux. Dans FastFlow la fin du flux est signal\'ee par la valeur EOS. Lorsque cette valeur est propag\'ee dans le flux, le flux s'arr\^ete. J'ai essay\'e la variante suivante : v\'erifier si cette valeur est envoy\'ee dans le flux et dans le cas affirmatif envoyer les 4 r\'esultats au Collector, mais cette solution n'a pas fonctionn\'e. Si je me rappelle bien, le Collector \'etait \`a vide.} 
-
-\ic{La solution que j'ai trouv\'ee \'etait d'enlever le Collector et de combiner les 4 r\'esultats dans l'impl\'ementation de la class Stage.}
-
-\gt{Dans la figure 3.5: Comme l'autre plus haut, ajouter <<$x_1,
-\ldots, x_k$>> sur la fl\`eche \`a gauche de la boite pour E.}
-
-\ic{J'ai ajout\'e <<$x_1, \ldots, x_k$>> sur la figure.}
-
 \begin{figure}
 \centering
      \includegraphics[width=0.7\textwidth]{Figures/StageDataParallel.jpg}
@@ -223,11 +138,6 @@ Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a util
 Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les performances du pipeline en utilisant les diff\'erents cœurs ou processeurs de la machine. Cependant, il existe une limitation lorsque le parall\'elisme de donn\'ees est appliqu\'e sur certaines op\'erations. Dans un flux, seules les op\'erations sans \'etat peuvent \^etre parall\'elis\'ees sans probl\`eme --- parce que sans interf\'erence. Par contre, quand il est n\'ecessaire de parall\'eliser une op\'eration avec \'etat --- par exemple, une r\'eduction avec un op\'erateur binaire ---, les choses deviennent un peu plus compliqu\'ees parce que le r\'esultat global du calcul est obtenu en combinant les r\'esultats produits pour les divers sous-flux de donn\'ees cr\'e\'es par la r\'epartition des \'el\'ements d'entr\'ee par l'\emph{Emitter}. Par exemple, la figure~\ref{StageDataParallel.fig} montre un exemple o\`u une op\'eration \TT{reduce} est appliqu\'ee en parall\`ele sur un flux d'\'el\'ements $x_1, \ldots, x_k$. Or, le r\'esultat global correct doit \^etre obtenu \emph{en combinant les r\'esultats du traitement de chacun des sous-flux} trait\'es dans chaque fil d'ex\'ecution ind\'ependant. Afin de permettre un tel traitement, nous avons introduit les \emph{stages}.
 
 %Comme la plupart des traitements consistent en une combinaison d'op\'erations avec ou sans \'etat, un traitement parall\`ele ne peut pas \^etre effectu\'e. Une solution consiste alors \`a parall\'eliser les op\'erations sans \'etat et \`a utiliser un op\'eration \emph{Collector} pour fusionner les flux parall\`eles avant d'appliquer une op\'eration avec \'etat. Cette solution implique l'utilisation d'un autre cœur de la machine. De plus, le traitement pour les op\'erations avec \'etat est effectu\'e de fa\c{c}on s\'equentielle. Afin d'optimiser le traitement, nous avons introduit les \emph{stages}.
-
-\gt{Dans la figure 3.6: Comme l'autre plus haut, ajouter <<$x_1,
-\ldots, x_k$>> sur la fl\`eche \`a gauche de la boite pour E.}
-
-\ic{J'ai ajout\'e <<$x_1, \ldots, x_k$>> sur la figure.}
 
 \begin{figure}
 \centering
@@ -328,28 +238,10 @@ std::vector<std::string> result =
 \end{lstlisting}
 
 
-\gt{Suggestion pour le code source du Listing 3.1~: Oui, donner le
-code des lambda-expressions, mais introduire explicitement des
-lambda-expressions avec un nom, ce qui aidera \`a comprendre ce que
-cela fait, par ex., d\'eclarer une variable lambda-expression {\bf
-avant} de d\'efinir result~: <<auto mettre\_en\_minuscules =
-[](std::string* s)...>>, puis map<std::string,
-std::string>(mettre\_en\_minuscules). Idem pour l'autre
-lambda-expression utilis\'ee dans le find.}
-
-\ic{J'ai ajout\'e des lambda--expressions avec un nom.}
-
-\gt{J'ai chang\'e un peu le nom des fonctions et je les ai mises dans l'ordre d'utilisation.}
 
 Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code source d'une petite application. Illustr\'ee dans le listing~\ref{listingExampleImplementationPpFf}, l'application est compos\'ee des \'el\'ements suivants :
 \begin{itemize}
 	\item  \TT{source}, qui g\'en\`ere un flux s\'equentiel de lignes \`a partir d'un fichier --- le fichier est identifi\'e par le param\`etre \TT{path} fourni en argument;
-
-\gt{Oops! Utilise linesFromFile. Est-ce que cela ne devrait pas \^etre
-Flow::source? Cela apparait \`a plusieurs endroits dans les
-explications ci-bas, ainsi que dans la figure finale.}
-
-\ic{J'ai fait une recherche partout dans le document et je n'ai plus trouv\'e le mot linesFromFile au-dehors que vous avez d\'ej\`a trouv\'e. Je croyais que j'ai remplac\'e cela par tout :(}
 
 	\item  \TT{find}, qui s\'electionne dans le flux d'entr\'ee les mots qui ne sont pas vides (\texttt{not\_empty});
 
@@ -360,11 +252,6 @@ explications ci-bas, ainsi que dans la figure finale.}
 	\item Finalement, \TT{collect}, qui combine tous les \'el\'ements obtenus dans un conteneur de type \TT{vector}.
 \end{itemize}
 
-\gt{Je crois qu'il serait pr\'ef\'erable, <<par souci de compl\'etude>> et pour assurer que le lecteur comprenne bien ce que fait le programme, de fournir aussi ces fonctions, quitte \`a les d\'efinir simplement sous forme d'expression-lambda.}
-
-\ic{J'ai impl\'ement\'e les fonctions sous forme d'expression-lambda.}
-
-
 \begin{figure}
 \centering
      \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecution.jpg}
@@ -372,13 +259,6 @@ explications ci-bas, ainsi que dans la figure finale.}
        \label{ExempleRuntimeExecution.fig}
 \end{figure}
 
-\gt{Le probl\`eme avec la figure 3.8 est qu'on ne voit pas
-explicitement/clairement les objets fastflow qui sont g\'en\'er\'es:
-Est-ce que Lff est un ff\_node, un ff\_pipeline, etc. Idem pour les
-autres.  Il faudrait voir plus clairement et explicitement les objets
-FastFlow (ff\_node, ff\_pipeline, ff\_farm, etc.) et leurs liens.}
-
-\ic{J'ai r\'epresent\'e les objets fastflow dans la figure~\ref{ExempleRuntimeExecutionFF.fig}}
 
 La figure~\ref{ExempleRuntimeExecution.fig} montre la repr\'esentation graphique d'un \TT{Pipeline} compos\'e des op\'erations d\'ecrites dans le listing~\ref{listingExampleImplementationPpFf}.
  
@@ -408,12 +288,6 @@ Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en 
 La figure~\ref{ExempleRuntimeExecutionFF.fig} montre la repr\'esentation graphique du pipeline \TT{FastFlow} qui met en \oe{}uvre le pipeline \PpFf\ de la figure~\ref{ExempleRuntimeExecution.fig}. Chaque cercle est une classe de type \TT{ff\_node}. Les cercles en bleu repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{linesFromFile} (Lff), \TT{find} (Find), les deux \TT{map} (Map) et les deux \TT{collector} (Collec). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} de l'objet \TT{ff\_farm}. 
 
 
-\gt{Ce serait int\'eressant --- est-ce possible ou trop compliqu\'e? --- de montrer une repr\'esentation graphique du pipeline FastFlow ainsi g\'en\'er\'e! Dans ce cas, on verrait alors mieux les \'el\'ements FastFlow qui correspondent aux op\'erations \ppff.}
-
-\ic{J’ai ajout\'e un diagramme pour montrer le flux dans FastFlow.}
-
-\gt{Excellente figure!}
-
 L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'ethode \TT{run\_and\_wait\_end()} de la classe \TT{ff\_pipeline} de \TT{FastFlow}. Chaque \TT{ff\_node} de \TT{ff\_pipeline} est une instance de la classe C++ \TT{ff\_node} qui ex\'ecute une boucle de traitement qui va comme suit:
 \begin{itemize}
 	\item obtient du canal d'entr\'ee (via un pointeur) un \'el\'ement \`a traiter;
@@ -422,42 +296,11 @@ L'ex\'ecution parall\`ele d'un flux est r\'ealis\'ee par l'ex\'ecution de la m\'
 \end{itemize}
 
 
-%
-% GT: Je crois que cette figure n'est pas utile.
-%
-% \begin{figure}
-% \centering
-% %
-% \GT{Je relirai \`a nouveau plus tard: pas certain que cette figure
-% soit utile/n\'ecessaire!? Ou, si on la conserve, qu'elle soit au bon
-% endroit!?}
-% %
-% \GT{Idem pour le listing 3.2!? Je me demande si cela ne devrait pas
-% plut\^ot aller dans la section 3.4 sur les Stage!?}
-% %
-%     \includegraphics[width=.33\linewidth]{Figures/StructureCollectorOperator.jpg}
-%       \caption{Le diagramme de classes pour les op\'erations finales de \TT{PpFf}.}
-%        \label{InheritanceCollectorOperator.fig}
-% \end{figure}
-
 
 Les nœuds d'un pipeline sont ex\'ecut\'es jusqu'\`a ce qu'ils re\c coivent le signal \TT{EOS}. \`A ce moment, tous les nœuds sont d\'etruits. Dans le cas de noeuds multiples associ\'es \`a du parall\'elisme de donn\'ees, le r\'esultat global de l'op\'eration est obtenu en combinant les r\'esultats des sous-flux produits par les divers fils d'ex\'ecution. Par exemple, chaque op\'eration \TT{collect} repr\'esent\'ee dans la figure~\ref{ExempleRuntimeExecution.fig} collecte le r\'esultat du traitement de chacun des sous-flux trait\'es dans un fil d'ex\'ecution ind\'ependant. Le r\'esultat global est obtenu via la classe \TT{Stage} qui combine ces r\'esultats interm\'ediaires, tel qu'expliqu\'e \`a la section~\ref{stages-finaux.sect}
 
 
 \section{Quelques donn\'ees sur la mise en \oe{}uvre}
-
-\gt{Je crois qu'ici, il serait bien de donner une id\'ee de {\bf
-l'envergure} de ta mise en oeuvre~: combien de fichiers et de lignes
-de code pour la sp\'ecificatioan de l'API?  nombre de fichiers, lignes
-de code et nombre de tests pour les tests unitaires et tests
-fonctionnels (programmes complets).  Je trouve important de donner une
-id\'ee de \c{c}a, pour montrer que le travail r\'ealis\'e est loin
-d'\^etre trivial (quantit\'e de code), et aussi qu'il a \'et\'e fait
-de fa\c{c}on <<professionnelle>>, avec de nombreux tests unitaires
-pour assurer que les diverses m\'ethodes de l'API produisent les bons
-r\'esultats.}
-
-\ic{J’ai ajouté quelques mots concernant la statistique. Est-ce que vous croyez que je dois ajouter plus de détails sur les tests?}
 
 \begin{center}
 \footnotesize
@@ -494,16 +337,9 @@ r\'esultats.}
 \end{center} 
 
 
-\gt{Pas besoin, il me semble, de r\'ep\'eter le nombre de lignes ou
-fichiers pour chaque module. Peut-\^etre juste le plus gros.}
 
 Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques donn\'ees sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. Il faut noter que les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte lors du calcul des nombres de lignes de code.
 
-\gt{Il faudrait clarifier ce que tu as compt\'e dans les lignes de
-code: les lignes blanches aussi? les lignes de commentaires?  C'est ok
-de les compter, mais il faut juste l'indiquer clairement.}
-
-\ic{Les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte. Je les ai compt\'ees automatiquement \`a l'aide d'un programme en c++.}
 
 \begin{itemize}
 \item Le module \TT{pipeline} est le c\oe ur du traitement des flux~: il g\`ere la cr\'eation des \TT{pipeline}s, le traitement en parall\`ele et la communication entre les n\oe uds composant un \TT{pipeline}~; il g\`ere aussi la communication entre \TT{FastFlow} et \TT{PpFf}.
@@ -516,10 +352,6 @@ de les compter, mais il faut juste l'indiquer clairement.}
 
 \item Le module \TT{collections} est le dernier module dans le traitement de flux. Il g\`ere la collecte des \'el\'ements du flux dans un conteneur apr\`es leur traitement.  
  
-\gt{Je ne comprends toujours pas la phrase qui pr\'ec\`ede --- la derni\`ere partie en vert. \`A r\'eviser!}
-
-\ic{La derni\`ere fois, j'ai chang\'e la phrase suivante et non la pr\'ec\'edente. Cette fois, j'ai chang\'e la bonne phrase.}
-
 \item Les m\'ethodes permettant \`a l'utilisateur de manipuler des flux de donn\'ees sont regroup\'ees dans le fichier \TT{Flow.hpp}. Avec 345 lignes de code, ce fichier est le point d'entr\'ee de l'API. Plus pr\'ecis\'ement, c'est l'interface utilisateur de \TT{PpFf}. 
 
 \end{itemize}
@@ -543,10 +375,6 @@ de les compter, mais il faut juste l'indiquer clairement.}
 \normalsize
 \end{center} 
 
-\gt{Ci-bas: il faudrait indiquer l'URL du site web de catch.}
-
-\ic{J'ai ajout\'e l'URL pour catch.}
-
 Chaque fonctionnalit\'e d\'efinie dans l'interface de \ppff\ est test\'ee avec des tests unitaires. L'outil utilis\'e est \TT{catch},%
 %
 \footnote{\url{https://github.com/catchorg/Catch2}}
@@ -565,7 +393,3 @@ Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques donn\'ees sur les 
 
 Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs cas de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 cas de tests. Plusieurs assertions sont g\'en\'er\'ees pour chaque cas de test. Au nombre de 13~895, le nombre d'assertions \'evalu\'ees est beaucoup plus grand que le nombre de cas de tests, et ce \`a cause de la fa\c{c}on dont sont test\'ees les structures de donn\'ees --- par ex., chaque \'el\'ement d'un tableau g\'en\'ere l'\'evaluation d'une assertion.
 
-
-\gt{Il faudrait expliquer pourquoi le nombre d'assertions est beaucoup plus grand que le nombre de cas de tests: utilisation de boucles pour tester des structures de donn\'ees, etc.}.
-
-\ic{J'ai ajout\'e quelques mots pour expliquer la diff\'erence entre le nombre de cas de tests et le nombre d'assertions.}
