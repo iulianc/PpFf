@@ -38,3 +38,7 @@ xv:
 
 diff:
 	./mkdiff.sh
+
+fulldiff: diff
+	bibtex diff
+	pdflatex diff
