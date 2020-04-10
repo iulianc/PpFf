@@ -67,7 +67,7 @@ label={wordCountSpark},
 language=java,
 caption={Un segment de code \TT{Spark/Java} pour compter le nombre d'occurrences de mots. Exemple provenant du site Web pour \TT{Apache Spark} (\url{https://spark.apache.org/examples.html}).},
 frame=single,
-escapechar=\#,
+escapechar=\!,
 float]
 JavaRDD<String> textFile = 
     sc
@@ -261,7 +261,7 @@ label={wordCountJava},
 language=java,
 caption={Un pipeline \TT{Java} pour compter le nombre d'occurrences de mots.},
 frame=single,
-escapechar=\#,
+escapechar=\!,
 float]
 public static void main(String[] args) throws IOException {
   // Le texte a analyser, sous forme d'une chaine.
@@ -290,9 +290,9 @@ public static void main(String[] args) throws IOException {
   wordsCount.forEach( x -> System.out.println("'" + x.getKey() + 
                                               "' => " + x.getValue()) );
 }
-#\vspace{-1cm}#
-#\hrule#
-#\underline{R\'esultat de l'ex\'ecution:}#
+!\vspace{-1cm}!
+!\hrule!
+!\underline{R\'esultat de l'ex\'ecution:}!
   'dolor' => 3
   'lorem' => 3
   'amet' => 3
@@ -421,7 +421,8 @@ frame=single,
 float,
 numbers=left
 ]
- #define DEFAULT_INPUT_FILE "Words.txt"
+ std::string DEFAULT_INPUT_FILE = "Words.txt";
+ 
  typedef std::vector<std::string> Words;
  
  struct linesFromFileStage: ff_node {

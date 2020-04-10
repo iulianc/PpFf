@@ -528,11 +528,11 @@ label={olderEmployeeWithReduceExample.c++},
 caption={Un autre pipeline pour identifier l'employ\'e le plus ag\'e, mais avec un \TT{Reducer}.},
 frame=single,
 gobble=4,
-escapechar=\#,
+escapechar=\!,
 float]
     Reducer<Employee, Employee> 
            reducer( [](Employee e1, Employee e2) 
-                      { return e1.age > e2.age #?# e1 : e2; } );
+                      { return e1.age > e2.age !?! e1 : e2; } );
 
     Employee currentResult =
       Flow::source<Employee>(employees.begin(), employees.end())
@@ -659,12 +659,12 @@ Soit $red$ un \TT{Reducer} avec les attributs $v_0, acc, comb$.
 Alors $S$\TT{.reduce($red$)}
 
 
-\begin{lstlisting}[language=haskell,escapechar=\#]
+\begin{lstlisting}[language=haskell,escapechar=\!]
 S.reduce( Reducer v0 acc comb )
-  = foldr comb r#${}_0$# [r#${}_1$#, ..., r#${}_{k-1}$#]
+  = foldr comb r!${}_0$! [r!${}_1$!, ..., r!${}_{k-1}$!]
     where
-      [S#${}_0$#, S#${}_1$#, ..., S#${}_{k-1}$#] = splitIntoSubstreams S k
-      [r#${}_0$#, r#${}_1$#, ..., r#${}_{k-1}$#] = [foldr acc v0 S#${}_i$# | i <- [0, #$\ldots$#, k-1]]
+      [S!${}_0$!, S!${}_1$!, ..., S!${}_{k-1}$!] = splitIntoSubstreams S k
+      [r!${}_0$!, r!${}_1$!, ..., r!${}_{k-1}$!] = [foldr acc v0 S!${}_i$! | i <- [0, !$\ldots$!, k-1]]
 
 
 foldr f a []     = a
@@ -687,7 +687,7 @@ Souvent, une op\'eration sur une collection de donn\'ees consiste \`a regrouper 
 
 \begin{lstlisting}[
 label={groupByKeyExample.c++},
-escapechar=\#,
+escapechar=\!,
 language=c++,
 caption={[Un pipeline pour regrouper les employ\'es selon leur \^age.]Un pipeline pour regrouper les employ\'es selon leur \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
 frame=single,
@@ -715,8 +715,8 @@ EMPLOYES_PAR_AGE expected = {
    {55, {employees[5], employees[6], employees[9]}}
 };
 
-// #\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}#
-// #\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}#
+// !\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}!
+// !\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}!
   ...
 \end{lstlisting}
 
@@ -728,7 +728,7 @@ Le listing~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es son
 
 \begin{lstlisting}[
 label={groupByKeyExample2.c++},
-escapechar=\#,
+escapechar=\!,
 language=c++,
 caption={[Un pipeline pour regrouper les noms d'employ\'es selon leur \^age.]Un pipeline pour regrouper les noms d'employ\'es selon leur \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
 frame=single,
@@ -736,8 +736,8 @@ float]
 typedef std::unordered_map<int, std::vector<std::string>> 
         NOMS_EMPLOYES_PAR_AGE;
 
-// D#\emph{\'e}#finition (omise) d'un vecteur d'objets Employee 
-// o#\emph{\`u} #le nom de employes[0] est "Employee0", etc.
+// D!\emph{\'e}!finition (omise) d'un vecteur d'objets Employee 
+// o!\emph{\`u} !le nom de employes[0] est "Employee0", etc.
 std::vector<Employee> employees = ...; 
 employees[3].age = employees[4].age = 18;
 employees[0].age = employees[1].age = employees[2].age = 22;
@@ -758,8 +758,8 @@ NOMS_EMPLOYES_PAR_AGE expected = {
    {55, {"Employee5", "Employee6", "Employee9"}}
 };
 
-// #\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}#
-// #\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}#
+// !\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}!
+// !\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}!
   ...
 \end{lstlisting}
 
@@ -841,7 +841,7 @@ Quant \`a la m\'ethode $\TT{groupByKey}$ avec un seul argument, elle est
 
 \begin{lstlisting}[
 label={reduceByKeyExample.c++},
-escapechar=\#,
+escapechar=\!,
 language=c++,
 caption={[Un pipeline pour compter le nombre d'employ\'es de chaque \^age.]Un pipeline pour compter le nombre d'employ\'es de chaque \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
 frame=single,
@@ -874,8 +874,8 @@ NB_EMPLOYES_PAR_AGE expected = {
    {55, 2}
 };
 
-// #\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}#
-// #\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}#
+// !\emph{Assertions (omises) qui montrent que \TT{result} d\'enote}!
+// !\emph{un map \'equivalent \`a celui repr\'esent\'e par \TT{expected}!}!
   ...
 \end{lstlisting}
 
