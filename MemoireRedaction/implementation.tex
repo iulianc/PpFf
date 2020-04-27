@@ -5,7 +5,7 @@
 
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/AllComponentsAPI.jpg}
+     \includegraphics[width=1.0\textwidth]{Figures/AllComponentsAPI.pdf}
       \caption{Les composants de \TT{PpFf}.}
        \label{AllComponentsAPI.fig}
 \end{figure}
@@ -19,7 +19,7 @@ Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{Pp
 
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/CorrespondencePpFfToFastFlow.jpg}
+     \includegraphics[width=1.0\textwidth]{Figures/CorrespondencePpFfToFastFlow.pdf}
       \caption{La correspondance entre les \'el\'ements de \TT{PpFf} et ceux de  \TT{FastFlow}.}
        \label{CorrespondencePpFfToFastFlow.fig}
 \end{figure}
@@ -27,7 +27,7 @@ Ce chapitre pr\'esente une description d\'etaill\'ee de la fa\c{c}on dont \TT{Pp
 
 %\begin{figure}
 %\centering
-%     \includegraphics[width=1.0\textwidth]{Figures/MapToFastFlow.jpg}
+%     \includegraphics[width=1.0\textwidth]{Figures/MapToFastFlow.pdf}
 %      \caption{La correspondance entre les \'el\'ements de \TT{PpFf} et ceux de  \TT{FastFlow}.}
 %       \label{MapToFastFlow.fig}
 %\end{figure}
@@ -73,7 +73,7 @@ Un flux compos\'e de $n$ \emph{stages} $S_1, S_2, \ldots, S_n$ o\`u le \emph{sta
 
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/ParallelismeDuFlux.jpg}
+     \includegraphics[width=1.0\textwidth]{Figures/ParallelismeDuFlux.pdf}
       \caption[Une repr\'esentation graphique du parall\'elisme de flux en \ppff.]{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$ \emph{stages} $S_1, S_2, \ldots, S_n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees de fa\c{c}on parall\`ele dans diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$ ($W$ pour \emph{$W$orker}).}
        \label{ParallelismeDuFlux.fig}
 \end{figure}
@@ -99,7 +99,7 @@ Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee
 
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/DataParallelisme.jpg}
+     \includegraphics[width=1.0\textwidth]{Figures/DataParallelisme.pdf}
       \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees en \ppff.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. La m\^eme op\'eration~$O$ est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Le traitement associ\'e est repr\'esent\'e par le \emph{stage} $S_i$. Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur $E$ ($E$\emph{mitter}) puis les divers r\'esultats sont combin\'es par le collecteur $C$ ($C$\emph{ollector}).}
        \label{DataParallelisme.fig}
 \end{figure}
@@ -128,7 +128,7 @@ Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a util
 
 \begin{figure}
 \centering
-     \includegraphics[width=0.7\textwidth]{Figures/StageDataParallel.jpg}
+     \includegraphics[width=0.7\textwidth]{Figures/StageDataParallel.pdf}
       \caption[Un exemple d'application de l'op\'eration \TT{reduce} sur diff\'erents sous-flux de donn\'ees.]{Un exemple d'application de l'op\'eration \TT{reduce} sur diff\'erents sous-flux de donn\'ees. C'est l'\emph{emitter} \TT{E} qui distribue les \'el\'ements $x_1, \ldots, x_k$ aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$ pour ainsi former les divers sous-flux de donn\'ees.}
        \label{StageDataParallel.fig}
 \end{figure}
@@ -141,14 +141,14 @@ Le traitement en parall\`ele d'un flux de donn\'ees contribue \`a augmenter les 
 
 \begin{figure}
 \centering
-     \includegraphics[width=0.7\textwidth]{Figures/Stages.jpg}
+     \includegraphics[width=0.7\textwidth]{Figures/Stages.pdf}
       \caption[Le groupement logique de $n$ op\'erations $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.]{Le groupement logique de $n$ op\'erations $O_1, O_2, \ldots, O_n$ dans un \TT{stage} S.  L'\emph{Emitter} E distribue les \'el\'ements $x_1, \ldots, x_k$ du flux aux diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$. Dans le cas d'une op\'eration avec \'etat (op\'eration finale), c'est l'objet \TT{Stage} qui combine ensemble les r\'esultats interm\'ediaires produits par les diff\'erents travailleurs.}
        \label{Stages.fig}
 \end{figure}
 
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/StagesClassDiagramme.jpg}
+     \includegraphics[width=1.0\textwidth]{Figures/StagesClassDiagramme.pdf}
       \caption{Le diagramme de classes pour la classe \texttt{Stage} et les classes associ\'ees.}
        \label{StagesClassDiagramme.fig}
 \end{figure}
@@ -254,7 +254,7 @@ Cette section d\'ecrit le mod\`ele d'ex\'ecution de \ppff\ \`a l'aide du code so
 
 \begin{figure}
 \centering
-     \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecution.jpg}
+     \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecution.pdf}
       \caption[Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erations.]{Une repr\'esentation graphique d'un \TT{pipeline} compos\'e de quatre op\'erations ex\'ecut\'ees en parall\`ele. Du parall\'elisme de flux est appliqu\'e sur les deux premi\`eres op\'erations et du parall\'elisme de donn\'ees est appliqu\'e sur les derni\`eres op\'erations. Le~\texttt{S}~sur la boite pointill\'ee \`a droite indique un \emph{Stage}.}
        \label{ExempleRuntimeExecution.fig}
 \end{figure}
@@ -279,7 +279,7 @@ Dans l'impl\'ementation de \TT{PpFf}, le parall\'elisme de donn\'ees est mis en 
 
 \begin{figure}
 \centering
-     \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecutionFF.jpg}
+     \includegraphics[width=\textwidth]{Figures/ExempleRuntimeExecutionFF.pdf}
       \caption[Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}.]{Une repr\'esentation graphique du listing~\ref{listingExampleImplementationPpFf} en \TT{FastFlow}. Les cercles bleus repr\'esentent les op\'erations sp\'ecifi\'ees par l'utilisateur : \TT{linesFromFile} (\texttt{Lff}), \TT{find} (\texttt{Find}), les deux \TT{map} (\texttt{Map}) et les deux \TT{collector} (\texttt{Collec}). Les cercles en jaunes repr\'esentent l'\emph{Emitter} et le \emph{Collector} du \TT{ff\_farm}.}
        \label{ExempleRuntimeExecutionFF.fig}
 \end{figure}
