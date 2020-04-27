@@ -9,7 +9,6 @@
 *.blg
 *.dvi
 *.bak
-*.pdf
 *.lot
 *.loc
 *.lof
