@@ -39,7 +39,7 @@ public class WordCount {
       inputFile = args[0];
     }
 
-    // utiliser pour vérifier le bon fonctionnement
+    // utiliser pour verifier le bon fonctionnement
     // du programme
     if (args.length >= 2) {
       if(Integer.parseInt(args[1]) == 1){
