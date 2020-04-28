@@ -1,9 +1,9 @@
 .IGNORE:
-def:
-	./gnuplot-debit.sh
-
 def_run:  compile
 	make -f gt-makefile run_bms
+
+def:
+	./gnuplot-debit.sh
 
 TEST_FILE="testdata/1505712Words.txt"
 ATTENDUS="attendus-1505712.txt"
@@ -27,7 +27,7 @@ ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
 #ROOT_PIPE      := $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
 #ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
-ROOT_PIPE 	:= $(HOME)/PpFf/Release2/PpFf/src
+ROOT_PIPE 	:= $(HOME)/PpFF/src
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
