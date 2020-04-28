@@ -1,8 +1,11 @@
-#include "catch.hpp"
+
 #include <string>
-#include "../../src/pp/Pipe.hpp"
+#include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
+#include "../../src/Flow.hpp"
+
+using namespace PpFf;
 
 TEST_CASE("PrintElementsCollection", "PeekOperator") {
     int n = 100;
@@ -15,10 +18,10 @@ TEST_CASE("PrintElementsCollection", "PeekOperator") {
     };
 
     std::vector<int> peekedResult;
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
-        .peek<int>( [&peekedResult](int *in) { peekedResult.push_back( *in ); } )
+    std::vector<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
+        .peek<int>( [&peekedResult](int *in)->void { peekedResult.push_back( *in ); } )
         .collect< int, std::vector >();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -40,9 +43,9 @@ TEST_CASE("PrintPropertyObject", "PeekOperator") {
     };
 
     std::vector<std::string> peekedResult;
-    pp::Pipe pipe;
-    std::vector<std::string> currentResult = pipe
-        .source<Employee>(elems.begin(), elems.end())
+    std::vector<std::string> currentResult = 
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .peek<Employee>( [&peekedResult](Employee *e) { peekedResult.push_back(e->name); } )
         .map<Employee, std::string>( [](Employee *e) { return &(e->name); } )
         .collect<std::string, std::vector>();

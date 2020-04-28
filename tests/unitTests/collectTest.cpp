@@ -1,10 +1,12 @@
 
-#include "catch.hpp"
 #include <string>
-#include "../../src/pp/Pipe.hpp"
 #include <list>
+#include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
+#include "../../src/Flow.hpp"
+
+using namespace PpFf;
 
 TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
     int n = 100;
@@ -16,10 +18,10 @@ TEST_CASE( "ReturnCollectionTypeVector", "CollectOperator" ) {
         expectedResult[i] = 3 * i;
     };
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
+    std::vector<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
+        .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -35,10 +37,10 @@ TEST_CASE("ReturnCollectionTypeDeque", "CollectOperator") {
         expectedResult[i] = 2 * i;
     };
 
-    pp::Pipe pipe;
-    std::deque<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int *in) ->int* { *in = *in * 2; return in; } )
+    std::deque<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
+        .map<int, int>( [](int *in) { *in *= 2; return in; } )
         .collect<int, std::deque>();
 
     for (unsigned int i = 0; i < expectedResult.size(); i++) {
@@ -57,10 +59,10 @@ TEST_CASE("ReturnCollectionTypeList", "CollectOperator") {
         expectedResult.push_back( i + 1 );
     };
 
-    pp::Pipe pipe;
-    std::list<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
-        .map<int, int>( [](int *in) ->int* { *in = *in + 1; return in; } )
+    std::list<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
+        .map<int, int>( [](int *in) { *in += 1; return in; } )
         .collect<int, std::list>();
 
     std::list<int>::iterator currentIterator = currentResult.begin();
@@ -81,11 +83,11 @@ TEST_CASE("CollectElementsParallel", "CollectOperator") {
         expectedResult[i] = 3 * i;
     };
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    std::vector<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .map<int, int>( [](int *in) ->int* { *in = *in * 3; return in; } )
+        .map<int, int>( [](int *in) { *in *= 3; return in; } )
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -100,14 +102,13 @@ TEST_CASE("CollectObjects", "CollectOperator") {
 
     for (unsigned int i = 0; i <noEmployees; i++) {
         Employee employee(i + 1, "Employee" + ConvertNumberToString(i), 25000);
-
         elems.push_back(employee);
         expectedResult.push_back(employee);
     };
 
-    pp::Pipe pipe;
-    std::list<Employee> currentResult = pipe
-        .source<Employee>(elems.begin(), elems.end())
+    std::list<Employee> currentResult = 
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .collect<Employee, std::list>();
 
     std::list<Employee>::iterator currentIterator = currentResult.begin();

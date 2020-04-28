@@ -1,19 +1,29 @@
 #include <iostream>
-#include <vector>
-#include "../../src/pp/Pipe.hpp"
-#include <sstream>
+#include <ff/pipeline.hpp>
+#include <ff/farm.hpp>
 #include <functional>
 #include <regex>
-#include <fstream>
 #include <chrono>
 #include <ctime>
 #include <ratio>
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <string>
+#include <sstream>
+#include<fstream>
+#include <locale>
+#include <Flow.hpp>
+#include <unordered_map>
 #include <ctype.h>
 
-#define DEFAULT_NB_ITERATIONS 5
-#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
+using namespace PpFf;
 
+#define DEFAULT_NB_ITERATIONS 5
+//#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
+#define DEFAULT_INPUT_FILE "/home/iuly/WorkplaceEclipse/PpFf-OldVersion/tests/WordCount/testdata/78792Words.txt"
+
+#define DEFAULT_NB_THREADS 1
 typedef std::vector<std::string> Words;
 
 Words* splitInWords(std::string* line) {
@@ -21,13 +31,13 @@ Words* splitInWords(std::string* line) {
 
     Words* words = new Words();
     size_t start = 0, end = 0;
-    do { 
+    do {
         end = line->find(delimiter, start);
         size_t len = end - start;
         words->push_back( line->substr(start, len) );
         start += len + delimiter.length();
     } while (end != std::string::npos);
-    
+
     return words;
 }
 
@@ -47,13 +57,10 @@ bool notEmpty(std::string* s) {
     return s->size() > 0;
 }
 
-void incCount(int& count, std::string* _) { 
-    count += 1; 
-}
-
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
     std::string inputFile = DEFAULT_INPUT_FILE;
+    uint32_t nbThreads = DEFAULT_NB_THREADS;
 
     if (argc >= 2) {
         inputFile = argv[1];
@@ -63,30 +70,32 @@ int main(int argc, char *argv[]) {
         nbIterations = atoi(argv[2]);
     }
 
+    if (argc >= 4) {
+        nbThreads = atoi(argv[3]);
+    }
+
+    Reducer<std::string, int> reducer(0, 
+                                      [](int count, std::string _) { return count + 1; },
+                                      std::plus<int>{} );
+    
     auto begin = std::chrono::high_resolution_clock::now();
 
-    MapType<std::string, int> currentResult;
+    std::unordered_map<std::string, int> currentResult;
     for (uint32_t i = 0; i < nbIterations; ++i) {
-        pp::Pipe pipe;
-        currentResult = pipe
-            .linesFromFile(inputFile)
-            .flatMap<std::string, std::string, Words>(splitInWords)
-            .map<std::string, std::string>(toLowercaseLetters)
-            .find<std::string>(notEmpty)
-            .groupByKey<std::string, std::string, int, Aggregates::OperatorCount>();
+        currentResult = 
+            Flow
+            ::source(inputFile)
+            .parallel(nbThreads)
+            .flatMap<std::string, std::string, Words>(splitInWords)			
+            .map<std::string, std::string>(toLowercaseLetters)			
+            .find<std::string>(notEmpty)	
+            .reduceByKey<std::string, std::string, int>(reducer);
 
     }
     auto end = std::chrono::high_resolution_clock::now();
-
     long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
-    std::cerr << "Temps C++:  " << duration_ms / nbIterations << " ms" << std::endl;
-    
-    for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
-        std::string currentResultKey = it->first;
-        int currentResultValue = it->second;
-        std::cout << currentResultKey << " => " << currentResultValue << std::endl;
-    }
-    
+    printf("%5ld ", duration_ms);
+
     return 0;
 }

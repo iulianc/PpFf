@@ -1,5 +1,0 @@
-
-cpmpile: javac Filewalker.java
-
-run: compile
-	@java -cp . Filewalker

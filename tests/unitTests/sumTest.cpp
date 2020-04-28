@@ -1,5 +1,7 @@
 #include "catch.hpp"
-#include "../../src/pp/Pipe.hpp"
+#include "../../src/Flow.hpp"
+
+using namespace PpFf;
 
 TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
     int n = 10000;
@@ -10,9 +12,9 @@ TEST_CASE("CollectionOfPositiveIntegers", "SumOperator") {
         elems[i] = i;
     };
 
-    pp::Pipe pipe;
-    int currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    int currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .sum<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -27,9 +29,9 @@ TEST_CASE("CollectionOfNegativeIntegers", "SumOperator") {
         elems[i] = -i;
     };
 
-    pp::Pipe pipe;
-    int currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    int currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .sum<int>();
 
     REQUIRE(currentResult == expectedResult);
@@ -46,9 +48,9 @@ TEST_CASE("CollectionOfFloatElements", "SumOperator") {
         temp += 0.1;
     };
 
-    pp::Pipe pipe;
-    float currentResult = pipe
-        .source<float>(elems.begin(), elems.end())
+    float currentResult = 
+        Flow
+        ::source<float>(elems.begin(), elems.end())
         .sum<float>();
 
     REQUIRE(currentResult == Approx(expectedResult));
@@ -65,9 +67,9 @@ TEST_CASE("CollectionOfDoubleElements", "SumOperator") {
         temp += 0.1;
     };
 
-    pp::Pipe pipe;
-    double currentResult = pipe
-        .source<double>(elems.begin(), elems.end())
+    double currentResult = 
+        Flow
+        ::source<double>(elems.begin(), elems.end())
         .sum<double>();
 
     REQUIRE(currentResult == Approx(expectedResult));
@@ -82,9 +84,9 @@ TEST_CASE("SumParallel", "SumOperator") {
         elems[i] = i;
     };
 
-    pp::Pipe pipe;
-    int currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    int currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
         .sum<int>();
 
@@ -100,9 +102,9 @@ TEST_CASE("SumOnCollectionTypeDeque", "SumOperator") {
         elems[i] = i + 1;
     };
 
-    pp::Pipe pipe;
-    int currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    int currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel()
         .sum<int>();
 

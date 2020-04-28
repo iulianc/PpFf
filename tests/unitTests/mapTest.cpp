@@ -1,23 +1,27 @@
-#include "catch.hpp"
+
 #include <string>
-#include "../../src/pp/Pipe.hpp"
+#include <vector>
+#include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
+#include "../../src/Flow.hpp"
 
-int* FuncMap(int *in){
-    *in = *in * 3;
+using namespace PpFf;
+
+int* Fois3(int *in){
+    *in *= 3;
+
     return in;
 };
-
 
 TEST_CASE( "UpdateElementsCollectionUsingFunction", "MapOperator" ) {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
-        .map<int, int>(FuncMap)
+    std::vector<int> currentResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
+        .map<int, int>(Fois3)
         .collect<int, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -28,9 +32,9 @@ TEST_CASE("UpdateElementsCollectionUsingLambdaFunction", "MapOperator") {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    std::vector<int> currentResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
         .collect<int, std::vector>();
 
@@ -49,26 +53,24 @@ TEST_CASE("RetriveObjectPropertyValue", "MapOperator") {
         elems.push_back(employee);
     };
 
-    pp::Pipe pipe;
-    std::vector<std::string> currentResult = pipe
-        .source<Employee>(elems.begin(), elems.end())
+    std::vector<std::string> currentResult =
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .map<Employee, std::string>(([](Employee *e)->std::string* { return &(e->name); }))
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
 
-
-
 TEST_CASE("UpdateElementsCollectionParallel", "MapOperator") {
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::vector<int> expectedResult = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    std::vector<int> currentResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .map<int, int>(FuncMap)
+        .map<int, int>(Fois3)
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());
@@ -81,14 +83,14 @@ TEST_CASE("UpdateElementsCollectionParallel Large number of elements", "MapOpera
     std::vector<int> expectedResult(n);
     for ( int i = 0; i < n; i++ ) {
         elems[i] = i;
-        expectedResult[i] = *(FuncMap(new int(i)));
+        expectedResult[i] = *(Fois3(new int(i)));
     }
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    std::vector<int> currentResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .parallel(4)
-        .map<int, int>(FuncMap)
+        .map<int, int>(Fois3)
         .collect<int, std::vector>();
 
     std::sort(currentResult.begin(), currentResult.end());

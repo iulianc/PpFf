@@ -1,14 +1,15 @@
-#include "catch.hpp"
 #include <string>
 #include <vector>
-#include "../../src/pp/Pipe.hpp"
+#include "../unitTests/catch.hpp"
 #include "Employee.hpp"
 #include "utility.hpp"
+#include "../../src/Flow.hpp"
+
+using namespace PpFf;
 
 bool FuncFind(int *in){
     return *in % 2 == 0;
 };
-
 
 TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
     std::vector<int> elems(10);
@@ -18,9 +19,9 @@ TEST_CASE("FindEvenElementsUsingFunction", "FindOperator") {
         elems[i] = i;
     };
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    std::vector<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .find<int>(FuncFind)
         .collect<int, std::vector>();
 
@@ -35,9 +36,9 @@ TEST_CASE("FindOddElementsUsingLambdaFunction", "FindOperator") {
         elems[i] = i;
     };
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
+    std::vector<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
         .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
         .collect<int, std::vector>();
 
@@ -57,10 +58,10 @@ TEST_CASE("FindOddElementsUsingLambdaFunction with large number of elements", "F
         }
     };
 
-    pp::Pipe pipe;
-    std::vector<int> currentResult = pipe
-        .source<int>(elems.begin(), elems.end())
-        .parallel(3)
+    std::vector<int> currentResult = 
+        Flow
+        ::source<int>(elems.begin(), elems.end())
+        .parallel(4)
         .find<int>( [](int *in) ->bool { return *in % 2 != 0; } )
         .collect<int, std::vector>();
 
@@ -82,14 +83,12 @@ TEST_CASE("FilterEmployeeWithSalaryBiggerThanHundred", "FindOperator") {
         elems.push_back(employee);
     };
 
-    pp::Pipe pipe;
-    std::vector<std::string> currentResult = pipe
-        .source<Employee>(elems.begin(), elems.end())
+    std::vector<std::string> currentResult = 
+        Flow
+        ::source<Employee>(elems.begin(), elems.end())
         .find<Employee>( [](Employee *e) ->bool { return e->salary > 100; } )
         .map<Employee, std::string>( [](Employee *e) ->std::string* { return &(e->name); } )
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
-
-
