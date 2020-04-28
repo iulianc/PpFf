@@ -20,7 +20,7 @@ NB_TIMES=5
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class # WordCountSeq 
+EXE 		:= WordCount WordCountAvecOutput WordCount.class # WordCountSeq 
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -62,7 +62,7 @@ run_sh:
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
-	@./WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
+	@./WordCountAvecOutput $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS)
 
 run_seq: compile
@@ -77,6 +77,9 @@ run_java: compile
 
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
+
+WordCountAvecOutput: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountAvecOutput.o $(LDLIBS) -o WordCountAvecOutput
 
 WordCountSeq: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq
