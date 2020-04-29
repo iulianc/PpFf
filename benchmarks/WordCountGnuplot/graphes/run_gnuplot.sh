@@ -92,5 +92,7 @@ if [[ $DEBUG == 1 ]]; then
     echo "*** Graphe genere! ***"
     if [[ $server == MacOS ]]; then
         open $output_graph
+    elif [[ $server == java && $USER == tremblay_gu ]]; then
+        cp $output_graph ~/public_html/maison
     fi
 fi
