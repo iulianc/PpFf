@@ -1,3 +1,0 @@
-Iterations		PpFf		Java
-5				344 ms		174 ms
-1				361 ms		574 ms
