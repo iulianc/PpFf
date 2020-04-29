@@ -6,9 +6,9 @@
 
 def: mk_graphes
 
-SERVER=MacOS
 SERVER=c34581
 SERVER=java
+SERVER=MacOS
 
 mk_graphes:
 	./run_gnuplot.sh $(SERVER)

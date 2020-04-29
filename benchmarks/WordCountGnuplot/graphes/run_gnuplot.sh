@@ -1,6 +1,8 @@
-#To execute script
-#chmod +x run_gnuplot.sh
-#./run_gnuplot.sh nom_du_server
+#!
+
+# Pour executer le script:
+# chmod +x run_gnuplot.sh # 1 seule fois!
+# ./run_gnuplot.sh [server]
 
 # Il est preferable de ne pas lancer l'execution des benchmarks dans
 # le script des graphiques, pour permettre de plus facilement refaire
@@ -13,8 +15,17 @@
 #
 
 DEBUG=1
-server="$1"
 
+
+# Si pas d'argument, on utilise le nom du host courant, qui donne
+# acces au fichier de donnees.
+if [[ $# == 0 ]]; then
+    server="$HOST"
+else
+    server="$1"
+fi
+
+# Les fichiers d'entree et de sortie.
 fichier="temps-${server}-wc.txt"
 output_graph="graphe_temps_${server}_WordCount.png"
 
@@ -23,6 +34,7 @@ if [[ $DEBUG == 1 ]]; then
   echo "output_graph = $output_graph"
 fi
 
+# Les parametres pour le graphe.
 temps_min=$(ruby min_temps.rb <$fichier)
 temps_max=$(ruby max_temps.rb <$fichier)
 
@@ -35,6 +47,7 @@ if [[ $DEBUG ]]; then
     echo "temps_min = $temps_min; temps_max = $temps_max"
 fi
 
+# On genere le script gnuplot.
 cat >script.plot <<EOF
 set terminal png
 set output '$output_graph'
@@ -57,20 +70,12 @@ for item in 'Java+' 'Java-' 'PpFf-1'; do
   /bin/echo -n "'$fichier' using 1:$col title '$item' with linespoints, " >>script.plot
 done
 
-if [[ $server == 'MacOS' ]]; then
-    max_nb_threads=2
-elif [[ $server == 'java' ]]; then
-    max_nb_threads=4
-elif [[ $server == 'japet' ]]; then
-    max_nb_threads=16
-else
-    max_nb_threads=4
-fi
-
+max_nb_threads=$(./max_nb_threads.sh <$fichier)
 for (( i = 2; i < max_nb_threads; i = 2*i )); do
     (( col=col+1 ))
     /bin/echo -n "'$fichier' using 1:$col title 'PpFf-$i' with linespoints, " >>script.plot
 done
+
 (( col=col+1 ))
 /bin/echo "'$fichier' using 1:$col title 'PpFf-$max_nb_threads' with linespoints" >>script.plot
 
@@ -79,9 +84,13 @@ if [[ $DEBUG == 1 ]]; then
     cat script.plot
 fi 
 
+# On trace le graphe.
+
 gnuplot -persist <script.plot
 
 if [[ $DEBUG == 1 ]]; then
     echo "*** Graphe genere! ***"
-    #open $output_graph
+    if [[ $server == MacOS ]]; then
+        open $output_graph
+    fi
 fi
