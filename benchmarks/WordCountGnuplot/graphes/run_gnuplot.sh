@@ -57,8 +57,10 @@ for item in 'Java+' 'Java-' 'PpFf-1'; do
   /bin/echo -n "'$fichier' using 1:$col title '$item' with linespoints, " >>script.plot
 done
 
-if [[ $server == 'MacOS' || $server == 'java' ]]; then
+if [[ $server == 'MacOS' ]]; then
     max_nb_threads=2
+elif [[ $server == 'java' ]]; then
+    max_nb_threads=4
 elif [[ $server == 'japet' ]]; then
     max_nb_threads=16
 else
