@@ -6,12 +6,13 @@
 
 def: mk_graphes
 
-SERVER=java
 SERVER=MacOS
+SERVER=c34581
+SERVER=java
 
 mk_graphes:
 	./run_gnuplot.sh $(SERVER)
 
 
-clean cleanx:
+clean cleanxtra:
 	rm -f script.plot

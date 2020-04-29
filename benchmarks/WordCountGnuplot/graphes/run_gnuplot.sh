@@ -50,24 +50,26 @@ set title "WordCount: Nombre de mots traités vs. (log) Temps d'exécution\n"
 EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
-/bin/echo -n "\"$fichier\" using 1:2 title 'Java+' with linespoints, " >>script.plot
-/bin/echo -n "\"$fichier\" using 1:3 title 'Java-' with linespoints, " >>script.plot
-/bin/echo -n "\"$fichier\" using 1:4 title 'PpFf-1-' with linespoints, " >>script.plot
-/bin/echo -n "\"$fichier\" using 1:5 title 'PpFf-2' with linespoints" >>script.plot
 
+col=1
+for item in 'Java+' 'Java-' 'PpFf-1'; do
+  (( col=col+1 ))
+  /bin/echo -n "'$fichier' using 1:$col title '$item' with linespoints, " >>script.plot
+done
 
 if [[ $server == 'MacOS' || $server == 'java' ]]; then
-    /bin/echo "" >>script.plot
-
+    max_nb_threads=2
 elif [[ $server == 'japet' ]]; then
-    /bin/echo -n ", \"$fichier\" using 1:6 title 'PpFf-4' with linespoints, " >>script.plot
-    /bin/echo -n "\"$fichier\" using 1:7 title 'PpFf-8' with linespoints, " >>script.plot
-    /bin/echo "\"$fichier\" using 1:8 title 'PpFf-16' with linespoints" >>script.plot
-
+    max_nb_threads=16
 else
-    /bin/echo ", \"$fichier\" using 1:6 title 'PpFf-4' with linespoints" >>script.plot
-
+    max_nb_threads=4
 fi
+
+for (( i = 2; i < max_nb_threads; i = 2*i )); do
+    (( col=col+1 ))
+    /bin/echo -n "'$fichier' using 1:$col title 'PpFf-$i' with linespoints, " >>script.plot
+done
+/bin/echo "'$fichier' using 1:$col title 'PpFf-$max_nb_threads' with linespoints" >>script.plot
 
 if [[ $DEBUG == 1 ]]; then
     echo "*** Script genere ***"
