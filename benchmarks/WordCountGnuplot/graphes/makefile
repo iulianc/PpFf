@@ -4,7 +4,13 @@
 # make SERVER=MacOS
 
 
-def: mk_graphes
+_def: mk_graphes
+
+test:
+	cat temps-MacOS-wc.txt
+	ruby min_temps.rb < temps-MacOS-wc.txt
+	ruby max_temps.rb < temps-MacOS-wc.txt
+
 
 SERVER=c34581
 SERVER=java

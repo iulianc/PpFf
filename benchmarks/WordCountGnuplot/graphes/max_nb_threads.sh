@@ -1,4 +1,5 @@
 #!
-nb=$(cat | head -1 | wc -w)
-(( nb = 2**(nb-4) ))
-echo $nb
+nbcols=$(cat | head -1 | wc -w)
+(( nbmoys = (nbcols - 1) / 2 ))
+(( nbt = 2**(nbmoys-3) ))
+echo $nbt

@@ -64,19 +64,19 @@ EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
 
-col=1
+col=0
 for item in 'Java+' 'Java-' 'PpFf-1'; do
-  (( col=col+1 ))
+  (( col=col+2 ))
   /bin/echo -n "'$fichier' using 1:$col title '$item' with linespoints, " >>script.plot
 done
 
 max_nb_threads=$(./max_nb_threads.sh <$fichier)
 for (( i = 2; i < max_nb_threads; i = 2*i )); do
-    (( col=col+1 ))
+    (( col=col+2 ))
     /bin/echo -n "'$fichier' using 1:$col title 'PpFf-$i' with linespoints, " >>script.plot
 done
 
-(( col=col+1 ))
+(( col=col+2 ))
 /bin/echo "'$fichier' using 1:$col title 'PpFf-$max_nb_threads' with linespoints" >>script.plot
 
 if [[ $DEBUG == 1 ]]; then
