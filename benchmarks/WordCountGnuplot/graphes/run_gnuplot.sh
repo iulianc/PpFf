@@ -71,6 +71,7 @@ for (( i = 2; i < max_nb_threads; i = 2*i )); do
     (( col=col+1 ))
     /bin/echo -n "'$fichier' using 1:$col title 'PpFf-$i' with linespoints, " >>script.plot
 done
+(( col=col+1 ))
 /bin/echo "'$fichier' using 1:$col title 'PpFf-$max_nb_threads' with linespoints" >>script.plot
 
 if [[ $DEBUG == 1 ]]; then
