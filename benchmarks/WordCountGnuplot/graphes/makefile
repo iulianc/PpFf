@@ -12,3 +12,6 @@ SERVER=MacOS
 mk_graphes:
 	./run_gnuplot.sh $(SERVER)
 
+
+clean cleanx:
+	rm -f script.plot

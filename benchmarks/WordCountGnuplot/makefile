@@ -1,8 +1,5 @@
 .IGNORE:
-def:
-	./gnuplot-debit.sh
-
-def_run:  compile
+def_run:
 	make -f gt-makefile run_bms
 
 
