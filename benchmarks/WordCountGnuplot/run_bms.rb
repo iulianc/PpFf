@@ -1,38 +1,42 @@
 #!/usr/bin/env ruby
 
-DEBUG = false #true
-$server = 'japet' #'java'
-$nb_thtreads = 1
-$fichier = 'test.txt'
+DEBUG = true
 
-if $server == 'java'
-	$fichier = 'temps-java-wc.txt'
-	$nb_thtreads = [1, 2]
+# Pour utiliser facilement sur diverses machines, donc MacBook et
+# Linux.
+SERVER = ENV['HOST']
+FICHIER = "graphes/temps-#{SERVER}-wc.txt"
+
+# Pour le nombre maximum de threads, on utilise un petit nombre de
+# processeurs qui depend de la machine.
+max_threads = nil
+if SERVER == 'japet'
+  max_threads = 8
+elsif SERVER == 'java'
+  max_threads = 4
+elsif SERVER == 'c34581'
+  max_threads = 4
 else
-	$fichier = "temps-japet-wc.txt"
+  max_threads = %x{nproc}.chomp.to_i / 2
+end
 
-	# Sur japet, plante si plus que 64..
-	$nb_thtreads = [1, 2, 4, 8, 16]
+NB_THREADS = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+             .take_while { |n| n <= max_threads}
+
+if DEBUG
+  puts "*** Cree le fichier #{FICHIER} (avec au plus #{max_threads} threads)"
 end
 
 LARGEUR = 8
 
 if DEBUG
-  NB_REPETITIONS = 1
+  NB_REPETITIONS = 3
+  #NB_MOTS = [10, 131, 377, 3805]
+  NB_MOTS = [78792, 167941, 281307, 482636]
 else
-  NB_REPETITIONS = 10  # Temporaire... sinon 3? 5?
-end
-
-if DEBUG
-  NB_MOTS = [10, 131, 377, 3805, 7610, 78792, 167941] # Pour debogage du script.
-else
+  NB_REPETITIONS = 10
   NB_MOTS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
 end
-
-if DEBUG
-  NB_THREADS = [1, 2]
-end
-
 
 def temps_moyen( cmd )
   temps_tot = 0.0
@@ -46,9 +50,9 @@ def temps_moyen( cmd )
 end
 
 print format("\#%#{LARGEUR}s %#{LARGEUR}s %#{LARGEUR}s",
-            "N", "Java+", "Java-")
+             "N", "Java+", "Java-")
 
-$nb_thtreads.each do |nb_threads|
+NB_THREADS.each do |nb_threads|
   print format(" %#{LARGEUR}s", "PpFf#{nb_threads}" )
 end
 print "\n"
@@ -64,8 +68,8 @@ NB_MOTS.each do  |nb_mots|
 
   partial_result = partial_result + " #{format("%#{LARGEUR}d", temps_java_avec_jit)}"
   partial_result = partial_result + " #{format("%#{LARGEUR}d", temps_java_sans_jit)}"
-  
-  $nb_thtreads.each do |nb_threads|
+
+  NB_THREADS.each do |nb_threads|
     temps_ppff = temps_moyen "./WordCount #{fichier_mots} #{nb_threads}"
     partial_result = partial_result + " #{format("%#{LARGEUR}d", temps_ppff)}"
   end
@@ -75,4 +79,4 @@ NB_MOTS.each do  |nb_mots|
   result = result + partial_result + "\n"
 end
 
-File.open($fichier, 'w') { |file| file.write(result) }
+File.open(FICHIER, 'w') { |file| file.write(result) }
