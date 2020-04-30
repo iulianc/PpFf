@@ -15,7 +15,8 @@ test:
 SERVER=$(HOST)
 
 mk_graphes:
-	./run_gnuplot.sh $(SERVER)
+	./plot_temps.sh 0
+	./plot_temps.sh 1
 
 
 clean cleanxtra:

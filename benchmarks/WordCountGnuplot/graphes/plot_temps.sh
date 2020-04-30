@@ -2,7 +2,8 @@
 
 # Pour executer le script:
 # chmod +x run_gnuplot.sh # 1 seule fois!
-# ./run_gnuplot.sh [server]
+#
+# ./plot_temps.sh [avec_log [server]]
 
 # Il est preferable de ne pas lancer l'execution des benchmarks dans
 # le script des graphiques, pour permettre de plus facilement refaire
@@ -16,6 +17,12 @@
 
 DEBUG=1
 
+if [[ $# == 0 ]]; then
+    avec_log="1"
+else
+    avec_log="$1"
+    shift
+fi
 
 # Si pas d'argument, on utilise le nom du host courant, qui donne
 # acces au fichier de donnees.
@@ -23,11 +30,13 @@ if [[ $# == 0 ]]; then
     server="$HOST"
 else
     server="$1"
+    shift
 fi
 
 # Les fichiers d'entree et de sortie.
 fichier="temps-${server}-wc.txt"
-output_graph="graphe_temps_${server}_WordCount.png"
+avec_sans_log=$([[ $avec_log == 0 ]] && echo '_nolog')
+output_graph="graphe_temps_${server}_WordCount${avec_sans_log}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "fichier = $fichier"
@@ -47,19 +56,22 @@ if [[ $DEBUG ]]; then
     echo "temps_min = $temps_min; temps_max = $temps_max"
 fi
 
+avec_sans_log1=$([[ $avec_log == 1 ]] && echo 'log ')
+avec_sans_log2=$([[ $avec_log == 1 ]] && echo '(log) ')
+
 # On genere le script gnuplot.
 cat >script.plot <<EOF
 set terminal png
 set output '$output_graph'
-set logscale y
+$([[ $avec_log == 1 ]] && echo "set logscale y")
 set format x '%.0f'
 set xtics rotate by 310
 set xtics font ", 6"
 set xtics (78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743)
 
 set xlabel "Nombre de mots traités"
-set ylabel "Temps d'exécution (log ms)"
-set title "WordCount: Nombre de mots traités vs. (log) Temps d'exécution\n"
+set ylabel "Temps d'exécution (${avec_sans_log1}ms)"
+set title "WordCount: Nombre de mots traités vs. ${avec_sans_log2}Temps d'exécution\n"
 EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
