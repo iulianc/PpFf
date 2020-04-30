@@ -1,7 +1,7 @@
 #
-# Appel pour une autre machine que java, par exemple MacOS:
+# Appel pour une autre machine que la machine courante:
 #
-# make SERVER=MacOS
+# make SERVER=foo
 
 
 _def: mk_graphes
@@ -12,9 +12,7 @@ test:
 	ruby max_temps.rb < temps-MacOS-wc.txt
 
 
-SERVER=c34581
-SERVER=java
-SERVER=MacOS
+SERVER=$(HOST)
 
 mk_graphes:
 	./run_gnuplot.sh $(SERVER)

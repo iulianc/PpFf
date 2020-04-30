@@ -30,8 +30,8 @@ fichier="temps-${server}-wc.txt"
 output_graph="graphe_temps_${server}_WordCount.png"
 
 if [[ $DEBUG == 1 ]]; then
-  echo "fichier = $fichier"
-  echo "output_graph = $output_graph"
+    echo "fichier = $fichier"
+    echo "output_graph = $output_graph"
 fi
 
 # Les parametres pour le graphe.
@@ -64,20 +64,41 @@ EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
 
+
+NB_PAR_POINT=2
+
+function errorbar {
+    col=$1
+    (( err = col + 1 ))
+    echo "1:$col:(\$$col-10*\$$err):(\$$col+10*\$$err)"
+}
+
+#
+# Note: le separateur ne semble pas necessaire -- i.e., ok s'il y a
+# une "," en trop a la fin, a tout le moins sur Mac --, mais je le
+# laisse tant que je n'ai pas verifie sur d'autres machines.
+#
+function line_and_points {
+    fichier="$1"
+    col="$2"
+    title="$3"
+    separateur="$4"
+    echo "'$fichier' using 1:$col notitle with lines,\
+          '' using $(errorbar $col) title '$title' with yerrorbars$separateur"
+}
+
 col=0
-for item in 'Java+' 'Java-' 'PpFf-1'; do
-  (( col=col+2 ))
-  /bin/echo -n "'$fichier' using 1:$col title '$item' with linespoints, " >>script.plot
+for item in 'Java+' 'Java-'; do
+    (( col=col+$NB_PAR_POINT ))
+    /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
 done
 
 max_nb_threads=$(./max_nb_threads.sh <$fichier)
-for (( i = 2; i < max_nb_threads; i = 2*i )); do
-    (( col=col+2 ))
-    /bin/echo -n "'$fichier' using 1:$col title 'PpFf-$i' with linespoints, " >>script.plot
+for (( i = 1; i <= max_nb_threads; i *= 2 )); do
+    (( col=col+$NB_PAR_POINT ))
+    separateur=$( [[ $i == $max_nb_threads ]] && echo "" || echo ", ")
+    /bin/echo -n $(line_and_points "$fichier" $col "PpFf-$i" "$separateur") >>script.plot
 done
-
-(( col=col+2 ))
-/bin/echo "'$fichier' using 1:$col title 'PpFf-$max_nb_threads' with linespoints" >>script.plot
 
 if [[ $DEBUG == 1 ]]; then
     echo "*** Script genere ***"

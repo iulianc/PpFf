@@ -16,6 +16,8 @@ elsif SERVER == 'java'
   max_threads = 4
 elsif SERVER == 'c34581'
   max_threads = 4
+elsif SERVER == 'MacOs'
+  max_threads = 4
 else
   max_threads = %x{nproc}.chomp.to_i / 2
 end
