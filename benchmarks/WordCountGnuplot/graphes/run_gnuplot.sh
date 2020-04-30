@@ -65,12 +65,13 @@ EOF
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
 
 
-NB_PAR_POINT=2
+NB_PAR_POINT=3
 
-function errorbar {
+function ymin_ymax {
     col=$1
-    (( err = col + 1 ))
-    echo "1:$col:(\$$col-10*\$$err):(\$$col+10*\$$err)"
+    (( min = col + 1 ))
+    (( max = col + 2 ))
+    echo "1:$col:$min:$max"
 }
 
 #
@@ -83,21 +84,20 @@ function line_and_points {
     col="$2"
     title="$3"
     separateur="$4"
-    echo "'$fichier' using 1:$col notitle with lines,\
-          '' using $(errorbar $col) title '$title' with yerrorbars$separateur"
+    echo "'$fichier' using $(ymin_ymax $col) title '$title' with yerrorlines$separateur"
 }
 
-col=0
+col=2
 for item in 'Java+' 'Java-'; do
-    (( col=col+$NB_PAR_POINT ))
     /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
+    (( col=col+$NB_PAR_POINT ))
 done
 
 max_nb_threads=$(./max_nb_threads.sh <$fichier)
 for (( i = 1; i <= max_nb_threads; i *= 2 )); do
-    (( col=col+$NB_PAR_POINT ))
     separateur=$( [[ $i == $max_nb_threads ]] && echo "" || echo ", ")
     /bin/echo -n $(line_and_points "$fichier" $col "PpFf-$i" "$separateur") >>script.plot
+    (( col=col+$NB_PAR_POINT ))
 done
 
 if [[ $DEBUG == 1 ]]; then

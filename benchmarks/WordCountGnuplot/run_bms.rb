@@ -16,7 +16,7 @@ elsif SERVER == 'java'
   max_threads = 4
 elsif SERVER == 'c34581'
   max_threads = 4
-elsif SERVER == 'MacOs'
+elsif SERVER == 'MacOS'
   max_threads = 4
 else
   max_threads = %x{nproc}.chomp.to_i / 2
@@ -32,7 +32,7 @@ end
 LARGEUR = 8
 
 if DEBUG
-  NB_REPETITIONS = 4
+  NB_REPETITIONS = 3
   #NB_MOTS = [377, 3805, 7610]
   NB_MOTS = [78792, 167941, 281307, 482636]
 else
@@ -43,10 +43,13 @@ end
 def temps_moyen( cmd )
   les_temps = []
   temps_tot = 0.0
+  le_min = le_max = nil
 
   NB_REPETITIONS.times do
     temps = %x{#{cmd}}.chomp.to_f
     temps_tot += temps
+    le_min = le_min ? [temps, le_min].min : temps
+    le_max = le_max ? [temps, le_max].max : temps
     les_temps << temps
   end
 
@@ -54,14 +57,14 @@ def temps_moyen( cmd )
 
   ecart_type = (Math.sqrt (les_temps.reduce(0.0) { |s, x| (x - moy) * (x - moy) } / (NB_REPETITIONS - 1))).round(1)
 
-  [moy, ecart_type]
+  [moy, le_min, le_max]
 end
 
-print format("\#%#{LARGEUR}s %#{2*LARGEUR-1}s %#{2*LARGEUR-1}s",
+print format("\#%#{LARGEUR}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s",
              "N", "Java+", "Java-")
 
 NB_THREADS.each do |nb_threads|
-  print format(" %#{2*LARGEUR-1}s", "PpFf#{nb_threads}" )
+  print format(" %#{3*LARGEUR-1}s", "PpFf#{nb_threads}" )
 end
 print "\n"
 
@@ -74,15 +77,15 @@ NB_MOTS.each do  |nb_mots|
 
   fichier_mots = "testdata/#{nb_mots}Words.txt"
 
-  temps_java_avec_jit, et_java_avec_jit = temps_moyen "java -cp . WordCount '#{fichier_mots}'"
-  temps_java_sans_jit, et_java_sans_jit = temps_moyen "java -Djava.compiler=NONE -cp . WordCount '#{fichier_mots}'"
+  temps_java_avec_jit, min_java_avec_jit, max_java_avec_jit = temps_moyen "java -cp . WordCount '#{fichier_mots}'"
+  temps_java_sans_jit, min_java_sans_jit, max_java_sans_jit = temps_moyen "java -Djava.compiler=NONE -cp . WordCount '#{fichier_mots}'"
 
-  partial_result = partial_result + format(FMT_MOY, temps_java_avec_jit) + format(FMT_ET, et_java_avec_jit)
-  partial_result = partial_result + format(FMT_MOY, temps_java_sans_jit) + format(FMT_ET, et_java_sans_jit)
+  partial_result = partial_result + format(FMT_MOY, temps_java_avec_jit) + format(FMT_ET, min_java_avec_jit) + format(FMT_ET, max_java_avec_jit)
+  partial_result = partial_result + format(FMT_MOY, temps_java_sans_jit) + format(FMT_ET, min_java_sans_jit) + format(FMT_ET, max_java_sans_jit)
 
   NB_THREADS.each do |nb_threads|
-    temps_ppff, et_ppff = temps_moyen "./WordCount #{fichier_mots} #{nb_threads}"
-    partial_result = partial_result + format(FMT_MOY, temps_ppff) + format(FMT_ET, et_ppff)
+    temps_ppff, min_ppff, max_ppff = temps_moyen "./WordCount #{fichier_mots} #{nb_threads}"
+    partial_result = partial_result + format(FMT_MOY, temps_ppff) + format(FMT_ET, min_ppff) + format(FMT_ET, max_ppff)
   end
 
   print partial_result
