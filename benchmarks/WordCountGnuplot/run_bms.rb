@@ -2,6 +2,15 @@
 
 DEBUG = true
 
+if DEBUG
+  NB_REPETITIONS = 3
+  #NB_MOTS = [377, 3805, 7610, 78792]
+  NB_MOTS = [78792, 167941, 281307, 482636]
+else
+  NB_REPETITIONS = 10
+  NB_MOTS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
+end
+
 # Pour utiliser facilement sur diverses machines, donc MacBook et
 # Linux.
 SERVER = ENV['HOST']
@@ -30,15 +39,6 @@ if DEBUG
 end
 
 LARGEUR = 8
-
-if DEBUG
-  NB_REPETITIONS = 3
-  #NB_MOTS = [377, 3805, 7610]
-  NB_MOTS = [78792, 167941, 281307, 482636]
-else
-  NB_REPETITIONS = 10
-  NB_MOTS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
-end
 
 def temps_moyen( cmd )
   les_temps = []
