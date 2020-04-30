@@ -1,6 +1,4 @@
 .IGNORE:
-def: def_plot
-
 def_run:  compile
 	make -f gt-makefile run_bms
 
