@@ -3,7 +3,8 @@
 AVEC_SANS_JIT=-Djava.compiler=NONE
 #AVEC_SANS_JIT=
 
-def: _exemple_jit_
+def:
+	make -f gt-makefile run_bms
 
 
 benchmarks: compile

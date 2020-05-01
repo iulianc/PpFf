@@ -37,26 +37,28 @@ NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
 
 
 ######################################################
-# IMPORTANT
-######################################################
-#
-# LES PROGRAMMES A EXECUTER.
-#
-# C'est cette partie qu'il faut modifier si on veut ajouter d'autres
-# programmes a benchmarker.
-#
+# IMPORTANT Ce sont les elements ci-bas qu'il faut modifier si on veut
+# ajouter d'autres programmes a benchmarker et/ou d'autres fichiers a
+# traiter.
 ######################################################
 
+PGM = 'WordCount'
+
+# Les programmes a executer.
 PGMS_JAVA =
-  [ ['java -cp . WordCount', 'Java+'],
-    ['java -Djava.compiler=NONE -cp . WordCount', 'Java-'],
-    ['java -cp . WordCountWarmup', 'Java*'] ]
+  [ ["java -cp . #{PGM}", 'Java+'],
+    ["java -Djava.compiler=NONE -cp . #{PGM}", 'Java-'],
+    ["java -cp . #{PGM}Warmup", 'Java*'] ]
 
 PGMS_PPFF =
   NB_THREADS
-  .map { |nb_threads| ["./WordCount #{nb_threads}", "PpFf-#{nb_threads}"] }
+  .map { |nb_threads| ["./#{PGM} #{nb_threads}", "PpFf-#{nb_threads}"] }
 
 PGMS = PGMS_JAVA + PGMS_PPFF
+
+# Les fichiers de donnees
+FICHIERS_DONNEES =
+  NB_MOTS.map { |nb_mots| ["testdata/#{nb_mots}Words.txt", nb_mots] }
 
 ######################################################
 # Constantes et fonctions auxiliaires
@@ -131,17 +133,15 @@ imprimer_en_tete( PGMS )
 
 res_temps = '';
 res_debits = '';
-NB_MOTS.each do  |nb_mots|
-  fichier_mots = "testdata/#{nb_mots}Words.txt"
-
-  ligne_temps = " #{format("%#{LARGEUR}d", nb_mots)}"
-  ligne_debits = " #{format("%#{LARGEUR}d", nb_mots)}"
+FICHIERS_DONNEES.each do  |fichier, nb_items|
+  ligne_temps = " #{format("%#{LARGEUR}d", nb_items)}"
+  ligne_debits = " #{format("%#{LARGEUR}d", nb_items)}"
 
   PGMS.each do |cmd, _|
-    les_temps = generer_les_temps( "#{cmd} '#{fichier_mots}'" )
+    les_temps = generer_les_temps( "#{cmd} '#{fichier}'" )
 
     ligne_temps << formater_temps( *temps_moyen( les_temps ) )
-    ligne_debits << formater_temps( *debits_moyen( les_temps, nb_mots ) )
+    ligne_debits << formater_temps( *debits_moyen( les_temps, nb_items ) )
   end
 
   print ligne_temps + "\n"
