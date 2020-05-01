@@ -62,11 +62,11 @@ int main(int argc, char* argv[]) {
     uint32_t nbThreads = DEFAULT_NB_THREADS;
 
     if (argc >= 2) {
-        inputFile = argv[1];
+        nbThreads = atoi(argv[1]);
     }
 
     if (argc >= 3) {
-        nbThreads = atoi(argv[2]);
+        inputFile = argv[2];
     }
 
     // utiliser pour vérifier le bon fonctionnement
