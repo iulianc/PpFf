@@ -1,17 +1,13 @@
 #
-# Appel pour une autre machine que java, par exemple MacOS:
+# Appel pour une autre machine que la machine courante:
 #
-# make SERVER=MacOS
-
-
-def: mk_graphes
-
-SERVER=MacOS
-SERVER=c34581
-SERVER=java
+# make SERVER=foo
 
 mk_graphes:
-	./run_gnuplot.sh $(SERVER)
+	./plot.sh "temps" 0
+	./plot.sh "temps" 1
+	./plot.sh "debit" 0
+	./plot.sh "debit" 1
 
 
 clean cleanxtra:

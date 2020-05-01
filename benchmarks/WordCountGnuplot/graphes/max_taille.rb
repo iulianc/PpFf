@@ -8,10 +8,6 @@
 
 lignes = STDIN.readlines
 
-#while (ligne = lignes.shift) !~ /^#\s*N/i
-#  # On ignore la ligne
-#end
-
 max = 0
 lignes.each do |ligne_temps|
   # On obtient les informations de la ligne.
