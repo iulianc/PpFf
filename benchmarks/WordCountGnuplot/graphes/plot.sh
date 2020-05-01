@@ -1,25 +1,27 @@
 #!
 
-# Pour executer le script:
-# chmod +x run_gnuplot.sh # 1 seule fois!
 #
 # ./plot_temps.sh (temps|debit) [avec_log [server]]
+#
+# Utilise aussi le fichier pgms-${SERVER}-wc.txt, pour identifier les
+# etiquettes a utiliser pour les differentes courbes.
+#
 
 # Il est preferable de ne pas lancer l'execution des benchmarks dans
 # le script des graphiques, pour permettre de plus facilement refaire
 # la presentation des graphes (comme j'ai fait) sans devoir lancer a
 # nouveau l'execution!
 # 
-# C'est pour cette raison que le fichier est cree dans le
+# C'est pour cette raison que les fichiers sont crees dans le
 # sous-repertoire graphes et que les scripts sont places dans ce meme
 # repertoire.
 #
 
 DEBUG=1
 
-SORTE="$1"
-shift
 
+# Graphe pour temps d'execution ou pour debit.
+SORTE="$1"; shift
 if [[ $SORTE == "temps" ]]; then
     TITRE="Temps d'exécution"
     UNITE="ms"
@@ -31,30 +33,31 @@ else
     exit
 fi
 
+# Avec ou sans echelle logarithmique pour les y.
 if [[ $# == 0 ]]; then
-    avec_log="1"
+    AVEC_LOG="1"
 else
-    avec_log="$1"
+    AVEC_LOG="$1"
     shift
 fi
 
 # Si pas d'argument, on utilise le nom du host courant, qui donne
 # acces au fichier de donnees.
 if [[ $# == 0 ]]; then
-    server="$HOST"
+    SERVER="$HOST"
 else
-    server="$1"
+    SERVER="$1"
     shift
 fi
 
 # Les fichiers d'entree et de sortie.
-fichier="temps-${server}-wc.txt"
-avec_sans_log=$([[ $avec_log == 0 ]] && echo '_nolog')
-output_graph="graphe_${SORTE}_${server}_WordCount${avec_sans_log}.png"
+fichier="temps-${SERVER}-wc.txt"
+avec_sans_log=$([[ $AVEC_LOG == 0 ]] && echo '_nolog')
+fichier_graphe="graphe_${SORTE}_${SERVER}_WordCount${avec_sans_log}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "fichier = $fichier"
-    echo "output_graph = $output_graph"
+    echo "fichier_graphe = $fichier_graphe"
 fi
 
 # Les parametres pour le graphe.
@@ -65,19 +68,19 @@ taille_min=0 # 0 plus simple pcq. non log
 taille_max=$(ruby max_taille.rb <$fichier)
 
 if [[ $DEBUG ]]; then
-    echo "*** Traitement pour $server ***"
+    echo "*** Traitement pour $SERVER ***"
     echo "taille_min = $taille_min; taille_max = $taille_max"
     echo "temps_min = $temps_min; temps_max = $temps_max"
 fi
 
-avec_sans_log1=$([[ $avec_log == 1 ]] && echo 'log ')
-avec_sans_log2=$([[ $avec_log == 1 ]] && echo '(log) ')
+avec_sans_log1=$([[ $AVEC_LOG == 1 ]] && echo 'log ')
+avec_sans_log2=$([[ $AVEC_LOG == 1 ]] && echo '(log) ')
 
 # On genere le script gnuplot.
 cat >script.plot <<EOF
 set terminal png
-set output '$output_graph'
-$([[ $avec_log == 1 ]] && echo "set logscale y")
+set output '$fichier_graphe'
+$([[ $AVEC_LOG == 1 ]] && echo "set logscale y")
 set format x '%.0f'
 set xtics rotate by 310
 set xtics font ", 6"
@@ -100,11 +103,6 @@ function ymin_ymax {
     echo "1:$col:$min:$max"
 }
 
-#
-# Note: le separateur ne semble pas necessaire -- i.e., ok s'il y a
-# une "," en trop a la fin, a tout le moins sur Mac --, mais je le
-# laisse tant que je n'ai pas verifie sur d'autres machines.
-#
 function line_and_points {
     fichier="$1"
     col="$2"
@@ -113,16 +111,12 @@ function line_and_points {
     echo "'$fichier' using $(ymin_ymax $col) title '$title' with yerrorlines$separateur"
 }
 
-col=2
-for item in 'Java+' 'Java-' 'Java*'; do
-    /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
-    (( col=col+$NB_PAR_POINT ))
-done
 
-max_nb_threads=$(./max_nb_threads.sh <$fichier)
-for (( i = 1; i <= max_nb_threads; i *= 2 )); do
-    separateur=$( [[ $i == $max_nb_threads ]] && echo "" || echo ", ")
-    /bin/echo -n $(line_and_points "$fichier" $col "PpFf-$i" "$separateur") >>script.plot
+# Note: Il y a un separateur en trop a la fin, mais cela semble quand
+# meme fonctionner!
+col=2
+for item in $(cat pgms-${SERVER}-wc.txt); do
+    /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
     (( col=col+$NB_PAR_POINT ))
 done
 
@@ -131,15 +125,14 @@ if [[ $DEBUG == 1 ]]; then
     cat script.plot
 fi 
 
-# On trace le graphe.
-
+# On genere le graphe.
 gnuplot -persist <script.plot
 
 if [[ $DEBUG == 1 ]]; then
     echo "*** Graphe genere! ***"
-    if [[ $server == MacOS ]]; then
-        open $output_graph
-    elif [[ $server == java && $USER == tremblay_gu ]]; then
-        cp $output_graph ~/public_html/maison
+    if [[ $SERVER == MacOS ]]; then
+        open $fichier_graphe
+    elif [[ $SERVER == java && $USER == tremblay_gu ]]; then
+        cp $fichier_graphe ~/public_html/maison
     fi
 fi
