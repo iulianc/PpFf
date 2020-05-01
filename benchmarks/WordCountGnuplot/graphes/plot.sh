@@ -114,7 +114,7 @@ function line_and_points {
 }
 
 col=2
-for item in 'Java+' 'Java-'; do
+for item in 'Java+' 'Java-' 'Java*'; do
     /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
     (( col=col+$NB_PAR_POINT ))
 done

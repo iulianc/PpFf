@@ -20,7 +20,7 @@ NB_TIMES=5
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class # WordCountSeq 
+EXE 		:= WordCount WordCount.class WordCountWarmup.class # WordCountSeq 
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -76,6 +76,11 @@ run_java: compile
 	@java -cp . WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS)
 
+run_java_warmup: compile
+	@echo "*** Execution Java avec Warmup ***"
+	@java -cp . WordCountWarmup $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
+	@diff obtenus-java.txt $(ATTENDUS)
+
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
 
@@ -84,6 +89,9 @@ WordCountSeq: $(OBJ)
 
 WordCount.class: WordCount.java
 	javac WordCount.java
+
+WordCountWarmup.class: WordCountWarmup.java
+	javac WordCountWarmup.java
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

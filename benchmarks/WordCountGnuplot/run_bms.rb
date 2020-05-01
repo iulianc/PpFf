@@ -3,7 +3,7 @@
 DEBUG = true
 
 if DEBUG
-  NB_REPETITIONS = 2
+  NB_REPETITIONS = 5
   #NB_MOTS = [377, 3805]
   #NB_MOTS = [377, 3805, 7610]
   NB_MOTS = [78792, 167941, 281307, 482636]
@@ -70,8 +70,8 @@ def temps_moyen( les_temps )
 end
 
 def imprimer_en_tete
-  print format("\#%#{LARGEUR}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s",
-               "N", "Java+", "Java-")
+  print format("\#%#{LARGEUR}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s",
+               "N", "Java+", "Java-", "Java*")
 
   NB_THREADS.each do |nb_threads|
     print format(" %#{3*LARGEUR-1}s", "PpFf#{nb_threads}" )
@@ -128,6 +128,12 @@ NB_MOTS.each do  |nb_mots|
   ligne_temps << formater_temps( *les_temps_java_sans_jit )
   les_debits_java_sans_jit = debits_moyen( les_temps, nb_mots )
   ligne_debits << formater_temps( *les_debits_java_sans_jit )
+
+  les_temps = generer_les_temps( "java -cp . WordCountWarmup '#{fichier_mots}'" )
+  les_temps_java_avec_jit = temps_moyen( les_temps )
+  ligne_temps << formater_temps( *les_temps_java_avec_jit )
+  les_debits_java_avec_jit = debits_moyen( les_temps, nb_mots )
+  ligne_debits << formater_temps( *les_debits_java_avec_jit )
 
   NB_THREADS.each do |nb_threads|
     les_temps = generer_les_temps( "./WordCount #{fichier_mots} #{nb_threads}" )
