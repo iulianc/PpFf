@@ -1,65 +1,157 @@
 #!/usr/bin/env ruby
 
-$file_options="../testdata/stock_options_64K.txt"
+DEBUG = true
 
-DEBUG = false #true
-$server = 'java'	#'japet'
-$nb_thtreads = 1
-$fichier = 'test.txt'
+######################################################
+# Configuration des parametres
+######################################################
 
-if $server == 'java'
-	$fichier = 'temps-java-stockprice.txt'
-	$nb_thtreads = [1, 2, 4, 8, 16]
+if DEBUG
+  NB_REPETITIONS = 2
+  FICHIERS_DONNEES = ["../testdata/stock_options_64K.txt"]
+  #NB_MOTS = [377, 3805, 7610]
+  #NB_MOTS = [78792, 167941, 281307, 482636]
 else
-	$fichier = "temps-japet-stockprice.txt"
-	$nb_thtreads = [1, 2, 4, 8, 16, 32]
+  NB_REPETITIONS = 10
+  FICHIERS_DONNEES = ["../testdata/stock_options_64K.txt"]
 end
 
+# Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
+SERVER = ENV['HOST']
+FICHIER_PGMS = "graphes/pgms-#{SERVER}-wc.txt"
+FICHIER_TEMPS = "graphes/temps-#{SERVER}-wc.txt"
+FICHIER_DEBITS = "graphes/debits-#{SERVER}-wc.txt"
+
+# Pour le nombre maximum de threads, on utilise un petit nombre de
+# processeurs qui depend de la machine.
+MAX_THREADS = case SERVER
+              when 'java', 'c34581', 'MacOS'
+                4
+              when 'japet'
+                8
+              else
+                %x{nproc}.chomp.to_i / 2
+              end
+
+NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
+
+
+######################################################
+# IMPORTANT
+######################################################
+#
+# LES PROGRAMMES A EXECUTER.
+#
+# C'est cette partie qu'il faut modifier si on veut ajouter d'autres
+# programmes a benchmarker.
+#
+######################################################
+
+PGMS_JAVA =
+  [ ['java -cp . StockPrice', 'Java+'],
+    ['java -Djava.compiler=NONE -cp . StockPrice', 'Java-'] ]
+
+
+PGMS_PPFF =
+  NB_THREADS
+  .map { |nb_threads| ["./StockPrice #{nb_threads}", "PpFf-#{nb_threads}"] }
+
+PGMS = PGMS_JAVA + PGMS_PPFF
+
+######################################################
+# Constantes et fonctions auxiliaires
+######################################################
 LARGEUR = 8
 
+FMT = "%#{LARGEUR}.1f"
 
-if DEBUG
-  NB_REPETITIONS = 1
-else
-  NB_REPETITIONS = 10  # Temporaire... sinon 3? 5?
-end
-
-if DEBUG
-  $nb_thtreads = [1, 2]
-end
-
-def temps_moyen( cmd )
-  temps_tot = 0.0
+def generer_les_temps( cmd )
+  les_temps = []
 
   NB_REPETITIONS.times do
-    temps = %x{#{cmd}}.chomp.to_f
-    temps_tot += temps
+    les_temps << %x{#{cmd}}.chomp.to_f
   end
 
-  (temps_tot / NB_REPETITIONS).to_i
+  les_temps
 end
 
-print format("%#{LARGEUR}s %#{LARGEUR}s", "Java+", "Java-")
+def temps_moyen( les_temps )
+  temps_tot = 0.0
+  le_min = le_max = nil
 
-$nb_thtreads.each do  |nb_threads|
-	print format(" %#{LARGEUR}s", "PpFf#{nb_threads}" )
+  les_temps.each do |temps|
+    temps_tot += temps
+    le_min = le_min ? [temps, le_min].min : temps
+    le_max = le_max ? [temps, le_max].max : temps
+  end
+
+  moy = (temps_tot / NB_REPETITIONS).round(1)
+
+  [moy, le_min, le_max]
 end
 
-print "\n"
+def debits_moyen( les_temps, nb_mots )
+  debit_tot = 0.0
+  le_min = le_max = nil
 
-result = '';
-temps_java_avec_jit = temps_moyen "java -cp . StockPrice #{$file_options}"
-temps_java_sans_jit = temps_moyen "java -Djava.compiler=NONE -cp . StockPrice #{$file_options}"
+  les_temps.each do |temps|
+    debit = nb_mots / temps
 
-result = result + " #{format("%#{LARGEUR}d", temps_java_avec_jit)}"
-result = result + " #{format("%#{LARGEUR}d", temps_java_sans_jit)}"
+    debit_tot += debit
+    le_min = le_min ? [debit, le_min].min : debit
+    le_max = le_max ? [debit, le_max].max : debit
+  end
 
-$nb_thtreads.each do  |nb_threads|
-   temps_ppff = temps_moyen "./StockPrice #{$file_options} #{nb_threads}"
-   result = result + " #{format("%#{LARGEUR}d", temps_ppff)}"
+  moy = (debit_tot / NB_REPETITIONS).round(1)
+
+  [moy, le_min, le_max]
 end
 
-print result
-print "\n"
+def imprimer_en_tete( pgms )
+  print format("\#%#{LARGEUR}s", "N" )
 
-File.open($fichier, 'w') { |file| file.write(result) }
+  pgms.each do |_, label|
+    print format(" %#{3*LARGEUR-1}s", label )
+  end
+  print "\n"
+end
+
+def formater_temps( moy, min, max )
+  format(FMT, moy) + format(FMT, min) + format(FMT, max)
+end
+
+######################################################
+######################################################
+
+if DEBUG
+  puts "*** Va creer les fichiers #{FICHIER_TEMPS}, #{FICHIER_DEBITS} et #{FICHIER_PGMS} (avec au plus #{MAX_THREADS} threads)"
+end
+
+imprimer_en_tete( PGMS )
+
+res_temps = '';
+res_debits = '';
+FICHIERS_DONNEES.each do  |fichier|
+  nb_mots = 65536
+  ligne_temps = " #{format("%#{LARGEUR}d", nb_mots)}"
+  ligne_debits = " #{format("%#{LARGEUR}d", nb_mots)}"
+
+  PGMS.each do |cmd, _|
+    les_temps = generer_les_temps( "#{cmd} '#{fichier}'" )
+
+    ligne_temps << formater_temps( *temps_moyen( les_temps ) )
+    ligne_debits << formater_temps( *debits_moyen( les_temps, nb_mots ) )
+  end
+
+  print ligne_temps + "\n"
+  print ligne_debits + "\n"
+
+  res_temps << ligne_temps << "\n"
+  res_debits << ligne_debits << "\n"
+end
+
+ligne_pgms = PGMS.map { |_, label| "#{label} " }.join
+
+File.open(FICHIER_PGMS, 'w') { |file| file.write(ligne_pgms) }
+File.open(FICHIER_TEMPS, 'w') { |file| file.write(res_temps) }
+File.open(FICHIER_DEBITS, 'w') { |file| file.write(res_debits) }
