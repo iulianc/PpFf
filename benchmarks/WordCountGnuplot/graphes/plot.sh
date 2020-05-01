@@ -3,7 +3,7 @@
 #
 # ./plot_temps.sh nomDuProgramme (temps|debit) [avec_log [server]]
 #
-# Utilise aussi le fichier pgms-${SERVER}-${PGM}.txt, pour identifier les
+# Utilise aussi le fichier infos-${SERVER}-${PGM}.txt, pour identifier les
 # etiquettes a utiliser pour les differentes courbes.
 #
 
@@ -89,6 +89,8 @@ fi
 avec_sans_log1=$([[ $AVEC_LOG == 1 ]] && echo 'log ')
 avec_sans_log2=$([[ $AVEC_LOG == 1 ]] && echo '(log) ')
 
+XTICS="$(head -1 infos-${SERVER}-${PGM}.txt)"
+
 # On genere le script gnuplot.
 cat >script.plot <<EOF
 set terminal png
@@ -97,7 +99,7 @@ $([[ $AVEC_LOG == 1 ]] && echo "set logscale y")
 set format x '%.0f'
 set xtics rotate by 310
 set xtics font ", 6"
-set xtics (78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743)
+set xtics (${XTICS})
 
 set xlabel "Nombre de ${ITEMS} traités"
 set ylabel "${TITRE} (${avec_sans_log1}${UNITE})"
@@ -128,7 +130,7 @@ function line_and_points {
 # Note: Il y a un separateur en trop a la fin, mais cela semble quand
 # meme fonctionner!
 col=2
-for item in $(cat pgms-${SERVER}-${PGM}.txt); do
+for item in $(tail -1 infos-${SERVER}-${PGM}.txt); do
     /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
     (( col=col+$NB_PAR_POINT ))
 done

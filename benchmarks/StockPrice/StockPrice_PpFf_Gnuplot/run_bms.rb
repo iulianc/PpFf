@@ -2,24 +2,24 @@
 
 DEBUG = true
 
+PGM = ARGV[0]
+
 ######################################################
 # Configuration des parametres
 ######################################################
 
 if DEBUG
   NB_REPETITIONS = 2
-  NB_MOTS = [4 * 1024, 8 * 1024, 16 * 1024]
+  NB_ITEMS = [4 * 1024, 8 * 1024, 16 * 1024]
 else
   NB_REPETITIONS = 10
-  NB_MOTS = [4 * 1024, 8 * 1024, 16 * 1024]
+  NB_ITEMS = [4 * 1024, 8 * 1024, 16 * 1024]
 end
 
 
-PGM = 'StockPrice'
-
 # Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
 SERVER = ENV['HOST']
-FICHIER_PGMS = "graphes/pgms-#{SERVER}-#{PGM}.txt"
+FICHIER_INFOS = "graphes/infos-#{SERVER}-#{PGM}.txt"
 FICHIER_TEMPS = "graphes/temps-#{SERVER}-#{PGM}.txt"
 FICHIER_DEBITS = "graphes/debits-#{SERVER}-#{PGM}.txt"
 
@@ -46,7 +46,8 @@ NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
 # Les programmes a executer.
 PGMS_JAVA =
   [ ["java -cp . #{PGM}", 'Java+'],
-    ["java -Djava.compiler=NONE -cp . #{PGM}", 'Java-'] ]
+    ["java -Djava.compiler=NONE -cp . #{PGM}", 'Java-'],
+  ]
 
 PGMS_PPFF =
   NB_THREADS
@@ -55,8 +56,12 @@ PGMS_PPFF =
 PGMS = PGMS_JAVA + PGMS_PPFF
 
 # Les fichiers de donnees
+def to_nom_fichier_donnee( nb )
+  "../testdata/stock_options_#{nb/1024}K.txt"
+end
+
 FICHIERS_DONNEES =
-  NB_MOTS.map { |nb| [ "../testdata/stock_options_#{nb/1024}K.txt", nb ] }
+  NB_ITEMS.map { |nb| [to_nom_fichier_donnee(nb), nb] }
 
 
 ######################################################
@@ -125,7 +130,7 @@ end
 ######################################################
 
 if DEBUG
-  puts "*** Va creer les fichiers #{FICHIER_TEMPS}, #{FICHIER_DEBITS} et #{FICHIER_PGMS} (avec au plus #{MAX_THREADS} threads)"
+  puts "*** Va creer les fichiers #{FICHIER_TEMPS}, #{FICHIER_DEBITS} et #{FICHIER_INFOS} (avec au plus #{MAX_THREADS} threads)"
 end
 
 imprimer_en_tete( PGMS )
@@ -150,8 +155,9 @@ FICHIERS_DONNEES.each do  |fichier, nb_items|
   res_debits << ligne_debits << "\n"
 end
 
-ligne_pgms = PGMS.map { |_, label| "#{label} " }.join
+ligne_xtics = FICHIERS_DONNEES.map { |_, nb| "#{nb}" }.join( ", " )
+ligne_labels = PGMS.map { |_, label| "#{label} " }.join
+File.open(FICHIER_INFOS, 'w') { |file| file.write(ligne_xtics + "\n"); file.write(ligne_labels + "\n") }
 
-File.open(FICHIER_PGMS, 'w') { |file| file.write(ligne_pgms) }
 File.open(FICHIER_TEMPS, 'w') { |file| file.write(res_temps) }
 File.open(FICHIER_DEBITS, 'w') { |file| file.write(res_debits) }
