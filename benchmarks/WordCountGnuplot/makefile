@@ -56,13 +56,13 @@ run: run_cpp_seq run_cpp run_java
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
-	@./WordCount $(TEST_FILE_loremipsum) 1 $(DEBUG) | sort > obtenus-cpp.txt
+	@./WordCount 1 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS_loremipsum)
 
-	@./WordCount $(TEST_FILE_78792) 2 $(DEBUG) | sort > obtenus-cpp.txt
+	@./WordCount 2 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS_78792)
 
-	@./WordCount $(TEST_FILE_752856) 2 $(DEBUG) | sort > obtenus-cpp.txt
+	@./WordCount 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS_752856)
 
 

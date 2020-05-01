@@ -2,6 +2,10 @@
 
 DEBUG = true
 
+######################################################
+# Configuration des parametres
+######################################################
+
 if DEBUG
   NB_REPETITIONS = 2
   NB_MOTS = [377, 3805]
@@ -14,34 +18,53 @@ end
 
 # Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
 SERVER = ENV['HOST']
+FICHIER_PGMS = "graphes/pgms-#{SERVER}-wc.txt"
 FICHIER_TEMPS = "graphes/temps-#{SERVER}-wc.txt"
 FICHIER_DEBITS = "graphes/debits-#{SERVER}-wc.txt"
 
 # Pour le nombre maximum de threads, on utilise un petit nombre de
 # processeurs qui depend de la machine.
-max_threads = nil
-if SERVER == 'japet'
-  max_threads = 8
-elsif SERVER == 'java'
-  max_threads = 4
-elsif SERVER == 'c34581'
-  max_threads = 4
-elsif SERVER == 'MacOS'
-  max_threads = 4
-else
-  max_threads = %x{nproc}.chomp.to_i / 2
-end
+MAX_THREADS = case SERVER
+              when 'java', 'c34581', 'MacOS'
+                4
+              when 'japet'
+                8
+              else
+                %x{nproc}.chomp.to_i / 2
+              end
 
-NB_THREADS = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
-             .take_while { |n| n <= max_threads}
+NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
 
+
+######################################################
+# IMPORTANT
+######################################################
+#
+# LES PROGRAMMES A EXECUTER.
+#
+# C'est cette partie qu'il faut modifier si on veut ajouter d'autres
+# programmes a benchmarker.
+#
+######################################################
+
+PGMS_JAVA =
+  [ ['java -cp . WordCount', 'Java+'],
+    ['java -Djava.compiler=NONE -cp . WordCount', 'Java-'],
+    ['java -cp . WordCountWarmup', 'Java*'] ]
+
+PGMS_PPFF =
+  NB_THREADS
+  .map { |nb_threads| ["./WordCount #{nb_threads}", "PpFf-#{nb_threads}"] }
+
+PGMS = PGMS_JAVA + PGMS_PPFF
+
+######################################################
+# Constantes et fonctions auxiliaires
+######################################################
 LARGEUR = 8
 
 FMT = "%#{LARGEUR}.1f"
 
-######################################################
-# Fonctions auxiliaires
-######################################################
 def generer_les_temps( cmd )
   les_temps = []
 
@@ -64,23 +87,7 @@ def temps_moyen( les_temps )
 
   moy = (temps_tot / NB_REPETITIONS).round(1)
 
-  ecart_type = (Math.sqrt (les_temps.reduce(0.0) { |s, x| (x - moy) * (x - moy) } / (NB_REPETITIONS - 1))).round(1)
-
   [moy, le_min, le_max]
-end
-
-def imprimer_en_tete
-  print format("\#%#{LARGEUR}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s",
-               "N", "Java+", "Java-", "Java*")
-
-  NB_THREADS.each do |nb_threads|
-    print format(" %#{3*LARGEUR-1}s", "PpFf-#{nb_threads}" )
-  end
-  print "\n"
-end
-
-def formater_temps( moy, min, max )
-  format(FMT, moy) + format(FMT, min) + format(FMT, max)
 end
 
 def debits_moyen( les_temps, nb_mots )
@@ -100,36 +107,38 @@ def debits_moyen( les_temps, nb_mots )
   [moy, le_min, le_max]
 end
 
+def imprimer_en_tete( pgms )
+  print format("\#%#{LARGEUR}s", "N" )
+
+  pgms.each do |_, label|
+    print format(" %#{3*LARGEUR-1}s", label )
+  end
+  print "\n"
+end
+
+def formater_temps( moy, min, max )
+  format(FMT, moy) + format(FMT, min) + format(FMT, max)
+end
+
 ######################################################
 ######################################################
 
 if DEBUG
-  puts "*** Va creer les fichiers #{FICHIER_TEMPS} et #{FICHIER_DEBITS} (avec au plus #{max_threads} threads)"
+  puts "*** Va creer les fichiers #{FICHIER_TEMPS}, #{FICHIER_DEBITS} et #{FICHIER_PGMS} (avec au plus #{MAX_THREADS} threads)"
 end
 
-
-
-
-imprimer_en_tete
+imprimer_en_tete( PGMS )
 
 res_temps = '';
 res_debits = '';
 NB_MOTS.each do  |nb_mots|
   fichier_mots = "testdata/#{nb_mots}Words.txt"
 
-  pgms_java = [ "java -cp . WordCount",
-                "java -Djava.compiler=NONE -cp . WordCount",
-                "java -cp . WordCountWarmup"]
-    .map { |cmd| "#{cmd} '#{fichier_mots}'" }
-
-  pgms_ppff = NB_THREADS
-    .map { |nb_threads| "./WordCount #{fichier_mots} #{nb_threads}" }
-
   ligne_temps = " #{format("%#{LARGEUR}d", nb_mots)}"
   ligne_debits = " #{format("%#{LARGEUR}d", nb_mots)}"
 
-  (pgms_java + pgms_ppff).each do |cmd|
-    les_temps = generer_les_temps( cmd )
+  PGMS.each do |cmd, _|
+    les_temps = generer_les_temps( "#{cmd} '#{fichier_mots}'" )
 
     ligne_temps << formater_temps( *temps_moyen( les_temps ) )
     ligne_debits << formater_temps( *debits_moyen( les_temps, nb_mots ) )
@@ -142,5 +151,8 @@ NB_MOTS.each do  |nb_mots|
   res_debits << ligne_debits << "\n"
 end
 
+ligne_pgms = PGMS.map { |_, label| "#{label} " }.join
+
+File.open(FICHIER_PGMS, 'w') { |file| file.write(ligne_pgms) }
 File.open(FICHIER_TEMPS, 'w') { |file| file.write(res_temps) }
 File.open(FICHIER_DEBITS, 'w') { |file| file.write(res_debits) }
