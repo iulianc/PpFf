@@ -1,9 +1,9 @@
 #!
 
 #
-# ./plot_temps.sh (temps|debit) [avec_log [server]]
+# ./plot_temps.sh nomDuProgramme (temps|debit) [avec_log [server]]
 #
-# Utilise aussi le fichier pgms-${SERVER}-wc.txt, pour identifier les
+# Utilise aussi le fichier pgms-${SERVER}-${PGM}.txt, pour identifier les
 # etiquettes a utiliser pour les differentes courbes.
 #
 
@@ -20,6 +20,19 @@
 DEBUG=1
 
 
+# Pour quel programme on genere les graphes.
+PGM="$1"; shift
+
+# La sorte d'items traites par le programme
+if [[ $PGM == 'WordCount' ]]; then
+    ITEMS="mots"
+elif [[ $PGM == 'StockPrice' ]]; then
+    ITEMS="records"
+else
+    ITEMS="items"
+fi
+
+
 # Graphe pour temps d'execution ou pour debit.
 SORTE="$1"; shift
 if [[ $SORTE == "temps" ]]; then
@@ -27,7 +40,7 @@ if [[ $SORTE == "temps" ]]; then
     UNITE="ms"
 elif [[ $SORTE == "debit" ]]; then
     TITRE="Débit"
-    UNITE="K-mots/s"
+    UNITE="K-${ITEMS}/s"
 else
     echo "*** Sorte invalide: $sorte"
     exit
@@ -51,9 +64,9 @@ else
 fi
 
 # Les fichiers d'entree et de sortie.
-fichier="temps-${SERVER}-wc.txt"
+fichier="temps-${SERVER}-${PGM}.txt"
 avec_sans_log=$([[ $AVEC_LOG == 0 ]] && echo '_nolog')
-fichier_graphe="graphe_${SORTE}_${SERVER}_WordCount${avec_sans_log}.png"
+fichier_graphe="graphe_${SORTE}_${SERVER}_${PGM}${avec_sans_log}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "fichier = $fichier"
@@ -86,9 +99,9 @@ set xtics rotate by 310
 set xtics font ", 6"
 set xtics (78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743)
 
-set xlabel "Nombre de mots traités"
+set xlabel "Nombre de ${ITEMS} traités"
 set ylabel "${TITRE} (${avec_sans_log1}${UNITE})"
-set title "WordCount: Nombre de mots traités vs. ${avec_sans_log2}${TITRE}\n"
+set title "${PGM}: Nombre de ${ITEMS} traités vs. ${avec_sans_log2}${TITRE}\n"
 EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
@@ -115,7 +128,7 @@ function line_and_points {
 # Note: Il y a un separateur en trop a la fin, mais cela semble quand
 # meme fonctionner!
 col=2
-for item in $(cat pgms-${SERVER}-wc.txt); do
+for item in $(cat pgms-${SERVER}-${PGM}.txt); do
     /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
     (( col=col+$NB_PAR_POINT ))
 done

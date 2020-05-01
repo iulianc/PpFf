@@ -2,6 +2,8 @@
 
 DEBUG = true
 
+PGM = ARGV[0]
+
 ######################################################
 # Configuration des parametres
 ######################################################
@@ -18,9 +20,9 @@ end
 
 # Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
 SERVER = ENV['HOST']
-FICHIER_PGMS = "graphes/pgms-#{SERVER}-wc.txt"
-FICHIER_TEMPS = "graphes/temps-#{SERVER}-wc.txt"
-FICHIER_DEBITS = "graphes/debits-#{SERVER}-wc.txt"
+FICHIER_PGMS = "graphes/pgms-#{SERVER}-#{PGM}.txt"
+FICHIER_TEMPS = "graphes/temps-#{SERVER}-#{PGM}.txt"
+FICHIER_DEBITS = "graphes/debits-#{SERVER}-#{PGM}.txt"
 
 # Pour le nombre maximum de threads, on utilise un petit nombre de
 # processeurs qui depend de la machine.
@@ -41,8 +43,6 @@ NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
 # ajouter d'autres programmes a benchmarker et/ou d'autres fichiers a
 # traiter.
 ######################################################
-
-PGM = 'WordCount'
 
 # Les programmes a executer.
 PGMS_JAVA =

@@ -78,4 +78,4 @@ cleanall cleanxtra: clean
 
 
 run_bms:
-	ruby run_bms.rb
+	ruby run_bms.rb StockPrice

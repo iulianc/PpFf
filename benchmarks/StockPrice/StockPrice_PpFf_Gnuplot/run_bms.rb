@@ -9,20 +9,19 @@ DEBUG = true
 if DEBUG
   NB_REPETITIONS = 2
   NB_MOTS = [4 * 1024, 8 * 1024, 16 * 1024]
-  #NB_MOTS = [8 * 1024, 16 * 1024, 32 * 1024]
-  #NB_MOTS = [32 * 1024, 64 * 1024, 128 * 1024]
-  #NB_MOTS = [377, 3805, 7610]
-  #NB_MOTS = [78792, 167941, 281307, 482636]
 else
   NB_REPETITIONS = 10
-  NB_MOTS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
+  NB_MOTS = [4 * 1024, 8 * 1024, 16 * 1024]
 end
+
+
+PGM = 'StockPrice'
 
 # Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
 SERVER = ENV['HOST']
-FICHIER_PGMS = "graphes/pgms-#{SERVER}-wc.txt"
-FICHIER_TEMPS = "graphes/temps-#{SERVER}-wc.txt"
-FICHIER_DEBITS = "graphes/debits-#{SERVER}-wc.txt"
+FICHIER_PGMS = "graphes/pgms-#{SERVER}-#{PGM}.txt"
+FICHIER_TEMPS = "graphes/temps-#{SERVER}-#{PGM}.txt"
+FICHIER_DEBITS = "graphes/debits-#{SERVER}-#{PGM}.txt"
 
 # Pour le nombre maximum de threads, on utilise un petit nombre de
 # processeurs qui depend de la machine.
@@ -43,8 +42,6 @@ NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
 # ajouter d'autres programmes a benchmarker et/ou d'autres fichiers a
 # traiter.
 ######################################################
-
-PGM = 'StockPrice'
 
 # Les programmes a executer.
 PGMS_JAVA =

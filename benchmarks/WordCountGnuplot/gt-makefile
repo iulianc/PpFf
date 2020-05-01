@@ -105,5 +105,5 @@ cleanall cleanxtra: clean
 -include $(DEP)
 
 run_bms: compile
-	./run_bms.rb | tee temps-wc.txt
+	./run_bms.rb 'WordCount' | tee temps-wc.txt
 
