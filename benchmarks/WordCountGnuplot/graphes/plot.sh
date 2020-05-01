@@ -3,7 +3,7 @@
 # Pour executer le script:
 # chmod +x run_gnuplot.sh # 1 seule fois!
 #
-# ./plot_temps.sh [avec_log [server]]
+# ./plot_temps.sh (temps|debit) [avec_log [server]]
 
 # Il est preferable de ne pas lancer l'execution des benchmarks dans
 # le script des graphiques, pour permettre de plus facilement refaire
@@ -16,6 +16,20 @@
 #
 
 DEBUG=1
+
+SORTE="$1"
+shift
+
+if [[ $SORTE == "temps" ]]; then
+    TITRE="Temps d'exécution"
+    UNITE="ms"
+elif [[ $SORTE == "debit" ]]; then
+    TITRE="Débit"
+    UNITE="K-mots/s"
+else
+    echo "*** Sorte invalide: $sorte"
+    exit
+fi
 
 if [[ $# == 0 ]]; then
     avec_log="1"
@@ -36,7 +50,7 @@ fi
 # Les fichiers d'entree et de sortie.
 fichier="temps-${server}-wc.txt"
 avec_sans_log=$([[ $avec_log == 0 ]] && echo '_nolog')
-output_graph="graphe_temps_${server}_WordCount${avec_sans_log}.png"
+output_graph="graphe_${SORTE}_${server}_WordCount${avec_sans_log}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "fichier = $fichier"
@@ -70,8 +84,8 @@ set xtics font ", 6"
 set xtics (78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743)
 
 set xlabel "Nombre de mots traités"
-set ylabel "Temps d'exécution (${avec_sans_log1}ms)"
-set title "WordCount: Nombre de mots traités vs. ${avec_sans_log2}Temps d'exécution\n"
+set ylabel "${TITRE} (${avec_sans_log1}${UNITE})"
+set title "WordCount: Nombre de mots traités vs. ${avec_sans_log2}${TITRE}\n"
 EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
