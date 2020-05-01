@@ -8,12 +8,14 @@ DEBUG = true
 
 if DEBUG
   NB_REPETITIONS = 2
-  FICHIERS_DONNEES = ["../testdata/stock_options_64K.txt"]
+  NB_MOTS = [4 * 1024, 8 * 1024, 16 * 1024]
+  #NB_MOTS = [8 * 1024, 16 * 1024, 32 * 1024]
+  #NB_MOTS = [32 * 1024, 64 * 1024, 128 * 1024]
   #NB_MOTS = [377, 3805, 7610]
   #NB_MOTS = [78792, 167941, 281307, 482636]
 else
   NB_REPETITIONS = 10
-  FICHIERS_DONNEES = ["../testdata/stock_options_64K.txt"]
+  NB_MOTS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
 end
 
 # Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
@@ -37,26 +39,28 @@ NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
 
 
 ######################################################
-# IMPORTANT
-######################################################
-#
-# LES PROGRAMMES A EXECUTER.
-#
-# C'est cette partie qu'il faut modifier si on veut ajouter d'autres
-# programmes a benchmarker.
-#
+# IMPORTANT Ce sont les elements ci-bas qu'il faut modifier si on veut
+# ajouter d'autres programmes a benchmarker et/ou d'autres fichiers a
+# traiter.
 ######################################################
 
+PGM = 'StockPrice'
+
+# Les programmes a executer.
 PGMS_JAVA =
-  [ ['java -cp . StockPrice', 'Java+'],
-    ['java -Djava.compiler=NONE -cp . StockPrice', 'Java-'] ]
-
+  [ ["java -cp . #{PGM}", 'Java+'],
+    ["java -Djava.compiler=NONE -cp . #{PGM}", 'Java-'] ]
 
 PGMS_PPFF =
   NB_THREADS
-  .map { |nb_threads| ["./StockPrice #{nb_threads}", "PpFf-#{nb_threads}"] }
+  .map { |nb_threads| ["./#{PGM} #{nb_threads}", "PpFf-#{nb_threads}"] }
 
 PGMS = PGMS_JAVA + PGMS_PPFF
+
+# Les fichiers de donnees
+FICHIERS_DONNEES =
+  NB_MOTS.map { |nb| [ "../testdata/stock_options_#{nb/1024}K.txt", nb ] }
+
 
 ######################################################
 # Constantes et fonctions auxiliaires
@@ -131,16 +135,15 @@ imprimer_en_tete( PGMS )
 
 res_temps = '';
 res_debits = '';
-FICHIERS_DONNEES.each do  |fichier|
-  nb_mots = 65536
-  ligne_temps = " #{format("%#{LARGEUR}d", nb_mots)}"
-  ligne_debits = " #{format("%#{LARGEUR}d", nb_mots)}"
+FICHIERS_DONNEES.each do  |fichier, nb_items|
+  ligne_temps = " #{format("%#{LARGEUR}d", nb_items)}"
+  ligne_debits = " #{format("%#{LARGEUR}d", nb_items)}"
 
   PGMS.each do |cmd, _|
     les_temps = generer_les_temps( "#{cmd} '#{fichier}'" )
 
     ligne_temps << formater_temps( *temps_moyen( les_temps ) )
-    ligne_debits << formater_temps( *debits_moyen( les_temps, nb_mots ) )
+    ligne_debits << formater_temps( *debits_moyen( les_temps, nb_items ) )
   end
 
   print ligne_temps + "\n"
