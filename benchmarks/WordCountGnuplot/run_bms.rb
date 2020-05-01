@@ -3,18 +3,19 @@
 DEBUG = true
 
 if DEBUG
-  NB_REPETITIONS = 3
-  #NB_MOTS = [377, 3805, 7610, 78792]
-  NB_MOTS = [78792, 167941, 281307, 482636]
+  NB_REPETITIONS = 2
+  NB_MOTS = [377, 3805]
+  #NB_MOTS = [377, 3805, 7610]
+  #NB_MOTS = [78792, 167941, 281307, 482636]
 else
   NB_REPETITIONS = 10
   NB_MOTS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
 end
 
-# Pour utiliser facilement sur diverses machines, donc MacBook et
-# Linux.
+# Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
 SERVER = ENV['HOST']
-FICHIER = "graphes/temps-#{SERVER}-wc.txt"
+FICHIER_TEMPS = "graphes/temps-#{SERVER}-wc.txt"
+FICHIER_DEBIT = "graphes/debit-#{SERVER}-wc.txt"
 
 # Pour le nombre maximum de threads, on utilise un petit nombre de
 # processeurs qui depend de la machine.
@@ -34,12 +35,13 @@ end
 NB_THREADS = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
              .take_while { |n| n <= max_threads}
 
-if DEBUG
-  puts "*** Cree le fichier #{FICHIER} (avec au plus #{max_threads} threads)"
-end
-
 LARGEUR = 8
 
+FMT = "%#{LARGEUR}.1f"
+
+######################################################
+# Fonctions auxiliaires
+######################################################
 def temps_moyen( cmd )
   les_temps = []
   temps_tot = 0.0
@@ -60,37 +62,48 @@ def temps_moyen( cmd )
   [moy, le_min, le_max]
 end
 
-print format("\#%#{LARGEUR}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s",
-             "N", "Java+", "Java-")
+def imprimer_en_tete
+  print format("\#%#{LARGEUR}s %#{3*LARGEUR-1}s %#{3*LARGEUR-1}s",
+               "N", "Java+", "Java-")
 
-NB_THREADS.each do |nb_threads|
-  print format(" %#{3*LARGEUR-1}s", "PpFf#{nb_threads}" )
+  NB_THREADS.each do |nb_threads|
+    print format(" %#{3*LARGEUR-1}s", "PpFf#{nb_threads}" )
+  end
+  print "\n"
 end
-print "\n"
 
-FMT_MOY = "%#{LARGEUR}.1f"
-FMT_ET = "%#{LARGEUR}.1f"
+def formater_temps( moy, min, max )
+  format(FMT, moy) + format(FMT, min) + format(FMT, max)
+end
+######################################################
+######################################################
+
+if DEBUG
+  puts "*** Va creer les fichiers #{FICHIER_TEMPS} et #{FICHIER_DEBIT} (avec au plus #{max_threads} threads)"
+end
+
+imprimer_en_tete
 
 result = '';
 NB_MOTS.each do  |nb_mots|
-  partial_result = " #{format("%#{LARGEUR}d", nb_mots)}"
-
   fichier_mots = "testdata/#{nb_mots}Words.txt"
 
-  temps_java_avec_jit, min_java_avec_jit, max_java_avec_jit = temps_moyen "java -cp . WordCount '#{fichier_mots}'"
-  temps_java_sans_jit, min_java_sans_jit, max_java_sans_jit = temps_moyen "java -Djava.compiler=NONE -cp . WordCount '#{fichier_mots}'"
+  ligne = " #{format("%#{LARGEUR}d", nb_mots)}"
 
-  partial_result = partial_result + format(FMT_MOY, temps_java_avec_jit) + format(FMT_ET, min_java_avec_jit) + format(FMT_ET, max_java_avec_jit)
-  partial_result = partial_result + format(FMT_MOY, temps_java_sans_jit) + format(FMT_ET, min_java_sans_jit) + format(FMT_ET, max_java_sans_jit)
+  les_temps_java_avec_jit = temps_moyen "java -cp . WordCount '#{fichier_mots}'"
+  ligne << formater_temps( *les_temps_java_avec_jit )
+
+  les_temps_java_sans_jit = temps_moyen "java -Djava.compiler=NONE -cp . WordCount '#{fichier_mots}'"
+  ligne << formater_temps( *les_temps_java_sans_jit )
 
   NB_THREADS.each do |nb_threads|
-    temps_ppff, min_ppff, max_ppff = temps_moyen "./WordCount #{fichier_mots} #{nb_threads}"
-    partial_result = partial_result + format(FMT_MOY, temps_ppff) + format(FMT_ET, min_ppff) + format(FMT_ET, max_ppff)
+    les_temps_ppff = temps_moyen "./WordCount #{fichier_mots} #{nb_threads}"
+    ligne << formater_temps( *les_temps_ppff )
   end
 
-  print partial_result
+  print ligne
   print "\n"
-  result = result + partial_result + "\n"
+  result << ligne << "\n"
 end
 
-File.open(FICHIER, 'w') { |file| file.write(result) }
+File.open(FICHIER_TEMPS, 'w') { |file| file.write(result) }
