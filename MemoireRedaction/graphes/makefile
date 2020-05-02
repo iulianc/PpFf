@@ -18,3 +18,6 @@ StockPrice:
 clean cleanxtra:
 	rm -f *~
 	rm -f script.plot
+
+cleanxxx: cleanxtra
+	rm -f graphe*.png *c34581*
