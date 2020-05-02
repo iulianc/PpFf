@@ -2,26 +2,19 @@
 
 DEBUG = true
 
+######################################################
+# Configuration des parametres d'execution
+######################################################
+
 PGM = ARGV[0]
 
-######################################################
-# Configuration des parametres
-######################################################
-
-if DEBUG
-  NB_REPETITIONS = 2
-  NB_ITEMS = [377, 3805, 7610]
-else
-  NB_REPETITIONS = 10
-  NB_ITEMS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
-end
-
-
-# Pour utiliser facilement sur diverses machines, dont MacBook, Linux.
+# Pour utiliser facilement sur diverses machines, dont MacBook, Linux, etc.
 SERVER = ENV['HOST']
+
 FICHIER_INFOS = "graphes/infos-#{SERVER}-#{PGM}.txt"
 FICHIER_TEMPS = "graphes/temps-#{SERVER}-#{PGM}.txt"
 FICHIER_DEBITS = "graphes/debits-#{SERVER}-#{PGM}.txt"
+
 
 # Pour le nombre maximum de threads, on utilise un petit nombre de
 # processeurs qui depend de la machine.
@@ -36,42 +29,14 @@ MAX_THREADS = case SERVER
 
 NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
 
-
-######################################################
-# IMPORTANT Ce sont les elements ci-bas qu'il faut modifier si on veut
-# ajouter d'autres programmes a benchmarker et/ou d'autres fichiers a
-# traiter.
-######################################################
-
-# Les programmes a executer.
-PGMS_JAVA =
-  [ ["java -cp . #{PGM}", 'Java+'],
-    ["java -Djava.compiler=NONE -cp . #{PGM}", 'Java-'],
-    ["java -cp . #{PGM}Warmup", 'Java*'],
-  ]
-
-PGMS_PPFF =
-  NB_THREADS
-  .map { |nb_threads| ["./#{PGM} #{nb_threads}", "PpFf-#{nb_threads}"] }
-
-PGMS = PGMS_JAVA + PGMS_PPFF
-
-# Les fichiers de donnees
-def to_nom_fichier_donnee( nb )
-  "testdata/#{nb}Words.txt"
-end
-
-FICHIERS_DONNEES =
-  NB_ITEMS.map { |nb| [to_nom_fichier_donnee(nb), nb] }
+# On charge les parametres specifiques a cette serie de benchmarks.
+require "./#{PGM}-bm-config.rb"
 
 
 ######################################################
-# Constantes et fonctions auxiliaires
+# Fonctions auxiliaires pour les executions et production des temps et
+# debits.
 ######################################################
-LARGEUR = 8
-
-FMT = "%#{LARGEUR}.1f"
-
 def generer_les_temps( cmd )
   les_temps = []
 
@@ -114,6 +79,11 @@ def debits_moyen( les_temps, nb_mots )
   [moy, le_min, le_max]
 end
 
+######################################################
+# Constantes et fonctions auxiliaires pour la sortie.
+######################################################
+LARGEUR = 8
+
 def imprimer_en_tete( pgms )
   print format("\#%#{LARGEUR}s", "N" )
 
@@ -124,10 +94,13 @@ def imprimer_en_tete( pgms )
 end
 
 def formater_temps( moy, min, max )
-  format(FMT, moy) + format(FMT, min) + format(FMT, max)
+  fmt = "%#{LARGEUR}.1f"
+
+  format(fmt, moy) + format(fmt, min) + format(fmt, max)
 end
 
 ######################################################
+# Le programme principal.
 ######################################################
 
 if DEBUG
@@ -139,8 +112,9 @@ imprimer_en_tete( PGMS )
 res_temps = '';
 res_debits = '';
 FICHIERS_DONNEES.each do  |fichier, nb_items|
-  ligne_temps = " #{format("%#{LARGEUR}d", nb_items)}"
-  ligne_debits = " #{format("%#{LARGEUR}d", nb_items)}"
+  fmt = " %#{LARGEUR}d"
+  ligne_temps = format(fmt, nb_items)
+  ligne_debits = format(fmt, nb_items)
 
   PGMS.each do |cmd, _|
     les_temps = generer_les_temps( "#{cmd} '#{fichier}'" )
@@ -156,9 +130,19 @@ FICHIERS_DONNEES.each do  |fichier, nb_items|
   res_debits << ligne_debits << "\n"
 end
 
+
+# On cree les fichiers de sortie.
 ligne_xtics = FICHIERS_DONNEES.map { |_, nb| "#{nb}" }.join( ", " )
 ligne_labels = PGMS.map { |_, label| "#{label} " }.join
-File.open(FICHIER_INFOS, 'w') { |file| file.write(ligne_xtics + "\n"); file.write(ligne_labels + "\n") }
 
-File.open(FICHIER_TEMPS, 'w') { |file| file.write(res_temps) }
-File.open(FICHIER_DEBITS, 'w') { |file| file.write(res_debits) }
+File.open(FICHIER_INFOS, 'w') do |file|
+  file.write(ligne_xtics + "\n")
+  file.write(ligne_labels + "\n")
+end
+
+File.open(FICHIER_TEMPS, 'w') do |file|
+  file.write(res_temps)
+end
+File.open(FICHIER_DEBITS, 'w') do |file|
+  file.write(res_debits)
+end
