@@ -1,7 +1,7 @@
 #!
 
 #
-# ./plot_temps.sh nomDuProgramme (temps|debit) [avec_log [server]]
+# ./plot_temps.sh nomDuProgramme (temps|debits) [avec_log [server]]
 #
 # Utilise aussi le fichier infos-${SERVER}-${PGM}.txt, pour identifier les
 # etiquettes a utiliser pour les differentes courbes.
@@ -33,12 +33,12 @@ else
 fi
 
 
-# Graphe pour temps d'execution ou pour debit.
+# Graphe pour temps d'execution ou pour debits.
 SORTE="$1"; shift
 if [[ $SORTE == "temps" ]]; then
     TITRE="Temps d'exécution"
     UNITE="ms"
-elif [[ $SORTE == "debit" ]]; then
+elif [[ $SORTE == "debits" ]]; then
     TITRE="Débit"
     UNITE="K-${ITEMS}/s"
 else
@@ -64,7 +64,7 @@ else
 fi
 
 # Les fichiers d'entree et de sortie.
-fichier="temps-${SERVER}-${PGM}.txt"
+fichier="${SORTE}-${SERVER}-${PGM}.txt"
 avec_sans_log=$([[ $AVEC_LOG == 0 ]] && echo '_nolog')
 fichier_graphe="graphe_${SORTE}_${SERVER}_${PGM}${avec_sans_log}.png"
 
