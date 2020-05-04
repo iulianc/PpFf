@@ -3,6 +3,9 @@
 # Petit script pour verifier si le fait d'avoir une periode de warm-up
 # pour la version WordCount permet de reduire, ou pas, le temps d'execution.
 #
+
+##########################################
+
 # MacOS: (30 repetitions) pour 78792
 #   *** Execution Java sans Warmup ***
 #   427 +/-      9,1 (   402  ..    444 )
@@ -20,6 +23,8 @@
 #   *** Execution Java avec Warmup ***
 #   941 +/-     75,3 (   668  ..   1078 )
 
+##########################################
+
 # Linux: (30 repetitions) pour 78792
 #   *** Execution Java sans Warmup ***
 #   149 +/-      8.9 (   138  ..    168 )
@@ -32,6 +37,14 @@
 #   *** Execution Java avec Warmup ***
 #   1117 +/-     48.1 (  1025  ..   1215 )
 
+
+##########################################
+
+# Java: (30 repetitions) pour 2137758
+#   *** Execution Java sans Warmup ***
+#   3153 +/-    426.4 (  2283  ..   4061 )
+#   *** Execution Java avec Warmup ***
+#   2563 +/-    768.5 (  1826  ..   5809 )
 
 fichier="$1"; shift
 avec_sans_warmup="$1"; shift
