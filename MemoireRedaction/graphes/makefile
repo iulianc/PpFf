@@ -3,17 +3,26 @@
 #
 # make SERVER=foo
 
+def: WordCount
+
+test:
+	./plot.sh 'WordCount' 'temps' '*' "Tous les programmes" 1
+	./plot.sh 'WordCount' 'temps' '1,2,3' "Programmes Java" 1
+	./plot.sh 'WordCount' 'temps' '4,5,6' "Programmes PpFF" 1
+	./plot.sh 'WordCount' 'temps' '2,6,7' "Meilleurs programmes" 1
+	./plot.sh 'WordCount' 'temps' '2,3,6' "Java-/Java* PpFF-4" 1
+
 WordCount:
-	./plot.sh "WordCount" "temps" 0
-	./plot.sh "WordCount" "temps" 1
-	./plot.sh "WordCount" "debits" 0
-	./plot.sh "WordCount" "debits" 1
+	./plot.sh 'WordCount' 'temps' '*' "Tous les programmes" 0
+	./plot.sh 'WordCount' 'temps' '*' "Tous les programmes" 1
+	./plot.sh 'WordCount' 'debits' '*' "Tous les programmes" 0
+	./plot.sh 'WordCount' 'debits' '*' "Tous les programmes" 1
 
 StockPrice:
-	./plot.sh "StockPrice" "temps" 0
-	./plot.sh "StockPrice" "temps" 1
-	./plot.sh "StockPrice" "debits" 0
-	./plot.sh "StockPrice" "debits" 1
+	./plot.sh 'StockPrice' 'temps' '*' "Tous les programmes" 0
+	./plot.sh 'StockPrice' 'temps' '*' "Tous les programmes" 1
+	./plot.sh 'StockPrice' 'debits' '*' "Tous les programmes" 0
+	./plot.sh 'StockPrice' 'debits' '*' "Tous les programmes" 1
 
 clean cleanxtra:
 	rm -f *~
