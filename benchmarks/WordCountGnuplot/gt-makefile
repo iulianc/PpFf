@@ -27,6 +27,7 @@ def_plot:
 
 NB_FOIS=30
 TEST_FILE="testdata/78792Words.txt"
+TEST_FILE="testdata/281307Words.txt"
 #TEST_FILE="testdata/2137758Words.txt"
 ATTENDUS="attendus-78792.txt"
 

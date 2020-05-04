@@ -3,18 +3,30 @@
 # Petit script pour verifier si le fait d'avoir une periode de warm-up
 # pour la version WordCount permet de reduire, ou pas, le temps d'execution.
 #
-# MacOS: oui (30 repetitions)
-#        sans => 429 ( 403 .. 530 )
-#        avec => 389 ( 342 .. 442 )
+# MacOS: (30 repetitions) pour 78792
+#   *** Execution Java sans Warmup ***
+#   427 +/-      9,1 (   402  ..    444 )
+#  *** Execution Java avec Warmup ***
+#  387 +/-     20,5 (   331  ..    412 )
 
+# MacOS: (30 repetitions) pour 281307
+#   *** Execution Java sans Warmup ***
+#   741 +/-     42,0 (   661  ..    824 )
+#   *** Execution Java avec Warmup ***
+#   948 +/-     36,4 (   828  ..   1000 )
+#   
+#   *** Execution Java sans Warmup ***
+#   737 +/-     82,8 (   656  ..   1123 )
+#   *** Execution Java avec Warmup ***
+#   941 +/-     75,3 (   668  ..   1078 )
 
-# Linux: oui (30 repetitions) pour 78792
+# Linux: (30 repetitions) pour 78792
 #   *** Execution Java sans Warmup ***
 #   149 +/-      8.9 (   138  ..    168 )
 #   *** Execution Java avec Warmup ***
 #   129 +/-     15.9 (   111  ..    178 )
 
-# Linux: oui (30 repetitions) pour 2137758
+# Linux: (30 repetitions) pour 2137758
 #   *** Execution Java sans Warmup ***
 #   1167 +/-     37.0 (  1072  ..   1231 )
 #   *** Execution Java avec Warmup ***
