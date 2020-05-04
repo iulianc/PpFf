@@ -1,18 +1,32 @@
 .IGNORE:
+def: run_java_warmup
+
 def_run:  compile
 	make -f gt-makefile run_bms
 
 def_plot:
 	./gnuplot-debit.sh
 
-TEST_FILE="testdata/1505712Words.txt"
-ATTENDUS="attendus-1505712.txt"
+# 
+# NOTE: Les differentes tailles des fichiers de donnes sont les suivantes:
+#
+# 10
+# 131
+# 377
+# 3805
+# 7610
+# 78792
+# 167941
+# 281307
+# 482636
+# 752856
+# 1639684
+# 2137758
+# 2614743
+#
 
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
-
-#TEST_FILE="testdata/loremipsum.txt"
-#ATTENDUS="attendus-loremipsum.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5
@@ -63,8 +77,13 @@ run_sh:
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
-	@./WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-cpp.txt
-	@diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCount 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
+	diff obtenus-cpp.txt $(ATTENDUS)
+
+run_ff: compile
+	@echo "*** Execution FastFlow *** "
+	@./WordCountFastFlow $(TEST_FILE) 1 | sort > obtenus-ff.txt
+	diff obtenus-ff.txt $(ATTENDUS)
 
 run_seq: compile
 	@echo "*** Execution seq. *** "
@@ -73,13 +92,13 @@ run_seq: compile
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . WordCount $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
-	@diff obtenus-java.txt $(ATTENDUS)
+	@java -cp . WordCount $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
 
 run_java_warmup: compile
 	@echo "*** Execution Java avec Warmup ***"
-	@java -cp . WordCountWarmup $(TEST_FILE) $(NB_TIMES) | sort > obtenus-java.txt
-	@diff obtenus-java.txt $(ATTENDUS)
+	@java -cp . WordCountWarmup $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
+	diff obtenus-java-warmup.txt $(ATTENDUS)
 
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
@@ -100,7 +119,7 @@ clean:
 	\rm -f $(EXE) $(OBJ) $(DEP)
 	\rm -f *.class
 
-cleanall cleanxtra: clean
+cleanx cleanall cleanxtra: clean
 	\rm -f *.o *~
 	\rm -f obtenus*txt temps-sh.txt res.txt
 

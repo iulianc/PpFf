@@ -19,10 +19,10 @@
 
 using namespace PpFf;
 
-#define DEBUG_MODE false
-#define DEFAULT_INPUT_FILE "/home/iuly/WorkplaceEclipse/PpFf-OldVersion/tests/WordCount/testdata/78792Words.txt"
-
+#define DEFAULT_DEBUG_MODE false
+#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
 #define DEFAULT_NB_THREADS 1
+
 typedef std::vector<std::string> Words;
 
 Words* splitInWords(std::string* line) {
@@ -57,7 +57,7 @@ bool notEmpty(std::string* s) {
 }
 
 int main(int argc, char* argv[]) {
-    bool debug = DEBUG_MODE;
+    bool debug = DEFAULT_DEBUG_MODE;
     std::string inputFile = DEFAULT_INPUT_FILE;
     uint32_t nbThreads = DEFAULT_NB_THREADS;
 
@@ -69,11 +69,10 @@ int main(int argc, char* argv[]) {
         inputFile = argv[2];
     }
 
-    // utiliser pour vérifier le bon fonctionnement
-    // du programme
+    // Utilisé pour vérifier le bon fonctionnement du programme
     if (argc >= 4) {
-        if(atoi(argv[3]) == 1){
-				debug = true;
+        if (atoi(argv[3]) == 1) {
+            debug = true;
         }
     }
 
@@ -94,11 +93,12 @@ int main(int argc, char* argv[]) {
         .reduceByKey<std::string, std::string, int>(reducer);  
 
     auto end = std::chrono::high_resolution_clock::now();
-    long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
-    if(!debug){
+    if (!debug) {
         printf("%5ld ", duration_ms);
-    } else{
+    } else {
         for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
             std::string currentResultKey = it->first;
             int currentResultValue = it->second;

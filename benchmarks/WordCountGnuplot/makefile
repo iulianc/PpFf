@@ -1,6 +1,6 @@
 .IGNORE:
 def_run:
-	make -f gt-makefile run_bms
+	make -f gt-makefile
 
 
 
@@ -20,7 +20,7 @@ DEBUG=1
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountSeq WordCountFastFlow
+EXE 		:= WordCount WordCount.class WordCountSeq WordCountFastFlow WordCountWarmup.class
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -108,6 +108,9 @@ WordCountFastFlow: $(OBJ)
 
 WordCount.class: WordCount.java
 	javac WordCount.java
+
+WordCountWarmup.class: WordCountWarmup.java
+	javac WordCountWarmup.java
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

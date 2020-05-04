@@ -15,10 +15,10 @@
 
 using namespace ff;
 
-#define DEBUG_MODE false
-#define DEFAULT_INPUT_FILE "/home/Memoire/benchmarks/WordCountGnuplot/testdata/loremipsum.txt"
-//#define DEFAULT_INPUT_FILE "testdata/loremipsum.txt"
+#define DEFAULT_DEBUG_MODE false
+#define DEFAULT_INPUT_FILE "testdata/loremipsum.txt"
 
+typedef std::vector<std::string> Words;
 
 template <typename T>
 std::string numberToString (T number) {
@@ -27,13 +27,9 @@ std::string numberToString (T number) {
     return ss.str();
 }
 
-typedef std::vector<std::string> Words;
-
-
 struct linesFromFileStage: ff_node {
-	std::string const &path;
-
-	linesFromFileStage(std::string const &path):path(path){}
+    std::string const &path;
+    linesFromFileStage(std::string const &path) : path(path){}
 
     void* svc(void* task) {
         std::ifstream file(path);
@@ -50,22 +46,25 @@ struct linesFromFileStage: ff_node {
 
 struct splitInWordsStage: ff_node {
     std::string delimiter = " ";
-    struct toLowercaseLettersStage: ff_node_t<std::string> {
 
+    struct toLowercaseLettersStage: ff_node_t<std::string> {
         std::string* svc(std::string* task) {
-        	std::string* result = new std::string;
+            std::string* result = new std::string;
 
             for (auto& c: *task) {
                 int ci = (int) c;
                 if (('A' <= ci && ci <= 'Z') || ('a' <= ci && ci <= 'z'))
                     result->push_back(c);
             }
-            transform(result->begin(), result->end(), result->begin(),
+            transform(result->begin(), 
+                      result->end(), 
+                      result->begin(),
                       [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
 
             return result;
     	}
     };
+
     void* svc(void* task) {
     	std::string line = *((std::string*)task);
         Words* words = new Words();
@@ -85,17 +84,16 @@ struct splitInWordsStage: ff_node {
 struct flatStage: ff_node {
     std::string delimiter = " ";
 
-	void* svc(void* task) {
-	    for(auto &elem : *(Words*)task){
-	    	ff_send_out(&elem);
-	    }
+    void* svc(void* task) {
+        for(auto &elem : *(Words*)task){
+            ff_send_out(&elem);
+        }
 
-		return GO_ON;
-	}
+        return GO_ON;
+    }
 };
 
 struct toLowercaseLettersStage: ff_node_t<std::string> {
-
     std::string* svc(std::string* task) {
     	std::string* result = new std::string;
 
@@ -108,15 +106,14 @@ struct toLowercaseLettersStage: ff_node_t<std::string> {
                   [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
 
         return result;
-	}
+    }
 };
 
 struct filterEmptyWordsStage:ff_node_t<std::string> {
-
-	std::string* svc(std::string* task) {
-		if(task->length() > 0){
-			return task;
-		}
+    std::string* svc(std::string* task) {
+        if (task->length() > 0){
+            return task;
+        }
 
         return GO_ON;
     }
@@ -124,21 +121,20 @@ struct filterEmptyWordsStage:ff_node_t<std::string> {
 
 
 struct groupByKeyStage:ff_node {
-	typedef std::unordered_map< std::string, int > CONTAINER;
-	CONTAINER &container;
+    typedef std::unordered_map< std::string, int > CONTAINER;
+    CONTAINER &container;
 
-	groupByKeyStage(CONTAINER &container): container(container){}
+    groupByKeyStage(CONTAINER &container) : container(container){}
 
-	void* svc(void* task) {
-		container[*((std::string*)task)] += 1;
-		return GO_ON;
+    void* svc(void* task) {
+        container[*((std::string*)task)] += 1;
+        return GO_ON;
     }
 };
 
 
 struct collectorStage:ff_node_t<std::string> {
-
-	std::string* svc(std::string* task) {
+    std::string* svc(std::string* task) {
         std::cout << *task << std::endl;
         return GO_ON;
     }
@@ -146,61 +142,63 @@ struct collectorStage:ff_node_t<std::string> {
 
 
 int main(int argc, char *argv[]) {
-	//uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
-	bool debug = DEBUG_MODE;
-	std::unordered_map< std::string, int > result;
-	std::string inputFile = DEFAULT_INPUT_FILE;
+    bool debug = DEFAULT_DEBUG_MODE;
+    std::string inputFile = DEFAULT_INPUT_FILE;
+    std::unordered_map<std::string, int> result;
 
-	if (argc >= 2) {
-		inputFile = argv[1];
-	}
+    if (argc >= 2) {
+        inputFile = argv[1];
+    }
 
-    // utiliser pour vérifier le bon fonctionnement
-    // du programme
+    // Utilisé pour vérifier le bon fonctionnement du programme
     if (argc >= 3) {
-        if(atoi(argv[2]) == 1){
-			debug = true;
+        if (atoi(argv[2]) == 1) {
+            debug = true;
         }
     }
 
-	// créer et exécuter le pipeline
-	auto begin = std::chrono::high_resolution_clock::now();
+    // Crée et exécute le pipeline
+    auto begin = std::chrono::high_resolution_clock::now();
 
+    collectorStage collector;
+    linesFromFileStage linesFromFile(inputFile);
+    splitInWordsStage splitInWords;
+    flatStage flat;
+    toLowercaseLettersStage toLowercaseLetters;
+    filterEmptyWordsStage filterEmptyWords;
+    groupByKeyStage groupByKey(result);
 
-	collectorStage collector;
-	linesFromFileStage linesFromFile(inputFile);
-	splitInWordsStage splitInWords;
-	flatStage flat;
-	toLowercaseLettersStage toLowercaseLetters;
-	filterEmptyWordsStage filterEmptyWords;
-	groupByKeyStage groupByKey(result);
+    ff_pipeline ffp;
+    ffp.add_stage(&linesFromFile);
+    ffp.add_stage(&splitInWords);
+    ffp.add_stage(&flat);
+    ffp.add_stage(&toLowercaseLetters);
+    ffp.add_stage(&filterEmptyWords);
+    ffp.add_stage(&groupByKey);
 
-	ff_pipeline ffp;
-	ffp.add_stage(&linesFromFile);
-	ffp.add_stage(&splitInWords);
-	ffp.add_stage(&flat);
-	ffp.add_stage(&toLowercaseLetters);
-	ffp.add_stage(&filterEmptyWords);
-	ffp.add_stage(&groupByKey);
+    if (ffp.run_and_wait_end() < 0) 
+        error("running pipe");
 
-	if (ffp.run_and_wait_end()<0) error("running pipe");
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
+    // Affiche le résultat -- temps ou <<vrais résultats>>
+    if (!debug) {
+        printf("%5ld ", duration_ms);
+    } else {
+        for (auto it = result.begin(); it != result.end(); it++) {
+            std::string currentResultKey = it->first;
+            int currentResultValue = it->second;
 
-	auto end = std::chrono::high_resolution_clock::now();
-	long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+            std::cout 
+                << currentResultKey 
+                << " => " 
+                << numberToString(currentResultValue) << std::endl;
+        }	
+    }
 
-
-	if(!debug){
-		printf("%5ld ", duration_ms);
-	} else{
-		for (auto it = result.begin(); it != result.end(); it++) {
-			std::string currentResultKey = it->first;
-			int currentResultValue = it->second;
-			std::cout << currentResultKey << " => " << numberToString(currentResultValue) << std::endl;
-		}	
-	}
-
-	return 0;
+    return 0;
 }
 
 
