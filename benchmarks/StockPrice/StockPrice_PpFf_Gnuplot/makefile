@@ -19,18 +19,14 @@ benchmarks: compile
 	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE)
 
 
-.IGNORE:
-
-NB_TIMES=5
-
 # Specify the final target name
-EXE 		:= StockPrice
+EXE 		:= StockPrice StockPriceFastFlow
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
-ROOT_PIPE      := $(HOME)/ProjectMemoir/Release2/PpFf/src
 #ROOT_PIPE      := $(HOME)/PpFf/Release2/PpFf/src
+ROOT_PIPE       := $(HOME)/Memoire/src
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
@@ -54,6 +50,8 @@ TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
 OUTPUT_FILE_RESULT="../testdata/stock_benchmark_result.txt"
 
+DEBUG=1
+
 # Tell make that these target are not real files
 .PHONY: all clean cleanall
 .SUFFIXES: .cpp 
@@ -64,13 +62,31 @@ compile: $(EXE)
 
 compile: $(EXE)
 
+run: run_ppff run_fastflow
 
-all	: $(EXE)
-	./StockPrice 
+run_ppff: compile
+	@echo "*** Execution PpFf *** "
+	@./StockPrice $(TEST_FILE) 1 $(DEBUG) | sort > obtenus-ppff.txt
+	@diff obtenus-ppff.txt $(ATTENDUS)
+
+	@./StockPrice $(TEST_FILE) $(NB_TIMES) 4 $(DEBUG) | sort > obtenus-ppff.txt
+	@diff obtenus-ppff.txt $(ATTENDUS)
+
+run_fastflow: compile
+	@echo "*** Execution FastFlow *** "
+	@./StockPriceFastFlow $(TEST_FILE) 1 $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS)
+
+	@./StockPriceFastFlow $(TEST_FILE) 4 $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS)
 
 
-$(EXE)		: $(OBJ)
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $^ $(LDLIBS) -o $@
+
+StockPrice: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPrice.o $(LDLIBS) -o StockPrice
+
+StockPriceFastFlow: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceFastFlow.o $(LDLIBS) -o StockPriceFastFlow
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
@@ -84,3 +100,5 @@ cleanall cleanxtra: clean
 -include $(DEP)
 
 
+run_bms:
+	ruby run_bms.rb

@@ -22,9 +22,13 @@ pgms_java =
 pgms_ppff =
   NB_THREADS.map { |nb_threads| ["./#{PGM} #{nb_threads}", "PpFf-#{nb_threads}"] }
 
+pgms_fastflow =
+	[
+		["./#{PGM}FastFlow", "FastFlow"]
+	]
 
 PGMS =
-  pgms_java + pgms_ppff
+  pgms_java + pgms_ppff + pgms_fastflow
 
 FICHIERS_DONNEES =
   NB_ITEMS.map { |nb| ["../testdata/stock_options_#{nb/1024}K.txt", nb] }
