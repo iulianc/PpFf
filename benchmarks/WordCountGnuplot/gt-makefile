@@ -20,7 +20,7 @@ NB_TIMES=5
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountWarmup.class # WordCountSeq 
+EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow # WordCountSeq 
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -89,6 +89,9 @@ WordCountSeq: $(OBJ)
 
 WordCount.class: WordCount.java
 	javac WordCount.java
+
+WordCountFastFlow: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlow.o $(LDLIBS) -o WordCountFastFlow
 
 WordCountWarmup.class: WordCountWarmup.java
 	javac WordCountWarmup.java

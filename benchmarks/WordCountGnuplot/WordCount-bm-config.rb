@@ -1,6 +1,7 @@
 if DEBUG
   NB_REPETITIONS = 2
-  NB_ITEMS = [377, 3805, 7610]
+  #NB_ITEMS = [377, 3805, 7610]
+  NB_ITEMS = [3805, 7610, 78792, 167941]
 else
   NB_REPETITIONS = 10
   NB_ITEMS = [78792, 167941, 281307, 482636, 752856, 1639684, 2137758, 2614743]
@@ -24,9 +25,9 @@ pgms_ppff =
   NB_THREADS.map { |nb_threads| ["./#{PGM} #{nb_threads}", "PpFf-#{nb_threads}"] }
 
 pgms_fastflow =
-	[
-		["./#{PGM}FastFlow", "FastFlow"]
-	]
+   [
+      ["./#{PGM}FastFlow", "FastFlow"]
+   ]
 
 
 PGMS =
