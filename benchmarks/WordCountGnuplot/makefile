@@ -20,13 +20,13 @@ DEBUG=1
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountSeq
+EXE 		:= WordCount WordCount.class WordCountSeq WordCountFastFlow
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
 #ROOT_PIPE      := $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
-ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
+ROOT_PIPE       := $(HOME)/Memoire/src
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
@@ -52,7 +52,7 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 compile: $(EXE)
 
-run: run_cpp_seq run_cpp run_java
+run: run_cpp_seq run_cpp run_java run_fastflow
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
@@ -84,12 +84,27 @@ run_cpp_seq: compile
 	@./WordCountSeq $(TEST_FILE_78792) | sort > $(ATTENDUS_78792)
 	@./WordCountSeq $(TEST_FILE_752856) | sort > $(ATTENDUS_752856)
 
+run_fastflow: compile
+	@echo "*** Execution FastFlow C++ *** "
+	@./WordCountFastFlow $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS_loremipsum)
+
+	@./WordCountFastFlow $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-cpp.txt
+	@diff obtenus-cpp.txt $(ATTENDUS_78792)
+
+	@./WordCountFastFlow $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-cpp.txt
+	@diff obtenus-cpp.txt $(ATTENDUS_752856)
+
+
 
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
 
 WordCountSeq: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq
+
+WordCountFastFlow: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlow.o $(LDLIBS) -o WordCountFastFlow
 
 WordCount.class: WordCount.java
 	javac WordCount.java
@@ -106,5 +121,5 @@ cleanall cleanxtra: clean
 -include $(DEP)
 
 run_bms:
-	./run_bms.rb | tee temps-wc.txt
+	./run_bms.rb 'WordCount' | tee temps-wc.txt
 

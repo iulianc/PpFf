@@ -1,6 +1,5 @@
 #include <iostream>
-#include <ff/pipeline.hpp>
-#include <ff/farm.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 #include <regex>
 #include <chrono>
@@ -10,7 +9,7 @@
 #include <map>
 #include <string>
 #include <sstream>
-#include<fstream>
+#include <fstream>
 #include <locale>
 #include <unordered_map>
 #include <map>
@@ -25,9 +24,10 @@
 
 using namespace ff;
 
-#define DEFAULT_NB_ITERATIONS 1
+
 #define DEFAULT_INPUT_FILE "../testdata/stock_options_64K.txt"
 #define DEFAULT_NB_THREADS 1
+#define DEBUG_MODE false
 
 
 template <typename T>
@@ -61,7 +61,6 @@ OptionData* GetOptionData(std::string* data) {
     char otype;
     std::stringstream ins(*data);
 
-    /* read stock option data */
     ins >> opt->StockName;
     ins >> opt->s >> opt->strike >> opt->r >> opt->divq;
     ins >> opt->v >> opt->t >> otype >> opt->divs >> opt->DGrefval;
@@ -134,94 +133,106 @@ struct CollectorStage:ff_node {
 struct Empty: public ff_node {
 	public:
    	void* svc(void* task) {
-      	return task;
-      }
+    	return task;
+    }
 };
 
 
 
 int main(int argc, char *argv[]) {
-	uint32_t nbIterations = DEFAULT_NB_ITERATIONS;
 	std::string inputFile = DEFAULT_INPUT_FILE;
 	uint32_t nbThreads = DEFAULT_NB_THREADS;
 	std::unordered_map<std::string, double> result;
+	bool debug = DEBUG_MODE;
 
     if (argc >= 2) {
         inputFile = argv[1];
     }
 
     if (argc >= 3) {
-        nbIterations = atoi(argv[2]);
+        nbThreads = atoi(argv[2]);
     }
 
+    // utiliser pour vérifier le bon fonctionnement
+    // du programme
     if (argc >= 4) {
-        nbThreads = atoi(argv[3]);
+        if(atoi(argv[3]) == 1){
+			debug = true;
+        }
     }
+
 
 	auto begin = std::chrono::high_resolution_clock::now();
+	
 
 
-	for (uint32_t i = 0; i < nbIterations; ++i) {
-		ff_pipeline ffp;
-		ff_farm<> farm;
-		std::vector<ff_node*> workers;
+	ff_pipeline ffp;
+	ff_farm farm;
+	std::vector<ff_node*> workers;
 
-		ffp.add_stage(new LinesFromFileStage(inputFile));
 
-		if(nbThreads > 1){
-			for(uint32_t i = 0; i < nbThreads; i++){
-				ff_pipeline *p = new ff_pipeline();
-				p->add_stage(new GetOptionDataStage());
-				p->add_stage(new CalculateStockPriceStage());
-				workers.push_back(p);
-			}		
+	LinesFromFileStage linesFromFile(inputFile);
+	GetOptionDataStage getOptionData;
+	CalculateStockPriceStage calculateStockPrice;
+	ReduceByKeyStage reduceByKey(result);
 
-			farm.add_workers(workers);
-			farm.add_collector(new Empty());
 
-			ffp.add_stage(&farm);
-			ffp.add_stage(new ReduceByKeyStage(result));
+	ffp.add_stage(&linesFromFile);
 
-		}
-		else {
-			ffp.add_stage(new GetOptionDataStage());
-			ffp.add_stage(new CalculateStockPriceStage());
-			ffp.add_stage(new ReduceByKeyStage(result));
-		}
+	if(nbThreads > 1){
+		for(uint32_t i = 0; i < nbThreads; i++){
+			ff_pipeline *p = new ff_pipeline();
+			p->add_stage(new GetOptionDataStage());
+			p->add_stage(new CalculateStockPriceStage());
+			workers.push_back(p);
+		}		
 
-		if (ffp.run_and_wait_end()<0) error("running pipe");
+		farm.add_workers(workers);
+		farm.add_collector(new Empty());
 
-		// Clear
-		if(workers.size() > 0){
-			for(uint32_t i = 0; i < nbThreads; i++){
-				delete workers[i];
-			}
-			workers.clear();
-		}
+		ffp.add_stage(&farm);
+		ffp.add_stage(new ReduceByKeyStage(result));
+
+	}
+	else {
+		ffp.add_stage(&getOptionData);
+		ffp.add_stage(&calculateStockPrice);
+		ffp.add_stage(&reduceByKey);
 	}
 
-    auto end = std::chrono::high_resolution_clock::now();
+	if (ffp.run_and_wait_end()<0) error("running pipe");
 
-    long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+	// Clear
+	if(workers.size() > 0){
+		for(uint32_t i = 0; i < nbThreads; i++){
+			delete workers[i];
+		}
+		workers.clear();
+	}
 
-    //std::cerr << "Temps C++:  " << duration_ms / nbIterations << " ms" << std::endl;
 
-    fprintf( stderr, "Temps C++  (%3d it.; %2d thr.): %5ld ms {%5ld ms/it. }\n",
-             nbIterations, nbThreads, duration_ms, duration_ms / nbIterations );
+	auto end = std::chrono::high_resolution_clock::now();
+	long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
 	
-	std::map<std::string, double> resultFinal;
 
-   for (auto it = result.begin(); it != result.end(); it++) {
-		resultFinal[it->first] = it->second;
-		//std::cout << it->first << " => " << std::fixed << std::setprecision(4) << it->second << std::endl;
-   }
+	if(!debug){
+    	printf("%5ld ", duration_ms);
+	}
+	else{
+		std::map<std::string, double> resultFinal;
 
-   for (auto it = resultFinal.begin(); it != resultFinal.end(); it++) {
-      std::string currentResultKey = it->first;
-      double currentResultValue = it->second;
-      std::cout << currentResultKey << " => " << std::fixed << std::setprecision(4) << currentResultValue << std::endl;
-   }
+   		for (auto it = result.begin(); it != result.end(); it++) {
+			resultFinal[it->first] = it->second;
+			//std::cout << it->first << " => " << std::fixed << std::setprecision(4) << it->second << std::endl;
+   		}
+
+   		for (auto it = resultFinal.begin(); it != resultFinal.end(); it++) {
+     		std::string currentResultKey = it->first;
+      		double currentResultValue = it->second;
+      		std::cout << currentResultKey << " => " << std::fixed << std::setprecision(4) << currentResultValue << std::endl;
+   		}
+	}
 
 	return 0;
 }

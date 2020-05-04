@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
     // du programme
     if (argc >= 4) {
         if(atoi(argv[3]) == 1){
-	debug = true;
+				debug = true;
         }
     }
 
