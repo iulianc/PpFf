@@ -1,5 +1,5 @@
 .IGNORE:
-def: run_java_warmup
+def: warmup
 
 def_run:  compile
 	make -f gt-makefile run_bms
@@ -99,6 +99,12 @@ run_java_warmup: compile
 	@echo "*** Execution Java avec Warmup ***"
 	@java -cp . WordCountWarmup $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
 	diff obtenus-java-warmup.txt $(ATTENDUS)
+
+warmup: compile
+	@echo "*** Execution Java sans Warmup ***"
+	@./testerWarmup.sh $(TEST_FILE) 0 30
+	@echo "*** Execution Java avec Warmup ***"
+	@./testerWarmup.sh $(TEST_FILE) 2 30
 
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
