@@ -50,12 +50,17 @@ public class WordCountWarmup {
         }
 
         if (avecWarmup) {
-            List<String> wordsCount_ = 
+            // Code bidon pour rechauffement: on emet le nombre
+            // d'elements produits, pour etre certain que le resultat
+            // soit utilise (dead code elimination?).
+            int wordsCount_ = 
                 Files.lines(Paths.get(inputFile))
                 .parallel()
                 .flatMap( line -> Arrays.stream(line.trim().split(" ")) )
                 .filter( word -> word.length() > 0 )
-                .collect( Collectors.toList() );
+                .collect( Collectors.toList() )
+                .size();
+            System.err.println( wordsCount_ );
         }
 
         long startTime = System.nanoTime();

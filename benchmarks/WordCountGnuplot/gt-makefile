@@ -1,5 +1,5 @@
 .IGNORE:
-def: warmup
+def: test_warmup
 
 def_run:  compile
 	make -f gt-makefile run_bms
@@ -25,7 +25,9 @@ def_plot:
 # 2614743
 #
 
+NB_FOIS=30
 TEST_FILE="testdata/78792Words.txt"
+#TEST_FILE="testdata/2137758Words.txt"
 ATTENDUS="attendus-78792.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
@@ -100,11 +102,11 @@ run_java_warmup: compile
 	@java -cp . WordCountWarmup $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
 	diff obtenus-java-warmup.txt $(ATTENDUS)
 
-warmup: compile
+test_warmup: compile
 	@echo "*** Execution Java sans Warmup ***"
-	@./testerWarmup.sh $(TEST_FILE) 0 30
+	@./testerWarmup.sh $(TEST_FILE) 0 $(NB_FOIS)
 	@echo "*** Execution Java avec Warmup ***"
-	@./testerWarmup.sh $(TEST_FILE) 2 30
+	@./testerWarmup.sh $(TEST_FILE) 2 $(NB_FOIS) 2> /dev/null
 
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
