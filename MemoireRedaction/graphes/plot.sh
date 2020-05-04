@@ -172,6 +172,8 @@ if [[ $DEBUG == 1 ]]; then
     echo "*** Graphe genere! ***"
     if [[ $SERVER == MacOS ]]; then
         open $fichier_graphe
+    elif [[ $SERVER == c34581 ]]; then
+        gio open $fichier_graphe
     elif [[ $SERVER == java && $USER == tremblay_gu ]]; then
         cp $fichier_graphe ~/public_html/maison
     fi

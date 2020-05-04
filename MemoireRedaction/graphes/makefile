@@ -3,7 +3,7 @@
 #
 # make SERVER=foo
 
-def: WordCount
+def: test #WordCount
 
 test:
 	./plot.sh 'WordCount' 'temps' '*' "Tous les programmes" 1
