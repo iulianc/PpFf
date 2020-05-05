@@ -16,11 +16,14 @@ ATTENDUS_752856="attendus-752856.txt"
 #MAP_TYPE=-D__ORDERED_MAP__
 
 DEBUG=1
+NB_FOIS=30
+TEST_FILE_2137758="testdata/2137758Words.txt"
+
 
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountSeq WordCountFastFlow WordCountWarmup.class
+EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow # WordCountSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -52,7 +55,7 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 compile: $(EXE)
 
-run: run_cpp_seq run_cpp run_java run_fastflow
+run: run_cpp_seq run_cpp run_java run_fastflow  test_warmup run_java_warmup
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
@@ -84,16 +87,30 @@ run_cpp_seq: compile
 	@./WordCountSeq $(TEST_FILE_78792) | sort > $(ATTENDUS_78792)
 	@./WordCountSeq $(TEST_FILE_752856) | sort > $(ATTENDUS_752856)
 
+
 run_fastflow: compile
 	@echo "*** Execution FastFlow C++ *** "
-	@./WordCountFastFlow $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-fastflow.txt
+	@./WordCountFastFlow 2 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-fastflow.txt
 	@diff obtenus-fastflow.txt $(ATTENDUS_loremipsum)
 
-	@./WordCountFastFlow $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-cpp.txt
-	@diff obtenus-cpp.txt $(ATTENDUS_78792)
+	@./WordCountFastFlow 2 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS_78792)
 
-	@./WordCountFastFlow $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-cpp.txt
-	@diff obtenus-cpp.txt $(ATTENDUS_752856)
+	@./WordCountFastFlow 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS_752856)
+
+
+run_java_warmup: compile
+	@echo "*** Execution Java avec Warmup ***"
+	@java -cp . WordCountWarmup $(TEST_FILE_752856) 1 | sort > obtenus-java-warmup.txt
+	diff obtenus-java-warmup.txt $(ATTENDUS_752856)
+
+
+test_warmup: compile
+	@echo "*** Execution Java sans Warmup ***"
+	@./testerWarmup.sh $(TEST_FILE_2137758) 0 $(NB_FOIS)
+	@echo "*** Execution Java avec Warmup ***"
+	@./testerWarmup.sh $(TEST_FILE_2137758) 2 $(NB_FOIS) 2> /dev/null
 
 
 

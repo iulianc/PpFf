@@ -1,4 +1,4 @@
-#!
+#!/bin/bash
 
 # Petit script pour verifier si le fait d'avoir une periode de warm-up
 # pour la version WordCount permet de reduire, ou pas, le temps d'execution.
@@ -45,6 +45,15 @@
 #   3153 +/-    426.4 (  2283  ..   4061 )
 #   *** Execution Java avec Warmup ***
 #   2563 +/-    768.5 (  1826  ..   5809 )
+
+###########################################
+
+# Japet: (30 repetitions) pour 2137758
+#  *** Execution Java sans Warmup ***
+#  2628 +/-    228.3 (  2369  ..   3289 )
+#  *** Execution Java avec Warmup ***
+#  2489 +/-    227.2 (  2147  ..   3059 ) 
+
 
 fichier="$1"; shift
 avec_sans_warmup="$1"; shift

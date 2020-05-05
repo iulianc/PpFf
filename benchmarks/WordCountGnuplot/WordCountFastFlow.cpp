@@ -12,11 +12,13 @@
 #include <fstream>
 #include <locale>
 #include <unordered_map>
+#include "operators/Empty.hpp"
 
 using namespace ff;
 
 #define DEFAULT_DEBUG_MODE false
 #define DEFAULT_INPUT_FILE "testdata/loremipsum.txt"
+#define DEFAULT_NB_THREADS 1
 
 typedef std::vector<std::string> Words;
 
@@ -142,23 +144,32 @@ struct collectorStage:ff_node_t<std::string> {
 
 
 int main(int argc, char *argv[]) {
-    bool debug = DEFAULT_DEBUG_MODE;
-    std::string inputFile = DEFAULT_INPUT_FILE;
-    std::unordered_map<std::string, int> result;
+	bool debug = DEFAULT_DEBUG_MODE;
+   	std::string inputFile = DEFAULT_INPUT_FILE;
+   	std::unordered_map<std::string, int> result;
+	uint32_t nbThreads = DEFAULT_NB_THREADS;
 
-    if (argc >= 2) {
-        inputFile = argv[1];
+   	if (argc >= 2) {
+   		nbThreads = atoi(argv[1]);
+    }
+
+    if (argc >= 3) {
+        inputFile = argv[2];
     }
 
     // Utilisé pour vérifier le bon fonctionnement du programme
-    if (argc >= 3) {
-        if (atoi(argv[2]) == 1) {
+    if (argc >= 4) {
+        if (atoi(argv[3]) == 1) {
             debug = true;
         }
     }
 
     // Crée et exécute le pipeline
     auto begin = std::chrono::high_resolution_clock::now();
+
+	ff_pipeline ffp;
+	ff_farm farm;
+	std::vector<ff_node*> workers;
 
     collectorStage collector;
     linesFromFileStage linesFromFile(inputFile);
@@ -168,13 +179,33 @@ int main(int argc, char *argv[]) {
     filterEmptyWordsStage filterEmptyWords;
     groupByKeyStage groupByKey(result);
 
-    ff_pipeline ffp;
-    ffp.add_stage(&linesFromFile);
-    ffp.add_stage(&splitInWords);
-    ffp.add_stage(&flat);
-    ffp.add_stage(&toLowercaseLetters);
-    ffp.add_stage(&filterEmptyWords);
-    ffp.add_stage(&groupByKey);
+	
+	ffp.add_stage(&linesFromFile);
+
+	if(nbThreads > 1){
+		for(uint32_t i = 0; i < nbThreads; i++){
+			ff_pipeline *p = new ff_pipeline();
+    		p->add_stage(new splitInWordsStage );
+    		p->add_stage(new flatStage);
+    		p->add_stage(new toLowercaseLettersStage);
+    		p->add_stage(new filterEmptyWordsStage);
+			workers.push_back(p);
+		}
+
+		farm.add_workers(workers);
+		farm.add_collector(new PpFf::Empty());
+
+		ffp.add_stage(&farm);
+		ffp.add_stage(new groupByKeyStage(result));
+	}
+	else{
+    	ffp.add_stage(&splitInWords);
+    	ffp.add_stage(&flat);
+    	ffp.add_stage(&toLowercaseLetters);
+    	ffp.add_stage(&filterEmptyWords);
+    	ffp.add_stage(&groupByKey);
+	}	
+
 
     if (ffp.run_and_wait_end() < 0) 
         error("running pipe");

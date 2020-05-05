@@ -85,7 +85,7 @@ run_cpp: compile
 
 run_ff: compile
 	@echo "*** Execution FastFlow *** "
-	@./WordCountFastFlow $(TEST_FILE) 1 | sort > obtenus-ff.txt
+	@./WordCountFastFlow 1 $(TEST_FILE) 1 | sort > obtenus-ff.txt
 	diff obtenus-ff.txt $(ATTENDUS)
 
 run_seq: compile
@@ -100,14 +100,14 @@ run_java: compile
 
 run_java_warmup: compile
 	@echo "*** Execution Java avec Warmup ***"
-	@java -cp . WordCountWarmup $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
-	diff obtenus-java-warmup.txt $(ATTENDUS)
+	@java -cp . WordCountWarmup $(TEST_FILE_752856) 1 | sort > obtenus-java-warmup.txt
+	diff obtenus-java-warmup.txt $(ATTENDUS_752856)
 
 test_warmup: compile
 	@echo "*** Execution Java sans Warmup ***"
-	@./testerWarmup.sh $(TEST_FILE) 0 $(NB_FOIS)
+	@./testerWarmup.sh $(TEST_FILE_752856) 0 $(NB_FOIS)
 	@echo "*** Execution Java avec Warmup ***"
-	@./testerWarmup.sh $(TEST_FILE) 2 $(NB_FOIS) 2> /dev/null
+	@./testerWarmup.sh $(TEST_FILE_752856) 2 $(NB_FOIS) 2> /dev/null
 
 WordCount: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
