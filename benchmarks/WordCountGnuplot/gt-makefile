@@ -29,12 +29,13 @@ def_plot:
 
 NB_FOIS=30
 TEST_FILE_78792="testdata/78792Words.txt"
-#TEST_FILE="testdata/78792Words.txt"
-TEST_FILE="testdata/752856Words.txt"
+TEST_FILE="testdata/78792Words.txt"
+#TEST_FILE="testdata/752856Words.txt"
 #TEST_FILE="testdata/281307Words.txt"
 #TEST_FILE="testdata/2137758Words.txt"
-ATTENDUS="attendus-752856.txt"
+#ATTENDUS="attendus-752856.txt"
 ATTENDUS_78792="attendus-78792.txt"
+ATTENDUS="attendus-78792.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5
@@ -94,12 +95,8 @@ run_ff: compile
 	diff obtenus-ff.txt $(ATTENDUS)
 	@./WordCountFastFlow 2 $(TEST_FILE) 1 | sort > obtenus-ff.txt
 	diff obtenus-ff.txt $(ATTENDUS)
-	@./WordCountFastFlow 3 $(TEST_FILE) 1 | sort > obtenus-ff.txt
-	diff obtenus-ff.txt $(ATTENDUS)
 	@./WordCountFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
 	diff obtenus-ff.txt $(ATTENDUS)
-	@./WordCountFastFlow 4 $(TEST_FILE_78792) 1 | sort > obtenus-ff.txt
-	diff obtenus-ff.txt $(ATTENDUS_78792)
 
 run_seq: compile
 	@echo "*** Execution seq. *** "

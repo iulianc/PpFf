@@ -12,7 +12,6 @@
 #include <fstream>
 #include <locale>
 #include <unordered_map>
-#include "operators/Empty.hpp"
 
 using namespace ff;
 
@@ -30,7 +29,7 @@ std::string numberToString (T number) {
 }
 
 
-struct linesFromFileStage: ff_node {
+struct linesFromFileStage : ff_node {
     std::string const &path;
     linesFromFileStage(std::string const &path) : path(path){}
 
@@ -46,10 +45,10 @@ struct linesFromFileStage: ff_node {
     }
 };
 
-struct splitInWordsStage: ff_node {
+struct splitInWordsStage : ff_node {
     std::string delimiter = " ";
 
-    struct toLowercaseLettersStage: ff_node_t<std::string> {
+    struct toLowercaseLettersStage : ff_node_t<std::string> {
         std::string* svc(std::string* task) {
             std::string* result = new std::string;
 
@@ -82,7 +81,7 @@ struct splitInWordsStage: ff_node {
     }
 };
 
-struct flatStage: ff_node {
+struct flatStage : ff_node {
     std::string delimiter = " ";
 
     void* svc(void* task) {
@@ -94,7 +93,7 @@ struct flatStage: ff_node {
     }
 };
 
-struct toLowercaseLettersStage: ff_node_t<std::string> {
+struct toLowercaseLettersStage : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
     	std::string* result = new std::string;
 
@@ -110,7 +109,7 @@ struct toLowercaseLettersStage: ff_node_t<std::string> {
     }
 };
 
-struct filterEmptyWordsStage:ff_node_t<std::string> {
+struct filterEmptyWordsStage : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
         if (task->length() > 0){
             return task;
@@ -120,7 +119,13 @@ struct filterEmptyWordsStage:ff_node_t<std::string> {
     }
 };
 
-struct groupByKeyStage:ff_node {
+struct dummyCollector : ff_node {
+    void* svc(void* task) {
+        return task;
+    }
+};
+
+struct groupByKeyStage : ff_node {
     typedef std::unordered_map< std::string, int > CONTAINER;
     CONTAINER &container;
 
@@ -128,14 +133,6 @@ struct groupByKeyStage:ff_node {
 
     void* svc(void* task) {
         container[*((std::string*)task)] += 1;
-        return GO_ON;
-    }
-};
-
-
-struct collectorStage:ff_node_t<std::string> {
-    std::string* svc(std::string* task) {
-        std::cout << *task << std::endl;
         return GO_ON;
     }
 };
@@ -176,7 +173,7 @@ int main(int argc, char *argv[]) {
     }
     ff_farm farm;
     farm.add_workers(workers);
-    farm.add_collector(new PpFf::Empty());
+    farm.add_collector( new dummyCollector() );
     ffp.add_stage(&farm);
     ffp.add_stage(new groupByKeyStage(result));
 
