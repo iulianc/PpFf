@@ -1,4 +1,6 @@
 .IGNORE:
+__DEF: run_ff
+
 def: test_warmup
 
 def_run:  compile
@@ -26,10 +28,11 @@ def_plot:
 #
 
 NB_FOIS=30
-TEST_FILE="testdata/78792Words.txt"
-TEST_FILE="testdata/281307Words.txt"
+#TEST_FILE="testdata/78792Words.txt"
+TEST_FILE="testdata/752856Words.txt"
+#TEST_FILE="testdata/281307Words.txt"
 #TEST_FILE="testdata/2137758Words.txt"
-ATTENDUS="attendus-78792.txt"
+ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5

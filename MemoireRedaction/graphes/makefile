@@ -9,6 +9,7 @@ test:
 	./plot.sh 'WordCount' 'temps' '*' "Tous les programmes" 1
 	./plot.sh 'WordCount' 'temps' '1,2,3' "Programmes Java" 1
 	./plot.sh 'WordCount' 'temps' '4,5,6' "Programmes PpFF" 1
+	./plot.sh 'WordCount' 'temps' '7,8,9' "Programmes FastFlow" 1
 	./plot.sh 'WordCount' 'temps' '2,6,7' "Meilleurs programmes" 1
 	./plot.sh 'WordCount' 'temps' '2,3,6' "Java-/Java* PpFF-4" 1
 
