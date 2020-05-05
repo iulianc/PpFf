@@ -48,26 +48,9 @@ struct linesFromFileStage : ff_node {
 struct splitInWordsStage : ff_node {
     std::string delimiter = " ";
 
-    struct toLowercaseLettersStage : ff_node_t<std::string> {
-        std::string* svc(std::string* task) {
-            std::string* result = new std::string;
-
-            for (auto& c: *task) {
-                int ci = (int) c;
-                if (('A' <= ci && ci <= 'Z') || ('a' <= ci && ci <= 'z'))
-                    result->push_back(c);
-            }
-            transform(result->begin(), 
-                      result->end(), 
-                      result->begin(),
-                      [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
-
-            return result;
-    	}
-    };
-
     void* svc(void* task) {
     	std::string line = *((std::string*)task);
+
         Words* words = new Words();
         size_t start = 0, end = 0;
         do {
@@ -85,10 +68,9 @@ struct flatStage : ff_node {
     std::string delimiter = " ";
 
     void* svc(void* task) {
-        for(auto &elem : *(Words*)task){
+        for(auto &elem: *(Words*)task){
             ff_send_out(&elem);
         }
-
         return GO_ON;
     }
 };
@@ -99,22 +81,21 @@ struct toLowercaseLettersStage : ff_node_t<std::string> {
 
         for (auto& c: *task) {
             int ci = (int) c;
-            if (('A' <= ci && ci <= 'Z') || ('a' <= ci && ci <= 'z'))
-                result->push_back(c);
+            if ('a' <= ci && ci <= 'z') {
+                result->push_back(ci);
+            } else if ('A' <= ci && ci <= 'Z') {
+                result->push_back(c-('Z'-'z'));
+            }
         }
-        transform(result->begin(), result->end(), result->begin(),
-                  [](char c) { return ('A' <= c && c <= 'Z') ? c-('Z'-'z') : c; });
-
         return result;
     }
 };
 
 struct filterEmptyWordsStage : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
-        if (task->length() > 0){
+        if (task->size() > 0) {
             return task;
         }
-
         return GO_ON;
     }
 };
