@@ -45,30 +45,17 @@ struct linesFromFileStage : ff_node {
     }
 };
 
+#include "auxiliary-functions.hpp"
+
 struct splitInWordsStage : ff_node {
-    std::string delimiter = " ";
-
     void* svc(void* task) {
-    	std::string line = *((std::string*)task);
-
-        Words* words = new Words();
-        size_t start = 0, end = 0;
-        do {
-            end = line.find(delimiter, start);
-            size_t len = end - start;
-            words->push_back( line.substr(start, len) );
-            start += len + delimiter.length();
-        } while (end != std::string::npos);
-
-        return words;
+        return splitInWords((std::string*) task);
     }
 };
 
-struct flatStage : ff_node {
-    std::string delimiter = " ";
-
-    void* svc(void* task) {
-        for(auto &elem: *(Words*)task){
+struct flatStage : ff_node_t<std::string> {
+    std::string* svc(std::string* task) {
+        for (auto &elem: *(Words*)task) {
             ff_send_out(&elem);
         }
         return GO_ON;
@@ -77,40 +64,27 @@ struct flatStage : ff_node {
 
 struct toLowercaseLettersStage : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
-    	std::string* result = new std::string;
-
-        for (auto& c: *task) {
-            int ci = (int) c;
-            if ('a' <= ci && ci <= 'z') {
-                result->push_back(ci);
-            } else if ('A' <= ci && ci <= 'Z') {
-                result->push_back(c-('Z'-'z'));
-            }
-        }
-        return result;
+        return toLowercaseLetters(task);
     }
 };
 
 struct filterEmptyWordsStage : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
-        if (task->size() > 0) {
-            return task;
-        }
-        return GO_ON;
+        return notEmpty(task) ? task : GO_ON;
     }
 };
 
-struct dummyCollector : ff_node {
-    void* svc(void* task) {
+struct dummyCollector : ff_node_t<std::string> {
+    std::string* svc(std::string* task) {
         return task;
     }
 };
 
 struct groupByKeyStage : ff_node {
-    typedef std::unordered_map< std::string, int > CONTAINER;
-    CONTAINER &container;
+    typedef std::unordered_map<std::string, int> CONTAINER;
+    CONTAINER& container;
 
-    groupByKeyStage(CONTAINER &container) : container(container){}
+    groupByKeyStage(CONTAINER& container) : container(container){}
 
     void* svc(void* task) {
         container[*((std::string*)task)] += 1;

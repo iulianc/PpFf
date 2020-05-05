@@ -25,36 +25,7 @@ using namespace PpFf;
 
 typedef std::vector<std::string> Words;
 
-Words* splitInWords(std::string* line) {
-    std::string delimiter = " ";
-
-    Words* words = new Words();
-    size_t start = 0, end = 0;
-    do {
-        end = line->find(delimiter, start);
-        size_t len = end - start;
-        words->push_back( line->substr(start, len) );
-        start += len + delimiter.length();
-    } while (end != std::string::npos);
-
-    return words;
-}
-
-std::string* toLowercaseLetters(std::string* data) {
-    std::string* result = new std::string;
-    for (char c: *data) {
-        if ('a' <= c && c <= 'z') {
-            result->push_back(c);
-        } else if ('A' <= c && c <= 'Z') {
-            result->push_back(c-('Z'-'z'));
-        }
-    }
-    return result;
-}
-
-bool notEmpty(std::string* s) {
-    return s->size() > 0;
-}
+#include "auxiliary-functions.hpp"
 
 int main(int argc, char* argv[]) {
     bool debug = DEFAULT_DEBUG_MODE;
@@ -75,15 +46,14 @@ int main(int argc, char* argv[]) {
             debug = true;
         }
     }
+    
+    auto begin = std::chrono::high_resolution_clock::now();
 
     Reducer<std::string, int> reducer(0, 
                                       [](int count, std::string _) { return count + 1; },
                                       std::plus<int>{} );
 
-    auto begin = std::chrono::high_resolution_clock::now();
-
-    std::unordered_map<std::string, int> currentResult;
-    currentResult = 
+    std::unordered_map<std::string, int> currentResult = 
         Flow
         ::source(inputFile)
         .parallel(nbThreads)
