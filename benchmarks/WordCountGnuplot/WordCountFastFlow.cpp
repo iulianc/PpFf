@@ -29,6 +29,7 @@ std::string numberToString (T number) {
     return ss.str();
 }
 
+
 struct linesFromFileStage: ff_node {
     std::string const &path;
     linesFromFileStage(std::string const &path) : path(path){}
@@ -44,7 +45,6 @@ struct linesFromFileStage: ff_node {
         return EOS;
     }
 };
-
 
 struct splitInWordsStage: ff_node {
     std::string delimiter = " ";
@@ -81,7 +81,6 @@ struct splitInWordsStage: ff_node {
         return words;
     }
 };
-
 
 struct flatStage: ff_node {
     std::string delimiter = " ";
@@ -121,7 +120,6 @@ struct filterEmptyWordsStage:ff_node_t<std::string> {
     }
 };
 
-
 struct groupByKeyStage:ff_node {
     typedef std::unordered_map< std::string, int > CONTAINER;
     CONTAINER &container;
@@ -158,51 +156,29 @@ int main(int argc, char *argv[]) {
     }
 
     // Utilisé pour vérifier le bon fonctionnement du programme
-    if (argc >= 4) {
-        if (atoi(argv[3]) == 1) {
-            debug = true;
-        }
+    if (argc >= 4 && atoi(argv[3]) == 1) {
+        debug = true;
     }
 
     // Crée et exécute le pipeline
     auto begin = std::chrono::high_resolution_clock::now();
 
     ff_pipeline ffp;
-    ff_farm farm;
+    ffp.add_stage( new linesFromFileStage(inputFile) );
     std::vector<ff_node*> workers;
-
-    collectorStage collector;
-    linesFromFileStage linesFromFile(inputFile);
-    splitInWordsStage splitInWords;
-    flatStage flat;
-    toLowercaseLettersStage toLowercaseLetters;
-    filterEmptyWordsStage filterEmptyWords;
-    groupByKeyStage groupByKey(result);
-
-	
-    ffp.add_stage(&linesFromFile);
-
-    if (nbThreads > 1) {
-        for(uint32_t i = 0; i < nbThreads; i++){
-            ff_pipeline *p = new ff_pipeline();
-            p->add_stage(new splitInWordsStage );
-            p->add_stage(new flatStage);
-            p->add_stage(new toLowercaseLettersStage);
-            p->add_stage(new filterEmptyWordsStage);
-            workers.push_back(p);
-        }
-        farm.add_workers(workers);
-        farm.add_collector(new PpFf::Empty());
-
-        ffp.add_stage(&farm);
-        ffp.add_stage(new groupByKeyStage(result));
-    } else {
-    	ffp.add_stage(&splitInWords);
-    	ffp.add_stage(&flat);
-    	ffp.add_stage(&toLowercaseLetters);
-    	ffp.add_stage(&filterEmptyWords);
-    	ffp.add_stage(&groupByKey);
-    }	
+    for (uint32_t i = 0; i < nbThreads; i++) {
+        ff_pipeline *p = new ff_pipeline();
+        p->add_stage( new splitInWordsStage );
+        p->add_stage( new flatStage );
+        p->add_stage( new toLowercaseLettersStage );
+        p->add_stage( new filterEmptyWordsStage );
+        workers.push_back(p);
+    }
+    ff_farm farm;
+    farm.add_workers(workers);
+    farm.add_collector(new PpFf::Empty());
+    ffp.add_stage(&farm);
+    ffp.add_stage(new groupByKeyStage(result));
 
     if (ffp.run_and_wait_end() < 0) 
         error("running pipe");
@@ -210,6 +186,7 @@ int main(int argc, char *argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = 
         std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+
 
     // Affiche le résultat -- temps ou <<vrais résultats>>
     if (!debug) {
