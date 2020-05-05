@@ -30,6 +30,15 @@ DEBUG=1
 # Pour quel programme on genere les graphes.
 PGM="$1"; shift
 
+# La sorte d'items traites par le programme
+if [[ $PGM == 'WordCount' ]]; then
+    ITEMS="mots"
+elif [[ $PGM == 'StockPrice' ]]; then
+    ITEMS="records"
+else
+    ITEMS="items"
+fi
+
 # Graphe pour temps d'execution ou pour debits.
 SORTE="$1"; shift
 if [[ $SORTE == "temps" ]]; then
@@ -66,15 +75,6 @@ if [[ $# == 0 ]]; then
 else
     SERVER="$1"
     shift
-fi
-
-# La sorte d'items traites par le programme
-if [[ $PGM == 'WordCount' ]]; then
-    ITEMS="mots"
-elif [[ $PGM == 'StockPrice' ]]; then
-    ITEMS="records"
-else
-    ITEMS="items"
 fi
 
 

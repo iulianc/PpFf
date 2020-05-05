@@ -3,10 +3,14 @@
 #
 # make SERVER=foo
 
-def: test
+def: debits
 
-ff:
-	./plot.sh 'WordCount' 'temps' '*' "Programmes FastFlow" 1
+debits:
+	./plot.sh 'WordCount' 'debits' '3,4,7' "Meilleurs programmes MacBook" 1
+	./plot.sh 'WordCount' 'debits' '3,4,7' "Meilleurs programmes MacBook" 0
+#	./plot.sh 'WordCount' 'temps' '3,4,7' "Meilleurs programmes MacBook" 1
+#	./plot.sh 'WordCount' 'temps' '*' "Meilleurs programmes MacBook" 0
+#	./plot.sh 'WordCount' 'temps' '3,4,7' "Meilleurs programmes MacBook" 0
 
 test:
 	./plot.sh 'WordCount' 'temps' '*' "Tous les programmes" 1
