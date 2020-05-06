@@ -3,7 +3,7 @@
 DEBUG=1
 
 #
-# ./plot_temps.sh nomDuProgramme ('temps'|'debits') champs sous_titre [avec_log [server]]
+# ./plot_temps.sh nomDuProgramme ('temps'|'debits') nb_repetitions champs sous_titre [avec_log [server]]
 #
 # champs:
 #   '*'
@@ -11,10 +11,11 @@ DEBUG=1
 #   '1,3,4'
 #       => juste les donnees des colonnes 1, 3 et 4
 #
-# Note: Ou la premiere colonne = 1!
+# Note: La premiere colonne = 1!
 #        
-# Utilise aussi le fichier infos-${SERVER}-${PGM}.txt, pour identifier les
-# etiquettes a utiliser pour les differentes courbes.
+# Utilise le fichier ${PGM}-infos-${SERVER}-${NB_REPETITIONS}.txt,
+# pour identifier les etiquettes a utiliser pour les differentes
+# courbes.
 #
 
 # Il est preferable de ne pas lancer l'execution des benchmarks dans
@@ -52,6 +53,8 @@ else
     exit
 fi
 
+NB_REPETITIONS="$1"; shift
+
 CHAMPS="$1"; shift
 if [[ $CHAMPS == '*' ]]; then
     id_fichier=''
@@ -62,7 +65,7 @@ SOUS_TITRE="$1"; shift
 
 # Avec ou sans echelle logarithmique pour les y.
 if [[ $# == 0 ]]; then
-    AVEC_LOG="1"
+    AVEC_LOG="0"
 else
     AVEC_LOG="$1"
     shift
@@ -79,21 +82,23 @@ fi
 
 
 # Les fichiers d'entree et de sortie.
-fichier="${SORTE}-${SERVER}-${PGM}.txt"
-avec_sans_log=$([[ $AVEC_LOG == 0 ]] && echo '_nolog')
-fichier_graphe="graphe_${SORTE}_${SERVER}_${PGM}${avec_sans_log}${id_fichier}.png"
+fichier_infos="${PGM}-infos-${SERVER}-${NB_REPETITIONS}.txt"
+fichier_donnees="${PGM}-${SORTE}-${SERVER}-${NB_REPETITIONS}.txt"
+avec_sans_log=$([[ $AVEC_LOG == 1 ]] && echo '-log')
+
+fichier_graphe="${PGM}-graphe${avec_sans_log}-${SORTE}-${SERVER}-${NB_REPETITIONS}${id_fichier}.png"
 
 if [[ $DEBUG == 1 ]]; then
-    echo "fichier = $fichier"
+    echo "fichier_donnees = $fichier_donnees"
     echo "fichier_graphe = $fichier_graphe"
 fi
 
 # Les parametres pour le graphe.
-temps_min=$(ruby min_temps.rb <$fichier)
-temps_max=$(ruby max_temps.rb <$fichier)
+temps_min=$(ruby min_temps.rb <$fichier_donnees)
+temps_max=$(ruby max_temps.rb <$fichier_donnees)
 
 taille_min=0 # 0 plus simple pcq. non log
-taille_max=$(ruby max_taille.rb <$fichier)
+taille_max=$(ruby max_taille.rb <$fichier_donnees)
 
 if [[ $DEBUG ]]; then
     echo "*** Traitement pour $SERVER ***"
@@ -104,7 +109,7 @@ fi
 avec_sans_log1=$([[ $AVEC_LOG == 1 ]] && echo 'log ')
 avec_sans_log2=$([[ $AVEC_LOG == 1 ]] && echo '(log) ')
 
-XTICS="$(head -1 infos-${SERVER}-${PGM}.txt)"
+XTICS="$(head -1 ${fichier_infos})"
 
 # On genere le script gnuplot.
 cat >script.plot <<EOF
@@ -145,7 +150,7 @@ function line_and_points {
 # Note: Il y a un separateur en trop a la fin, mais cela semble quand
 # meme fonctionner!
 
-les_labels=$(tail -1 infos-${SERVER}-${PGM}.txt)
+les_labels=$(tail -1 ${fichier_infos})
 if [[ $CHAMPS == '*' ]]; then
     les_labels_selectionnes="$les_labels"
 else
@@ -155,7 +160,7 @@ col=2
 for item in $les_labels; do
     item_="$(echo $item | sed 's/*/\\*/')"
     if [[ $(echo "$les_labels_selectionnes" | grep "$item_" ) ]]; then
-        /bin/echo -n $(line_and_points "$fichier" $col $item ", ") >>script.plot
+        /bin/echo -n $(line_and_points "$fichier_donnees" $col $item ", ") >>script.plot
     fi
     (( col=col+$NB_PAR_POINT ))
 done
@@ -169,12 +174,12 @@ fi
 gnuplot -persist <script.plot
 
 if [[ $DEBUG == 1 ]]; then
-    echo "*** Graphe genere! ***"
-    if [[ $SERVER == MacOS ]]; then
-        open $fichier_graphe
-    elif [[ $SERVER == c34581 ]]; then
-        gio open $fichier_graphe
-    elif [[ $SERVER == java && $USER == tremblay_gu ]]; then
-        cp $fichier_graphe ~/public_html/maison
+    echo "*** Graphe genere: ${fichier_graphe} -- on appelle open ***"
+    if [[ $HOST == MacOS ]]; then
+        open ${fichier_graphe}
+    elif [[ $HOST == c34581 ]]; then
+        gio open ${fichier_graphe}
+    elif [[ $HOST == java && $USER == tremblay_gu ]]; then
+        cp ${fichier_graphe} ~/public_html/maison
     fi
 fi
