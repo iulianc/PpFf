@@ -1,31 +1,11 @@
 .IGNORE:
-__DEF: run_ff run_cpp
-
-def: test_warmup
+#__DEF: run_ff run_cpp
 
 def_run:  compile
 	make -f gt-makefile run_bms
 
-def_plot:
-	./gnuplot-debit.sh
-
-# 
-# NOTE: Les differentes tailles des fichiers de donnes sont les suivantes:
-#
-# 10
-# 131
-# 377
-# 3805
-# 7610
-# 78792
-# 167941
-# 281307
-# 482636
-# 752856
-# 1639684
-# 2137758
-# 2614743
-#
+run_bms: compile
+	./run_bms.rb 'WordCount' 0 | tee temps-wc.txt
 
 NB_FOIS=30
 TEST_FILE_78792="testdata/78792Words.txt"
@@ -140,7 +120,4 @@ cleanx cleanall cleanxtra: clean
 
 # Include the dependency
 -include $(DEP)
-
-run_bms: compile
-	./run_bms.rb 'WordCount' | tee temps-wc.txt
 

@@ -8,30 +8,10 @@ DEBUG = true
 
 PGM = ARGV[0]
 
-# Pour utiliser facilement sur diverses machines, dont MacBook, Linux, etc.
-SERVER = ENV['HOST']
-
-FICHIER_INFOS = "graphes/infos-#{SERVER}-#{PGM}.txt"
-FICHIER_TEMPS = "graphes/temps-#{SERVER}-#{PGM}.txt"
-FICHIER_DEBITS = "graphes/debits-#{SERVER}-#{PGM}.txt"
-
-
-# Pour le nombre maximum de threads, on utilise un petit nombre de
-# processeurs qui depend de la machine.
-MAX_THREADS = case SERVER
-              when 'java', 'c34581', 'MacOS'
-                4
-              when 'japet'
-                8
-              else
-                %x{nproc}.chomp.to_i / 2
-              end
-
-NB_THREADS = [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= MAX_THREADS}
+$niveau = ARGV[1].to_i || 0
 
 # On charge les parametres specifiques a cette serie de benchmarks.
 require "./#{PGM}-bm-config.rb"
-
 
 ######################################################
 # Fonctions auxiliaires pour les executions et production des temps et
@@ -104,7 +84,7 @@ end
 ######################################################
 
 if DEBUG
-  puts "*** Va creer les fichiers #{FICHIER_TEMPS}, #{FICHIER_DEBITS} et #{FICHIER_INFOS} (avec au plus #{MAX_THREADS} threads)"
+  puts "*** Va creer les fichiers #{FICHIER_TEMPS}, #{FICHIER_DEBITS} et #{FICHIER_INFOS} (avec au plus #{NB_FARM_WORKERS.last} farm workers)"
 end
 
 imprimer_en_tete( PGMS )
