@@ -3,7 +3,7 @@
 DEBUG=1
 
 #
-# ./plot_temps.sh nomDuProgramme ('temps'|'debits') nb_repetitions champs sous_titre [avec_log [server]]
+# ./plot_temps.sh nomDuProgramme ('temps'|'debits') machine nb_repetitions champs sous_titre [avec_log]
 #
 # champs:
 #   '*'
@@ -13,9 +13,9 @@ DEBUG=1
 #
 # Note: La premiere colonne = 1!
 #        
-# Utilise le fichier ${PGM}-infos-${SERVER}-${NB_REPETITIONS}.txt,
-# pour identifier les etiquettes a utiliser pour les differentes
-# courbes.
+# Utilise le fichier
+# resultats/${PGM}-infos-${MACHINE}-${NB_REPETITIONS}.txt, pour
+# identifier les etiquettes a utiliser pour les differentes courbes.
 #
 
 # Il est preferable de ne pas lancer l'execution des benchmarks dans
@@ -53,6 +53,9 @@ else
     exit
 fi
 
+# Nom de la machine pour laquelle on produit le graphe.
+MACHINE="$1"; shift
+
 NB_REPETITIONS="$1"; shift
 
 CHAMPS="$1"; shift
@@ -61,32 +64,23 @@ if [[ $CHAMPS == '*' ]]; then
 else
     id_fichier="-$(echo ${CHAMPS} | sed 's/,//g')"
 fi
+
 SOUS_TITRE="$1"; shift
 
 # Avec ou sans echelle logarithmique pour les y.
 if [[ $# == 0 ]]; then
     AVEC_LOG="0"
 else
-    AVEC_LOG="$1"
-    shift
-fi
-
-# Si pas d'argument, on utilise le nom du host courant, qui donne
-# acces au fichier de donnees.
-if [[ $# == 0 ]]; then
-    SERVER="$HOST"
-else
-    SERVER="$1"
-    shift
+    AVEC_LOG="1"; shift
 fi
 
 
 # Les fichiers d'entree et de sortie.
-fichier_infos="${PGM}-infos-${SERVER}-${NB_REPETITIONS}.txt"
-fichier_donnees="${PGM}-${SORTE}-${SERVER}-${NB_REPETITIONS}.txt"
+fichier_infos="resultats/${PGM}-infos-${MACHINE}-${NB_REPETITIONS}.txt"
+fichier_donnees="resultats/${PGM}-${SORTE}-${MACHINE}-${NB_REPETITIONS}.txt"
 avec_sans_log=$([[ $AVEC_LOG == 1 ]] && echo '-log')
 
-fichier_graphe="${PGM}-graphe${avec_sans_log}-${SORTE}-${SERVER}-${NB_REPETITIONS}${id_fichier}.png"
+fichier_graphe="${PGM}-graphe${avec_sans_log}-${SORTE}-${MACHINE}-${NB_REPETITIONS}${id_fichier}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "fichier_donnees = $fichier_donnees"
@@ -101,7 +95,7 @@ taille_min=0 # 0 plus simple pcq. non log
 taille_max=$(ruby max_taille.rb <$fichier_donnees)
 
 if [[ $DEBUG ]]; then
-    echo "*** Traitement pour $SERVER ***"
+    echo "*** Traitement pour $MACHINE ***"
     echo "taille_min = $taille_min; taille_max = $taille_max"
     echo "temps_min = $temps_min; temps_max = $temps_max"
 fi

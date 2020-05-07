@@ -52,9 +52,9 @@ NB_FARM_WORKERS = nb_farm_workers_[$niveau]
 
 FICHIERS_DONNEES = nb_items.map { |nb| ["testdata/#{nb}Words.txt", nb] }
 
-FICHIER_INFOS  = "graphes/#{PGM}-infos-#{server}-#{NB_REPETITIONS}.txt"
-FICHIER_TEMPS  = "graphes/#{PGM}-temps-#{server}-#{NB_REPETITIONS}.txt"
-FICHIER_DEBITS = "graphes/#{PGM}-debits-#{server}-#{NB_REPETITIONS}.txt"
+FICHIER_INFOS  = "resultats/#{PGM}-infos-#{server}-#{NB_REPETITIONS}.txt"
+FICHIER_TEMPS  = "resultats/#{PGM}-temps-#{server}-#{NB_REPETITIONS}.txt"
+FICHIER_DEBITS = "resultats/#{PGM}-debits-#{server}-#{NB_REPETITIONS}.txt"
 
 
 ######################################################

@@ -14,8 +14,8 @@ debits:
 
 test:
 #	./plot.sh 'WordCount' 'temps' 2 '*' "Tous les programmes"
-	./plot.sh 'WordCount' 'temps' 2 '*' "Tous les programmes" 1
-	./plot.sh 'WordCount' 'debits' 2 '1,4' "Programmes 1 et 4" 0
+	./plot.sh 'WordCount' 'temps'  MacOS 2 '*'   "Tous les programmes" 1
+	./plot.sh 'WordCount' 'debits' MacOS 2 '1,4' "Programmes 1 et 4"
 #	./plot.sh 'WordCount' 'debits' 2 '1,4' "programmes 1 et 4" 1
 #	./plot.sh 'Foo' 'temps' 5 '1,4' "programmes 1 et 4" 1 BAR
 #	./plot.sh 'WordCount' 'temps' '1,2,3' 2 "Programmes Java" 1
