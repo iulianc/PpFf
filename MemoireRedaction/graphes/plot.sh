@@ -99,7 +99,7 @@ temps_max=$(ruby max_temps.rb <$fichier_donnees)
 taille_min=0 # 0 plus simple pcq. non log
 taille_max=$(ruby max_taille.rb <$fichier_donnees)
 
-if [[ $DEBUG ]]; then
+if [[ $DEBUG == 1 ]]; then
     echo "*** Traitement pour $MACHINE ***"
     echo "taille_min = $taille_min; taille_max = $taille_max"
     echo "temps_min = $temps_min; temps_max = $temps_max"
