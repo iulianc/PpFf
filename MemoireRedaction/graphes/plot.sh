@@ -1,9 +1,9 @@
 #!
 
-DEBUG=1
+DEBUG=0
 
 #
-# ./plot_temps.sh nomDuProgramme ('temps'|'debits') machine nb_repetitions champs sous_titre [avec_log]
+# ./plot_temps.sh nomDuProgramme ('temps'|'debits') machine nb_repetitions champs sous_titre (log|_) [generer_latex]
 #
 # champs:
 #   '*'
@@ -68,10 +68,18 @@ fi
 SOUS_TITRE="$1"; shift
 
 # Avec ou sans echelle logarithmique pour les y.
-if [[ $# == 0 ]]; then
-    AVEC_LOG="0"
+if [[ $1 == log ]]; then
+    AVEC_LOG="1"
 else
-    AVEC_LOG="1"; shift
+    AVEC_LOG="0"
+fi
+shift
+
+# Avec ou sans generation du latex.
+if [[ $# == 0 ]]; then
+    AVEC_LATEX="0"
+else
+    AVEC_LATEX="1"; shift
 fi
 
 
@@ -176,4 +184,10 @@ if [[ $DEBUG == 1 ]]; then
     elif [[ $HOST == java && $USER == tremblay_gu ]]; then
         cp ${fichier_graphe} ~/public_html/maison
     fi
+fi
+
+if [[ $AVEC_LATEX == 1 ]]; then
+# ./plot_temps.sh nomDuProgramme ('temps'|'debits') machine nb_repetitions champs sous_titre (log|_) [generer_latex]
+    cp -f ${fichier_graphe} finaux
+    ./gen-latex.rb "${PGM}" "${SORTE}" "${MACHINE}" "${NB_REPETITIONS}" "${CHAMPS}" "${SOUS_TITRE}" "${AVEC_LOG}"
 fi
