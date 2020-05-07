@@ -1,6 +1,6 @@
 #!
 
-DEBUG=0
+DEBUG=1
 
 REP_FINAUX="finaux"
 
