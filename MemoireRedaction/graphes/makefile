@@ -9,20 +9,20 @@ NB=2
 def: test
 
 test:
-	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*'   "Tous les programmes" log 1
-	./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '1,4' "Programmes 1 et 4"   _   1
+	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*'   log "Tous les programmes" 1
+	./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '1,4' _   "Programmes 1 et 4"   1
 
 WordCount:
-	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*' "Tous les programmes" _
-	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*' "Tous les programmes" log
-	./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '*' "Tous les programmes" _
-	./plot.sh 'WordCount' 'debits' $(HOTS) $(NB) '*' "Tous les programmes" log
+	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*' _   "Tous les programmes"
+	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*' log "Tous les programmes"
+	./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '*' _   "Tous les programmes"
+	./plot.sh 'WordCount' 'debits' $(HOTS) $(NB) '*' log "Tous les programmes"
 
 StockPrice:
-	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' "Tous les programmes"
-	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' "Tous les programmes" log
-	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' "Tous les programmes"
-	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' "Tous les programmes" log
+	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' _   "Tous les programmes"
+	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' log "Tous les programmes"
+	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' log "Tous les programmes"
+	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' log "Tous les programmes"
 
 clean cleanxtra:
 	rm -f *~

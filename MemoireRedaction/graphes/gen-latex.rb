@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-DEBUG = true
+DEBUG = false
 
 pgm = ARGV.shift
 sorte = ARGV.shift

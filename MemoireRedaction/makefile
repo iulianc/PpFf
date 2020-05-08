@@ -1,6 +1,9 @@
 #
 # makefile for gnu make (gmake)
 #
+def:
+	./gen-graphes.rb
+#	pdflatex $(MAIN)
 
 MAIN=memoire
 

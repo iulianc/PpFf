@@ -1,14 +1,14 @@
 #!
 
-DEBUG=1
+DEBUG=0
 
 REP_FINAUX="finaux"
 
 #
 # Exemples d'appels -- seul le dernier argument est optionnel (generation du LaTeX):
 #
-#       ./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*'   "Tous les programmes" log 1
-#       ./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '1,4' "Programmes 1 et 4"   _
+#       ./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*'   log "Tous les programmes" 1
+#       ./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '1,4' _   "Programmes 1 et 4"  
 #
 # Parametre champs:
 #   '*'     => toutes les donnees
@@ -36,8 +36,8 @@ SORTE="$1"; shift
 MACHINE="$1"; shift
 NB_REPETITIONS="$1"; shift
 CHAMPS="$1"; shift
-SOUS_TITRE="$1"; shift
 AVEC_LOG=$([[ $1 == log ]] && echo "1" || echo "0"); shift
+SOUS_TITRE="$1"; shift
 AVEC_LATEX=$( [[ $# == 0 ]] && echo "0" || echo "1"); shift
 
 
@@ -179,6 +179,8 @@ if [[ $DEBUG == 1 ]]; then
     elif [[ $HOST == java && $USER == tremblay_gu ]]; then
         cp ${fichier_graphe} ~/public_html/maison
     fi
+else
+    rm -f script.plot
 fi
 
 ########################################################################
