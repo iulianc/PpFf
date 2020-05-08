@@ -10,7 +10,9 @@ def: test
 
 test:
 	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*'   log "Tous les programmes" 1
-	./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '1,4' _   "Programmes 1 et 4"   1
+	./plot.sh 'WordCount' 'debits'  $(HOST) $(NB) '*'   log "Tous les programmes" 1
+	./plot.sh 'WordCount' 'temps' $(HOST) $(NB) '1,4' _   "Programmes Java+ et PpFf-1"   1
+	./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '1,4' _   "Programmes Java+ et PpFf-1"   1
 
 WordCount:
 	./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*' _   "Tous les programmes"

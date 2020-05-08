@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-DEBUG = false
+DEBUG = true
 
 pgm = ARGV.shift
 sorte = ARGV.shift
@@ -42,9 +42,45 @@ else
   exit -1
 end
 
-caption = shortcaption # POUR L'INSTANT... IL FAUDRA RAFFINER POUR
-                       # INDIQUER L'UTLISATION DE L'ECHELLE LOG,
-                       # L'UNITE DE MESURE, ETC.
+info_log = (avec_sans_log == "-log") ? " (avec \\'echelle logarithmique)" : ""
+
+les_versions = sous_titre[0].downcase + sous_titre[1..-1]
+#les_versions[0] = les_versions[0].downcase
+
+if sous_titre =~ /Tous les programmes/
+  les_versions = "tous les programmes"
+elsif sous_titre =~ /^Programmes /
+  les_versions = "les programmes " + sous_titre.gsub("Programmes ", "")
+else
+  les_versions = sous_titre
+end
+
+item, de = case pgm
+       when 'WordCount' then ['mot', 'de ']
+       when 'StockPrice' then ['transaction',  'de ']
+       else ['item', 'd\'']
+       end
+
+info_moyenne = "obtenus en prenant la moyenne de~#{nb_repetitions} ex\\'ecutions"
+
+case sorte
+when "temps"
+  info_unites = "Les temps sont en millisecondes (ms)" + info_log
+
+  caption = "Les temps d'ex\\'ecution pour \\TT{#{pgm}} sur la machine \\#{num_machine}, pour #{les_versions}. " +
+    info_unites +
+    ', ' +
+    info_moyenne +
+    '.'
+when "debits"
+  info_unites = "Les d\\'ebits sont en milliers #{de}#{item}s par seconde (K-#{item}s/s)" + info_log
+
+  caption = "Les d\\'ebits pour \\TT{#{pgm}} sur la machine \\#{num_machine}, pour #{les_versions}. " +
+    info_unites +
+    ', ' +
+    info_moyenne +
+    '.'
+end
 
 File.open( fichier_tex, mode = "w" ) do |f|
   f.puts <<-EOF
