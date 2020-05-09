@@ -1,14 +1,30 @@
+def: test_ff #compile_ppff
+
+TEST_FILE="../testdata/stock_options_64K.txt"
+ATTENDUS="../testdata/pico_result.txt"
+
+test_ff: StockPriceFastFlow
+	@echo "*** On compile et execute StockPriceFastFlow"
+	./StockPriceFastFlow $(TEST_FILE) 1 1 > obtenus.txt
+	diff obtenus.txt $(ATTENDUS)
+	./StockPriceFastFlow $(TEST_FILE) 5 1 > obtenus.txt
+	diff obtenus.txt $(ATTENDUS)
+
+test_sp: StockPrice
+	@echo "*** On execute StockPrice"
+	@./StockPrice $(TEST_FILE) 5 1 > obtenus.txt
+	diff obtenus.txt $(ATTENDUS)
 
 benchmarks: compile
 	@echo "*** Execution avec divers nombres d'iterations et de threads *** "
-	@./StockPrice $(TEST_FILE) 1
+	@./StockPrice $(TEST_FILE) 1 
 	@./StockPrice $(TEST_FILE) 2
 	@./StockPrice $(TEST_FILE) 3
 	@./StockPrice $(TEST_FILE) 4
-	@./StockPrice $(TEST_FILE) 8
-	@./StockPrice $(TEST_FILE) 16
+	#@./StockPrice $(TEST_FILE) 8
+	#@./StockPrice $(TEST_FILE) 16
 	#@./StockPrice $(TEST_FILE) 32
-	@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE)
+	#@java $(AVEC_SANS_JIT) -cp . StockPrice $(TEST_FILE)
 
 
 .IGNORE:
@@ -16,7 +32,8 @@ benchmarks: compile
 NB_TIMES=5
 
 # Specify the final target name
-EXE 		:= StockPrice
+#EXE 		:= StockPrice
+#EXE 		:= StockPriceFastFlow
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -51,10 +68,14 @@ OUTPUT_FILE_RESULT="../testdata/stock_benchmark_result.txt"
 .SUFFIXES: .cpp 
 
 
-compile: $(EXE)
+compile_java: $(EXE)
 	javac OptionData.java StockPrice.java
 
-compile: $(EXE)
+compile: $(EXE) compile_java
+
+compile_ppff: StockPrice
+
+compile_fastflow: StockPriceFastFlow
 
 
 all	: $(EXE)
@@ -63,6 +84,12 @@ all	: $(EXE)
 
 $(EXE)		: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $^ $(LDLIBS) -o $@
+
+StockPrice: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPrice.o $(LDLIBS) -o StockPrice
+
+StockPriceFastFlow: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceFastFlow.o $(LDLIBS) -o StockPriceFastFlow
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

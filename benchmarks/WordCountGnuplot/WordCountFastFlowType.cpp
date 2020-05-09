@@ -90,7 +90,6 @@ struct groupByKeyStage : ff_node_t<std::string,void> {
 int main(int argc, char *argv[]) {
     bool debug = DEFAULT_DEBUG_MODE;
     std::string inputFile = DEFAULT_INPUT_FILE;
-    std::unordered_map<std::string, int> result;
     uint32_t nbFarmWorkers = DEFAULT_NB_FARM_WORKERS;
 
     if (argc >= 2) {
@@ -117,6 +116,9 @@ int main(int argc, char *argv[]) {
                                           new toLowercaseLettersStage,
                                           new filterEmptyWordsStage ) );
     }
+
+    // Crée le pipeline dans son ensemble.
+    std::unordered_map<std::string, int> result;
 
     ff_Pipe<> ffp( new linesFromFileStage(inputFile),
                    new ff_farm(workers),

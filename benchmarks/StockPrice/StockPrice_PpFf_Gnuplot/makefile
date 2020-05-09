@@ -1,10 +1,9 @@
-
 # Oter le commentaire de la 2e ligne pour desactiver JIT de Java
 AVEC_SANS_JIT=-Djava.compiler=NONE
 #AVEC_SANS_JIT=
 
 def:
-	make -f gt-makefile run_bms
+	make -f gt-makefile
 
 
 benchmarks: compile

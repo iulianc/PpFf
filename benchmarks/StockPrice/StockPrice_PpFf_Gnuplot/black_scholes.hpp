@@ -172,20 +172,33 @@ struct OptionData {
   double DGrefval;  // DerivaGem Reference Value
 };
 
-/*
 struct StockAndPrice {
-  std::string StockName;
-  double StockPrice;
+    std::string StockName;
+    double StockPrice;
 };
 
-StockAndPrice black_scholes(const OptionData &opt) {
-  StockAndPrice stockPrice;
-  stockPrice.StockName = opt.StockName;
-  stockPrice.StockPrice = BlkSchlsEqEuroNoDiv(opt.s, opt.strike, opt.r, opt.v, opt.t,
-                             opt.OptionType, 0);
+OptionData* getOptionData(std::string* data) {
+    std::string name;
+    OptionData* opt = new OptionData();
+    char otype;
+    std::stringstream ins(*data);
 
-  return stockPrice;
+    /* read stock option data */
+    ins >> opt->StockName;
+    ins >> opt->s >> opt->strike >> opt->r >> opt->divq;
+    ins >> opt->v >> opt->t >> otype >> opt->divs >> opt->DGrefval;
+    opt->OptionType = (otype == 'P');
+    
+    return opt;
 }
-*/
+
+StockAndPrice* calculateStockPrice(OptionData* opt) {
+    StockAndPrice* stockAndPrice = new StockAndPrice();
+    stockAndPrice->StockName = opt->StockName;
+    stockAndPrice->StockPrice = BlkSchlsEqEuroNoDiv(opt->s, opt->strike, opt->r, opt->v, 
+                                                    opt->t, opt->OptionType, 0);
+	
+    return stockAndPrice;
+}
 
 #endif /* EXAMPLES_STOCK_MARKET_BLACK_SCHOLES_HPP_ */
