@@ -12,7 +12,7 @@ server = ENV['HOST']
 def nb_farm_workers_for( server )
   max_nb_farm_workers =
     case server
-    when 'java' then 4
+    when 'java' then 4  # A voir!?
     when 'c34581', 'MacOS' then 2
     when 'japet' then 8
     else %x{nproc}.chomp.to_i / 2
@@ -79,15 +79,10 @@ pgms_java =
   end
 
 pgms_ppff =
-  NB_FARM_WORKERS.map { |nb_threads| ["./#{PGM} #{nb_threads}", "PpFf-#{nb_threads}"] }
+  NB_FARM_WORKERS.map { |nb_farm_workers| ["./#{PGM} #{nb_farm_workers}", "PpFf-#{nb_farm_workers}"] }
 
 pgms_fastflow =
-  NB_FARM_WORKERS.map { |nb_threads| ["./#{PGM}FastFlow #{nb_threads}", "FastFlow-#{nb_threads}"] }
-
-pgms_fastflow_type =
-  NB_FARM_WORKERS.map { |nb_threads| ["./#{PGM}FastFlowType #{nb_threads}", "FastFlowType-#{nb_threads}"] }
-
+  NB_FARM_WORKERS.map { |nb_farm_workers| ["./#{PGM}FastFlowType #{nb_farm_workers}", "FastFlow-#{nb_farm_workers}"] }
 
 PGMS =
-  #pgms_java + pgms_ppff + pgms_fastflow + pgms_fastflow_type
-  pgms_fastflow + pgms_fastflow_type
+  pgms_java + pgms_ppff + pgms_fastflow
