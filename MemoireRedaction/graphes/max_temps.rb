@@ -15,4 +15,4 @@ lignes.each do |ligne_temps|
 
   max = [max, *temps].map(&:to_f).max
 end
-puts max * 1.5
+puts max * 1.2
