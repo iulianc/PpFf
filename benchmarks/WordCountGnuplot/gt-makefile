@@ -14,8 +14,8 @@ ATTENDUS_78792="attendus-78792.txt"
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-#TEST_FILE="testdata/752856Words.txt"
-#ATTENDUS="attendus-752856.txt"
+TEST_FILE="testdata/752856Words.txt"
+ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5
@@ -23,7 +23,7 @@ NB_TIMES=5
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow # WordCountSeq 
+EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow WordCountFastFlowType # WordCountSeq 
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -72,7 +72,10 @@ run_cpp: compile
 run_ff: compile
 	@echo "*** Execution FastFlow *** "
 	@./WordCountFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
-	#diff obtenus-ff.txt $(ATTENDUS)
+	diff obtenus-ff.txt $(ATTENDUS)
+	@echo "*** Execution FastFlowType *** "
+	@./WordCountFastFlowType 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
+	diff obtenus-ff.txt $(ATTENDUS)
 
 run_seq: compile
 	@echo "*** Execution seq. *** "
@@ -106,6 +109,9 @@ WordCount.class: WordCount.java
 
 WordCountFastFlow: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlow.o $(LDLIBS) -o WordCountFastFlow
+
+WordCountFastFlowType: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlowType.o $(LDLIBS) -o WordCountFastFlowType
 
 WordCountWarmup.class: WordCountWarmup.java
 	javac WordCountWarmup.java

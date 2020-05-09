@@ -83,6 +83,10 @@ pgms_ppff =
 pgms_fastflow =
   NB_FARM_WORKERS.map { |nb_threads| ["./#{PGM}FastFlow #{nb_threads}", "FastFlow-#{nb_threads}"] }
 
+pgms_fastflow_type =
+  NB_FARM_WORKERS.map { |nb_threads| ["./#{PGM}FastFlowType #{nb_threads}", "FastFlowType-#{nb_threads}"] }
+
 
 PGMS =
-  pgms_java + pgms_ppff + pgms_fastflow
+  #pgms_java + pgms_ppff + pgms_fastflow + pgms_fastflow_type
+  pgms_fastflow + pgms_fastflow_type
