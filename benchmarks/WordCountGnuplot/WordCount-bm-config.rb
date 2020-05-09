@@ -12,7 +12,8 @@ server = ENV['HOST']
 def nb_farm_workers_for( server )
   max_nb_farm_workers =
     case server
-    when 'java', 'c34581', 'MacOS' then 4
+    when 'java' then 4
+    when 'c34581', 'MacOS' then 2
     when 'japet' then 8
     else %x{nproc}.chomp.to_i / 2
     end

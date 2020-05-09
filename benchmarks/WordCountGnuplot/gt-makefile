@@ -1,11 +1,14 @@
 .IGNORE:
-#__DEF: run_ff run_cpp
+
+NIVEAU=0
+
+__DEF: run_ff
 
 def_run:  compile
 	make -f gt-makefile run_bms
 
 run_bms: compile
-	./run_bms.rb 'WordCount' 0 | tee temps-wc.txt
+	./run_bms.rb 'WordCount' $(NIVEAU) | tee temps-wc.txt
 
 NB_FOIS=30
 TEST_FILE_78792="testdata/78792Words.txt"

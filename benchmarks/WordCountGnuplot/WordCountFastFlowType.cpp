@@ -111,11 +111,11 @@ int main(int argc, char *argv[]) {
 
     // Crée les workers pour le farm.
     std::vector<ff_node*> workers;
-    for ( int i = 0; i < nbFarmWorkers; i++ ) {
-        workers.push_back( new ff_Pipe( new splitInWordsStage,
-                                        new flatStage,
-                                        new toLowercaseLettersStage,
-                                        new filterEmptyWordsStage ) );
+    for ( uint32_t i = 0; i < nbFarmWorkers; i++ ) {
+        workers.push_back( new ff_Pipe<>( new splitInWordsStage,
+                                          new flatStage,
+                                          new toLowercaseLettersStage,
+                                          new filterEmptyWordsStage ) );
     }
 
     ff_Pipe<> ffp( new linesFromFileStage(inputFile),
