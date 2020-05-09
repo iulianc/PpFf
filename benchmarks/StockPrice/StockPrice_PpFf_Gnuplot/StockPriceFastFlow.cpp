@@ -102,11 +102,11 @@ int main(int argc, char *argv[]) {
     bool debug = DEFAULT_DEBUG;
 
     if (argc >= 2) {
-        inputFile = argv[1];
+        nbFarmWorkers = atoi(argv[1]);
     }
 
     if (argc >= 3) {
-        nbFarmWorkers = atoi(argv[2]);
+        inputFile = argv[2];
     }
 
     // Utilisé pour vérifier le bon fonctionnement du programme.

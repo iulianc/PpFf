@@ -5,9 +5,9 @@ ATTENDUS="../testdata/pico_result.txt"
 
 test_ff: StockPriceFastFlow
 	@echo "*** On compile et execute StockPriceFastFlow"
-	./StockPriceFastFlow $(TEST_FILE) 1 1 > obtenus.txt
+	./StockPriceFastFlow 1 $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
-	./StockPriceFastFlow $(TEST_FILE) 5 1 > obtenus.txt
+	./StockPriceFastFlow 5 $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
 test_sp: StockPrice
@@ -32,8 +32,7 @@ benchmarks: compile
 NB_TIMES=5
 
 # Specify the final target name
-#EXE 		:= StockPrice
-#EXE 		:= StockPriceFastFlow
+EXE 		:= StockPrice StockPriceFastFlow StockPrice.class
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -82,14 +81,14 @@ all	: $(EXE)
 	./StockPrice 
 
 
-$(EXE)		: $(OBJ)
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $^ $(LDLIBS) -o $@
-
 StockPrice: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPrice.o $(LDLIBS) -o StockPrice
 
 StockPriceFastFlow: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceFastFlow.o $(LDLIBS) -o StockPriceFastFlow
+
+StockPrice.class: StockPrice.java
+	javac StockPrice.java
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
@@ -104,5 +103,5 @@ cleanall cleanxtra: clean
 
 
 
-run_bms:
+run_bms: compile
 	ruby run_bms.rb StockPrice
