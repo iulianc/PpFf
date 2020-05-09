@@ -1,6 +1,6 @@
 #!
 
-DEBUG=0
+DEBUG=1
 
 REP_FINAUX="finaux"
 
@@ -89,6 +89,11 @@ avec_sans_log=$([[ $AVEC_LOG == 1 ]] && echo '-log')
 
 fichier_graphe="${PGM}-graphe${avec_sans_log}-${SORTE}-${MACHINE}-${NB_REPETITIONS}${suffixe_champs}.png"
 
+if [[ $DEBUG == 1 ]]; then
+    echo "*** fichier_infos = ${fichier_infos}"
+    echo "*** fichier_donnees = ${fichier_donnees}"
+    echo "*** fichier_graphe = ${fichier_graphe}"
+fi
 
 ########################################################################
 # On definit le script pour la generation du graphe.
@@ -170,7 +175,7 @@ fi
 # On genere le graphe.
 gnuplot -persist <script.plot
 
-if [[ $DEBUG == 1 ]]; then
+if [[ $DEBUG == 2 ]]; then
     echo "*** Graphe genere: ${fichier_graphe} -- on appelle open ***"
     if [[ $HOST == MacOS ]]; then
         open ${fichier_graphe}
