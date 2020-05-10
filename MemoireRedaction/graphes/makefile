@@ -23,7 +23,7 @@ WordCount:
 StockPrice:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' _   "Tous les programmes"
 	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' log "Tous les programmes"
-	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' log "Tous les programmes"
+	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' _    "Tous les programmes"
 	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' log "Tous les programmes"
 
 clean cleanxtra:
