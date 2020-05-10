@@ -19,7 +19,7 @@ benchmarks: compile
 
 
 # Specify the final target name
-EXE 		:= StockPrice StockPriceFastFlow
+EXE 		:= StockPrice StockPriceFastFlow StockPrice.class StockPriceWarmup.class
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -61,7 +61,7 @@ compile: $(EXE)
 
 compile: $(EXE)
 
-run: run_ppff run_fastflow
+run: run_ppff run_fastflow run_java run_java_warmup
 
 run_ppff: compile
 	@echo "*** Execution PpFf *** "
@@ -79,6 +79,15 @@ run_fastflow: compile
 	@./StockPriceFastFlow $(TEST_FILE) 4 $(DEBUG) | sort > obtenus-fastflow.txt
 	@diff obtenus-fastflow.txt $(ATTENDUS)
 
+run_java: compile
+	@echo "*** Execution Java ***"
+	@java -cp . StockPrice $(TEST_FILE) $(DEBUG) | sort > obtenus-java.txt
+	@diff obtenus-java.txt $(ATTENDUS)
+
+run_java_warmup: compile
+	@echo "*** Execution Java avec Warmup ***"
+	@java -cp . StockPriceWarmup $(TEST_FILE) 1 | sort > obtenus-java_warmup.txt
+	@diff obtenus-java_warmup.txt $(ATTENDUS)
 
 
 StockPrice: $(OBJ)
@@ -86,6 +95,13 @@ StockPrice: $(OBJ)
 
 StockPriceFastFlow: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceFastFlow.o $(LDLIBS) -o StockPriceFastFlow
+
+StockPrice.class: StockPrice.java
+		javac OptionData.java StockPrice.java
+
+StockPriceWarmup.class: StockPriceWarmup.java
+		javac OptionData.java StockPriceWarmup.java
+
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

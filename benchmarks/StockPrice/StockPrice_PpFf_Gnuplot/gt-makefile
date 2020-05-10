@@ -32,7 +32,7 @@ benchmarks: compile
 NB_TIMES=5
 
 # Specify the final target name
-EXE 		:= StockPrice StockPriceFastFlow StockPrice.class
+EXE 		:= StockPrice StockPriceFastFlow StockPrice.class StockPriceWarmup.class
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -89,6 +89,10 @@ StockPriceFastFlow: $(OBJ)
 
 StockPrice.class: StockPrice.java
 	javac StockPrice.java
+
+StockPriceWarmup.class: StockPriceWarmup.java
+		javac OptionData.java StockPriceWarmup.java
+
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

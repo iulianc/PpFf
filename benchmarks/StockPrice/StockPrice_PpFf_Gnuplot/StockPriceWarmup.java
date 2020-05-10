@@ -15,7 +15,7 @@ import java.io.*;
  *
  * @author ciubanui
  */
-public class StockPrice {
+public class StockPriceWarmup {
     static final int DEFAULT_NB_ITERATIONS = 5;
     static final String DEFAULT_INPUT_FILE = "../testdata/stock_options_64K.txt";
 
@@ -45,6 +45,7 @@ public class StockPrice {
      */
 	public static void main(String[] args) throws IOException {        
 		boolean debug = false;
+		boolean avecWarmup = false;
 		String inputFile = DEFAULT_INPUT_FILE;
 
 		
@@ -57,6 +58,20 @@ public class StockPrice {
 			if (Integer.parseInt(args[1]) == 1) {
 				debug = true;
 			}
+			if (Integer.parseInt(args[1]) == 2) {
+				avecWarmup = true;
+			}
+		}
+
+		if (avecWarmup) {
+			int stockPrice_ = 
+					Files.lines(Paths.get(inputFile))
+				 	.parallel()
+               	.map(ligne -> StockPrice.getOptionData(ligne))
+               	.collect( Collectors.toList() )
+					.size();
+
+          	System.err.println( stockPrice_ );
 		}
 
    
