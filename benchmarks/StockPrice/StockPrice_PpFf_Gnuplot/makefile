@@ -19,7 +19,7 @@ benchmarks: compile
 
 
 # Specify the final target name
-EXE 		:= StockPrice StockPriceFastFlow StockPrice.class StockPriceWarmup.class
+EXE 		:= StockPrice StockPriceFastFlow StockPrice.class
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -81,12 +81,12 @@ run_fastflow: compile
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . StockPrice $(TEST_FILE) $(DEBUG) | sort > obtenus-java.txt
+	@java -cp . StockPrice 0 $(TEST_FILE) $(DEBUG) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS)
 
 run_java_warmup: compile
 	@echo "*** Execution Java avec Warmup ***"
-	@java -cp . StockPriceWarmup $(TEST_FILE) 1 | sort > obtenus-java_warmup.txt
+	@java -cp . StockPrice 1 $(TEST_FILE) 1 | sort > obtenus-java_warmup.txt
 	@diff obtenus-java_warmup.txt $(ATTENDUS)
 
 
@@ -98,10 +98,6 @@ StockPriceFastFlow: $(OBJ)
 
 StockPrice.class: StockPrice.java
 		javac OptionData.java StockPrice.java
-
-StockPriceWarmup.class: StockPriceWarmup.java
-		javac OptionData.java StockPriceWarmup.java
-
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
@@ -116,4 +112,4 @@ cleanall cleanxtra: clean
 
 
 run_bms:
-	ruby run_bms.rb
+	ruby ./run_bms.rb

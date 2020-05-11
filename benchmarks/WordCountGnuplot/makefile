@@ -23,7 +23,7 @@ TEST_FILE_2137758="testdata/2137758Words.txt"
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow WordCountFastFlowType # WordCountSeq
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowType # WordCountSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -71,13 +71,13 @@ run_cpp: compile
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . WordCount $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-java.txt
+	@java -cp . WordCount 0 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS_loremipsum)
 
-	@java -cp . WordCount $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-java.txt
+	@java -cp . WordCount 0 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS_78792)
 
-	@java -cp . WordCount $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-java.txt
+	@java -cp . WordCount 0 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-java.txt
 	@diff obtenus-java.txt $(ATTENDUS_752856)
 
 
@@ -112,16 +112,8 @@ run_fastflow_type: compile
 
 run_java_warmup: compile
 	@echo "*** Execution Java avec Warmup ***"
-	@java -cp . WordCountWarmup $(TEST_FILE_752856) 1 | sort > obtenus-java-warmup.txt
+	@java -cp . WordCount 1 $(TEST_FILE_752856) 1 | sort > obtenus-java-warmup.txt
 	diff obtenus-java-warmup.txt $(ATTENDUS_752856)
-
-
-test_warmup: compile
-	@echo "*** Execution Java sans Warmup ***"
-	@./testerWarmup.sh $(TEST_FILE_2137758) 0 $(NB_FOIS)
-	@echo "*** Execution Java avec Warmup ***"
-	@./testerWarmup.sh $(TEST_FILE_2137758) 2 $(NB_FOIS) 2> /dev/null
-
 
 
 WordCount: $(OBJ)
@@ -139,9 +131,6 @@ WordCountFastFlow: $(OBJ)
 WordCountFastFlowType: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlowType.o $(LDLIBS) -o WordCountFastFlowType
 
-WordCountWarmup.class: WordCountWarmup.java
-	javac WordCountWarmup.java
-
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
 	\rm -f *.class
@@ -154,5 +143,5 @@ cleanall cleanxtra: clean
 -include $(DEP)
 
 run_bms:
-	./run_bms.rb 'WordCount' | tee temps-wc.txt
+	ruby ./run_bms.rb 'WordCount' | tee temps-wc.txt
 

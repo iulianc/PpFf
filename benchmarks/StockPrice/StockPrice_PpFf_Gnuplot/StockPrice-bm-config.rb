@@ -1,5 +1,5 @@
 # Pour utiliser facilement sur diverses machines, dont MacBook, Linux, etc.
-server = ENV['HOST']
+server = ENV['HOST'] || %x{hostname}
 
 # NOTE: Les differentes tailles des fichiers de donnes sont les
 #   suivantes: 10, 131, 377, 3805, 7610, 78792, 167941, 281307,
