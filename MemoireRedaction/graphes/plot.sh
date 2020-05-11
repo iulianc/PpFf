@@ -194,5 +194,5 @@ fi
 
 if [[ $AVEC_LATEX == 1 ]]; then
     cp -f ${fichier_graphe} ${REP_FINAUX}
-    ./gen-latex.rb "${PGM}" "${SORTE}" "${MACHINE}" "${NB_REPETITIONS}" "${suffixe_champs}" "${SOUS_TITRE}" "${avec_sans_log}"
+    ruby ./gen-latex.rb "${PGM}" "${SORTE}" "${MACHINE}" "${NB_REPETITIONS}" "${suffixe_champs}" "${SOUS_TITRE}" "${avec_sans_log}"
 fi

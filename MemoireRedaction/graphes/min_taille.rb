@@ -1,4 +1,4 @@
-#/usr/bin/env ruby
+#!/usr/bin/env ruby
 #
 # Petit programme pour calculer la valeur mininum apparaissant dans un
 # fichier de temps d'execution produits par les benchmarks.

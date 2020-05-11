@@ -4,7 +4,6 @@
 #
 # make HOST=autreMachine NB=20
 
-HOST = japet
 NB=10
 
 def: WordCount
