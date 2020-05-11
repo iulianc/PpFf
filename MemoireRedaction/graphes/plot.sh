@@ -45,7 +45,7 @@ AVEC_LATEX=$( [[ $# == 0 ]] && echo "0" || echo "1"); shift
 if [[ $PGM == 'WordCount' ]]; then
     ITEMS="mots"
 elif [[ $PGM == 'StockPrice' ]]; then
-    ITEMS="records"
+    ITEMS="transactions"
 else
     ITEMS="items"
 fi
