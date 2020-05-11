@@ -23,7 +23,7 @@ TEST_FILE_2137758="testdata/2137758Words.txt"
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow # WordCountSeq
+EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow WordCountFastFlowType # WordCountSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -55,7 +55,7 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 compile: $(EXE)
 
-run: run_cpp_seq run_cpp run_java run_fastflow  test_warmup run_java_warmup
+run: run_cpp run_java run_fastflow run_fastflow_type test_warmup run_java_warmup #run_cpp_seq
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
@@ -99,6 +99,16 @@ run_fastflow: compile
 	@./WordCountFastFlow 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-fastflow.txt
 	@diff obtenus-fastflow.txt $(ATTENDUS_752856)
 
+run_fastflow_type: compile
+	@echo "*** Execution FastFlow Type C++ *** "
+	@./WordCountFastFlowType 2 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS_loremipsum)
+
+	@./WordCountFastFlowType 2 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS_78792)
+
+	@./WordCountFastFlowType 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-fastflow.txt
+	@diff obtenus-fastflow.txt $(ATTENDUS_752856)
 
 run_java_warmup: compile
 	@echo "*** Execution Java avec Warmup ***"
@@ -120,11 +130,14 @@ WordCount: $(OBJ)
 WordCountSeq: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq
 
+WordCount.class: WordCount.java
+	javac WordCount.java
+
 WordCountFastFlow: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlow.o $(LDLIBS) -o WordCountFastFlow
 
-WordCount.class: WordCount.java
-	javac WordCount.java
+WordCountFastFlowType: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlowType.o $(LDLIBS) -o WordCountFastFlowType
 
 WordCountWarmup.class: WordCountWarmup.java
 	javac WordCountWarmup.java

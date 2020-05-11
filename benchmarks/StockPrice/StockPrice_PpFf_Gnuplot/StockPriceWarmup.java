@@ -45,7 +45,6 @@ public class StockPriceWarmup {
      */
 	public static void main(String[] args) throws IOException {        
 		boolean debug = false;
-		boolean avecWarmup = false;
 		String inputFile = DEFAULT_INPUT_FILE;
 
 		
@@ -58,21 +57,18 @@ public class StockPriceWarmup {
 			if (Integer.parseInt(args[1]) == 1) {
 				debug = true;
 			}
-			if (Integer.parseInt(args[1]) == 2) {
-				avecWarmup = true;
-			}
 		}
 
-		if (avecWarmup) {
-			int stockPrice_ = 
-					Files.lines(Paths.get(inputFile))
-				 	.parallel()
-               	.map(ligne -> StockPrice.getOptionData(ligne))
-               	.collect( Collectors.toList() )
-					.size();
+
+		int stockPrice_ = 
+				Files.lines(Paths.get(inputFile))
+				.parallel()
+              .map(ligne -> StockPrice.getOptionData(ligne))
+              .collect( Collectors.toList() )
+				.size();
 
           	System.err.println( stockPrice_ );
-		}
+
 
    
 		List<Map.Entry<String, Double>> stockPrice = null;

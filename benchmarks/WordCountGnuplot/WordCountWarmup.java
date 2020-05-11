@@ -32,7 +32,6 @@ public class WordCountWarmup {
   
     public static void main(String[] args) throws IOException {
         boolean debug = false;
-        boolean avecWarmup = false;
         String inputFile = DEFAULT_INPUT_FILE;
 
         if (args.length >= 1) {
@@ -44,24 +43,20 @@ public class WordCountWarmup {
             if (Integer.parseInt(args[1]) == 1) {
                 debug = true;
             }
-            if (Integer.parseInt(args[1]) == 2) {
-                avecWarmup = true;
-            }
         }
 
-        if (avecWarmup) {
-            // Code bidon pour rechauffement: on emet le nombre
-            // d'elements produits, pour etre certain que le resultat
-            // soit utilise (dead code elimination?).
-            int wordsCount_ = 
-                Files.lines(Paths.get(inputFile))
-                .parallel()
-                .flatMap( line -> Arrays.stream(line.trim().split(" ")) )
-                .filter( word -> word.length() > 0 )
-                .collect( Collectors.toList() )
-                .size();
-            System.err.println( wordsCount_ );
-        }
+		// Code bidon pour rechauffement: on emet le nombre
+		// d'elements produits, pour etre certain que le resultat
+		// soit utilise (dead code elimination?).
+		int wordsCount_ = 
+				Files.lines(Paths.get(inputFile))
+ 				.parallel()
+				.flatMap( line -> Arrays.stream(line.trim().split(" ")) )
+				.filter( word -> word.length() > 0 )
+				.collect( Collectors.toList() )
+				.size();
+			System.err.println( wordsCount_ );
+
 
         long startTime = System.nanoTime();
         

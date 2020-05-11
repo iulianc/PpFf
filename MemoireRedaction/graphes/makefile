@@ -4,6 +4,7 @@
 #
 # make HOST=autreMachine NB=20
 
+HOST = japet
 NB=10
 
 def: WordCount
@@ -25,6 +26,19 @@ StockPrice:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' log "Tous les programmes"
 	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' _    "Tous les programmes"
 	./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' log "Tous les programmes"
+
+WordCountBash:
+	sh ./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*' _   "Tous les programmes"
+	sh ./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*' log "Tous les programmes"
+	sh ./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '*' _   "Tous les programmes"
+	sh ./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '*' log "Tous les programmes"
+
+StockPriceBash:
+	sh ./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' _   "Tous les programmes"
+	sh ./plot.sh 'StockPrice' 'temps'  $(HOST) $(NB) '*' log "Tous les programmes"
+	sh ./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' _    "Tous les programmes"
+	sh ./plot.sh 'StockPrice' 'debits' $(HOST) $(NB) '*' log "Tous les programmes"
+
 
 clean cleanxtra:
 	rm -f *~
