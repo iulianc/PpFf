@@ -67,14 +67,14 @@ FICHIER_DEBITS = "resultats/#{PGM}-debits-#{server}-#{NB_REPETITIONS}.txt"
 # Les programmes a executer.
 tous_les_pgms_java =
   [
-   ["java -cp . #{PGM}", 'Java+'],
-   ["java -Djava.compiler=NONE -cp . #{PGM}", 'Java-'],
-   #["java -cp . #{PGM}Warmup", 'Java*'],
+   ["java -cp . #{PGM} 0", 'Java+'],
+   ["java -Djava.compiler=NONE -cp . #{PGM} 0", 'Java-'],
+   ["java -cp . #{PGM} 1", 'Java*'],
   ]
 
 pgms_java =
   case $niveau
-  when 0, 1 then tous_les_pgms_java
+  when 0, 1, 2 then tous_les_pgms_java
   else tous_les_pgms_java[-1..-1] # A VERIFIER!
   end
 
@@ -85,5 +85,4 @@ pgms_fastflow =
   NB_FARM_WORKERS.map { |nb_farm_workers| ["./#{PGM}FastFlow #{nb_farm_workers}", "FastFlow-#{nb_farm_workers}"] }
 
 PGMS =
-  #pgms_java + pgms_ppff + pgms_fastflow
-  pgms_ppff + pgms_fastflow
+  pgms_java # + pgms_ppff + pgms_fastflow

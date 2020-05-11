@@ -2,7 +2,7 @@
 
 NIVEAU=0
 
-__DEF: run_ff
+__DEF: run_java run_java_warmup
 
 def_run:  compile
 	make -f gt-makefile run_bms
@@ -26,7 +26,7 @@ NB_TIMES=5
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountWarmup.class WordCountFastFlow WordCountFastFlowType # WordCountSeq 
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowType # WordCountSeq 
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -87,13 +87,13 @@ run_seq: compile
 
 run_java: compile
 	@echo "*** Execution Java ***"
-	@java -cp . WordCount $(TEST_FILE) 1 | sort > obtenus-java.txt
+	java -cp . WordCount 0 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
 
 run_java_warmup: compile
 	@echo "*** Execution Java avec Warmup ***"
-	@java -cp . WordCountWarmup $(TEST_FILE_752856) 1 | sort > obtenus-java-warmup.txt
-	diff obtenus-java-warmup.txt $(ATTENDUS_752856)
+	java -cp . WordCount 1 $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
+	diff obtenus-java-warmup.txt $(ATTENDUS)
 
 test_warmup: compile
 	@echo "*** Execution Java sans Warmup ***"
@@ -115,9 +115,6 @@ WordCountFastFlow: $(OBJ)
 
 WordCountFastFlowType: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlowType.o $(LDLIBS) -o WordCountFastFlowType
-
-WordCountWarmup.class: WordCountWarmup.java
-	javac WordCountWarmup.java
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

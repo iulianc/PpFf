@@ -67,9 +67,9 @@ FICHIER_DEBITS = "resultats/#{PGM}-debits-#{server}-#{NB_REPETITIONS}.txt"
 # Les programmes a executer.
 tous_les_pgms_java =
   [
-   ["java -cp . #{PGM}", 'Java+'],
-   ["java -Djava.compiler=NONE -cp . #{PGM}", 'Java-'],
-   ["java -cp . #{PGM}Warmup", 'Java*'],
+   ["java -cp . #{PGM} 0", 'Java+'],
+   ["java -Djava.compiler=NONE -cp . #{PGM} 0", 'Java-'],
+   ["java -cp . #{PGM} 1", 'Java*'],
   ]
 
 pgms_java =

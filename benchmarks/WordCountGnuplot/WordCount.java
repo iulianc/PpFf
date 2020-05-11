@@ -31,24 +31,31 @@ public class WordCount {
     static final String DEFAULT_INPUT_FILE = "testdata/78792Words.txt";
   
     public static void main(String[] args) throws IOException {
-        boolean debug = false;
-        String inputFile = DEFAULT_INPUT_FILE;
-
-        if (args.length >= 1) {
-            inputFile = args[0];
-        }
+        boolean avecWarmup = Integer.parseInt(args[0]) != 0;
+        String inputFile = args.length >= 2 ? args[1] : DEFAULT_INPUT_FILE;
 
         // Utilise pour verifier le bon fonctionnement du programme
-        if (args.length >= 2) {
-            if (Integer.parseInt(args[1]) == 1) {
-                debug = true;
-            }
+        boolean emitOutput = args.length >= 3 && Integer.parseInt(args[2]) == 1;
+
+		// Code bidon pour rechauffement: on emet le nombre d'elements
+		// produits, pour etre certain que le resultat soit utilise
+		// (pour eviter le dead code elimination?).
+        if (avecWarmup) {
+            int wordsCount_ = 
+                Files.lines(Paths.get(inputFile))
+                .parallel()
+                .flatMap( line -> Arrays.stream(line.trim().split(" ")) )
+                .filter( word -> word.length() > 0 )
+                .collect( Collectors.toList() )
+                .size();
+            System.err.println( wordsCount_ );
         }
 
+        // Execution du *vrai* programme.
         long startTime = System.nanoTime();
         
-        List<Map.Entry<String,Integer>> wordsCount = null;
-        wordsCount = Files.lines(Paths.get(inputFile))
+        List<Map.Entry<String,Integer>> wordsCount = 
+            Files.lines(Paths.get(inputFile))
             .parallel()
             .flatMap( line -> Arrays.stream(line.trim().split(" ")) )
             .map( word -> word.replaceAll("[^a-zA-Z]", "").toLowerCase() )
@@ -57,11 +64,12 @@ public class WordCount {
             .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 + v2) )
             .entrySet().stream()
             .collect( Collectors.toList() );  
-
+        
         long duration = (System.nanoTime() - startTime);
         double milliseconds = (double) duration / 1000000;
-
-        if (!debug) {
+        
+        // On emet le temps ou le resultat complet, selon le cas.
+        if (!emitOutput) {
             String outputResult = String.format("%6.0f ", milliseconds);
             System.out.print(outputResult); 
         } else {

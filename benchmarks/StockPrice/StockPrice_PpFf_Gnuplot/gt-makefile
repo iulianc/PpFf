@@ -1,4 +1,4 @@
-def: test_java #run_bms #compile_ppff
+def: run_bms
 
 TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
@@ -10,11 +10,11 @@ test_ff: StockPriceFastFlow
 	./StockPriceFastFlow 5 $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
-test_java: StockPrice.class StockPriceWarmup.class
-	@echo "*** On compile et execute StockPrice*.java"
-	java StockPrice $(TEST_FILE) 1 | sort > obtenus.txt
+test_java: StockPrice.class
+	@echo "*** On compile et execute StockPrice.java"
+	java StockPrice 0 $(TEST_FILE) 1 | sort > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
-	java StockPriceWarmup $(TEST_FILE) 1 | sort > obtenus.txt
+	java StockPrice 1 $(TEST_FILE) 1 | sort > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
 test_sp: StockPrice
@@ -115,4 +115,4 @@ cleanall cleanxtra: clean
 
 
 run_bms: compile
-	ruby run_bms.rb StockPrice 3
+	ruby run_bms.rb StockPrice

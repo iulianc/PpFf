@@ -16,10 +16,8 @@ import java.io.*;
  * @author ciubanui
  */
 public class StockPrice {
-    static final int DEFAULT_NB_ITERATIONS = 5;
     static final String DEFAULT_INPUT_FILE = "../testdata/stock_options_64K.txt";
 
-    
     static public OptionData getOptionData(String data) {
         String structData[] = data.trim().split("\\t|\\s");
         String StockName = structData[0].trim();
@@ -33,60 +31,60 @@ public class StockPrice {
         double divs = Double.parseDouble(structData[8].trim());
         double DGrefval = Double.parseDouble(structData[9].trim());
         
-        OptionData opt = new OptionData(StockName, s, strike, r, divq, v, t, OptionType, divs, DGrefval);
-
-        return opt;
+        return new OptionData(StockName, s, strike, r, divq, v, t, OptionType, divs, DGrefval);
     }
-
 
     
     /**
      * @param args the command line arguments
      */
 	public static void main(String[] args) throws IOException {        
-		boolean debug = false;
-		String inputFile = DEFAULT_INPUT_FILE;
+        boolean avecWarmup = Integer.parseInt(args[0]) != 0;
+        String inputFile = args.length >= 2 ? args[1] : DEFAULT_INPUT_FILE;
 
-		
-		if (args.length >= 1) {
-			inputFile = args[0];
-		}
+        // Utilise pour verifier le bon fonctionnement du programme
+        boolean emitOutput = args.length >= 3 && Integer.parseInt(args[2]) == 1;
 
-		// Utilise pour verifier le bon fonctionnement du programme
-		if (args.length >= 2) {
-			if (Integer.parseInt(args[1]) == 1) {
-				debug = true;
-			}
-		}
+		// Code bidon pour rechauffement: on emet le nombre d'elements
+		// produits, pour etre certain que le resultat soit utilise
+		// (pour eviter le dead code elimination?).
+        if (avecWarmup) {
+            int stockPrice_ = 
+                Files.lines(Paths.get(inputFile))
+                .parallel()
+                .map(StockPrice::getOptionData)
+                .collect( Collectors.toList() )
+                .size();
+            System.err.println( stockPrice_ );
+        }
 
-   
-		List<Map.Entry<String, Double>> stockPrice = null;
 
+        // Execution du *vrai* programme.
 		long startTime = System.nanoTime();
-       
 
-		stockPrice = Files.lines(Paths.get(inputFile))
-				 .parallel()
-               .map(ligne -> StockPrice.getOptionData(ligne))
-               .map( opData -> new SimpleEntry<>(opData.StockName, opData.BlkSchlsEqEuroNoDiv()) )
-               .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 > v2 ? v1 : v2) )
-               .entrySet().stream()
-               .collect( Collectors.toList() );  
-
+		List<Map.Entry<String, Double>> stockPrice =
+            Files.lines(Paths.get(inputFile))
+            .parallel()
+            .map(StockPrice::getOptionData)
+            .map( opData -> new SimpleEntry<>(opData.StockName, opData.BlkSchlsEqEuroNoDiv()) )
+            .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 > v2 ? v1 : v2) )
+            .entrySet().stream()
+            .collect( Collectors.toList() );  
 
      	long duration = (System.nanoTime() - startTime);
 		double milliseconds = (double) duration / 1000000;
 
-		if (!debug) {
+
+        // On emet le temps ou le resultat complet, selon le cas.
+		if (!emitOutput) {
 			String outputResult = String.format("%6.0f ", milliseconds);
 			System.out.print(outputResult); 
 		} else {
-      		stockPrice.forEach( x ->
-           	System.out.println( x.getKey() + " => " + ( String.format("%.4f", x.getValue() ).replace(",",".") ) ) );
-   
+      		stockPrice
+                .forEach( x ->
+                          System.out.println( x.getKey() +
+                                              " => " +
+                                              ( String.format("%.4f", x.getValue() ).replace(",",".") ) ) );
 		}
-
-        
     }
-    
 }
