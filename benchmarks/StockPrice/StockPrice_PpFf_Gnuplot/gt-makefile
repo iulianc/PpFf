@@ -1,3 +1,5 @@
+_DEF: test_java
+
 def: run_bms
 
 TEST_FILE="../testdata/stock_options_64K.txt"

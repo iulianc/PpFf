@@ -93,12 +93,12 @@ public class WordCount {
         long startTime = System.nanoTime();
         
         Map<String,Integer> wordsCount = 
-            Files.lines(Paths.get(inputFile))
+            Files.lines( Paths.get(inputFile) )
             .parallel()
             .flatMap( WordCount::splitInWords )
             .map( WordCount::toLowerCaseLetters )
             .filter( WordCount::notEmpty )
-            .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine)
+            .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
             .toMap();
         
         long duration = (System.nanoTime() - startTime);

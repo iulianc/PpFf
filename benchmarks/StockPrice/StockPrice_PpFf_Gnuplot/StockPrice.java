@@ -9,12 +9,35 @@ import java.io.IOException;
 import java.util.List;
 import static java.util.stream.Collectors.toMap; 
 import java.io.*;  
-
+import java.util.HashMap;
+import java.util.function.*;
 
 /**
  *
- * @author ciubanui
+ * @author ciubanui & Guy Tremblay
  */
+
+class GroupByKey implements Consumer<Map.Entry<String,Double>> {
+    @SuppressWarnings("unchecked")
+    private Map<String,Double> map = (Map) new HashMap();
+    
+    public void accept( Map.Entry<String,Double> entry ) {
+        Double newVal = entry.getValue();
+        Double current = map.get(entry.getKey());
+        if (current == null || newVal > current) {
+            map.put(entry.getKey(), newVal);
+        }
+    }
+    
+    public void combine( GroupByKey other ) {
+        other.map.entrySet().forEach( this::accept );
+    }
+
+    public Map<String,Double> toMap() {
+        return map;
+    }
+}
+
 public class StockPrice {
     static final String DEFAULT_INPUT_FILE = "../testdata/stock_options_64K.txt";
 
@@ -34,6 +57,9 @@ public class StockPrice {
         return new OptionData(StockName, s, strike, r, divq, v, t, OptionType, divs, DGrefval);
     }
 
+    static public Map.Entry<String,Double> calculateStockPrice( OptionData opData )  {
+        return new SimpleEntry<String,Double>(opData.StockName, opData.BlkSchlsEqEuroNoDiv());
+    }
     
     /**
      * @param args the command line arguments
@@ -62,14 +88,13 @@ public class StockPrice {
         // Execution du *vrai* programme.
 		long startTime = System.nanoTime();
 
-		List<Map.Entry<String, Double>> stockPrice =
-            Files.lines(Paths.get(inputFile))
+		Map<String, Double> stockPrice =
+            Files.lines( Paths.get(inputFile) )
             .parallel()
-            .map(StockPrice::getOptionData)
-            .map( opData -> new SimpleEntry<>(opData.StockName, opData.BlkSchlsEqEuroNoDiv()) )
-            .collect( toMap(e -> e.getKey(), e -> e.getValue(), (v1, v2) -> v1 > v2 ? v1 : v2) )
-            .entrySet().stream()
-            .collect( Collectors.toList() );  
+            .map( StockPrice::getOptionData )
+            .map( StockPrice::calculateStockPrice )
+            .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+            .toMap();
 
      	long duration = (System.nanoTime() - startTime);
 		double milliseconds = (double) duration / 1000000;
@@ -81,6 +106,7 @@ public class StockPrice {
 			System.out.print(outputResult); 
 		} else {
       		stockPrice
+                .entrySet()
                 .forEach( x ->
                           System.out.println( x.getKey() +
                                               " => " +
