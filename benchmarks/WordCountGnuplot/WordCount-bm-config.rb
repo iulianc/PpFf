@@ -1,6 +1,3 @@
-# Pour utiliser facilement sur diverses machines, dont MacBook, Linux, etc.
-server = ENV['HOST'] || %x{hostname}.chomp
-
 # NOTE: Les differentes tailles des fichiers de donnes sont les
 #   suivantes: 10, 131, 377, 3805, 7610, 78792, 167941, 281307,
 #   482636, 752856, 1639684, 2137758, 2614743, 5293812, 10587624
@@ -9,82 +6,74 @@ server = ENV['HOST'] || %x{hostname}.chomp
 # definis ci-bas sous forme de CONSTANTES -- sinon, elles ne
 # semblaient pas visibles.
 
-Experience.new( 10, "MacOs" )
 
-def nb_farm_workers_for( server )
-  max_nb_farm_workers =
-    case server
-    when 'java' then 4  # A voir!?
-    when 'c34581', 'MacOS' then 2
-    when 'japet' then 8
-    else %x{nproc}.chomp.to_i / 2
-    end
+################################################################
+# Les divers programmmes et commandes pour les executer.
+################################################################
+Program.define( "Java+", "java -cp . #{PGM} 0" )
+Program.define( "Java-", "java -Djava.compiler=NONE -cp . #{PGM} 0" )
+Program.define( "Java*", "Java -cp . #{PGM} 1" )
 
-  [1, 2, 4, 8, 16, 32, 64].take_while { |n| n <= max_nb_farm_workers }
+[1, 2, 4, 8, 16, 32].each do |k|
+  Program.define( "PpFf-#{k}", "./#{PGM} #{k}" )
+  Program.define( "FastFlow-#{k}", "./#{PGM}FastFlow #{k}" )
 end
 
+
+################################################################
+# Diverses quantites de donnees et la fonction pour les obtenir.
+################################################################
+
+def fichier_de_donnees_pour(nb_items)
+  "testdata/#{nb_items}Words.txt"
+end
+
+peu_de_donnees =
+  [3805, 7610]
+
+plus_de_donnees =
+  [3805, 7610, 78792]
+
+pas_mal_de_donnees =
+  [78792, 167941, 281307, 482636, 752856, 1639684]
+
+beaucoup_de_donnees =
+  [1639684, 2614743, 5293812, 10587624]
+
+################################################################
+# Les experiences.
 #
-# Les differentes valeurs possibles selon le $num_experience.
+# Note: Si machines: n'est pas specifie, alors peut s'executer sur
+# n'importe quelle machines
 #
-nb_items_ = {
-  0 => [3805, 7610],  # [3805, 7610, 78792],
-  1 => [78792, 167941, 281307, 482636, 752856, 1639684],
-  2 => [1639684, 2614743, 5293812, 10587624],
-}
+################################################################
 
-nb_repetitions_ = {
-  0 => 2,
-  1 => 10,
-  2 => 30,
-}
+Experience.define( 0,
+                   nb_items: peu_de_donnees,
+                   nb_repetitions: 2,
+                   programs: ["Java+", "Java-", "Java*",
+                              "PpFf-1", "PpFf-2", "PpFf-4",
+                              "FastFlow-1", "FastFlow-2", "FastFlow-4",
+                             ]
+                )
 
-nb_farm_workers_ = {
-  0 => [1, 4],
-  1 => nb_farm_workers_for(server),
-  2 => [1, 2],
-}
+Experience.define( 1,
+                   machines: ['MacOS'],
+                   nb_items: plus_de_donnees,
+                   nb_repetitions: 5,
+                   programs: ["PpFf-1", "PpFf-2", "PpFf-4"]
+                )
 
-nb_items = nb_items_[$num_experience]
+Experience.define( 2,
+                   machines: ['MacOS'],
+                   nb_items: plus_de_donnees,
+                   nb_repetitions: 5,
+                   programs: ["Java*", "PpFf-2", "FastFlow-1"]
+                )
 
-NB_REPETITIONS = nb_repetitions_[$num_experience]
-NB_FARM_WORKERS = nb_farm_workers_[$num_experience]
-
-#
-# Les divers fichiers utilises et generes
-#
-
-FICHIERS_DONNEES = nb_items.map { |nb| ["testdata/#{nb}Words.txt", nb] }
-
-FICHIER_INFOS  = "resultats/#{PGM}-infos-#{server}-#{$num_experience}-#{NB_REPETITIONS}.txt"
-FICHIER_TEMPS  = "resultats/#{PGM}-temps-#{server}-#{$num_experience}-#{NB_REPETITIONS}.txt"
-FICHIER_DEBITS = "resultats/#{PGM}-debits-#{server}-#{$num_experience}-#{NB_REPETITIONS}.txt"
-
-
-######################################################
-# IMPORTANT C'est l'element PGMS qu'il faut modifier si on veut
-# ajouter d'autres programmes a benchmarker ou selectionner un
-# sous-ensemble de programmes pour le niveau 2.
-######################################################
-
-# Les programmes a executer.
-tous_les_pgms_java =
-  [
-   ["java -cp . #{PGM} 0", 'Java+'],
-   ["java -Djava.compiler=NONE -cp . #{PGM} 0", 'Java-'],
-   ["java -cp . #{PGM} 1", 'Java*'],
-  ]
-
-pgms_java =
-  case $num_experience
-  when 0, 1 then tous_les_pgms_java
-  else tous_les_pgms_java[-1..-1] # A VERIFIER!
-  end
-
-pgms_ppff =
-  NB_FARM_WORKERS.map { |nb_farm_workers| ["./#{PGM} #{nb_farm_workers}", "PpFf-#{nb_farm_workers}"] }
-
-pgms_fastflow =
-  NB_FARM_WORKERS.map { |nb_farm_workers| ["./#{PGM}FastFlowType #{nb_farm_workers}", "FastFlow-#{nb_farm_workers}"] }
-
-PGMS =
-  pgms_java #+ pgms_ppff + pgms_fastflow
+Experience.define( 3,
+                   machines: ['c34581'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ["Java*", "PpFf-2", "FastFlow-2"]
+                )

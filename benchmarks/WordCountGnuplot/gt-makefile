@@ -1,6 +1,6 @@
 .IGNORE:
 
-NIVEAU=0
+NUM_EXPERIENCE=0
 
 __DEF: run_bms
 
@@ -8,7 +8,7 @@ def_run:  compile
 	make -f gt-makefile run_bms
 
 run_bms: compile
-	./run_bms.rb 'WordCount' 0
+	./run_bms.rb 'WordCount' $(NUM_EXPERIENCE)
 
 NB_FOIS=30
 TEST_FILE_78792="testdata/78792Words.txt"
