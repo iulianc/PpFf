@@ -15,6 +15,12 @@ test:
 	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '1,4' _   "Programmes Java+ et PpFf-1" 1
 	./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '1,4' _   "Programmes Java+ et PpFf-1" 1
 
+WordCount_preliminaires:
+	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java"
+	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' log   "Programmes Java"
+	./plot.sh 'WordCount' 'temps'  $(HOST) 2 10 '*' _   "Programmes PpFf"
+	./plot.sh 'WordCount' 'temps'  $(HOST) 3 10 '*' _   "Programmes FastFlow"
+
 WordCount:
 	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _   "Tous les programmes"
 	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
@@ -26,19 +32,6 @@ StockPrice:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
 	./plot.sh 'StockPrice' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _    "Tous les programmes"
 	./plot.sh 'StockPrice' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
-
-WordCountBash:
-	sh ./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _   "Tous les programmes"
-	sh ./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
-	sh ./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _   "Tous les programmes"
-	sh ./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
-
-StockPriceBash:
-	sh ./plot.sh 'StockPrice' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _   "Tous les programmes"
-	sh ./plot.sh 'StockPrice' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
-	sh ./plot.sh 'StockPrice' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _    "Tous les programmes"
-	sh ./plot.sh 'StockPrice' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
-
 
 clean cleanxtra:
 	rm -f *~
