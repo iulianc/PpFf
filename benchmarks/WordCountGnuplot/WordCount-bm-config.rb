@@ -9,6 +9,8 @@ server = ENV['HOST'] || %x{hostname}.chomp
 # definis ci-bas sous forme de CONSTANTES -- sinon, elles ne
 # semblaient pas visibles.
 
+Experience.new( 10, "MacOs" )
+
 def nb_farm_workers_for( server )
   max_nb_farm_workers =
     case server
@@ -22,10 +24,10 @@ def nb_farm_workers_for( server )
 end
 
 #
-# Les differentes valeurs possibles selon le $niveau.
+# Les differentes valeurs possibles selon le $num_experience.
 #
 nb_items_ = {
-  0 => [3805, 7610, 78792],
+  0 => [3805, 7610],  # [3805, 7610, 78792],
   1 => [78792, 167941, 281307, 482636, 752856, 1639684],
   2 => [1639684, 2614743, 5293812, 10587624],
 }
@@ -42,10 +44,10 @@ nb_farm_workers_ = {
   2 => [1, 2],
 }
 
-nb_items = nb_items_[$niveau]
+nb_items = nb_items_[$num_experience]
 
-NB_REPETITIONS = nb_repetitions_[$niveau]
-NB_FARM_WORKERS = nb_farm_workers_[$niveau]
+NB_REPETITIONS = nb_repetitions_[$num_experience]
+NB_FARM_WORKERS = nb_farm_workers_[$num_experience]
 
 #
 # Les divers fichiers utilises et generes
@@ -53,9 +55,9 @@ NB_FARM_WORKERS = nb_farm_workers_[$niveau]
 
 FICHIERS_DONNEES = nb_items.map { |nb| ["testdata/#{nb}Words.txt", nb] }
 
-FICHIER_INFOS  = "resultats/#{PGM}-infos-#{server}-#{NB_REPETITIONS}.txt"
-FICHIER_TEMPS  = "resultats/#{PGM}-temps-#{server}-#{NB_REPETITIONS}.txt"
-FICHIER_DEBITS = "resultats/#{PGM}-debits-#{server}-#{NB_REPETITIONS}.txt"
+FICHIER_INFOS  = "resultats/#{PGM}-infos-#{server}-#{$num_experience}-#{NB_REPETITIONS}.txt"
+FICHIER_TEMPS  = "resultats/#{PGM}-temps-#{server}-#{$num_experience}-#{NB_REPETITIONS}.txt"
+FICHIER_DEBITS = "resultats/#{PGM}-debits-#{server}-#{$num_experience}-#{NB_REPETITIONS}.txt"
 
 
 ######################################################
@@ -73,7 +75,7 @@ tous_les_pgms_java =
   ]
 
 pgms_java =
-  case $niveau
+  case $num_experience
   when 0, 1 then tous_les_pgms_java
   else tous_les_pgms_java[-1..-1] # A VERIFIER!
   end
@@ -85,4 +87,4 @@ pgms_fastflow =
   NB_FARM_WORKERS.map { |nb_farm_workers| ["./#{PGM}FastFlowType #{nb_farm_workers}", "FastFlow-#{nb_farm_workers}"] }
 
 PGMS =
-  pgms_java + pgms_ppff + pgms_fastflow
+  pgms_java #+ pgms_ppff + pgms_fastflow

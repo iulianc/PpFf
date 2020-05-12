@@ -7,8 +7,8 @@ REP_FINAUX="finaux"
 #
 # Exemples d'appels -- seul le dernier argument est optionnel (generation du LaTeX):
 #
-#       ./plot.sh 'WordCount' 'temps'  $(HOST) $(NB) '*'   log "Tous les programmes" 1
-#       ./plot.sh 'WordCount' 'debits' $(HOST) $(NB) '1,4' _   "Programmes 1 et 4"  
+#       ./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE $(NB) '*'   log "Tous les programmes" 1
+#       ./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '1,4' _   "Programmes 1 et 4"  
 #
 # Parametre champs:
 #   '*'     => toutes les donnees
@@ -34,6 +34,7 @@ REP_FINAUX="finaux"
 PGM="$1"; shift
 SORTE="$1"; shift
 MACHINE="$1"; shift
+NUM_EXPERIENCE="$1"; shift
 NB_REPETITIONS="$1"; shift
 CHAMPS="$1"; shift
 AVEC_LOG=$([[ $1 == log ]] && echo "1" || echo "0"); shift
@@ -68,10 +69,10 @@ fi
 suffixe_champs=$( [[ $CHAMPS == '*' ]] && echo '' ||  echo "-$(echo ${CHAMPS} | sed 's/,//g')")
 sous_rep_finaux=$( [[ AVEC_LATEX == 1 ]] && echo "${REP_FINAUX}/" || echo "")
 
-fichier_infos="resultats/${PGM}-infos-${MACHINE}-${NB_REPETITIONS}.txt"
-fichier_donnees="resultats/${PGM}-${SORTE}-${MACHINE}-${NB_REPETITIONS}.txt"
-fichier_infos_finaux="resultats/${REP_FINAUX}/${PGM}-infos-${MACHINE}-${NB_REPETITIONS}.txt"
-fichier_donnees_finaux="resultats/${REP_FINAUX}/${PGM}-${SORTE}-${MACHINE}-${NB_REPETITIONS}.txt"
+fichier_infos="resultats/${PGM}-infos-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
+fichier_donnees="resultats/${PGM}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
+fichier_infos_finaux="resultats/${REP_FINAUX}/${PGM}-infos-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
+fichier_donnees_finaux="resultats/${REP_FINAUX}/${PGM}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
 
 if [[ ${AVEC_LATEX} == 1 ]]; then
     if [[ ! -f ${fichier_infos_finaux} ]] || [[ ! -f ${fichier_donnees_finaux} ]]; then
@@ -87,7 +88,7 @@ fi
 
 avec_sans_log=$([[ $AVEC_LOG == 1 ]] && echo '-log')
 
-fichier_graphe="${PGM}-graphe${avec_sans_log}-${SORTE}-${MACHINE}-${NB_REPETITIONS}${suffixe_champs}.png"
+fichier_graphe="${PGM}-graphe${avec_sans_log}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}${suffixe_champs}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "*** fichier_infos = ${fichier_infos}"
@@ -194,5 +195,5 @@ fi
 
 if [[ $AVEC_LATEX == 1 ]]; then
     cp -f ${fichier_graphe} ${REP_FINAUX}
-    ruby ./gen-latex.rb "${PGM}" "${SORTE}" "${MACHINE}" "${NB_REPETITIONS}" "${suffixe_champs}" "${SOUS_TITRE}" "${avec_sans_log}"
+    ruby ./gen-latex.rb "${PGM}" "${SORTE}" "${MACHINE}" "${NUM_EXPERIENCE}" "${NB_REPETITIONS}" "${suffixe_champs}" "${SOUS_TITRE}" "${avec_sans_log}"
 fi

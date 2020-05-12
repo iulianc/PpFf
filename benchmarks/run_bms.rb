@@ -3,12 +3,26 @@
 DEBUG = true
 
 ######################################################
+# Classe pour une experience
+######################################################
+
+class Experience
+  def initialize( machine, num_experience )
+    @machine = machine
+    @num_experience = num_experience
+
+    puts "Experience.new( #{machine}, #{num_experience} )"
+  end
+end
+
+
+######################################################
 # Configuration des parametres d'execution
 ######################################################
 
 PGM = ARGV[0]
 
-$niveau = ARGV[1].to_i || 0
+$num_experience = ARGV[1].to_i || 0
 
 # On charge les parametres specifiques a cette serie de benchmarks.
 require "./#{PGM}-bm-config.rb"

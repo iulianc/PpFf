@@ -5,12 +5,13 @@ DEBUG = true
 pgm = ARGV.shift
 sorte = ARGV.shift
 machine = ARGV.shift
+num_experience = ARGV.shift
 nb_repetitions = ARGV.shift.to_i
 id_fichier = ARGV.shift
 sous_titre = ARGV.shift
 avec_sans_log = ARGV.shift
 
-nom_graphe = "#{pgm}-graphe#{avec_sans_log}-#{sorte}-#{machine}-#{nb_repetitions}#{id_fichier}"
+nom_graphe = "#{pgm}-graphe#{avec_sans_log}-#{sorte}-#{machine}-#{num_experience}-#{nb_repetitions}#{id_fichier}"
 
 fichier_graphe = "finaux/#{nom_graphe}.png"
 
