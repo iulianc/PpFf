@@ -3,7 +3,10 @@ ff
 WordCount
 WordCountSeq
 WordCountFastFlow
+WordCountFastFlowSansType
 WordCount.class
 WordCountWarmup.class
 
 temps-wc.txt
+
+obtenus-*.txt
