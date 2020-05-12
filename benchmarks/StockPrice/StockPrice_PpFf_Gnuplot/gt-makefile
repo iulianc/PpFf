@@ -1,6 +1,10 @@
-_DEF: test_java
+_DEF: bms_preliminaires 
 
-def: run_bms
+bms_preliminaires: compile
+	./run_bms.rb 'StockPrice' 1
+	./run_bms.rb 'StockPrice' 2
+	./run_bms.rb 'StockPrice' 3
+
 
 TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
