@@ -12,7 +12,7 @@
 ################################################################
 Program.define( "Java+", "java -cp . #{PGM} 0" )
 Program.define( "Java-", "java -Djava.compiler=NONE -cp . #{PGM} 0" )
-Program.define( "Java*", "Java -cp . #{PGM} 1" )
+Program.define( "Java*", "java -cp . #{PGM} 1" )
 
 [1, 2, 4, 8, 16, 32].each do |k|
   Program.define( "PpFf-#{k}", "./#{PGM} #{k}" )
