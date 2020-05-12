@@ -3,6 +3,11 @@ def: run_bms
 TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
 
+NUM_EXPERIENCE=0
+
+run_bms: compile
+	ruby run_bms.rb StockPrice $(NUM_EXPERIENCE)
+
 test_ff: StockPriceFastFlow
 	@echo "*** On compile et execute StockPriceFastFlow"
 	./StockPriceFastFlow 1 $(TEST_FILE) 1 > obtenus.txt
@@ -110,5 +115,3 @@ cleanall cleanxtra: clean
 
 
 
-run_bms: compile
-	ruby run_bms.rb StockPrice
