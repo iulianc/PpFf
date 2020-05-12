@@ -23,7 +23,7 @@ TEST_FILE_2137758="testdata/2137758Words.txt"
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowType # WordCountSeq
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType # WordCountSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -100,14 +100,14 @@ run_fastflow: compile
 	@diff obtenus-fastflow.txt $(ATTENDUS_752856)
 
 run_fastflow_type: compile
-	@echo "*** Execution FastFlow Type C++ *** "
-	@./WordCountFastFlowType 2 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-fastflow.txt
+	@echo "*** Execution FastFlow SansType C++ *** "
+	@./WordCountFastFlowSansType 2 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-fastflow.txt
 	@diff obtenus-fastflow.txt $(ATTENDUS_loremipsum)
 
-	@./WordCountFastFlowType 2 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-fastflow.txt
+	@./WordCountFastFlowSansType 2 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-fastflow.txt
 	@diff obtenus-fastflow.txt $(ATTENDUS_78792)
 
-	@./WordCountFastFlowType 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-fastflow.txt
+	@./WordCountFastFlowSansType 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-fastflow.txt
 	@diff obtenus-fastflow.txt $(ATTENDUS_752856)
 
 run_java_warmup: compile
@@ -128,8 +128,8 @@ WordCount.class: WordCount.java
 WordCountFastFlow: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlow.o $(LDLIBS) -o WordCountFastFlow
 
-WordCountFastFlowType: $(OBJ)
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlowType.o $(LDLIBS) -o WordCountFastFlowType
+WordCountFastFlowSansType: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlowSansType.o $(LDLIBS) -o WordCountFastFlowSansType
 
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)

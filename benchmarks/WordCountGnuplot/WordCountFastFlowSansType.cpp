@@ -74,6 +74,12 @@ struct filterEmptyWordsStage : ff_node_t<std::string> {
     }
 };
 
+struct dummyCollector : ff_node_t<std::string> {
+    std::string* svc(std::string* task) {
+        return task;
+    }
+};
+
 struct groupByKeyStage : ff_node_t<std::string,void> {
     typedef std::unordered_map<std::string, int> CONTAINER;
     CONTAINER& container;
@@ -90,6 +96,7 @@ struct groupByKeyStage : ff_node_t<std::string,void> {
 int main(int argc, char *argv[]) {
     bool debug = DEFAULT_DEBUG_MODE;
     std::string inputFile = DEFAULT_INPUT_FILE;
+    std::unordered_map<std::string, int> result;
     uint32_t nbFarmWorkers = DEFAULT_NB_FARM_WORKERS;
 
     if (argc >= 2) {
@@ -108,21 +115,22 @@ int main(int argc, char *argv[]) {
     // Crée et exécute le pipeline
     auto begin = std::chrono::high_resolution_clock::now();
 
-    // Crée les workers pour le farm.
+    ff_pipeline ffp;
+    ffp.add_stage( new linesFromFileStage(inputFile) );
     std::vector<ff_node*> workers;
-    for ( uint32_t i = 0; i < nbFarmWorkers; i++ ) {
-        workers.push_back( new ff_Pipe<>( new splitInWordsStage,
-                                          new flatStage,
-                                          new toLowercaseLettersStage,
-                                          new filterEmptyWordsStage ) );
+    for (uint32_t i = 0; i < nbFarmWorkers; i++) {
+        ff_pipeline *p = new ff_pipeline();
+        p->add_stage( new splitInWordsStage );
+        p->add_stage( new flatStage );
+        p->add_stage( new toLowercaseLettersStage );
+        p->add_stage( new filterEmptyWordsStage );
+        workers.push_back(p);
     }
-
-    // Crée le pipeline dans son ensemble.
-    std::unordered_map<std::string, int> result;
-
-    ff_Pipe<> ffp( new linesFromFileStage(inputFile),
-                   new ff_farm(workers),
-                   new groupByKeyStage(result) );
+    ff_farm farm;
+    farm.add_workers(workers);
+    farm.add_collector( new dummyCollector() );
+    ffp.add_stage(&farm);
+    ffp.add_stage(new groupByKeyStage(result));
 
     if (ffp.run_and_wait_end() < 0) 
         error("running pipe");

@@ -19,7 +19,9 @@ std::string* toLowercaseLetters(std::string* data) {
         if ('a' <= c && c <= 'z') {
             result->push_back(c);
         } else if ('A' <= c && c <= 'Z') {
-            result->push_back(c-('Z'-'z'));
+            result->push_back(c-('Z'-'z')); 
+        } else {
+            // NOOP: Le caractere est ignore/supprime!
         }
     }
     return result;
