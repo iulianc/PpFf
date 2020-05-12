@@ -3,7 +3,7 @@
 #
 test:
 	./gen-graphes.rb
-#	pdflatex $(MAIN)
+	pdflatex $(MAIN)
 	cat graphes/finaux/*tex
 
 MAIN=memoire

@@ -88,7 +88,7 @@ fi
 
 avec_sans_log=$([[ $AVEC_LOG == 1 ]] && echo '-log')
 
-fichier_graphe="${PGM}-graphe${avec_sans_log}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}${suffixe_champs}.png"
+fichier_graphe="${PGM}${avec_sans_log}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}${suffixe_champs}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "*** fichier_infos = ${fichier_infos}"

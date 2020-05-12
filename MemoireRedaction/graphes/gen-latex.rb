@@ -11,7 +11,7 @@ id_fichier = ARGV.shift
 sous_titre = ARGV.shift
 avec_sans_log = ARGV.shift
 
-nom_graphe = "#{pgm}-graphe#{avec_sans_log}-#{sorte}-#{machine}-#{num_experience}-#{nb_repetitions}#{id_fichier}"
+nom_graphe = "#{pgm}#{avec_sans_log}-#{sorte}-#{machine}-#{num_experience}-#{nb_repetitions}#{id_fichier}"
 
 fichier_graphe = "finaux/#{nom_graphe}.png"
 

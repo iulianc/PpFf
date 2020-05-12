@@ -18,7 +18,7 @@ def split_arguments_sous_titre( ligne )
 end
 
 graphes = FICHIERS
-  .map { |f| %x{grep '\\graphe{.*}' #{f}} }
+  .map { |f| %x{grep '^[^%]*\\graphe{.*}' #{f}} }
   .flat_map { |l| l.split("\n") }
   .map(&:chomp)
   .reject(&:empty?)
@@ -34,7 +34,7 @@ graphes.each do |g, sous_titre|
     avec_log = 'log'
     g.gsub!( 'log-', '' )
   end
-  pgm, _, sorte, machine, nb_repetitions, champs = g.split('-')
+  pgm, sorte, machine, num_experience, nb_repetitions, champs = g.split('-')
 
   if champs
     champs = champs.split('').join(',')
@@ -42,7 +42,7 @@ graphes.each do |g, sous_titre|
     champs = '*'
   end
 
-  cmd = "./plot.sh '#{pgm}' '#{sorte}' '#{machine}' '#{nb_repetitions}' '#{champs}' '#{avec_log}' '#{sous_titre}' '1'"
+  cmd = "./plot.sh '#{pgm}' '#{sorte}' '#{machine}' '#{num_experience}' '#{nb_repetitions}' '#{champs}' '#{avec_log}' '#{sous_titre}' '1'"
   script += "echo \"** On execute <<#{cmd}>>\"\n" + cmd + "\n"
 end
 
