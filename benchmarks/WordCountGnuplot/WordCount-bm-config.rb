@@ -66,7 +66,7 @@ Experience.define( 0,
 # par groupe.
 ####################################################
 Experience.define( 1,
-                   machines: ['c34581', 'MacOs'],
+                   machines: ['c34581', 'MacOS'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['Java+', 'Java-', 'Java*']
