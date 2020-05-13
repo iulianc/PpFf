@@ -63,6 +63,17 @@ else
     exit
 fi
 
+# On determine le numero de la machine
+if [[ $MACHINE == "java" ]]; then
+    NUM_MACHINE="M1"
+elif [[ $MACHINE == "japet" ]]; then
+    NUM_MACHINE="M2"
+elif [[ $MACHINE == "c34581" ]]; then
+    NUM_MACHINE="M3"
+else
+    NUM_MACHINE="M4"
+fi
+    
 ########################################################################
 # On specificie les noms des fichiers de donnees et de sortie.
 ########################################################################
@@ -128,7 +139,7 @@ set xtics (${XTICS})
 
 set xlabel "Nombre de ${ITEMS} traités"
 set ylabel "${MESURE} (${avec_sans_log1}${UNITE})"
-set title "${PGM} -- ${SOUS_TITRE}\nNombre de ${ITEMS} traités vs. ${avec_sans_log2}${MESURE}\n"
+set title "${PGM} -- ${SOUS_TITRE}\nMachine ${NUM_MACHINE}\nNombre de ${ITEMS} traités vs. ${avec_sans_log2}${MESURE}\n"
 EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot

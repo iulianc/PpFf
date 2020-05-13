@@ -8,13 +8,10 @@ NUM_EXPERIENCE=0
 NB=2
 EXP_FINALE=5
 
-def: WordCount
+def: test
 
 test:
-	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*'   log "Tous les programmes" 1
-	./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*'   log "Tous les programmes" 1
-	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '1,4' _   "Programmes Java+ et PpFf-1" 1
-	./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '1,4' _   "Programmes Java+ et PpFf-1" 1
+	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _ "Tous les programmes"
 
 WordCount_preliminaires:
 	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java" 1
