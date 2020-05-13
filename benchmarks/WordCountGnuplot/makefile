@@ -143,5 +143,6 @@ cleanall cleanxtra: clean
 -include $(DEP)
 
 run_bms:
-	ruby ./run_bms.rb 'WordCount' | tee temps-wc.txt
+	#ruby ./run_bms.rb 'WordCount' | tee temps-wc.txt
+	ruby ./run_bms.rb 'WordCount' '4'
 

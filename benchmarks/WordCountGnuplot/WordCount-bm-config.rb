@@ -92,8 +92,15 @@ Experience.define( 3,
 
 # Les plus performants.
 Experience.define( 4,
-                   machines: ['c34581', 'java'],
+                   machines: ['c34581'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-1', 'FastFlow-1']
+                )
+
+Experience.define( 5,
+                   machines: ['java'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Java*', 'PpFf-2', 'FastFlow-2']
                 )
