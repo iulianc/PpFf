@@ -108,7 +108,7 @@ Experience.define( 30,
 
 # Les plus performants.
 Experience.define( 4,
-                   machines: ['c34581'],
+                   machines: ['c34581', 'MacOS'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-1', 'FastFlow-1']
