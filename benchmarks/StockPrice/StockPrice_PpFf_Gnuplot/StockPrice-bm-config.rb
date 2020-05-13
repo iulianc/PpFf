@@ -5,8 +5,11 @@ Program.define( "Java+", "java -cp . #{PGM} 0" )
 Program.define( "Java-", "java -Djava.compiler=NONE -cp . #{PGM} 0" )
 Program.define( "Java*", "java -cp . #{PGM} 1" )
 
-[1, 2, 4, 8, 16, 32].each do |k|
+[*1..8].each do |k|
   Program.define( "PpFf-#{k}", "./#{PGM} #{k}" )
+end
+
+[*1..8].each do |k|
   Program.define( "FastFlow-#{k}", "./#{PGM}FastFlow #{k}" )
 end
 
@@ -23,10 +26,10 @@ peu_de_donnees =
   [4 * 1024, 8 * 1024]
 
 donnees_preliminaires =
-  [8, 32, 64].map { |n| n * 1024}
+  [64, 128, 512].map { |n| n * 1024 }
 
 beaucoup_de_donnees =
-  [16, 32, 64, 128, 256].map { |n| n * 1024 }
+  [128, 256, 512, 1024, 2048].map { |n| n * 1024 }
 
 
 ################################################################
@@ -64,14 +67,14 @@ Experience.define( 2,
                    machines: ['c34581', 'MacOS'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-3']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4']
                 )
 
 Experience.define( 3,
                    machines: ['c34581', 'MacOS'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
-                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
+                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-4']
                 )
 
 
@@ -80,5 +83,5 @@ Experience.define( 4,
                    machines: ['c34581'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
-                   programs: ['Java*', 'PpFf-1', 'FastFlow-1']
+                   programs: ['Java*', 'PpFf-2', 'FastFlow-2']
                 )

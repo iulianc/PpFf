@@ -1,9 +1,9 @@
 _DEF: bms_preliminaires 
 
 bms_preliminaires: compile
-	./run_bms.rb 'StockPrice' 1
+	#./run_bms.rb 'StockPrice' 1
 	./run_bms.rb 'StockPrice' 2
-	./run_bms.rb 'StockPrice' 3
+	#./run_bms.rb 'StockPrice' 3
 
 
 TEST_FILE="../testdata/stock_options_64K.txt"

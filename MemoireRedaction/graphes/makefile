@@ -17,7 +17,7 @@ test:
 
 WordCount_preliminaires:
 	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java"
-	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' log   "Programmes Java"
+	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' log "Programmes Java"
 	./plot.sh 'WordCount' 'temps'  $(HOST) 2 10 '*' _   "Programmes PpFf"
 	./plot.sh 'WordCount' 'temps'  $(HOST) 3 10 '*' _   "Programmes FastFlow"
 
@@ -26,6 +26,12 @@ WordCount:
 	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
 	./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _   "Tous les programmes"
 	./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '*' log "Tous les programmes"
+
+StockPrice_preliminaires:
+	./plot.sh 'StockPrice' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java"
+	./plot.sh 'StockPrice' 'temps'  $(HOST) 1 10 '*' log "Programmes Java"
+	./plot.sh 'StockPrice' 'temps'  $(HOST) 2 10 '*' _   "Programmes PpFf"
+	./plot.sh 'StockPrice' 'temps'  $(HOST) 3 10 '*' _   "Programmes FastFlow"
 
 StockPrice:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _   "Tous les programmes"
