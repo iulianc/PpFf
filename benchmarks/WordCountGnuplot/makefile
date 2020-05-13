@@ -29,7 +29,7 @@ EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType #
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
 #ROOT_PIPE      := $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
-ROOT_PIPE       := $(HOME)/Memoire/src
+ROOT_PIPE       := $(HOME)/Memoire/PpFf/src
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)

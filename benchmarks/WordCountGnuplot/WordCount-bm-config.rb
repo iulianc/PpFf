@@ -69,21 +69,21 @@ Experience.define( 0,
 # par groupe.
 ####################################################
 Experience.define( 1,
-                   machines: ['c34581', 'MacOS'],
+                   machines: ['c34581', 'MacOS', 'java'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['Java+', 'Java-', 'Java*']
                 )
 
 Experience.define( 2,
-                   machines: ['c34581', 'MacOS'],
+                   machines: ['c34581', 'MacOS', 'java'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-3']
                 )
 
 Experience.define( 3,
-                   machines: ['c34581', 'MacOS'],
+                   machines: ['c34581', 'MacOS', 'java'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
@@ -92,7 +92,7 @@ Experience.define( 3,
 
 # Les plus performants.
 Experience.define( 4,
-                   machines: ['c34581'],
+                   machines: ['c34581', 'java'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-1', 'FastFlow-1']
