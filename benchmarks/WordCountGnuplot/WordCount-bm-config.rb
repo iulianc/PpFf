@@ -96,16 +96,15 @@ Experience.define( 20,
                    machines: ['japet'],
                    nb_items: pas_mal_de_donnees,
                    nb_repetitions: 10,
-                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3', 'FastFlow-4', 'FastFlow-5']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf-5', 'PpFf-6', 'PpFf-8']
                 )
 
 Experience.define( 30,
                    machines: ['japet'],
                    nb_items: pas_mal_de_donnees,
                    nb_repetitions: 10,
-                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3', 'FastFlow-4', 'FastFlow-5']
+                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-4', 'FastFlow-5', 'FastFlow-6', 'FastFlow-8']
                 )
-
 
 # Les plus performants.
 Experience.define( 4,
@@ -120,4 +119,11 @@ Experience.define( 5,
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+Experience.define( 6,
+                   machines: ['japet'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Java*', 'PpFf-5', 'FastFlow-5']
                 )
