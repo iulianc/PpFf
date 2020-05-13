@@ -16,10 +16,12 @@ test:
 	./plot.sh 'WordCount' 'debits' $(HOST) $(NUM_EXPERIENCE) $(NB) '1,4' _   "Programmes Java+ et PpFf-1" 1
 
 WordCount_preliminaires:
-	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java"
-	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' log "Programmes Java"
-	./plot.sh 'WordCount' 'temps'  $(HOST) 2 10 '*' _   "Programmes PpFf"
-	./plot.sh 'WordCount' 'temps'  $(HOST) 3 10 '*' _   "Programmes FastFlow"
+	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java" 1
+	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' log "Programmes Java" 1
+	./plot.sh 'WordCount' 'temps'  $(HOST) 2 10 '*' _   "Programmes PpFf" 1
+	./plot.sh 'WordCount' 'temps'  $(HOST) 2 10 '*' log "Programmes PpFf" 1
+	./plot.sh 'WordCount' 'temps'  $(HOST) 3 10 '*' _   "Programmes FastFlow" 1
+	./plot.sh 'WordCount' 'temps'  $(HOST) 3 10 '*' log "Programmes FastFlow" 1
 
 WordCount:
 	./plot.sh 'WordCount' 'temps'  $(HOST) 4 30 '*' _   "Tous les programmes"
