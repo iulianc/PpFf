@@ -125,5 +125,5 @@ Experience.define( 6,
                    machines: ['japet'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
-                   programs: ['Java*', 'PpFf-5', 'FastFlow-5']
+                   programs: ['Java*', 'PpFf-8', 'FastFlow-8']
                 )
