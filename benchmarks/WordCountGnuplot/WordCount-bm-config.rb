@@ -38,7 +38,7 @@ donnees_preliminaires =
   [78792, 281307, 752856, 1639684]
 
 pas_mal_de_donnees =
-  [78792, 167941, 281307, 482636, 752856]
+  [78792, 281307, 752856, 1639684, 2137758]
 
 beaucoup_de_donnees =
   [752856, 1639684, 2614743, 5293812, 10587624]
@@ -76,17 +76,34 @@ Experience.define( 1,
                 )
 
 Experience.define( 2,
-                   machines: ['c34581', 'MacOS', 'java', 'japet'],
+                   machines: ['c34581', 'MacOS', 'java'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-3']
                 )
 
 Experience.define( 3,
-                   machines: ['c34581', 'MacOS', 'java', 'japet'],
+                   machines: ['c34581', 'MacOS', 'java'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
+                )
+
+
+# Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
+# avec 3, donc on va voir ce qu'il en est si on augmente encore.
+Experience.define( 20,
+                   machines: ['japet'],
+                   nb_items: pas_mal_de_donnees,
+                   nb_repetitions: 10,
+                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3', 'FastFlow-4', 'FastFlow-5']
+                )
+
+Experience.define( 30,
+                   machines: ['japet'],
+                   nb_items: pas_mal_de_donnees,
+                   nb_repetitions: 10,
+                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3', 'FastFlow-4', 'FastFlow-5']
                 )
 
 
