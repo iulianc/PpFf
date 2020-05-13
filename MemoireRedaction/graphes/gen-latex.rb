@@ -25,8 +25,8 @@ fichier_tex = "finaux/#{nom_graphe}.tex"
 puts "On cree le fichier #{fichier_tex}" if DEBUG
 
 machines = {
-  "japet" => "M1",
-  "java" => "M2",
+  "java" => "M1",
+  "japet" => "M2",
   "c34581" => "M3",
   "MacOS" => "M4",
 }
