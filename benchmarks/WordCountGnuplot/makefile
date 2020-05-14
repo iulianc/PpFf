@@ -144,5 +144,5 @@ cleanall cleanxtra: clean
 
 run_bms:
 	#ruby ./run_bms.rb 'WordCount' | tee temps-wc.txt
-	ruby ./run_bms.rb 'WordCount' '4'
+	ruby ./run_bms.rb 'WordCount' '51'
 
