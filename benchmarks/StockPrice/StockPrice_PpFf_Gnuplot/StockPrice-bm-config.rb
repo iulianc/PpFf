@@ -28,6 +28,9 @@ peu_de_donnees =
 donnees_preliminaires =
   [64, 128, 512].map { |n| n * 1024 }
 
+beaucoup_de_donnees_mac =
+  [128, 256, 512, 1024].map { |n| n * 1024 }
+
 beaucoup_de_donnees =
   [128, 256, 512, 1024, 2048].map { |n| n * 1024 }
 
@@ -84,6 +87,13 @@ Experience.define( 4,
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+Experience.define( 6,
+                   machines: ['MacOS'],
+                   nb_items: beaucoup_de_donnees_mac,
+                   nb_repetitions: 30,
+                   programs: ['Java*', 'PpFf-1', 'FastFlow-1']
                 )
 
 Experience.define( 7,

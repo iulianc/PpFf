@@ -7,6 +7,11 @@ DEBUG = true
 # variable d'environnement.
 ######################################################
 
+if ARGV.empty?
+  puts "*** #{__FILE__} NomDuProgramme NumExperience"
+  exit -1
+end
+
 PGM = ARGV[0]
 NUM_EXPERIENCE = ARGV[1].to_i || 0
 

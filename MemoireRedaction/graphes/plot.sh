@@ -87,7 +87,7 @@ fichier_donnees_finaux="resultats/${REP_FINAUX}/${PGM}-${SORTE}-${MACHINE}-${NUM
 
 if [[ ${AVEC_LATEX} == 1 ]]; then
     if [[ ! -f ${fichier_infos_finaux} ]] || [[ ! -f ${fichier_donnees_finaux} ]]; then
-        read -p "On copie les fichiers de donnees dans finaux [o/N]?" on_copie
+        read -p "On copie les fichiers de donnees (${fichier_infos} et al.) dans finaux [o/N]?" on_copie
         if [[ ${on_copie} == o || ${on_copie} == O ]]; then
             cp -f ${fichier_infos}  ${fichier_infos_finaux} 
             cp -f ${fichier_donnees}  ${fichier_donnees_finaux}
