@@ -60,24 +60,24 @@ Experience.define( 0,
 # par groupe.
 ####################################################
 Experience.define( 1,
-                   machines: ['c34581', 'MacOS', 'java'],
+                   machines: ['c34581', 'MacOS', 'java', 'japet'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['Java+', 'Java-', 'Java*']
                 )
 
 Experience.define( 2,
-                   machines: ['c34581', 'MacOS', 'java'],
+                   machines: ['c34581', 'MacOS', 'java', 'japet'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf-6', 'PpFf-8']
                 )
 
 Experience.define( 3,
-                   machines: ['c34581', 'MacOS', 'java'],
+                   machines: ['c34581', 'MacOS', 'java', 'japet'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
-                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-4']
+                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-4', 'FastFlow-6', 'FastFlow-8']
                 )
 
 
@@ -97,6 +97,13 @@ Experience.define( 6,
                 )
 
 Experience.define( 7,
+                   machines: ['java'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Java*', 'PpFf-4', 'FastFlow-4']
+                 )
+
+Experience.define( 8,
                    machines: ['java'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,

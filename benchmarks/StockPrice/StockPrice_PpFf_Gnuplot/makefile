@@ -25,7 +25,7 @@ EXE 		:= StockPrice StockPriceFastFlow StockPrice.class
 ROOT_TESTS 	:= $(wildcard *.cpp)
 # Specify the pipe path
 #ROOT_PIPE      := $(HOME)/PpFf/Release2/PpFf/src
-ROOT_PIPE       := $(HOME)/Memoire/src
+ROOT_PIPE       := $(HOME)/Memoire/PpFf/src
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
