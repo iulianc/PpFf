@@ -2,10 +2,8 @@
 
 NUM_EXPERIENCE=0
 
-__DEF: run_java
-
 def_run:  compile
-	make -f gt-makefile run_bms
+	./run_bms.rb 'WordCount' 0
 
 bms_preliminaires: compile
 	./run_bms.rb 'WordCount' 1

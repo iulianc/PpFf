@@ -167,6 +167,21 @@ if DEBUG
   puts "*** Va creer les fichiers #{fichier_temps}, #{fichier_debits} et #{fichier_infos}"
 end
 
+
+# On verifie que tous les fichiers existent avant de lancer l'execution
+erreurs = ''
+fichiers_donnees.each do |fichier, nb_items|
+  unless File.exist?(fichier)
+    erreurs += "- Le fichier #{fichier} n'existe pas\n"
+  end
+end
+
+unless erreurs.empty?
+  puts "*** Erreur:\n" + erreurs
+  exit -1
+end
+
+# Tout semble ok: on lance l'execution.
 imprimer_en_tete( programs )
 
 res_temps = '';
