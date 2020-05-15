@@ -154,3 +154,10 @@ Experience.define( 6,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-8', 'FastFlow-8']
                 )
+
+Experience.define( 600,
+                   machines: ['japet'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Seq', 'Java*', 'PpFf-8', 'FastFlow-8']
+                )

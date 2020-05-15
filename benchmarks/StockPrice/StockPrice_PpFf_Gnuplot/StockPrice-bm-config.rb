@@ -102,3 +102,12 @@ Experience.define( 7,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-4', 'FastFlow-4']
                  )
+
+
+# Pour voir si ca fait une difference dans le compte tremblay_gu
+Experience.define( 71,
+                   machines: ['japet'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Java*', 'PpFf-4', 'FastFlow-4']
+                 )
