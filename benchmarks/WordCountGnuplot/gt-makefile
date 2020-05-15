@@ -1,8 +1,8 @@
-.IGNORE:
+#.IGNORE:
 
 NUM_EXPERIENCE=0
 
-_def: run_ff
+_def: run_seq
 
 
 def_run:  compile
@@ -20,8 +20,8 @@ ATTENDUS_78792="attendus-78792.txt"
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-TEST_FILE="testdata/752856Words.txt"
-ATTENDUS="attendus-752856.txt"
+#TEST_FILE="testdata/752856Words.txt"
+#ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5
@@ -64,36 +64,32 @@ compile: $(EXE)
 
 run: run_cpp run_java #run_seq
 
-run_sh:
-	@echo "*** Execution wc.sh"
-	@time (cat $(TEST_FILE) | ./wc.sh | sort > obtenus-sh.txt) 2> temps-sh.txt
-	@diff obtenus-sh.txt $(ATTENDUS)
-	@./real-to-ms.rb `cat temps-sh.txt | grep real | sed s/real//`
-
-run_cpp: compile
+run_cpp: WordCount
 	@echo "*** Execution C++ *** "
 	@./WordCount 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
 	diff obtenus-cpp.txt $(ATTENDUS)
 	@./WordCount 4 $(TEST_FILE) 0
 
-run_ff: compile
+run_ff: WordCountFastFlow
 	@echo "*** Execution FastFlow *** "
 	@./WordCountFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
 	diff obtenus-ff.txt $(ATTENDUS)
 	@./WordCountFastFlow 4 $(TEST_FILE) 0
 
-run_seq: compile
+run_seq: WordCountSeq
 	@echo "*** Execution seq. *** "
 	@./WordCountSeq $(TEST_FILE) 1 | sort > obtenus-seq.txt
+	@#head -10 obtenus-seq.txt
+	@#(echo; echo "VS."; @echo)
+	@#head -10 $(ATTENDUS)
 	diff obtenus-seq.txt $(ATTENDUS)
-	@./WordCountSeq $(TEST_FILE) 0
 
-run_java: compile
+run_java: WordCount.class
 	@echo "*** Execution Java ***"
 	java -cp . WordCount 0 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
 
-run_java_warmup: compile
+run_java_warmup: WordCount.class
 	@echo "*** Execution Java avec Warmup ***"
 	java -cp . WordCount 1 $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
 	diff obtenus-java-warmup.txt $(ATTENDUS)
