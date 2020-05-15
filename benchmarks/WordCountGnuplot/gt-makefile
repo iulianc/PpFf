@@ -2,9 +2,6 @@
 
 NUM_EXPERIENCE=0
 
-_def: run_seq
-
-
 def_run:  compile
 	./run_bms.rb 'WordCount' 0
 
