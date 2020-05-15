@@ -1,0 +1,134 @@
+.IGNORE:
+
+NUM_EXPERIENCE=0
+
+_def: run_cpp
+
+def_run:  compile
+	./run_bms.rb 'WC' 0
+
+bms_preliminaires: compile
+	./run_bms.rb 'WC' 1
+	./run_bms.rb 'WC' 2
+	./run_bms.rb 'WC' 3
+
+
+TEST_FILE_0="testdata/10Words.txt"
+ATTENDUS_0="attendus-10.txt"
+
+TEST_FILE_1="testdata/377Words.txt"
+ATTENDUS_1="attendus-377.txt"
+
+TEST_FILE_2="testdata/78792Words.txt"
+ATTENDUS_2="attendus-78792.txt"
+
+TEST_FILE_3="testdata/752856Words.txt"
+ATTENDUS_3="attendus-752856.txt"
+
+TEST_FILE=$(TEST_FILE_3)
+ATTENDUS=$(ATTENDUS_3)
+
+########################################################
+
+# Specify the final target name
+EXE 		:= WC WC.class WCFastFlow WCFastFlowSansType WCSeq 
+
+# Specify the tests path
+ROOT_TESTS 	:= $(wildcard *.cpp)
+# Specify the pipe path
+#ROOT_PIPE      := $(HOME)/RepositoryFastFlow/PpFf_Catch/src/pp
+#ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
+ROOT_PIPE 	:= $(HOME)/PpFf/src
+
+# Get the corresponding object file list
+OBJ 		:= $(ROOT_TESTS:.cpp=.o)
+# From the object file list, get the dependency file list to handle automatic
+DEP 		:= $(OBJ:.o=.d)
+
+# Compiler
+CXX		= g++ -std=c++17 $(MAP_TYPE)
+# Specify preprocessor flags
+CPPFLAGS 	:= -I./ -I $(ROOT_PIPE)
+# Required flags to enable the automatic dependency generation by the compiler
+CPPFLAGS 	+= -MMD -MP
+# Warning flags
+CXXFLAGS  	= -Wall
+# Specify linker libraries
+LDLIBS 		:= -lpthread
+
+OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
+
+# Tell make that these target are not real files
+.PHONY: all clean cleanall
+.SUFFIXES: .cpp 
+
+compile: $(EXE)
+
+run: run_cpp run_java #run_seq
+
+run_cpp: WC
+	@echo "*** Execution PpFf. *** "
+	@./WC 4 $(TEST_FILE_0) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_0)
+	@./WC 4 $(TEST_FILE_1) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_1)
+	@./WC 4 $(TEST_FILE_2) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_2)
+	@./WC 4 $(TEST_FILE_3) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_3)
+
+run_ff: WCFastFlow
+	@echo "*** Execution FastFlow *** "
+	@./WCFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
+	diff obtenus-ff.txt $(ATTENDUS)
+	@./WCFastFlow 4 $(TEST_FILE) 0
+
+run_seq: WCSeq
+	@echo "*** Execution seq. *** "
+	@./WCSeq $(TEST_FILE_1) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_1)
+	@./WCSeq $(TEST_FILE_2) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_2)
+	@./WCSeq $(TEST_FILE_3) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_3)
+
+run_java: WC.class
+	@echo "*** Execution Java ***"
+	@java -cp . WC 0 $(TEST_FILE_0) 1 > obtenus-java.txt
+	diff -bitw obtenus-java.txt $(ATTENDUS_0)
+	@java -cp . WC 0 $(TEST_FILE_1) 1 > obtenus-java.txt
+	diff -bitw obtenus-java.txt $(ATTENDUS_1)
+	@java -cp . WC 0 $(TEST_FILE_2) 1 > obtenus-java.txt
+	diff -bitw obtenus-java.txt $(ATTENDUS_2)
+	@java -cp . WC 0 $(TEST_FILE_3) 1 > obtenus-java.txt
+	diff -bitw obtenus-java.txt $(ATTENDUS_3)
+
+run_java_warmup: WC.class
+	@echo "*** Execution Java avec Warmup ***"
+	java -cp . WC 1 $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
+	diff obtenus-java-warmup.txt $(ATTENDUS)
+
+WC: WC.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WC.o $(LDLIBS) -o WC
+
+WCSeq: $(OBJ)
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WCSeq.o $(LDLIBS) -o WCSeq
+
+WC.class: WC.java
+	javac WC.java
+
+WCFastFlow: WCFastFlow.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WCFastFlow.o $(LDLIBS) -o WCFastFlow
+
+
+clean: 
+	\rm -f $(EXE) $(OBJ) $(DEP)
+	\rm -f *.class
+
+cleanx cleanall cleanxtra: clean
+	\rm -f *.o *~
+	\rm -f obtenus*txt temps-sh.txt res.txt
+
+# Include the dependency
+-include $(DEP)
+
