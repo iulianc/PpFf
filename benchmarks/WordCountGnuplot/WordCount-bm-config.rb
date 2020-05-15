@@ -121,17 +121,10 @@ Experience.define( 4,
                 )
 
 Experience.define( 400,
-                   machines: ['MacOS'],
+                   machines: ['c34581', 'MacOS'],
                    nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 20,
+                   nb_repetitions: 30,
                    programs: ['Seq', 'Java*', 'PpFf-1', 'FastFlow-1']
-                )
-
-Experience.define( 401,
-                   machines: ['MacOS'],
-                   nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 20,
-                   programs: ['Seq']
                 )
 
 Experience.define( 5,
@@ -139,6 +132,13 @@ Experience.define( 5,
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+Experience.define( 500,
+                   machines: ['java'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 51,
