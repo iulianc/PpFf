@@ -19,33 +19,19 @@
 
 using namespace PpFf;
 
-#define DEFAULT_DEBUG_MODE false
 #define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
-#define DEFAULT_NB_THREADS 1
+#define DEFAULT_FARM_PARALLELISM 1
 
 typedef std::vector<std::string> Words;
 
 #include "auxiliary-functions.hpp"
 
 int main(int argc, char* argv[]) {
-    bool debug = DEFAULT_DEBUG_MODE;
-    std::string inputFile = DEFAULT_INPUT_FILE;
-    uint32_t nbThreads = DEFAULT_NB_THREADS;
-
-    if (argc >= 2) {
-        nbThreads = atoi(argv[1]);
-    }
-
-    if (argc >= 3) {
-        inputFile = argv[2];
-    }
+    uint32_t farmParallelism = argc >= 2 ? atoi(argv[1]) : DEFAULT_FARM_PARALLELISM;
+    std::string inputFile = argc >= 3 ? argv[2] : DEFAULT_INPUT_FILE;
 
     // Utilisé pour vérifier le bon fonctionnement du programme
-    if (argc >= 4) {
-        if (atoi(argv[3]) == 1) {
-            debug = true;
-        }
-    }
+    bool emitOutput = argc >= 4 && atoi(argv[3]) == 1;
     
     auto begin = std::chrono::high_resolution_clock::now();
 
@@ -56,7 +42,7 @@ int main(int argc, char* argv[]) {
     std::unordered_map<std::string, int> currentResult = 
         Flow
         ::source(inputFile)
-        .parallel(nbThreads)
+        .parallel(farmParallelism)
         .flatMap<std::string, std::string, Words>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
         .find<std::string>(notEmpty)	
@@ -66,7 +52,7 @@ int main(int argc, char* argv[]) {
     long duration_ms = 
         std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
-    if (!debug) {
+    if (!emitOutput) {
         printf("%5ld ", duration_ms);
     } else {
         for (auto it = currentResult.begin(); it != currentResult.end(); it++) {

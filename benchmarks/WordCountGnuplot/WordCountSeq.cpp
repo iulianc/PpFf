@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-//#include "../../src/pp/Pipe.hpp"
 #include <sstream>
 #include <functional>
 #include <regex>
@@ -44,13 +43,13 @@ static std::string toLowercaseLetters(std::string data) {
 }
 
 int main(int argc, char *argv[]) {
-    std::string inputFile = DEFAULT_INPUT_FILE;
+    std::string inputFile = argc >= 2 ? argv[1] : DEFAULT_INPUT_FILE;
 
-    if (argc >= 2) {
-        inputFile = argv[1];
-    }
+    // Utilisé pour vérifier le bon fonctionnement du programme
+    bool emitOutput = argc >= 3 && atoi(argv[2]) == 1;
 
-    //auto begin = std::chrono::high_resolution_clock::now();
+    // Crée et exécute le pipeline
+    auto begin = std::chrono::high_resolution_clock::now();
 
     std::unordered_map<std::string, int> currentResult;
     currentResult.clear();
@@ -73,15 +72,19 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    //auto end = std::chrono::high_resolution_clock::now();
-    //long duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    //std::cerr << "Temps seq.:  " << duration_ms / nbIterations << " ms" << std::endl;
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 
-    for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
-        std::string currentResultKey = it->first;
-        int currentResultValue = it->second;
-        std::cout << currentResultKey << " => " << currentResultValue << std::endl;
-    }
+    if (!emitOutput) {
+        printf("%5ld ", duration_ms);
+    } else {
+        for (auto it = currentResult.begin(); it != currentResult.end(); it++) {
+            std::string currentResultKey = it->first;
+            int currentResultValue = it->second;
+            std::cout << currentResultKey << " => " << currentResultValue << std::endl;
+        }
+    } 
 
     return 0;
 }

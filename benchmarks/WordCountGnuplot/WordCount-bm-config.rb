@@ -10,6 +10,8 @@
 ################################################################
 # Les divers programmmes et commandes pour les executer.
 ################################################################
+Program.define( 'Seq', "./#{PGM}Seq 0" )
+
 Program.define( 'Java+', "java -cp . #{PGM} 0" )
 Program.define( 'Java-', "java -Djava.compiler=NONE -cp . #{PGM} 0" )
 Program.define( 'Java*', "java -cp . #{PGM} 1" )
@@ -115,6 +117,13 @@ Experience.define( 4,
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-1', 'FastFlow-1']
+                )
+
+Experience.define( 400,
+                   machines: ['MacOS'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
+                   programs: ['Seq', 'Java*', 'PpFf-1', 'FastFlow-1']
                 )
 
 Experience.define( 5,

@@ -15,9 +15,8 @@
 
 using namespace ff;
 
-#define DEFAULT_DEBUG_MODE false
 #define DEFAULT_INPUT_FILE "testdata/loremipsum.txt"
-#define DEFAULT_NB_FARM_WORKERS 1
+#define DEFAULT_FARM_PARALLELISM 1
 
 typedef std::vector<std::string> Words;
 
@@ -88,22 +87,11 @@ struct groupByKeyStage : ff_node_t<std::string,void> {
 
 
 int main(int argc, char *argv[]) {
-    bool debug = DEFAULT_DEBUG_MODE;
-    std::string inputFile = DEFAULT_INPUT_FILE;
-    uint32_t nbFarmWorkers = DEFAULT_NB_FARM_WORKERS;
-
-    if (argc >= 2) {
-        nbFarmWorkers = atoi(argv[1]);
-    }
-
-    if (argc >= 3) {
-        inputFile = argv[2];
-    }
+    uint32_t nbFarmWorkers = argc >= 2 ? atoi(argv[1]) : DEFAULT_FARM_PARALLELISM;
+    std::string inputFile = argc >= 3 ? argv[2] : DEFAULT_INPUT_FILE;
 
     // Utilisé pour vérifier le bon fonctionnement du programme
-    if (argc >= 4 && atoi(argv[3]) == 1) {
-        debug = true;
-    }
+    bool emitOutput = argc >= 4 && atoi(argv[3]) == 1;
 
     // Crée et exécute le pipeline
     auto begin = std::chrono::high_resolution_clock::now();
@@ -133,7 +121,7 @@ int main(int argc, char *argv[]) {
 
 
     // Affiche le résultat -- temps ou <<vrais résultats>>
-    if (!debug) {
+    if (!emitOutput) {
         printf("%5ld ", duration_ms);
     } else {
         for (auto it = result.begin(); it != result.end(); it++) {

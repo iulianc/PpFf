@@ -2,6 +2,9 @@
 
 NUM_EXPERIENCE=0
 
+_def: run_ff
+
+
 def_run:  compile
 	./run_bms.rb 'WordCount' 0
 
@@ -26,7 +29,7 @@ NB_TIMES=5
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType # WordCountSeq 
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq 
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -71,19 +74,19 @@ run_cpp: compile
 	@echo "*** Execution C++ *** "
 	@./WordCount 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
 	diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCount 4 $(TEST_FILE) 0
 
 run_ff: compile
 	@echo "*** Execution FastFlow *** "
 	@./WordCountFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
 	diff obtenus-ff.txt $(ATTENDUS)
-	@echo "*** Execution FastFlowSansType *** "
-	@./WordCountFastFlowSansType 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
-	diff obtenus-ff.txt $(ATTENDUS)
+	@./WordCountFastFlow 4 $(TEST_FILE) 0
 
 run_seq: compile
 	@echo "*** Execution seq. *** "
-	@@./WordCountSeq $(TEST_FILE) $(NB_TIMES) | sort > obtenus-seq.txt
-	@@diff obtenus-seq.txt $(ATTENDUS)
+	@./WordCountSeq $(TEST_FILE) 1 | sort > obtenus-seq.txt
+	diff obtenus-seq.txt $(ATTENDUS)
+	@./WordCountSeq $(TEST_FILE) 0
 
 run_java: compile
 	@echo "*** Execution Java ***"
