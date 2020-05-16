@@ -1,9 +1,8 @@
 .IGNORE:
 
-_def: run_java
+_def: run_all
 
-def_run:  compile
-	./run_bms.rb 'WC' 0
+run_all: run_cpp
 
 bms_preliminaires: compile
 	./run_bms.rb 'WC' 1
@@ -107,11 +106,6 @@ run_java: WC.class
 	diff -bitw obtenus-java.txt $(ATTENDUS_2)
 	@java -cp . WC 0 $(TEST_FILE_3) 1 > obtenus-java.txt
 	diff -bitw obtenus-java.txt $(ATTENDUS_3)
-
-run_java_warmup: WC.class
-	@echo "*** Execution Java avec Warmup ***"
-	java -cp . WC 1 $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
-	diff obtenus-java-warmup.txt $(ATTENDUS)
 
 WC: WC.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WC.o $(LDLIBS) -o WC

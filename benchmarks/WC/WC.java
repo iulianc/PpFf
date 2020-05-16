@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toMap;
  * @author iciobanu & Guy Tremblay
  */
 
-class GroupByKey implements Consumer<String> {
+class Reduce implements Consumer<String> {
     private int nbChars = 0;
     private int nbMots = 0;
     private long maxHash = 0;
@@ -57,7 +57,7 @@ class GroupByKey implements Consumer<String> {
         maxHash = hash > maxHash ? hash : maxHash;
     }
     
-    public void combine( GroupByKey other ) {
+    public void combine( Reduce other ) {
         nbChars += other.nbChars();
         nbMots += other.nbMots();
         maxHash = maxHash > other.maxHash() ? maxHash : other.maxHash();
@@ -116,13 +116,13 @@ public class WC {
         // Execution du *vrai* programme.
         long startTime = System.nanoTime();
         
-        GroupByKey wc = 
+        Reduce wc = 
             Files.lines( Paths.get(inputFile) )
             .parallel()
             .flatMap( WC::splitInWords )
             .map( WC::toLowerCaseLetters )
             .filter( WC::notEmpty )
-            .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine );
+            .collect( Reduce::new, Reduce::accept, Reduce::combine );
         
         long duration = (System.nanoTime() - startTime);
         double milliseconds = (double) duration / 1000000;
