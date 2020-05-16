@@ -117,7 +117,7 @@ Experience.define( 5,
                    machines: ['java'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
-                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
+                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2', 'PpFf-4', 'FastFlow-4']
                 )
 
 Experience.define( 6,
