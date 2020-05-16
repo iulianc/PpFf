@@ -1,15 +1,20 @@
-_DEF: bms_preliminaires 
+_DEF: test_seq
 
 bms_preliminaires: compile
-	#./run_bms.rb 'StockPrice' 1
+	./run_bms.rb 'StockPrice' 1
 	./run_bms.rb 'StockPrice' 2
-	#./run_bms.rb 'StockPrice' 3
+	./run_bms.rb 'StockPrice' 3
 
 
 TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
 
 NUM_EXPERIENCE=0
+
+test_seq: StockPriceSeq
+	@echo "*** On execute StockPriceSeq"
+	@./StockPriceSeq $(TEST_FILE) 1 > obtenus.txt
+	diff obtenus.txt $(ATTENDUS)
 
 run_bms: compile
 	ruby run_bms.rb StockPrice $(NUM_EXPERIENCE)
@@ -99,10 +104,13 @@ all	: $(EXE)
 	./StockPrice 
 
 
-StockPrice: $(OBJ)
+StockPrice: StockPrice.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPrice.o $(LDLIBS) -o StockPrice
 
-StockPriceFastFlow: $(OBJ)
+StockPriceSeq: StockPriceSeq.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceSeq.o $(LDLIBS) -o StockPriceSeq
+
+StockPriceFastFlow: StockPriceFastFlow.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceFastFlow.o $(LDLIBS) -o StockPriceFastFlow
 
 StockPrice.class: StockPrice.java

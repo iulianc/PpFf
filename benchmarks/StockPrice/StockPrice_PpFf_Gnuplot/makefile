@@ -19,7 +19,7 @@ benchmarks: compile
 
 
 # Specify the final target name
-EXE 		:= StockPrice StockPriceFastFlow StockPrice.class
+EXE 		:= StockPrice StockPriceFastFlow StockPrice.class StockPriceSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
