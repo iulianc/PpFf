@@ -31,7 +31,7 @@ ATTENDUS=$(ATTENDUS_3)
 ########################################################
 
 # Specify the final target name
-EXE 		:= WC WC.class WCFastFlow WCFastFlowSansType WCSeq 
+EXE 		:= WC WC.class WCFastFlow WCSeq 
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
