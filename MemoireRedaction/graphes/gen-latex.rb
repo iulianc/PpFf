@@ -28,7 +28,6 @@ machines = {
   "java" => "M1",
   "japet" => "M2",
   "c34581" => "M3",
-  "MacOS" => "M4",
 }
 
 num_machine = machines[machine] || "M{?}"
