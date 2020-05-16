@@ -55,13 +55,12 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 compile: $(EXE)
 
-run: run_cpp run_java run_fastflow run_fastflow_type test_warmup run_java_warmup #run_cpp_seq
+run: run_cpp run_java run_ff run_seq
 
 run_cpp: compile
 	@echo "*** Execution C++ *** "
 	@./WordCount 1 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS_loremipsum)
-
 	@./WordCount 2 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-cpp.txt
 	@diff obtenus-cpp.txt $(ATTENDUS_78792)
 
@@ -98,22 +97,6 @@ run_fastflow: compile
 
 	@./WordCountFastFlow 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-fastflow.txt
 	@diff obtenus-fastflow.txt $(ATTENDUS_752856)
-
-run_fastflow_type: compile
-	@echo "*** Execution FastFlow SansType C++ *** "
-	@./WordCountFastFlowSansType 2 $(TEST_FILE_loremipsum) $(DEBUG) | sort > obtenus-fastflow.txt
-	@diff obtenus-fastflow.txt $(ATTENDUS_loremipsum)
-
-	@./WordCountFastFlowSansType 2 $(TEST_FILE_78792) $(DEBUG) | sort > obtenus-fastflow.txt
-	@diff obtenus-fastflow.txt $(ATTENDUS_78792)
-
-	@./WordCountFastFlowSansType 2 $(TEST_FILE_752856) $(DEBUG) | sort > obtenus-fastflow.txt
-	@diff obtenus-fastflow.txt $(ATTENDUS_752856)
-
-run_java_warmup: compile
-	@echo "*** Execution Java avec Warmup ***"
-	@java -cp . WordCount 1 $(TEST_FILE_752856) 1 | sort > obtenus-java-warmup.txt
-	diff obtenus-java-warmup.txt $(ATTENDUS_752856)
 
 
 WordCount: $(OBJ)

@@ -38,14 +38,18 @@ int main(int argc, char* argv[]) {
     
     Reducer<std::string, Triple> reducer( Triple(0,0, 0), 
                                           [](Triple p, std::string s) {
-                                              return Triple(std::get<0>(p)+1,
-                                                            std::get<1>(p)+s.size(),
-                                                            std::max(std::get<2>(p), compute_hash(&s)));
+                                              std::get<0>(p) += 1;
+                                              std::get<1>(p) += s.size();
+                                              std::get<2>(p) = std::max(std::get<2>(p), compute_hash(&s));
+
+                                              return p;
                                           },
                                           [](Triple p1, Triple p2) {
-                                              return Triple(std::get<0>(p1) + std::get<0>(p2),
-                                                            std::get<1>(p1) + std::get<1>(p2),
-                                                            std::max(std::get<2>(p1), std::get<2>(p2)));
+                                              std::get<0>(p1) += std::get<0>(p2);
+                                              std::get<1>(p1) += std::get<1>(p2);
+                                              std::get<2>(p1) = std::max(std::get<2>(p1), std::get<2>(p2));
+
+                                              return p1;
                                           } );
     
     Triple currentResult = 
