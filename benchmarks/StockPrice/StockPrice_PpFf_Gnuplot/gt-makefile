@@ -55,7 +55,7 @@ benchmarks: compile
 NB_TIMES=5
 
 # Specify the final target name
-EXE 		:= StockPrice StockPriceFastFlow StockPrice.class
+EXE 		:= StockPrice StockPriceFastFlow StockPrice.class StockPriceSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)

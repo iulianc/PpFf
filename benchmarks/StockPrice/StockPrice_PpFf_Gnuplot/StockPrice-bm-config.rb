@@ -107,6 +107,14 @@ Experience.define( 7,
                  )
 
 
+Experience.define( 700,
+                   machines: ['java', 'japet'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Seq', 'Java*', 'PpFf-4', 'FastFlow-4']
+                 )
+
+
 # Pour voir si ca fait une difference dans le compte tremblay_gu
 Experience.define( 71,
                    machines: ['japet'],
