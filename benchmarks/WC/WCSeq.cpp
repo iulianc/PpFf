@@ -14,6 +14,7 @@
 #define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
 
 typedef std::vector<std::string> Words;
+typedef std::tuple<int,int,long long> Triple;
 
 #include "auxiliary-functions.hpp"
 
@@ -26,18 +27,22 @@ int main(int argc, char *argv[]) {
     // Crée et exécute le pipeline
     auto begin = std::chrono::high_resolution_clock::now();
 
-    int nbChars = 0;
-    int nbMots = 0;
+    Triple result(0, 0, 0);
 
     std::ifstream file(inputFile);
     std::string* line = new std::string;
     while (std::getline(file, *line)) {
         Words* words = splitInWords(line);
+
         for (auto word = words->begin(); word != words->end(); word++) {
             std::string* wordLC = toLowercaseLetters(&(*word));
             if ( notEmpty(wordLC) ) {
-                nbMots += 1;
-                nbChars += wordLC->size();
+                long long h = compute_hash(wordLC);
+                std::get<0>(result) += 1;
+                std::get<1>(result) += wordLC->size();
+                if ( h > std::get<2>(result) ) {
+                    std::get<2>(result) = h;
+                }
             }
         }
         line = new std::string;
@@ -50,7 +55,14 @@ int main(int argc, char *argv[]) {
     if (!emitOutput) {
         printf("%5ld ", duration_ms);
     } else {
-        std::cout << nbMots << " " << nbChars << "\n";
+        std::cout
+            << std::get<0>(result)
+            << " "
+            << std::get<1>(result)
+            << " "
+            << std::get<2>(result)
+            << " "
+            << "\n";
     }
 
     return 0;

@@ -35,15 +35,32 @@ import static java.util.stream.Collectors.toMap;
 class GroupByKey implements Consumer<String> {
     private int nbChars = 0;
     private int nbMots = 0;
+    private long maxHash = 0;
+
+    private long compute_hash( String s ) {
+        final long p = 31;
+        final long m = ((long) 1e9) + 9;
+        long hash_value = 0;
+        long p_pow = 1;
+        for (int i = 0; i < s.length(); i++ ) {
+            char c = s.charAt(i);
+            hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
+            p_pow = (p_pow * p) % m;
+        }
+        return hash_value;
+    }
 
     public void accept( String s ) {
         nbMots += 1;
         nbChars += s.length();
+        long hash = compute_hash( s );
+        maxHash = hash > maxHash ? hash : maxHash;
     }
     
     public void combine( GroupByKey other ) {
         nbChars += other.nbChars();
         nbMots += other.nbMots();
+        maxHash = maxHash > other.maxHash() ? maxHash : other.maxHash();
     }
 
     public int nbChars() {
@@ -52,6 +69,10 @@ class GroupByKey implements Consumer<String> {
     
     public int nbMots() {
         return nbMots;
+    }
+
+    public long maxHash() {
+        return maxHash;
     }
 }
 
@@ -111,7 +132,7 @@ public class WC {
             String outputResult = String.format("%6.0f ", milliseconds);
             System.out.print(outputResult); 
         } else {
-            System.out.println( wc.nbMots() + " " + wc.nbChars() );
+            System.out.println( wc.nbMots() + " " + wc.nbChars() + " " + wc.maxHash() );
         }
     }
 }

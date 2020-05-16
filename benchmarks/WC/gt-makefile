@@ -1,8 +1,6 @@
 .IGNORE:
 
-NUM_EXPERIENCE=0
-
-_def: run_ff
+_def: run_java
 
 def_run:  compile
 	./run_bms.rb 'WC' 0
@@ -64,7 +62,7 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 
 compile: $(EXE)
 
-run: run_cpp run_java #run_seq
+run: run_ff
 
 run_cpp: WC
 	@echo "*** Execution PpFf. *** "
@@ -90,6 +88,8 @@ run_ff: WCFastFlow
 
 run_seq: WCSeq
 	@echo "*** Execution seq. *** "
+	@./WCSeq $(TEST_FILE_0) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_0)
 	@./WCSeq $(TEST_FILE_1) 1 > obtenus-seq.txt
 	diff -bitw obtenus-seq.txt $(ATTENDUS_1)
 	@./WCSeq $(TEST_FILE_2) 1 > obtenus-seq.txt
@@ -116,7 +116,7 @@ run_java_warmup: WC.class
 WC: WC.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WC.o $(LDLIBS) -o WC
 
-WCSeq: $(OBJ)
+WCSeq: WCSeq.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WCSeq.o $(LDLIBS) -o WCSeq
 
 WC.class: WC.java

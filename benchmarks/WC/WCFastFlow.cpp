@@ -19,7 +19,7 @@ using namespace ff;
 #define DEFAULT_FARM_PARALLELISM 1
 
 typedef std::vector<std::string> Words;
-typedef std::pair<int,int> Pair;
+typedef std::tuple<int,int,long long> Triple;
 
 template <typename T>
 std::string numberToString (T number) {
@@ -75,12 +75,13 @@ struct filterEmptyWordsStage : ff_node_t<std::string> {
 };
 
 struct reduceStage : ff_node_t<std::string,void> {
-    Pair& result;
-    reduceStage(Pair& result) : result(result){}
+    Triple& result;
+    reduceStage(Triple& result) : result(result){}
     
     void* svc(std::string* task) {
-        result.first += 1;
-        result.second += task->size();
+        std::get<0>(result) += 1;
+        std::get<1>(result) += task->size();
+        std::get<2>(result) = std::max(std::get<2>(result), compute_hash(task));
 
         return GO_ON;
     }
@@ -103,11 +104,12 @@ int main(int argc, char *argv[]) {
         workers.push_back( new ff_Pipe<>( new splitInWordsStage,
                                           new flatStage,
                                           new toLowercaseLettersStage,
-                                          new filterEmptyWordsStage ) );
+                                          new filterEmptyWordsStage
+                                          ) );
     }
 
     // Crée le pipeline dans son ensemble.
-    Pair result(0,0);
+    Triple result(0,0,0);
 
     ff_Pipe<> ffp( new linesFromFileStage(inputFile),
                    new ff_farm(workers),
@@ -126,9 +128,12 @@ int main(int argc, char *argv[]) {
         printf("%5ld ", duration_ms);
     } else {
         std::cout 
-            << result.first
+            << std::get<0>(result)
             << " " 
-            << result.second
+            << std::get<1>(result)
+            << " " 
+            << std::get<2>(result)
+            << " " 
             << std::endl;
     }
 

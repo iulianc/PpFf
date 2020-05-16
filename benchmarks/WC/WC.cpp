@@ -23,7 +23,7 @@ using namespace PpFf;
 #define DEFAULT_FARM_PARALLELISM 1
 
 typedef std::vector<std::string> Words;
-typedef std::pair<int,int> Pair;
+typedef std::tuple<int,int,long long> Triple;
 
 #include "auxiliary-functions.hpp"
 
@@ -36,20 +36,26 @@ int main(int argc, char* argv[]) {
     
     auto begin = std::chrono::high_resolution_clock::now();
     
-    Reducer<std::string, Pair> reducer( Pair(0,0), 
-                                        [](Pair p, std::string s) {
-                                            return Pair(p.first+1, p.second+s.size()); },
-                                        [](Pair p1, Pair p2) {
-                                            return Pair(p1.first + p2.first, p1.second + p2.second); } );
-
-    Pair currentResult = 
+    Reducer<std::string, Triple> reducer( Triple(0,0, 0), 
+                                          [](Triple p, std::string s) {
+                                              return Triple(std::get<0>(p)+1,
+                                                            std::get<1>(p)+s.size(),
+                                                            std::max(std::get<2>(p), compute_hash(&s)));
+                                          },
+                                          [](Triple p1, Triple p2) {
+                                              return Triple(std::get<0>(p1) + std::get<0>(p2),
+                                                            std::get<1>(p1) + std::get<1>(p2),
+                                                            std::max(std::get<2>(p1), std::get<2>(p2)));
+                                          } );
+    
+    Triple currentResult = 
         Flow
         ::source(inputFile)
         .parallel(farmParallelism)
         .flatMap<std::string, std::string, Words>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
         .find<std::string>(notEmpty)
-        .reduce<std::string, Pair>(reducer);  
+        .reduce<std::string, Triple>(reducer);  
     
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = 
@@ -58,7 +64,14 @@ int main(int argc, char* argv[]) {
     if (!emitOutput) {
         printf("%5ld ", duration_ms);
     } else {
-        std::cout << currentResult.first << " " << currentResult.second << std::endl;
+        std::cout
+            << std::get<0>(currentResult)
+            << " "
+            << std::get<1>(currentResult)
+            << " "
+            << std::get<2>(currentResult)
+            << " "
+            << std::endl;
     } 
 
     return 0;
