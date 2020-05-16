@@ -2,7 +2,7 @@
 
 NUM_EXPERIENCE=0
 
-_def: run_cpp
+_def: run_ff
 
 def_run:  compile
 	./run_bms.rb 'WC' 0
@@ -31,7 +31,7 @@ ATTENDUS=$(ATTENDUS_3)
 ########################################################
 
 # Specify the final target name
-EXE 		:= WC WC.class WCFastFlow WCSeq 
+EXE 		:= WC WC.class WCFastFlow WCSeq
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -79,9 +79,14 @@ run_cpp: WC
 
 run_ff: WCFastFlow
 	@echo "*** Execution FastFlow *** "
-	@./WCFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
-	diff obtenus-ff.txt $(ATTENDUS)
-	@./WCFastFlow 4 $(TEST_FILE) 0
+	@./WCFastFlow 4 $(TEST_FILE_0) 1 > obtenus-ff.txt
+	diff -bitw obtenus-ff.txt $(ATTENDUS_0)
+	@./WCFastFlow 4 $(TEST_FILE_1) 1 > obtenus-ff.txt
+	diff -bitw obtenus-ff.txt $(ATTENDUS_1)
+	@./WCFastFlow 4 $(TEST_FILE_2) 1 > obtenus-ff.txt
+	diff -bitw obtenus-ff.txt $(ATTENDUS_2)
+	@./WCFastFlow 4 $(TEST_FILE_3) 1 > obtenus-ff.txt
+	diff -bitw obtenus-ff.txt $(ATTENDUS_3)
 
 run_seq: WCSeq
 	@echo "*** Execution seq. *** "
