@@ -85,14 +85,14 @@ Experience.define( 2,
                    machines: ['c34581', 'java'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf-4', 'PpFf5', 'PpFf6']
+                   programs: ['PpFf-1', 'PpFf-2']
                 )
 
 Experience.define( 3,
                    machines: ['c34581', 'java'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
-                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3', 'FastFlow-4', 'FastFlow-5', 'FastFlow-6']
+                   programs: ['FastFlow-1', 'FastFlow-2']
                 )
 
 
@@ -131,7 +131,7 @@ Experience.define( 5,
                    machines: ['java'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
-                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2', 'PpFf-4', 'FastFlow-4']
+                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 6,
