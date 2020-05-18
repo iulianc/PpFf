@@ -2,7 +2,7 @@
 # makefile for gnu make (gmake)
 #
 def:
-	./gen-graphes.rb
+	#./gen-graphes.rb
 	pdflatex $(MAIN)
 	#cat graphes/finaux/*tex
 

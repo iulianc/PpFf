@@ -3,7 +3,8 @@
 DEBUG = false
 
 FICHIERS = [
-            *Dir['appendice*.tex'],
+            'appendice-wordcount.tex',
+            'appendice-stockprice.tex',
             'experiences.tex',
            ]
 
