@@ -5,6 +5,7 @@ DEBUG = false
 FICHIERS = [
             'appendice-wordcount.tex',
             'appendice-stockprice.tex',
+            'appendice-wc.tex',
             'experiences.tex',
            ]
 
