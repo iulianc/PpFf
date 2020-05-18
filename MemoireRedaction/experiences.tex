@@ -58,96 +58,46 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
-
-%Plots bar examples: http://pgfplots.net/tikz/examples/tag/bar-plots/
-
-
-%
-%\begin{tikzpicture}
-%\begin{axis}[
-%    title={WordCount - machine Java; sans JIT; 1 itération; PpFf-1 thread\bigskip},
-%    xlabel={Nb.~mots},
-%    ylabel={Temps d'ex\'ecution (ms)},
-%    xmin=0, xmax=5500000,
-%    ymin=0, ymax=25000,
-%    ytick={0,5000,10000,15000,20000,25000},
-%    %xtick={0,500000,1000000,1500000,3000000,4500000,5000000,5500000},
-%    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
-%    legend pos=north west,
-%    ymajorgrids=true,
-%    grid style=dashed,
-%]
-% 
-%\addplot[
-%    color=blue,
-%    mark=square,
-%    ]
-%    coordinates {
-%    (78792,106)(67941,205)(281307,322)(482636,508)(752856,883)(2614743,3320)(5247678,6126)
-%    };
-%\addplot[
-%    color=red,
-%    mark=square,
-%    ]
-%    coordinates {
-%    (78792,1615)(167941,2319)(281307,3625)(482636,4906)(752856,7195)(2614743,116039)(5247678,226917)
-%    };
-%\legend{PpFf,Java}    
-%\end{axis}
-%\end{tikzpicture}
-
-
-%
-%\begin{figure}[H]
-%\centering
-%	\begin{tikzpicture}
-%	\begin{axis}[
-%	    xlabel={Nb.~mots},
-%    	ylabel={Temps d'ex\'ecution (ms)},
-%	    xmin=0, xmax=5500000,
-%    	ymin=0, ymax=5500,
-%	    %ytick={0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500},
-%    	ytick={0,1000,2000,3000,4000,5000,6000},
-%	    xtick={0,1000000,2000000,3000000,4000000,5000000,6000000},
-%    	legend pos=north west,
-%	    ymajorgrids=true,
-%    	grid style=dashed,
-%	]
-% 
-%	\addplot[
-%    	color=blue,
-%   	 	mark=square,
-%    ]
-%    	coordinates {
-%    	(78792,174)(67941,117)(281307,263)(482636,405)(752856,429)(2614743,1625)(5247678,2798)
-%    	};
-%	\addplot[
-%    	color=red,
-%    	mark=square,
-%    ]
-%    	coordinates {
-%    	(78792,368)(167941,443)(281307,501)(482636,603)(752856,730)(2614743,3889)(5247678,5312)
-%    	};
-%	\legend{PpFf,Java}    
-%	\end{axis}
-%	\end{tikzpicture}
-%    \caption{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine Japet.}
-%    \label{JapetExecutionWordCount.fig}	
-%\end{figure}
-
-
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Java_WordCount.png}
-      \caption{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1.}
+     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-java-500-30.png}
+      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
        \label{GrapheTempsWordCountJava.fig}
 \end{figure}
 
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Japet_WordCount.png}
-      \caption{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2.}
+     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-java-500-30.png}
+      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M1.]{Les d\'ebits pour \TT{WordCount} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheDebitsWordCountJava.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-japet-600-30.png}
+      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
        \label{GrapheTempsWordCountJapet.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-japet-600-30.png}
+      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M2.]{Les d\'ebits pour \TT{WordCount} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheDebitsWordCountJapet.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-c34581-400-30.png}
+      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M3.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheTempsWordCountLinux.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-c34581-400-30.png}
+      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M3.]{Les d\'ebits pour \TT{WordCount} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheDebitsWordCountLinuxt.fig}
 \end{figure}
 
 Dans cette section, nous 
@@ -285,76 +235,48 @@ Toutes les \'etapes qui suivent cette op\'eration seront donc ex\'ecut\'ees en p
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
-%
-%\pgfplotstableread[row sep=\\,col sep=&]{
-%    interval & PpFf & Java \\
-%    M1+  & 302 & 574 \\
-%    M1-   & 504 & 2696 \\
-%    M2+   & 357 & 402 \\
-%    M2-   & 350 & 5810 \\
-%    }\mydata
-%
-%
-%\begin{figure}[H]
-%\centering
-%	\begin{tikzpicture}
-%    	\begin{axis}[
-%            ybar,
-%            bar width=.5cm,
-%            width=.7\textwidth,
-%            height=.5\textwidth,
-%            legend style={at={(0.5,1)},
-%                anchor=north,legend columns=-1},
-%            symbolic x coords={M1+, M1-, M2+, M2-},
-%            xtick=data,
-%            nodes near coords,
-%            nodes near coords align={vertical},
-%            ymin=0,ymax=6000,
-%            ylabel={Temps d'ex\'ecution (ms)},
-%        ]
-%        \addplot table[x=interval,y=PpFf]{\mydata};
-%        \addplot table[x=interval,y=Java]{\mydata};
-%        \legend{PpFf, Java}
-%    	\end{axis}
-%	\end{tikzpicture}
-%    \caption{Les temps d'ex\'ecution pour l'application \TT{StockPrice}.}
-%    \label{executionTimesStockPrice.fig}
-%\end{figure}
 
-
-\pgfplotstableread[row sep=\\,col sep=&]{
-    interval & PpFf & Java \\
-    M1  & 232 & 1629 \\
-    M2  & 304 & 411 \\
-    }\mydata
-
-
-\begin{figure}[H]
+\begin{figure}
 \centering
-	\begin{tikzpicture}
-    	\begin{axis}[
-            ybar,
-            bar width=.4cm,
-            width=.6\textwidth,
-            height=.5\textwidth,
-            legend style={at={(0.5,1)},
-                anchor=north,legend columns=-1},
-            symbolic x coords={M1, M2},
-            xtick=data,
-            nodes near coords,
-            nodes near coords align={vertical},
-            ymin=0,ymax=2000,
-            ylabel={Temps d'ex\'ecution (ms)},
-        ]
-        \addplot table[x=interval,y=PpFf]{\mydata};
-        \addplot table[x=interval,y=Java]{\mydata};
-        \legend{PpFf, Java}
-    	\end{axis}
-	\end{tikzpicture}
-    \caption{Les temps d'ex\'ecution pour l'application \TT{StockPrice} sur les deux machines~\M1 et \M2.}
-    \label{executionTimesStockPrice.fig}
+     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-java-700-30.png}
+      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M1.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheTempsStockPriceJava.fig}
 \end{figure}
 
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-java-700-30.png}
+      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M1.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheDebitsStockPriceJava.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-japet-700-30.png}
+      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M2.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheTempsStockPriceJapet.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-japet-700-30.png}
+      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M2.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheDebitsStockPriceJapet.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-c34581-400-30.png}
+      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M3.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheTempsStockPriceLinux.fig}
+\end{figure}
+
+\begin{figure}
+\centering
+     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-c34581-400-30.png}
+      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M3.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+       \label{GrapheDebitsStockPriceLinuxt.fig}
+\end{figure}
 
 
 
@@ -368,46 +290,50 @@ Chaque programme calcule le prix maximum pour plusieurs actions. Le temps d'ex\'
 On remarque que dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}. Sur la machine \M1, \TT{PpFf} est plus de 7 fois plus rapide que \TT{Java}. Tandis que \TT{PpFf} trouve le prix maximum de l'action en seulement 232~ms, Java requiert 1~629~ms pour la m\^eme t\^ache. Un meilleur temps d'ex\'ecution est obtenu par \TT{Java} sur la machine \M2 que sur la machine \M1. Avec un temps d'ex\'ecution de 411~ms, \TT{Java} est presque 4 fois plus rapide en comparaison avec le m\^eme programme \TT{Java} sur la machine \M1. Toutefois, m\^eme si \TT{Java} se comporte mieux sur cette machine, son temps d'ex\'ecution n'est pas meilleur que celui de \TT{PpFf}. Avec 304~ms, \TT{PpFf} est toujours plus rapide que \TT{Java}. 
 
 
-\section{Analyse des surco\^uts de \TT{PpFf} par rapport \`a \TT{FastFlow}}
-\label{coutsPpFf.sect}
-
-Tel que d\'ecrit dans le chapitre~\ref{implementation.chap}, \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \TT{FastFlow}. Cette section examine les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}. 
-
-\subsection{Description de l'application}
-
-Pour cette exp\'erience, nous avons cr\'e\'e un \emph{micro benchmark} consistant en un {pipeline} avec un seul op\'erateur. L'op\'erateur choisi pour cette exp\'erience est un \TT{map} qui fait un simple calcul it\'eratif, plus pr\'ecis\'ement qui incr\'emente  \TT{nb} fois une variable \TT{*res}, avec~\TT{nb}~=~$10^{\TT{granularity}}$~:
-{
-\begin{lstlisting}[language=c++]
-  int nb = pow(10, granularity);
-  for (int i = 1; i <= nb; i++) {
-    *res += 1;   
-  }
-\end{lstlisting}
-} 
-
-Ici, \TT{granularity} est un param\`etre sp\'ecifi\'e en argument lors du lancement de l'application. Le code source de cette application pour~\TT{PpFf} et~\TT{FastFlow} est pr\'esent\'e en annexe (Annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement). Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le pipeline, o\`u la source est constitu\'ee d'une suite d'\'el\'ements. Plus sp\'ecifiquement, pour cette exp\'erience, la suite est compos\'ee des entiers allant de 1 \`a 100~000.  
 
 
-\subsection{Mesures obtenues et analyse des r\'esultats}
 
-Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees~: une avec \TT{granularity = 4}, l'autre avec \TT{granularity~=~5}. Pour la suite d'entiers allant de 1 \`a 100~000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \emph{threads} sur deux machines diff\'erentes : \M1\ et \M2.  
-
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Java_Maps.png}
-      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M1.}
-       \label{GrapheTempsMapsJava.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Japet_Maps.png}
-      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M2.}
-       \label{GrapheTempsMapstJapet.fig}
-\end{figure}
-
-
-La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut
-introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref{GrapheTempsMapstJapet.fig}, que les lignes du graphe pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de 300~ms. Le volume de traitement des deux applications est tr\`es grand. Le pipeline traite 100~000 \'el\'ements et l'algorithme de calcul appliqu\'e \`a chaque \'el\'ement consiste \`a incr\'ementer une valeur de 0 \`a 10~000 dans le cas avec la granularit\'e 4, ou de 0 \`a 100~000 avec la granularit\'e 5. Or, en prenant en consid\'eration ce grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
+%
+%\section{Analyse des surco\^uts de \TT{PpFf} par rapport \`a \TT{FastFlow}}
+%\label{coutsPpFf.sect}
+%
+%Tel que d\'ecrit dans le chapitre~\ref{implementation.chap}, \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \TT{FastFlow}. Cette section examine les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}. 
+%
+%\subsection{Description de l'application}
+%
+%Pour cette exp\'erience, nous avons cr\'e\'e un \emph{micro benchmark} consistant en un {pipeline} avec un seul op\'erateur. L'op\'erateur choisi pour cette exp\'erience est un \TT{map} qui fait un simple calcul it\'eratif, plus pr\'ecis\'ement qui incr\'emente  \TT{nb} fois une variable \TT{*res}, avec~\TT{nb}~=~$10^{\TT{granularity}}$~:
+%{
+%\begin{lstlisting}[language=c++]
+%  int nb = pow(10, granularity);
+%  for (int i = 1; i <= nb; i++) {
+%    *res += 1;   
+%  }
+%\end{lstlisting}
+%} 
+%
+%Ici, \TT{granularity} est un param\`etre sp\'ecifi\'e en argument lors du lancement de l'application. Le code source de cette application pour~\TT{PpFf} et~\TT{FastFlow} est pr\'esent\'e en annexe (Annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement). Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le pipeline, o\`u la source est constitu\'ee d'une suite d'\'el\'ements. Plus sp\'ecifiquement, pour cette exp\'erience, la suite est compos\'ee des entiers allant de 1 \`a 100~000.  
+%
+%
+%\subsection{Mesures obtenues et analyse des r\'esultats}
+%
+%Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees~: une avec \TT{granularity = 4}, l'autre avec \TT{granularity~=~5}. Pour la suite d'entiers allant de 1 \`a 100~000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \emph{threads} sur deux machines diff\'erentes : \M1\ et \M2.  
+%
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Java_Maps.png}
+%      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M1.}
+%       \label{GrapheTempsMapsJava.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Japet_Maps.png}
+%      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M2.}
+%       \label{GrapheTempsMapstJapet.fig}
+%\end{figure}
+%
+%
+%La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut
+%introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref{GrapheTempsMapstJapet.fig}, que les lignes du graphe pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de 300~ms. Le volume de traitement des deux applications est tr\`es grand. Le pipeline traite 100~000 \'el\'ements et l'algorithme de calcul appliqu\'e \`a chaque \'el\'ement consiste \`a incr\'ementer une valeur de 0 \`a 10~000 dans le cas avec la granularit\'e 4, ou de 0 \`a 100~000 avec la granularit\'e 5. Or, en prenant en consid\'eration ce grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
 
