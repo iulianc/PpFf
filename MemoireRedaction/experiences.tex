@@ -5,7 +5,11 @@
 
 Ce chapitre pr\'esente une \'evaluation exp\'erimentale de \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele, plus sp\'ecifiquement avec \TT{Java} et \TT{FastFlow}.
 %
-Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esentons deux applications \'ecrites avec \PpFf. Ces applications ont \'et\'e choisies non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios typiques. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer le nombre d'occurrences des mots dans un texte --- le <<\emph{Hello World!}>> des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}). Finalement, la section~\ref{coutsPpFf.sect} pr\'esente une application permettant de d\'eterminer les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} --- un \emph{micro benchmark} consistant en un pipeline avec un seul op\'erateur. Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos exp\'erimentations ont \'et\'e effectu\'ees.
+Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esentons deux applications \'ecrites avec \PpFf. Ces applications ont \'et\'e choisies non seulement pour montrer certaines fonctionnalit\'es de l'API, mais \'egalement pour leur pertinence dans des sc\'enarios typiques. La section~\ref{wordcount.sect} pr\'esente une application permettant de calculer le nombre d'occurrences des mots dans un texte --- le <<\emph{Hello World!}>> des syst\`emes de traitement de donn\'ees en mode \emph{batch} --- alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}). Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos exp\'erimentations ont \'et\'e effectu\'ees.
+
+%Finalement, la section~\ref{coutsPpFf.sect} pr\'esente une application permettant de d\'eterminer les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} --- un \emph{micro benchmark} consistant en un pipeline avec un seul op\'erateur. 
+
+
 
 \section{M\'ethode utilis\'ee pour les exp\'erimentations}
 \label{usedMethodsForBenchmarks.chap}
@@ -26,24 +30,28 @@ Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'erie
 
 \item[\M2] = \TT{japet.labunix.uqam.ca}~:  Une machine avec 64 processeurs de 2,3 GHz, chacun contenant 8 cœurs. Le système d'exploitation est Linux version 3.10.0.
 
+\item[\M3] = \TT{c34581}~:  Une machine avec 8 processeurs de 3,6 GHz, chacun contenant 4 cœurs. Le système d'exploitation est Linux.
+
 
 \end{description}
 \end{samepage}
 
-Chaque exp\'erience --- i.e., un lancement d'un programme --- a \'et\'e ex\'ecut\'ee plusieurs fois pour obtenir un r\'esultat stable, puisque le temps d'ex\'ecution peut varier beaucoup d'une ex\'ecution \`a une autre. 
-%Le nombre de r\'ep\'etitions de chaque exp\'erience a \'et\'e vari\'e, puis nous avons pris le facteur de r\'ep\'etitions pour les meilleurs r\'esultats obtenus.
-%
-Pour les r\'esultats pr\'esent\'es dans les sections suivantes, le nombre de r\'ep\'etitions a \'et\'e \'etabli \`a~10; le temps d'ex\'ecution de r\'ef\'erence pour une exp\'erience est donc la \emph{moyenne} des temps de 10 ex\'ecutions.
+Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
 
+Le fonctionnement des programmes \TT{Java} et~\TT{PpFf} n'est pas le m\^eme. Alors que \TT{PpFf} permet de varier le nombre de fils d'ex\'ecution (\emph{threads}), \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees, sur chaque machine, pour identifier les meilleures versions. Les exp\'eriences pr\'eliminaires ont \'et\'e conduites avec un nombre de r\'ep\'etitions de 10 et avec une quantit\'e moyenne de donn\'ees. 
 
+Dans le cas de \TT{PpFf} et \TT{FastFlow}, l'objectif \'etait de d\'eterminer le meilleur niveau de parall\'elisme \`a utiliser dans les \TT{farm}, par exemple, pour \TT{PpFf}, la valeur pour la m\'ethode \TT{parallel()}, pour le parall\'elisme de donn\'ees. Cependant, dans tous les cas, pour \TT{Java}, c'\'etait la version avec \TT{warmup} qui a \'et\'e utilis\'ee.
 
-
-Il faut noter que le fonctionnement des programmes \TT{Java} et~\TT{PpFf} n'est pas le m\^eme. Alors que \TT{PpFf} permet de varier le nombre de fils d'ex\'ecution (\emph{threads}), \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, plusieurs exp\'eriences ont \'et\'e men\'ees en variant le nombre de \emph{threads}. Par contre, dans le cas de \TT{Java}, pour chaque exp\'erience, deux s\'eries de tests ont \'et\'e ex\'ecut\'ees: une s\'erie avec le \emph{JIT} (\emph{Just-In-Time compiler}) et l'autre sans.
+L'effet de pr\'echauffage (\TT{warmup} en anglais) est g\'en\'eralement d\^u au chargement des classes et \`a l'interpr\'etation des \TT{bytecodes} au d\'emarrage du programme. Chaque fois qu'une nouvelle application d\'emarre, toutes les classes requises sont charg\'ees en m\'emoire par le mod\`ele de chargement paresseux (\TT{lazy loading} en anglais). Ce mod\`ele de conception est un mod\`ele couramment utilis\'e en programmation informatique pour reporter l'initialisation d'un objet jusqu'au point o\`u il est n\'ecessaire. Le premier appel \`a une application \TT{Java} est souvent beaucoup plus lent que le temps de r\'eponse moyen pendant la dur\'ee de vie du processus. Cette p\'eriode de pr\'echauffage est g\'en\'eralement attribu\'ee au chargement de classe paresseux et à la compilation \emph{JIT} (\emph{Just-In-Time compiler}).    
 
 \label{jitDescription.sect}
-\emph{JIT}~\citep{cramer1997compiling} est un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. Comme on le verra, la conversion du \emph{bytecode} en langage machine a un impact significatif sur la vitesse d'ex\'ecution.
+\emph{JIT}~\citep{cramer1997compiling} est un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du \emph{bytecode} en langage machine a un impact significatif sur la vitesse d'ex\'ecution.
 
+Dans toutes nos exp\'eriences, les programmes \TT{Java} ont \'et\'e pr\'echauff\'es en lancent une proc\'edure de pr\'echauffage avant d'ex\'ecuter les exp\'eriences mesur\'ees. La proc\'edure de pr\'echauffage consiste d'un appel \`a toutes les m\'ethodes utilis\'ees dans les exp\'eriences. Ce m\'ecanisme nous permet de charg\'ees en m\'emoire toutes les classes ce qui les rend accessibles plus rapidement pendant l'ex\'ecution d'exp\'eriences.
+ 
+Il faut noter que le temps mesur\'e dans toutes les exp\'eriences exclut le lancement du programme. La mesure du temps se fait de l'int\'erieur du programme m\^eme, une fois celui-ci lanc\'e. Lorsque le traitement est termin\'e, le temps est \'emis en sortie du programme sur \TT{stdout}. Donc, le temps n'est pas mesur\'e avec la commande << time >>. Notamment, dans le cas de \TT{Java}, cela exclut le temps de lancement de la machine virtuelle. De plus les quantit\'es de donn\'ees utilis\'ees dans exp\'eriences ont \'et\'e restreint de sorte que le temps d'ex\'ecution soit d'au moins 225 millisecondes. Cela nous a permis d'avoir une meilleure visibilit\'e sue les performances obtenues par les trois programmes. 
 
+\`A continuer ... (Exemple d'utilisation d'exp\'eriences)
 
 \section{Analyse de l'application \TT{WordCount}}
 \label{wordcount.sect}
@@ -58,60 +66,57 @@ Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wo
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
-\GT{Ta figure~\ref{GrapheTempsWordCountJava.fig} ci-bas (y compris
-avec sa légende), équivalente à ma
-figure~\grapheref{WordCount-temps-java-500-30}, peut être obtenue
-directement avec l'appel à la macro
-$\backslash$\TT{graphe\{WordCount-temps-java-500-30\}}, et ensuite en
-y faisant référence dans le texte avec
-$\backslash$\TT{grapheref\{WordCount-temps-java-500-30\}}, qui va
-générer le bon numéro de figure, i.e.,
-\grapheref{WordCount-temps-java-500-30}!}
-
 \graphe{WordCount-temps-java-500-30}{Programmes Seq, Java, PpFf et FastFlow}
+\graphe{WordCount-debits-java-500-30}{Programmes Seq, Java, PpFf et FastFlow}
 
+\graphe{WordCount-temps-japet-600-30}{Programmes Seq, Java, PpFf et FastFlow}
+\graphe{WordCount-debits-japet-600-30}{Programmes Seq, Java, PpFf et FastFlow}
 
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-java-500-30.png}
-      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheTempsWordCountJava.fig}
-\end{figure}
+\graphe{WordCount-temps-c34581-400-30}{Programmes Seq, Java, PpFf et FastFlow}
+\graphe{WordCount-debits-c34581-400-30}{Programmes Seq, Java, PpFf et FastFlow}
 
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-java-500-30.png}
-      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M1.]{Les d\'ebits pour \TT{WordCount} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheDebitsWordCountJava.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-japet-600-30.png}
-      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheTempsWordCountJapet.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-japet-600-30.png}
-      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M2.]{Les d\'ebits pour \TT{WordCount} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheDebitsWordCountJapet.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-c34581-400-30.png}
-      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M3.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheTempsWordCountLinux.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-c34581-400-30.png}
-      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M3.]{Les d\'ebits pour \TT{WordCount} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheDebitsWordCountLinuxt.fig}
-\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-java-500-30.png}
+%      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheTempsWordCountJava.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-java-500-30.png}
+%      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M1.]{Les d\'ebits pour \TT{WordCount} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheDebitsWordCountJava.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-japet-600-30.png}
+%      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheTempsWordCountJapet.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-japet-600-30.png}
+%      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M2.]{Les d\'ebits pour \TT{WordCount} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheDebitsWordCountJapet.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/WordCount-temps-c34581-400-30.png}
+%      \caption[Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M3.]{Les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheTempsWordCountLinux.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/WordCount-debits-c34581-400-30.png}
+%      \caption[Les d\'ebits pour \TT{WordCount} sur la machine \M3.]{Les d\'ebits pour \TT{WordCount} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheDebitsWordCountLinuxt.fig}
+%\end{figure}
 
 Dans cette section, nous 
 % présentons une \'evaluation exp\'erimentale approfondie pour les op\'erations d\'ecrites dans la section pr\'ec\'edente. Nous
@@ -248,49 +253,58 @@ Toutes les \'etapes qui suivent cette op\'eration seront donc ex\'ecut\'ees en p
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
+\graphe{StockPrice-temps-java-700-30}{Programmes Seq, Java, PpFf et FastFlow}
+\graphe{StockPrice-debits-java-700-30}{Programmes Seq, Java, PpFf et FastFlow}
 
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-java-700-30.png}
-      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M1.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheTempsStockPriceJava.fig}
-\end{figure}
+\graphe{StockPrice-temps-japet-700-30}{Programmes Seq, Java, PpFf et FastFlow}
+\graphe{StockPrice-debits-japet-700-30}{Programmes Seq, Java, PpFf et FastFlow}
 
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-java-700-30.png}
-      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M1.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheDebitsStockPriceJava.fig}
-\end{figure}
+\graphe{StockPrice-temps-c34581-400-30}{Programmes Seq, Java, PpFf et FastFlow}
+\graphe{StockPrice-debits-c34581-400-30}{Programmes Seq, Java, PpFf et FastFlow}
 
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-japet-700-30.png}
-      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M2.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheTempsStockPriceJapet.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-japet-700-30.png}
-      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M2.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheDebitsStockPriceJapet.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-c34581-400-30.png}
-      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M3.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheTempsStockPriceLinux.fig}
-\end{figure}
-
-\begin{figure}
-\centering
-     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-c34581-400-30.png}
-      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M3.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
-       \label{GrapheDebitsStockPriceLinuxt.fig}
-\end{figure}
-
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-java-700-30.png}
+%      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M1.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheTempsStockPriceJava.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-java-700-30.png}
+%      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M1.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M1, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheDebitsStockPriceJava.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-japet-700-30.png}
+%      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M2.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheTempsStockPriceJapet.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-japet-700-30.png}
+%      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M2.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M2, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheDebitsStockPriceJapet.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-temps-c34581-400-30.png}
+%      \caption[Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M3.]{Les temps d'ex\'ecution pour \TT{StockPrice} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheTempsStockPriceLinux.fig}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%     \includegraphics[width=1.0\textwidth]{Figures/StockPrice-debits-c34581-400-30.png}
+%      \caption[Les d\'ebits pour \TT{StockPrice} sur la machine \M3.]{Les d\'ebits pour \TT{StockPrice} sur la machine \M3, pour les programmes \TT{Seq}, \TT{Java}, \TT{PpFf} et \TT{FastFlow}. Les d\'ebits sont en milliers de mots par seconde (K-mots/s), obtenus en prenant la moyenne de 30 ex\'ecutions.}
+%       \label{GrapheDebitsStockPriceLinuxt.fig}
+%\end{figure}
+%
 
 
 Les r\'esultats  pour l'application \TT{StockPrice} sont pr\'esent\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences ont aussi \'et\'e menées sur les deux machines \M1 et~\M2 et les temps d'ex\'ecution pour \ppff\ et \TT{Java} sont indiqu\'es sur la m\^eme figure --- gauche: \M1, droite: \M2. 
