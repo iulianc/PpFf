@@ -1,4 +1,4 @@
-_DEF: test_seq
+_DEF: run_seq
 
 bms_preliminaires: compile
 	./run_bms.rb 'StockPrice' 1
@@ -11,7 +11,7 @@ ATTENDUS="../testdata/pico_result.txt"
 
 NUM_EXPERIENCE=0
 
-test_seq: StockPriceSeq
+run_seq: StockPriceSeq
 	@echo "*** On execute StockPriceSeq"
 	@./StockPriceSeq $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
@@ -19,23 +19,23 @@ test_seq: StockPriceSeq
 run_bms: compile
 	ruby run_bms.rb StockPrice $(NUM_EXPERIENCE)
 
-test_ff: StockPriceFastFlow
+run_ff: StockPriceFastFlow
 	@echo "*** On compile et execute StockPriceFastFlow"
 	./StockPriceFastFlow 1 $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 	./StockPriceFastFlow 5 $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
-test_java: StockPrice.class
+run_java: StockPrice.class
 	@echo "*** On compile et execute StockPrice.java"
 	java StockPrice 0 $(TEST_FILE) 1 | sort > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 	java StockPrice 1 $(TEST_FILE) 1 | sort > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
-test_sp: StockPrice
+run_ppff: StockPrice
 	@echo "*** On execute StockPrice"
-	@./StockPrice $(TEST_FILE) 5 1 > obtenus.txt
+	@./StockPrice 5 $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
 benchmarks: compile
@@ -120,12 +120,9 @@ clean:
 	\rm -f $(EXE) $(OBJ) $(DEP)
 	\rm -f *.class
 
-cleanall cleanxtra: clean
+cleanx cleanall cleanxtra: clean
 	\rm -f *.o *~
 	\rm -f obtenus*txt
 
 # Include the dependency
 -include $(DEP)
-
-
-
