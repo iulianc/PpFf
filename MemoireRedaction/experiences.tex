@@ -36,6 +36,39 @@ Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'erie
 \end{description}
 \end{samepage}
 
+\newcommand{\LARGEUR}{3cm}
+
+\begin{table}
+\begin{tabular}{|p{3cm}|p{\LARGEUR}|p{\LARGEUR}|p{\LARGEUR}|}
+\hline
+  & \M1 & \M2 & \M3
+\\\hline
+\textbf{OS} & CentOS 7.8.2003 & CentOS 7.8.2003 & CentOS 7.6.1810
+\\\hline
+\textbf{Mono/multi-usager} & Multi & Multi & Mono
+\\\hline
+\textbf{Nb.~coeurs physiques} & 16 & 32 & 4
+\\\hline
+\textbf{Nb.~coeurs logiques} & 16 & 64 & 8
+\\\hline
+\texttt{java}
+  & \texttt{openjdk 11.0.7 2020-04-14 LTS}
+  & \texttt{java version "1.8.0\_51"}
+  & \texttt{openjdk version "11.0.7" 2020-04-14 LTS}
+\\\hline
+\texttt{g++ (GCC)}
+   & 8.3.1
+   & 8.3.1 
+   & 8.3.0
+\\\hline
+\end{tabular}
+\caption{Blah, blah}
+\label{machines.table}
+\end{table}
+
+
+
+
 Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
 
 Le fonctionnement des programmes \TT{Java} et~\TT{PpFf} n'est pas le m\^eme. Alors que \TT{PpFf} permet de varier le nombre de fils d'ex\'ecution (\emph{threads}), \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees, sur chaque machine, pour identifier les meilleures versions. Les exp\'eriences pr\'eliminaires ont \'et\'e conduites avec un nombre de r\'ep\'etitions de 10 et avec une quantit\'e moyenne de donn\'ees. 
