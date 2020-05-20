@@ -1,6 +1,6 @@
 #!
 
-DEBUG=1
+DEBUG=0
 
 REP_FINAUX="finaux"
 
@@ -58,6 +58,9 @@ if [[ $SORTE == "temps" ]]; then
 elif [[ $SORTE == "debits" ]]; then
     MESURE="Débit"
     UNITE="K-${ITEMS}/s"
+elif [[ $SORTE == "accs" ]]; then
+    MESURE="Accélération"
+    UNITE="absolue"
 else
     echo "*** Sorte invalide: $sorte"
     exit
@@ -110,7 +113,11 @@ fi
 ########################################################################
 # On definit le script pour la generation du graphe.
 ########################################################################
-temps_min=$(ruby min_temps.rb <$fichier_donnees)
+if [[ $SORTE == "accs" ]]; then
+    temps_min="0.0"
+else
+    temps_min=$(ruby min_temps.rb <$fichier_donnees)
+fi
 temps_max=$(ruby max_temps.rb <$fichier_donnees)
 
 taille_min=0 # 0 plus simple pcq. non log

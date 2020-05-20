@@ -6,6 +6,7 @@ FICHIERS = [
             'appendice-wordcount.tex',
             'appendice-stockprice.tex',
             'appendice-wc.tex',
+            'appendice-accs.tex',
             'experiences.tex',
            ]
 

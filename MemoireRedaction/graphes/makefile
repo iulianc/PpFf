@@ -8,10 +8,20 @@ NUM_EXPERIENCE=0
 NB=2
 EXP_FINALE=5
 
-def: test
+def: accs
 
-test:
-	./plot.sh 'WordCount' 'temps'  $(HOST) $(NUM_EXPERIENCE) $(NB) '*' _ "Tous les programmes"
+accs:
+	./plot.sh 'WordCount' 'accs'  java 500 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'WordCount' 'accs'  japet 600 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'WordCount' 'accs'  c34581 400 30 '*' _ "Tous les programmes" 1
+	echo ""
+	./plot.sh 'StockPrice' 'accs'  java 700 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'StockPrice' 'accs'  japet 700 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'StockPrice' 'accs'  c34581 400 30 '*' _ "Tous les programmes" 1
+	echo ""
+	./plot.sh 'WC' 'accs'  java 5 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'WC' 'accs'  japet 6 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'WC' 'accs'  c34581 41 30 '*' _ "Tous les programmes" 1
 
 WordCount_preliminaires:
 	./plot.sh 'WordCount' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java" 1

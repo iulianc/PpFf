@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
 
 DEBUG = true
 
@@ -37,6 +38,8 @@ when "temps"
   shortcaption = "Les temps d'ex\\'ecution pour \\TT{#{pgm}} sur la machine \\#{num_machine}."
 when "debits"
   shortcaption = "Les d\\'ebits pour \\TT{#{pgm}} sur la machine \\#{num_machine}."
+when "accs"
+  shortcaption = "Les accélérations pour \\TT{#{pgm}} sur la machine \\#{num_machine}."
 else
   puts "*** Erreur: La sorte #{sorte} n'est pas valide!"
   exit -1
@@ -80,6 +83,8 @@ when "debits"
     ', ' +
     info_moyenne +
     '.'
+when "accs"
+  caption = "Les accélérations (absolues) pour \\TT{#{pgm}} sur la machine \\#{num_machine}, pour #{les_versions}. "
 end
 
 File.open( fichier_tex, mode = "w" ) do |f|
