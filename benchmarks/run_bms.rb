@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
 
 DEBUG = true
 
@@ -87,34 +88,45 @@ def generer_les_temps( cmd, nb_repetitions )
   les_temps
 end
 
+def ic( les_valeurs, moy, nb_repetitions )
+  variance = les_valeurs.reduce(0.0) { |s, x| (x - moy) * (x - moy) } / (nb_repetitions - 1)
+  ecart_type = Math.sqrt(variance)
+
+  s_m = ecart_type / Math.sqrt(nb_repetitions)
+
+  # Tiré de http://onlinestatbook.com/2/calculators/inverse_t_dist.html
+  t_value = case nb_repetitions
+            when 30 then 2.045 # DF = 29
+            when 40 then 2.023 # DF = 39
+            when 50 then 2.010 # DF = 49
+            else 2.0
+            end
+
+  le_min = moy - t_value * s_m
+  le_max = moy + t_value * s_m
+
+  [le_min, le_max]
+end
+
 def temps_moyen( les_temps, nb_repetitions )
-  temps_tot = 0.0
-  le_min = le_max = nil
+  moy = les_temps.reduce(0.0, &:+) / nb_repetitions
 
-  les_temps.each do |temps|
-    temps_tot += temps
-    le_min = le_min ? [temps, le_min].min : temps
-    le_max = le_max ? [temps, le_max].max : temps
-  end
-
-  moy = (temps_tot / nb_repetitions).round(1)
+  le_min, le_max = ic( les_temps, moy, nb_repetitions )
 
   [moy, le_min, le_max]
 end
 
 def debits_moyen( les_temps, nb_mots, nb_repetitions )
+  les_debits = []
   debit_tot = 0.0
-  le_min = le_max = nil
-
   les_temps.each do |temps|
     debit = nb_mots / temps
-
     debit_tot += debit
-    le_min = le_min ? [debit, le_min].min : debit
-    le_max = le_max ? [debit, le_max].max : debit
+    les_debits << debit
   end
 
-  moy = (debit_tot / nb_repetitions).round(1)
+  moy = debit_tot / nb_repetitions
+  le_min, le_max = ic( les_debits, moy, nb_repetitions )
 
   [moy, le_min, le_max]
 end

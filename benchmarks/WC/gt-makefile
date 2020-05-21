@@ -1,13 +1,11 @@
 .IGNORE:
 
-_def: run_all
+_def: bms_preliminaires
 
 run_all: run_cpp
 
 bms_preliminaires: compile
-	./run_bms.rb 'WC' 1
-	./run_bms.rb 'WC' 2
-	./run_bms.rb 'WC' 3
+	./run_bms.rb 'WC' 0
 
 
 TEST_FILE_0="testdata/10Words.txt"
