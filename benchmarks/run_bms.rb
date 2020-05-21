@@ -89,7 +89,7 @@ def generer_les_temps( cmd, nb_repetitions )
 end
 
 def ic( les_valeurs, moy, nb_repetitions )
-  variance = les_valeurs.reduce(0.0) { |s, x| (x - moy) * (x - moy) } / (nb_repetitions - 1)
+  variance = les_valeurs.reduce(0.0) { |s, x| s + (x - moy) * (x - moy) } / (nb_repetitions - 1)
   ecart_type = Math.sqrt(variance)
 
   s_m = ecart_type / Math.sqrt(nb_repetitions)
