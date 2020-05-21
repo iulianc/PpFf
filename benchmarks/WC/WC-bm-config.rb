@@ -147,3 +147,27 @@ Experience.define( 6,
                    nb_repetitions: 30,
                    programs: ['Seq', 'Java*', 'PpFf-8', 'FastFlow-8']
                 )
+
+# Experiences avec intervalle de confiance
+NB_REPETITIONS_IC = 2
+
+Experience.define( 1001,
+                   machines: ['java'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+Experience.define( 1002,
+                   machines: ['japet'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java*', 'PpFf-8', 'FastFlow-8']
+                )
+
+Experience.define( 1003,
+                   machines: ['MacOS', 'c34581'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java*', 'PpFf-1', 'FastFlow-1']
+                )
