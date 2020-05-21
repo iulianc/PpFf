@@ -1,0 +1,9 @@
+StockPrice/StockPrice_PpFf_Gnuplot/StockPrice
+StockPrice/StockPrice_PpFf_Gnuplot/StockPriceFastFlow
+StockPrice/StockPrice_PpFf_Gnuplot/StockPriceSeq
+StockPrice/testdata/stock_options_1024K.txt
+StockPrice/testdata/stock_options_2048K.txt
+StockPrice/testdata/stock_options_512K.txt
+WC/WC
+WC/WCFastFlow
+WC/WCSeq
