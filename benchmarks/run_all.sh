@@ -15,21 +15,19 @@ for pgm in WordCount StockPrice WC; do
     date
 
     if [[ $pgm == WordCount ]]; then
-        cd WordCountGnuplot
+        pushd WordCountGnuplot
     elif [[ $pgm == StockPrice ]]; then
-        cd StockPrice/StockPrice_Ppff_Gnuplot
+        pushd StockPrice/StockPrice_PpFf_Gnuplot
     else
-        cd $pgm
+        pushd $pgm
     fi
     ${mk} clean
     ${mk} compile
     ./run_bms.rb ${pgm} ${EXP}
     
-    if [[ $pgm == StockPrice ]]; then
-        cd ../..
-    else
-        cd ..
-       fi
+    popd
+    pwd
+    ls
     date
     echo "---------------------"
     echo ""

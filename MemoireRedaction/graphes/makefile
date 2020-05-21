@@ -8,7 +8,15 @@ NUM_EXPERIENCE=0
 NB=2
 EXP_FINALE=5
 
-def: accs
+def: accs_revises
+
+accs_revises:
+	./plot.sh 'WordCount' 'accs'  c34581 401 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'StockPrice' 'accs'  c34581 401 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'WC' 'accs'  c34581 401 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'WordCount' 'accs'  c34581 400 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'StockPrice' 'accs'  c34581 400 30 '*' _ "Tous les programmes" 1
+	./plot.sh 'WC' 'accs'  c34581 41 30 '*' _ "Tous les programmes" 1
 
 accs:
 	./plot.sh 'WordCount' 'accs'  java 500 30 '*' _ "Tous les programmes" 1
