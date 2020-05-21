@@ -86,7 +86,7 @@ Experience.define( 3,
 
 
 # Experiences avec intervalle de confiance
-NB_REPETITIONS_IC = 30
+NB_REPETITIONS_IC = 40
 DONNEES_IC = beaucoup_de_donnees
 
 Experience.define( 1001,
