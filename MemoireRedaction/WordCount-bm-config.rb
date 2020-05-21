@@ -1,12 +1,3 @@
-# NOTE: Les differentes tailles des fichiers de donnes sont les
-#   suivantes: 10, 131, 377, 3805, 7610, 78792, 167941, 281307,
-#   482636, 752856, 1639684, 2137758, 2614743, 5293812, 10587624
-
-# NOTE: Les elements qui doivent etre utilises dans run_bms.rb sont
-# definis ci-bas sous forme de CONSTANTES -- sinon, elles ne
-# semblaient pas visibles.
-
-
 ################################################################
 # Les divers programmmes et commandes pour les executer.
 ################################################################
@@ -24,7 +15,7 @@ end
   Program.define( "FastFlow-#{k}", "./#{PGM}FastFlow #{k}" )
 end
 
-
+#
 ################################################################
 # Diverses quantites de donnees et la fonction pour les obtenir.
 ################################################################
@@ -45,7 +36,7 @@ pas_mal_de_donnees =
 beaucoup_de_donnees =
   [752856, 1639684, 2614743, 5293812, 10587624]
 
-
+#
 ################################################################
 # Les experiences.
 #
@@ -93,30 +84,7 @@ Experience.define( 3,
                 )
 
 
-# Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
-# avec 3, donc on va voir ce qu'il en est si on augmente encore.
-Experience.define( 20,
-                   machines: ['japet'],
-                   nb_items: pas_mal_de_donnees,
-                   nb_repetitions: 10,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf-5', 'PpFf-6', 'PpFf-8']
-                )
-
-Experience.define( 30,
-                   machines: ['japet'],
-                   nb_items: pas_mal_de_donnees,
-                   nb_repetitions: 10,
-                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-4', 'FastFlow-5', 'FastFlow-6', 'FastFlow-8']
-                )
-
 # Les plus performants.
-Experience.define( 4,
-                   machines: ['c34581'],
-                   nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 30,
-                   programs: ['Java*', 'PpFf-1', 'FastFlow-1']
-                )
-
 Experience.define( 400,
                    machines: ['c34581'],
                    nb_items: beaucoup_de_donnees,
@@ -124,32 +92,11 @@ Experience.define( 400,
                    programs: ['Seq', 'Java*', 'PpFf-1', 'FastFlow-1']
                 )
 
-Experience.define( 5,
-                   machines: ['java'],
-                   nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 30,
-                   programs: ['Java*', 'PpFf-2', 'FastFlow-2']
-                )
-
 Experience.define( 500,
                    machines: ['java'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
-                )
-
-Experience.define( 51,
-                   machines: ['java'],
-                   nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 30,
-                   programs: ['Java+', 'Java*', 'PpFf-1', 'PpFf-2', 'FastFlow-2', 'FastFlow-1']
-                )
-
-Experience.define( 6,
-                   machines: ['japet'],
-                   nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 30,
-                   programs: ['Java*', 'PpFf-8', 'FastFlow-8']
                 )
 
 Experience.define( 600,
