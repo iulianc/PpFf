@@ -18,23 +18,23 @@ Chaque syst\`eme informatique a des caract\'eristiques propres. Les principaux f
 
 
 
-\goodbreak
-\begin{samepage}
-Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'eriences sur les machines suivantes~:
-\label{machines.sect}
-
-
-\begin{description}
-\item[\M1] = \TT{java.labunix.uqam.ca}~: Une machine avec 16 processeurs de 2,6 GHz, chacun contenant 6 cœurs. Le syst\`eme d'exploitation est Linux version 3.10.0. 
-
-
-\item[\M2] = \TT{japet.labunix.uqam.ca}~:  Une machine avec 64 processeurs de 2,3 GHz, chacun contenant 8 cœurs. Le système d'exploitation est Linux version 3.10.0.
-
-\item[\M3] = \TT{c34581}~:  Une machine avec 8 processeurs de 3,6 GHz, chacun contenant 4 cœurs. Le système d'exploitation est Linux.
-
-
-\end{description}
-\end{samepage}
+%\goodbreak
+%\begin{samepage}
+%Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'eriences sur les machines suivantes~:
+%\label{machines.sect}
+%
+%
+%\begin{description}
+%\item[\M1] = \TT{java.labunix.uqam.ca}~: Une machine avec 16 processeurs de 2,6 GHz, chacun contenant 6 cœurs. Le syst\`eme d'exploitation est Linux version 3.10.0. 
+%
+%
+%\item[\M2] = \TT{japet.labunix.uqam.ca}~:  Une machine avec 64 processeurs de 2,3 GHz, chacun contenant 8 cœurs. Le système d'exploitation est Linux version 3.10.0.
+%
+%\item[\M3] = \TT{c34581}~:  Une machine avec 8 processeurs de 3,6 GHz, chacun contenant 4 cœurs. Le système d'exploitation est Linux.
+%
+%
+%\end{description}
+%\end{samepage}
 
 \newcommand{\LARGEUR}{3cm}
 
@@ -62,14 +62,12 @@ Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'erie
    & 8.3.0
 \\\hline
 \end{tabular}
-\caption{Blah, blah}
+\caption{Les caract\'eristiques des machines utilis\'ees dans nos exp\'eriences. Le tableau d\'ecrit pour chaque machine le syst\`eme d'exploitation utilis\'e, le type de la machine mono o\`u multi-usager, le nombre de coeurs et les versions de programme utilis\'ees dans nos exp\'eriences.}
 \label{machines.table}
 \end{table}
 
 
-
-
-Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
+Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'eriences sur trois machines diff\'erentes. Le tableau~\ref{machines.table} montre les caract\'eristiques de ces machines. Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
 
 Le fonctionnement des programmes \TT{Java} et~\TT{PpFf} n'est pas le m\^eme. Alors que \TT{PpFf} permet de varier le nombre de fils d'ex\'ecution (\emph{threads}), \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees, sur chaque machine, pour identifier les meilleures versions. Les exp\'eriences pr\'eliminaires ont \'et\'e conduites avec un nombre de r\'ep\'etitions de 10 et avec une quantit\'e moyenne de donn\'ees. 
 
