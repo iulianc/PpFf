@@ -2,6 +2,10 @@
 if [[ $HOST == 'java' ]]; then
     EXP=1001
 elif [[ $HOST == 'japet' ]]; then
+    if [[ $(ruby --version) =~ jruby ]]; then
+        echo "*** Sur japet, il faut appeler 'rvm use 2.2.1'"
+        exit -1
+    fi
     EXP=1002
 else
     EXP=1003
