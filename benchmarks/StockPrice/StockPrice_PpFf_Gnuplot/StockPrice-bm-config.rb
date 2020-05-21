@@ -99,6 +99,13 @@ Experience.define( 400,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
+Experience.define( 401, # Avec nouveaux javac/java et g++
+                   machines: ['c34581'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
+                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
 Experience.define( 7,
                    machines: ['java', 'japet'],
                    nb_items: beaucoup_de_donnees,
