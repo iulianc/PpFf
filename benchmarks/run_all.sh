@@ -9,10 +9,6 @@ fi
 
 mk='make -f gt-makefile'
 
-if [[ $host == japet ]]; then
-    rvm use ruby-2.2.1
-fi
-
 for pgm in WordCount StockPrice WC; do
 #for pgm in StockPrice WC; do
     echo "*** ${pgm} ***"
@@ -25,6 +21,7 @@ for pgm in WordCount StockPrice WC; do
     else
         cd $pgm
     fi
+    ${mk} clean
     ${mk} compile
     ./run_bms.rb ${pgm} ${EXP}
     
