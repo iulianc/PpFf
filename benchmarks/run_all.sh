@@ -13,6 +13,7 @@ fi
 
 mk='make -f gt-makefile'
 
+echo "*** Execution sur ${HOST} ***"
 for pgm in WordCount StockPrice WC; do
 #for pgm in StockPrice WC; do
     echo "*** ${pgm} ***"
@@ -36,5 +37,6 @@ for pgm in WordCount StockPrice WC; do
     echo "---------------------"
     echo ""
 done
+echo "*** Fin execution ${HOST} ***"
 
 

@@ -1,2 +1,2 @@
 #!
-script ${HOST}-script-output.txt ./run_all.sh
+script ${HOST}-script-output.txt -c ./run_all.sh
