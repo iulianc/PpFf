@@ -2,6 +2,8 @@
 \chapter{\'Etudes de cas et exp\'erimentations~: Comparaisons de \ppff\ avec Java et FastFlow}
 \label{experiences.chap}
 
+\GT{Ci-bas comme ailleurs~: tel qu'indiqué par un évaluateur, tu dois
+parler de la bibliothèque \ppff\ plutôt de l'API!}
 
 Ce chapitre pr\'esente une \'evaluation exp\'erimentale de \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele, plus sp\'ecifiquement avec \TT{Java} et \TT{FastFlow}.
 %
@@ -14,27 +16,12 @@ Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esento
 \section{M\'ethode utilis\'ee pour les exp\'erimentations}
 \label{usedMethodsForBenchmarks.chap}
 
-Chaque syst\`eme informatique a des caract\'eristiques propres. Les principaux facteurs qui influencent les performances d'un tel syst\`eme sont le type de processeur, le nombre de processeurs ou de c\oe{}urs, et le r\'eseau de communication. 
+Chaque syst\`eme informatique a des caract\'eristiques propres. Quelques-uns des facteurs qui influencent les performances d'un tel syst\`eme sont le type de processeur, le nombre de processeurs ou de c\oe{}urs, et la vitesse des processeurs. 
 
+\GT{Ci-haut: tu indiquais le réseau de communication, mais tu n'en
+traites pas par la suite. Et comme c'est une machine à mémoire
+partagée, cela n'a pas vraiment d'importance.}
 
-
-%\goodbreak
-%\begin{samepage}
-%Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'eriences sur les machines suivantes~:
-%\label{machines.sect}
-%
-%
-%\begin{description}
-%\item[\M1] = \TT{java.labunix.uqam.ca}~: Une machine avec 16 processeurs de 2,6 GHz, chacun contenant 6 cœurs. Le syst\`eme d'exploitation est Linux version 3.10.0. 
-%
-%
-%\item[\M2] = \TT{japet.labunix.uqam.ca}~:  Une machine avec 64 processeurs de 2,3 GHz, chacun contenant 8 cœurs. Le système d'exploitation est Linux version 3.10.0.
-%
-%\item[\M3] = \TT{c34581}~:  Une machine avec 8 processeurs de 3,6 GHz, chacun contenant 4 cœurs. Le système d'exploitation est Linux.
-%
-%
-%\end{description}
-%\end{samepage}
 
 \newcommand{\LARGEUR}{3cm}
 
@@ -68,34 +55,100 @@ Chaque syst\`eme informatique a des caract\'eristiques propres. Les principaux f
    & 8.3.0
 \\\hline
 \end{tabular}
-\caption{Les caract\'eristiques des machines utilis\'ees dans nos exp\'eriences. Le tableau d\'ecrit pour chaque machine le syst\`eme d'exploitation utilis\'e, le type de la machine mono o\`u multi-usager, le nombre de coeurs et les versions de programme utilis\'ees dans nos exp\'eriences.}
+\caption[Les caract\'eristiques des machines utilis\'ees dans nos exp\'eriences.]{Les caract\'eristiques des machines utilis\'ees dans nos exp\'eriences. Le tableau d\'ecrit pour chaque machine le syst\`eme d'exploitation utilis\'e, le type de la machine (mono- ou multi-usager), le nombre de coeurs (physiques vs.\ logiques) et les versions des compilateurs utilis\'es dans nos exp\'eriences.}
 \label{machines.table}
 \end{table}
 
 
-Afin d'avoir des r\'esultats plus g\'en\'eraux, nous avons conduit nos exp\'eriences sur trois machines diff\'erentes. Le tableau~\ref{machines.table} montre les caract\'eristiques de ces machines. Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
+Afin d'avoir des r\'esultats plus représentatifs, nous avons conduit nos exp\'eriences sur trois machines diff\'erentes. Le tableau~\ref{machines.table} montre les caract\'eristiques de ces machines. Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
 
-Le fonctionnement des programmes \TT{Java} et~\TT{PpFf} n'est pas le m\^eme. Alors que \TT{PpFf} permet de varier le nombre de fils d'ex\'ecution (\emph{threads}), \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees, sur chaque machine, pour identifier les meilleures versions. Les exp\'eriences pr\'eliminaires ont \'et\'e conduites avec un nombre de r\'ep\'etitions de 10 et avec une quantit\'e moyenne de donn\'ees. 
+Le fonctionnement des programmes \TT{Java}, \TT{PpFf} et~\TT{FastFlow} n'est pas le m\^eme. Alors que \TT{PpFf} et \TT{FastFlow} permettent de varier le nombre de fils d'ex\'ecution (\emph{threads}), \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees, sur chaque machine, pour identifier les meilleures versions, et ce tant pour \TT{PpFf} que pour \TT{Java} et \TT{FastFlow}.
+Ces exp\'eriences pr\'eliminaires ont \'et\'e conduites avec un nombre de r\'ep\'etitions de 10 et avec une quantit\'e <<moyenne>> de donn\'ees. 
 
-Dans le cas de \TT{PpFf} et \TT{FastFlow}, l'objectif \'etait de d\'eterminer le meilleur niveau de parall\'elisme \`a utiliser dans les \TT{farm}, par exemple, pour \TT{PpFf}, la valeur pour la m\'ethode \TT{parallel()}, pour le parall\'elisme de donn\'ees. Cependant, dans tous les cas, pour \TT{Java}, c'\'etait la version avec \TT{warmup} qui a \'et\'e utilis\'ee.
+Dans le cas de \TT{PpFf} et \TT{FastFlow}, l'objectif \'etait de d\'eterminer le meilleur niveau de parall\'elisme \`a utiliser dans les \TT{farm}s, c'est-\`a-dire, pour \TT{PpFf}, la valeur pour la m\'ethode \TT{parallel()}, pour le parall\'elisme de donn\'ees.
+%
+Par contre, dans le cas de \TT{Java}, l'objectif était de comparer trois versions~: \GT{décrire brièvement ces trois versions}.
+%
+C'est la version avec \emph{warmup} qui a \'et\'e utilis\'ee.
 
-L'effet de pr\'echauffage (\TT{warmup} en anglais) est g\'en\'eralement d\^u au chargement des classes et \`a l'interpr\'etation des \TT{bytecodes} au d\'emarrage du programme. Chaque fois qu'une nouvelle application d\'emarre, toutes les classes requises sont charg\'ees en m\'emoire par le mod\`ele de chargement paresseux (\TT{lazy loading} en anglais). Ce mod\`ele de conception est un mod\`ele couramment utilis\'e en programmation informatique pour reporter l'initialisation d'un objet jusqu'au point o\`u il est n\'ecessaire. Le premier appel \`a une application \TT{Java} est souvent beaucoup plus lent que le temps de r\'eponse moyen pendant la dur\'ee de vie du processus. Cette p\'eriode de pr\'echauffage est g\'en\'eralement attribu\'ee au chargement de classe paresseux et à la compilation \emph{JIT} (\emph{Just-In-Time compiler}).    
 
+\GT{Il faudrait indiquer quelque part que, dans les graphes, cette
+version avec réchauffement est indiquée par \TT{Java*}.}
+
+L'effet de pr\'echauffage (\emph{warmup} en anglais) est g\'en\'eralement d\^u au chargement des classes et \`a l'interpr\'etation du \emph{bytecode} au d\'emarrage du programme plutôt qu'à l'exécution directe d'instructions machines. Lorsqu'une nouvelle application d\'emarre, toutes les classes requises sont charg\'ees en m\'emoire par le mod\`ele de chargement paresseux (\emph{lazy loading} en anglais). Un tel mod\`ele est couramment utilis\'e pour reporter l'initialisation d'un objet jusqu'au moment o\`u il est n\'ecessaire.
+%
 \label{jitDescription.sect}
-\emph{JIT}~\citep{cramer1997compiling} est un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du \emph{bytecode} en langage machine a un impact significatif sur la vitesse d'ex\'ecution.
+%
+Il y a aussi l'effet de la compilation 
+\emph{JIT}~\citep{cramer1997compiling} (\emph{Just-In-Time compiler}),
+%
+un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du \emph{bytecode} en langage machine a un impact significatif sur la vitesse d'ex\'ecution.
 
-Dans toutes nos exp\'eriences, les programmes \TT{Java} ont \'et\'e pr\'echauff\'es en lancent une proc\'edure de pr\'echauffage avant d'ex\'ecuter les exp\'eriences mesur\'ees. La proc\'edure de pr\'echauffage consiste d'un appel \`a toutes les m\'ethodes utilis\'ees dans les exp\'eriences. Ce m\'ecanisme nous permet de charg\'ees en m\'emoire toutes les classes ce qui les rend accessibles plus rapidement pendant l'ex\'ecution d'exp\'eriences.
+Dans toutes nos exp\'eriences, les programmes \TT{Java} comparés avec \ppff\ ont donc \'et\'e pr\'echauff\'es en lan\c{c}ant une proc\'edure de pr\'echauffage avant de mesurer le temps pour la portion de code pertinente. Cette proc\'edure de pr\'echauffage a consisté à faire un appel à presque toutes les m\'ethodes utilis\'ees.
+%
+% GT: Ça se répète je trouvais.
+%
+% Ce m\'ecanisme permet donc de charger en m\'emoire toutes les
+% classes, ce qui les rend accessibles plus rapidement pendant
+% l'ex\'ecution d'exp\'eriences.
  
-Il faut noter que le temps mesur\'e dans toutes les exp\'eriences exclut le lancement du programme. La mesure du temps se fait de l'int\'erieur du programme m\^eme, une fois celui-ci lanc\'e. Lorsque le traitement est termin\'e, le temps est \'emis en sortie du programme sur \TT{stdout}. Donc, le temps n'est pas mesur\'e avec la commande << time >>. Notamment, dans le cas de \TT{Java}, cela exclut le temps de lancement de la machine virtuelle. De plus les quantit\'es de donn\'ees utilis\'ees dans exp\'eriences ont \'et\'e restreint de sorte que le temps d'ex\'ecution soit d'au moins 225 millisecondes. Cela nous a permis d'avoir une meilleure visibilit\'e sue les performances obtenues par les trois programmes. 
+Il faut noter que le temps mesur\'e dans toutes les exp\'eriences \emph{exclut le lancement du programme}. La mesure du temps se fait de l'int\'erieur du programme m\^eme, une fois celui-ci lanc\'e. Lorsque le traitement est termin\'e, le temps est \'emis en sortie du programme sur \TT{stdout}. Donc, le temps n'est pas mesur\'e avec la commande <<\TT{time}>>. Notamment, dans le cas de \TT{Java}, cela exclut le temps de lancement de la machine virtuelle. De plus, les quantit\'es de donn\'ees utilis\'ees dans exp\'eriences ont \'et\'e choisies de sorte que les temps d'ex\'ecution soient d'au moins 200 millisecondes.
 
-Afin de montrer les \'etapes d'exp\'eriences qui ont conduit aux r\'esultats finaux, l'annexe~\ref{ExperiencesPreliminairesWordCount} pr\'esent un extrait d'un fichier de configuration -- \TT{WordCount-bm-config.rb} -- utilis\'e pour l'ex\'ecution des tests et quelques r\'esultats obtenus. Cr\'e\'e par mon directeur de recherche, ce fichier nous permet de configurer \`a l'avance les tests \`a ex\'ecuter. Dans ce fichier on peut sp\'ecifier tous les param\`etres dont on a besoin : le nom de la machine, les quantités de donn\'ees, le nombre de r\'ep\'etitions, et les noms de programmes \`a ex\'ecuter. Les donn\'ees sont regroup\'ees par taille en trois cat\'egories : donnees-preliminaires, pas-mal-de-donnees et beaucoup-de-donnees. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser. Par exemple le graphe~\ref{WordCount-temps-java-2-10.ann} montre les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1 pour le programme \TT{PpFf} en utilisant la premi\`ere cat\'egorie de donn\'ees. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 10 ex\'ecutions.  En utilisant le fichier mentionn\'e ci-dessus, trois s\'eries de tests ont \'et\'e effectu\'ees : \TT{PpFf-1} avec un \TT{thread}, \TT{PpFf-2} avec deux \TT{threads} et \TT{PpFf-3} avec trois \TT{threads}. 
+% Cela nous a permis d'avoir une meilleure visibilit\'e sur les
+% performances obtenues par les trois programmes.
 
-L'objectif de ces tests pr\'eliminaires est de d\'eterminer la valeur optimale pour les temps d'ex\'ecution. On peut observer que le temps d'ex\'ecution pour \TT{PpFf-3} est beaucoup plus grand que les autres deux s\'eries de tests. Il nous reste \`a d\'eterminer le meilleur temps d'ex\'ecution en comparant les deux derni\`eres s\'eries de tests.
 
-Pour mieux distinguer les performances entre les deux s\'eries de tests, une seconde unit\'e de mesure a \'et\'e utilis\'ee : log ms. Montr\'e dans le graphe~\ref{WordCount-log-temps-java-2-10.ann}, on peut observer que \TT{PpFf-2} avec 2 \TT{threads} est plus performant que \TT{PpFf-1} avec un seul \TT{thread}. 
+\GT{Finalement, comme tu réfères ou devrais référer plusieurs fois aux
+figures, il est préférable de les mettre dans le corps du mémoire,
+sinon le lecteur devra aller en annexe pour comprendre les détails.
+Par contre, le script lui peut être en annexe.}
 
-\TT{PpFf-2} est la version qui sera compar\'ee aux autres programmes lors des tests finaux. Ces tests finaux comparent les meilleures versions entre elles, en utilisant de plus grandes quantit\'es de donn\'ees et 30 r\'ep\'etitions.
+\graphe{WordCount-temps-java-2-10}{Temps PpFf}
+\graphe{WordCount-log-temps-java-2-10}{Temps PpFf (log)}
 
+
+Afin de montrer les \'etapes des diverses exp\'eriences qui ont conduit aux r\'esultats finaux, l'annexe~\ref{ExperiencesPreliminairesWordCount.ann} pr\'esente un extrait d'un fichier de configuration \TT{WordCount-bm-config.rb}, utilis\'e pour l'ex\'ecution des expériences, ainsi que quelques-uns des r\'esultats préliminaires obtenus. Cr\'e\'e par mon directeur de recherche, ce script permet de configurer les expériences \`a ex\'ecuter. Dans ce fichier on peut sp\'ecifier tous les param\`etres dont on a besoin : le nom de la machine, les quantités de donn\'ees, le nombre de r\'ep\'etitions, et les programmes \`a ex\'ecuter. Les donn\'ees sont regroup\'ees par taille en diverses cat\'egories, les plus importantes étant \TT{donnees\_preliminaires}, \TT{pas\_mal\_de\_donnees} et \TT{beaucoup\_de\_donnees}. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser pour chacun des programmes. Par exemple, les graphes des figures~\grapheref{WordCount-temps-java-2-10} et~\grapheref{WordCount-log-temps-java-2-10} montrent les temps d'ex\'ecution pour \TT{WordCount} --- avec échelle linéaire vs.\ logarithmique --- sur la machine \M1 pour le programme \TT{PpFf} en utilisant la premi\`ere cat\'egorie de donn\'ees (expérience no.~2). Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 10 ex\'ecutions.  Trois  s\'eries de mesures ont \'et\'e effectu\'ees : \TT{PpFf-1} avec un \emph{thread}, \TT{PpFf-2} avec deux \emph{threads} et \TT{PpFf-3} avec trois \emph{threads}. 
+
+\GT{Ci-haut: là aussi il faut changer \emph{thread}! Et, de fa\c{c}on plus générale, il faut utiliser \emph{thread} et non \TT{thread}.}
+
+\GT{Et tu ne dois pas utiliser le terme <<test>>~: un test vérifie le
+bon fonctionnement d'un programme, par ex., test unitaire. Tu dois
+plutôt parler d'expériences, de mesures, de \emph{benchmarks}, etc.}
+
+L'objectif de ces mesures pr\'eliminaires est de d\'eterminer la valeur qui semble la meilleure pour les temps d'ex\'ecution. On peut observer que le temps d'ex\'ecution pour \TT{PpFf-3} est beaucoup plus grand que les deux autres (figure~\grapheref{WordCount-temps-java-2-10}).
+%
+Pour mieux distinguer les performances entre les deux autres versions de \TT{PpFf}, une échelle logarithmique peut être utilis\'ee, comme illustrée dans le graphe de la figure~\grapheref{WordCount-log-temps-java-2-10}~: on peut constater que \TT{PpFf-2}, avec 2 \emph{threads}, est plus performant que \TT{PpFf-1}, avec un seul \emph{thread}. 
+%
+\TT{PpFf-2} est donc la version qui sera compar\'ee aux autres programmes lors des expériences finales. Ces expériences comparent donc les meilleures versions entre elles, en utilisant de plus grandes quantit\'es de donn\'ees et avec un plus grand nombre de r\'ep\'etitions, soit 40.
+
+
+
+
+\GT{C'est ici qu'il faudrait que tu expliques le r\^ole du nombre de
+répétitions, et que tu expliques brièvement la signification de la
+barre verticale dans ces graphes. Finalement, contrairement à ce que
+j'ai dit hier, je ne ferai pas un fichier \TT{annexe-ic.tex}, car il
+m'a semblé préférable d'utiliser une méthode plus simple. Le point
+milieu est donc la moyenne de 40 mesures. La barre verticale indique
+l'intervalle qui contient $\approx\ 95$~\% des mesures, puisque la
+valeur maximum = moyenne + 2 écart-types et la valeur minimum =
+moyenne - 2 écart-types.  Est-ce que ça te dit quelque chose, cette
+notion d'écart-type? L'autre méthode que j'avais essayée donnait des
+barres plus courtes, moins représentatives de la variabilité des temps
+mesurés, et pas mal plus compliqué à expliquer.}
+
+
+\GT{Si tu veux présenter les figures d'accélération, il faudrai aussi
+que tu expliques que toutes les expériences incluaient le programme
+\TT{Seq}, une version séquentielle utilisant les mêmes fonctions
+auxiliaires que PpFf et FastFlow, mais s'exécutant de façon
+séquentielle.}
+
+\GT{Autres explications pour les accélérations: dans ce cas, les
+valeurs mininum et maximum sont des approximations = acc. min = temps
+min seq. / temps max par. ET acc. max = temps max seq / temps min
+par. Il faut donc aussi que tu expliques qu'il s'agit d'accélérations
+\emph{absolues}, i.e., par rapport à une bonne version séquentielle.}
 
 \section{Analyse de l'application \TT{WordCount}}
 \label{wordcount.sect}
@@ -105,7 +158,7 @@ Pour mieux distinguer les performances entre les deux s\'eries de tests, une sec
 \subsection{Description de l'application \TT{WordCount}}
 
 
-Dans la section.~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Le code source des applications \TT{WordCount} en~\TT{PpFf} et~\TT{Java} est pr\'esent\'e dans les annexes~\ref{sourceCodeWordCountPpFf.ann} et~\ref{sourceCodeWordCountJava.ann} respectivement.
+Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Le code source des applications \TT{WordCount} en~\TT{PpFf} et~\TT{Java} est pr\'esent\'e dans les annexes~\ref{sourceCodeWordCountPpFf.ann} et~\ref{sourceCodeWordCountJava.ann} respectivement.
 
 
 \subsection{Mesures obtenues et analyse des r\'esultats}

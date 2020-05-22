@@ -15,36 +15,24 @@ end
   Program.define( "FastFlow-#{k}", "./#{PGM}FastFlow #{k}" )
 end
 
-#
 ################################################################
 # Diverses quantites de donnees et la fonction pour les obtenir.
 ################################################################
-
 def fichier_de_donnees_pour(nb_items)
   "testdata/#{nb_items}Words.txt"
 end
 
-peu_de_donnees =
-  [3805, 7610]
+peu_de_donnees = [3805, 7610]
 
-donnees_preliminaires =
-  [78792, 281307, 752856, 1639684]
+donnees_preliminaires =  [78792, 281307, 752856, 1639684]
 
-pas_mal_de_donnees =
-  [78792, 281307, 752856, 1639684, 2137758]
+pas_mal_de_donnees = [78792, 281307, 752856, 1639684, 2137758]
 
-beaucoup_de_donnees =
-  [752856, 1639684, 2614743, 5293812, 10587624]
-
+beaucoup_de_donnees = [752856, 1639684, 2614743, 5293812, 10587624]
 #
 ################################################################
 # Les experiences.
-#
-# Note: Si machines: n'est pas specifie, alors peut s'executer sur
-# n'importe quelle machines
-#
 ################################################################
-
 Experience.define( 0,
                    nb_items: peu_de_donnees,
                    nb_repetitions: 2,
@@ -58,9 +46,7 @@ Experience.define( 0,
 ####################################################
 # Experiences faites sur les machines indiquees pour identifier les
 # programmes de chaque groupe (Java, PpFf et FastFlow) qui sont les
-# plus performants. Ceci permet ensuite d'effectuer la comparaison
-# finale, avec beaucoup de donnees, uniquement avec ces programmes, un
-# par groupe.
+# plus performants.
 ####################################################
 Experience.define( 1,
                    machines: ['c34581', 'java', 'japet'],
@@ -83,9 +69,14 @@ Experience.define( 3,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
                 )
 
+Experience.define( 30,
+                   machines: ['japet'],
+                   nb_items: pas_mal_de_donnees,
+                   nb_repetitions: 10,
+                   programs: ['FastFlow-2', 'FastFlow-4', 'FastFlow-6', 'FastFlow-8']
+                )
+# [...]
 
-
-# Experiences avec intervalle de confiance
 NB_REPETITIONS_IC = 40
 DONNEES_IC = beaucoup_de_donnees
 
