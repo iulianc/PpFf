@@ -45,11 +45,11 @@ Chaque syst\`eme informatique a des caract\'eristiques propres. Les principaux f
 \\\hline
 \textbf{OS} & CentOS 7.8.2003 & CentOS 7.8.2003 & CentOS 7.6.1810
 \\\hline
-\textbf{Architecture} &  x86\_64 &  & 
+\textbf{Architecture} &  x86\_64 & x86\_64 & x86\_64
 \\\hline
-\textbf{Type de processeur} & GenuineIntel  &  & 
+\textbf{Type de processeur} & GenuineIntel  & AuthenticAMD & GenuineIntel
 \\\hline
-\textbf{Vitesse du processeur (GHz)} & 2.66 &  & 
+\textbf{Vitesse du processeur (GHz)} & 2.66 & 2.3 & 3.96
 \\\hline
 \textbf{Mono/multi-usager} & Multi & Multi & Mono
 \\\hline
@@ -88,11 +88,11 @@ Dans toutes nos exp\'eriences, les programmes \TT{Java} ont \'et\'e pr\'echauff\
  
 Il faut noter que le temps mesur\'e dans toutes les exp\'eriences exclut le lancement du programme. La mesure du temps se fait de l'int\'erieur du programme m\^eme, une fois celui-ci lanc\'e. Lorsque le traitement est termin\'e, le temps est \'emis en sortie du programme sur \TT{stdout}. Donc, le temps n'est pas mesur\'e avec la commande << time >>. Notamment, dans le cas de \TT{Java}, cela exclut le temps de lancement de la machine virtuelle. De plus les quantit\'es de donn\'ees utilis\'ees dans exp\'eriences ont \'et\'e restreint de sorte que le temps d'ex\'ecution soit d'au moins 225 millisecondes. Cela nous a permis d'avoir une meilleure visibilit\'e sue les performances obtenues par les trois programmes. 
 
-Afin de montrer les \'etapes d'exp\'eriences qui ont conduit aux r\'esultats finaux, l'annexe~\ref{ExperiencesPreliminairesWordCount} pr\'esent le fichier de configuration -- \TT{WordCount-bm-config.rb} -- utilis\'e pour l'ex\'ecution des tests et quelques r\'esultats obtenus. Cr\'e\'e par mon directeur de recherche, ce fichier nous permet de configurer en avance les tests \`a ex\'ecuter. Dans ce fichier on peut sp\'ecifier tous les param\`etres dont on a besoin : le nom de la machine, les donn\'ees, le nombre de r\'ep\'etitions, et les programmes \`a ex\'ecuter. Les donn\'ees sont regroup\'ees par taille en trois cat\'egories : donnees-preliminaires, pas-mal-de-donnees et beaucoup-de-donnees. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser. Par exemple le premier graphe montre les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1 pour le programme \TT{PpFf} en utilisant la premi\`ere cat\'egorie de donn\'ees. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 10 ex\'ecutions.  En utilisant le fichier mentionn\'e ci-dessus, trois s\'eries de tests ont \'et\'e effectu\'ees : \TT{PpFf-1} avec un \TT{thread}, \TT{PpFf-2} avec deux \TT{threads} et \TT{PpFf-3} avec trois \TT{threads}. 
+Afin de montrer les \'etapes d'exp\'eriences qui ont conduit aux r\'esultats finaux, l'annexe~\ref{ExperiencesPreliminairesWordCount} pr\'esent un extrait d'un fichier de configuration -- \TT{WordCount-bm-config.rb} -- utilis\'e pour l'ex\'ecution des tests et quelques r\'esultats obtenus. Cr\'e\'e par mon directeur de recherche, ce fichier nous permet de configurer \`a l'avance les tests \`a ex\'ecuter. Dans ce fichier on peut sp\'ecifier tous les param\`etres dont on a besoin : le nom de la machine, les quantités de donn\'ees, le nombre de r\'ep\'etitions, et les noms de programmes \`a ex\'ecuter. Les donn\'ees sont regroup\'ees par taille en trois cat\'egories : donnees-preliminaires, pas-mal-de-donnees et beaucoup-de-donnees. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser. Par exemple le graphe~\ref{WordCount-temps-java-2-10.ann} montre les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1 pour le programme \TT{PpFf} en utilisant la premi\`ere cat\'egorie de donn\'ees. Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 10 ex\'ecutions.  En utilisant le fichier mentionn\'e ci-dessus, trois s\'eries de tests ont \'et\'e effectu\'ees : \TT{PpFf-1} avec un \TT{thread}, \TT{PpFf-2} avec deux \TT{threads} et \TT{PpFf-3} avec trois \TT{threads}. 
 
 L'objectif de ces tests pr\'eliminaires est de d\'eterminer la valeur optimale pour les temps d'ex\'ecution. On peut observer que le temps d'ex\'ecution pour \TT{PpFf-3} est beaucoup plus grand que les autres deux s\'eries de tests. Il nous reste \`a d\'eterminer le meilleur temps d'ex\'ecution en comparant les deux derni\`eres s\'eries de tests.
 
-Pour mieux distinguer les performances entre les deux s\'eries de tests, une seconde unit\'e de mesure a \'et\'e utilis\'ee : log ms. Montr\'e dans le deuxi\`eme graphe de la m\^eme annexe, on peut observer que \TT{PpFf-2} avec 2 \TT{threads} est plus performant que \TT{PpFf-1} avec un seul \TT{thread}. 
+Pour mieux distinguer les performances entre les deux s\'eries de tests, une seconde unit\'e de mesure a \'et\'e utilis\'ee : log ms. Montr\'e dans le graphe~\ref{WordCount-log-temps-java-2-10.ann}, on peut observer que \TT{PpFf-2} avec 2 \TT{threads} est plus performant que \TT{PpFf-1} avec un seul \TT{thread}. 
 
 \TT{PpFf-2} est la version qui sera compar\'ee aux autres programmes lors des tests finaux. Ces tests finaux comparent les meilleures versions entre elles, en utilisant de plus grandes quantit\'es de donn\'ees et 30 r\'ep\'etitions.
 
