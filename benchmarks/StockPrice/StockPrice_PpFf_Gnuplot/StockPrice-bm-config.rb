@@ -131,14 +131,14 @@ Experience.define( 1001,
                    machines: ['java'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Java*', 'PpFf-4', 'FastFlow-4']
+                   programs: ['Seq', 'Java*', 'PpFf-4', 'FastFlow-4']
                  )
 
 Experience.define( 1002,
                    machines: ['japet'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Java*', 'PpFf-4', 'FastFlow-4']
+                   programs: ['Seq', 'Java*', 'PpFf-4', 'FastFlow-4']
                  )
 
 Experience.define( 1003,
