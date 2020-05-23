@@ -5,7 +5,7 @@ _def: bms_preliminaires
 run_all: run_cpp
 
 bms_preliminaires: compile
-	./run_bms.rb 'WC' 0
+	./run_bms.rb 'WC' 11
 
 
 TEST_FILE_0="testdata/10Words.txt"

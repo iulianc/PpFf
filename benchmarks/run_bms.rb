@@ -48,6 +48,13 @@ class Experience
       exit -1
     end
 
+    programs.each do |p|
+      unless $programs[p]
+        puts "*** Erreur: programme '#{p}' pas defini"
+        exit -1
+      end
+    end
+
     $experiences[num_experience] = new( num_experience,
                                         machines,
                                         nb_items,
