@@ -92,18 +92,8 @@ def ic( les_valeurs, moy, nb_repetitions )
   variance = les_valeurs.reduce(0.0) { |s, x| s + (x - moy) * (x - moy) } / (nb_repetitions - 1)
   ecart_type = Math.sqrt(variance)
 
-  s_m = ecart_type / Math.sqrt(nb_repetitions)
-
-  # Tiré de http://onlinestatbook.com/2/calculators/inverse_t_dist.html
-  t_value = case nb_repetitions
-            when 30 then 2.045 # DF = 29
-            when 40 then 2.023 # DF = 39
-            when 50 then 2.010 # DF = 49
-            else 2.0
-            end
-
-  le_min = moy - t_value * s_m
-  le_max = moy + t_value * s_m
+  le_min = moy - 2.0 * ecart_type
+  le_max = moy + 2.0 * ecart_type
 
   [le_min, le_max]
 end
