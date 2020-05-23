@@ -40,8 +40,8 @@ WordCount_preliminaires:
 	./plot.sh 'WordCount' 'temps'  $(HOST) 3 10 '*' log "Programmes FastFlow" 1
 
 WordCount:
-	./plot.sh 'WordCount' 'temps'  $(HOST) $(EXP_FINALE) 30 '*' _   "Tous les programmes"
-	./plot.sh 'WordCount' 'debits' $(HOST) $(EXP_FINALE) 30 '*' _   "Tous les programmes"
+	./plot.sh 'WordCount' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"
+	./plot.sh 'WordCount' 'debits' $(HOST) 11 20 '*' _   "Tous les programmes"
 
 StockPrice_preliminaires:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) 1 10 '*' _   "Programmes Java"
