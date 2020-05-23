@@ -68,7 +68,7 @@ public class WordCount {
     }
     
     public static void main(String[] args) throws IOException {
-        boolean avecWarmup = Integer.parseInt(args[0]) != 0;
+        int avecWarmup = Integer.parseInt(args[0]);
         String inputFile = args.length >= 2 ? args[1] : DEFAULT_INPUT_FILE;
 
         // Utilise pour verifier le bon fonctionnement du programme
@@ -77,7 +77,7 @@ public class WordCount {
 		// Code bidon pour rechauffement: on emet le nombre d'elements
 		// produits, pour etre certain que le resultat soit utilise
 		// (pour eviter le dead code elimination?).
-        if (avecWarmup) {
+        if (avecWarmup == 1) {
             int wordsCount_ = 
                 Files.lines(Paths.get(inputFile))
                 .parallel()
@@ -87,6 +87,18 @@ public class WordCount {
                 .collect( Collectors.toList() )
                 .size();
             System.err.println( wordsCount_ );
+        } else if (avecWarmup >= 2) {
+            Map<String,Integer> wordsCount = 
+                Files.lines( Paths.get(inputFile) )
+                .limit( (long) Math.pow(10, avecWarmup) )
+                .parallel()
+                .flatMap( WordCount::splitInWords )
+                .map( WordCount::toLowerCaseLetters )
+                .filter( WordCount::notEmpty )
+                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .toMap();
+
+            System.err.println( wordsCount.entrySet().size() );
         }
 
         // Execution du *vrai* programme.

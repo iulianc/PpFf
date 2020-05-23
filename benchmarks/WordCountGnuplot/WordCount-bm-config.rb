@@ -16,6 +16,10 @@ Program.define( 'Java+', "java -cp . #{PGM} 0" )
 Program.define( 'Java-', "java -Djava.compiler=NONE -cp . #{PGM} 0" )
 Program.define( 'Java*', "java -cp . #{PGM} 1" )
 
+[*1..4].each do |k|
+  Program.define( "Java*#{k}", "java -cp . #{PGM} #{k}" )
+end
+
 [*1..8].each do |k|
   Program.define( "PpFf-#{k}", "./#{PGM} #{k}" )
 end
@@ -95,6 +99,13 @@ Experience.define( 3,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
                 )
 
+
+# Pour voir si differents types de warm-up font une difference.
+Experience.define( 11,
+                   nb_items: donnees_preliminaires,
+                   nb_repetitions: 20,
+                   programs: ['Java+', 'Java*', 'Java*2', 'Java*3', 'Java*4']
+                )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
 # avec 3, donc on va voir ce qu'il en est si on augmente encore.

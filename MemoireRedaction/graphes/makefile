@@ -53,6 +53,10 @@ StockPrice:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) 4 30 '*' _   "Tous les programmes"
 	./plot.sh 'StockPrice' 'debits' $(HOST) 4 30 '*' _   "Tous les programmes"
 
+WC:
+	./plot.sh 'WC' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"
+	./plot.sh 'WC' 'debits' $(HOST) 11 20 '*' _   "Tous les programmes"
+
 
 clean cleanxtra:
 	rm -f *~

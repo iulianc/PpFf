@@ -3,7 +3,7 @@
 NUM_EXPERIENCE=0
 
 def_run:  compile
-	./run_bms.rb 'WordCount' 0
+	./run_bms.rb 'WordCount' 11
 
 bms_preliminaires: compile
 	./run_bms.rb 'WordCount' 1
