@@ -1,4 +1,7 @@
-_DEF: run_seq
+_DEF: warmup
+
+warmup: compile
+	./run_bms.rb 'StockPrice' 11
 
 bms_preliminaires: compile
 	./run_bms.rb 'StockPrice' 1

@@ -65,7 +65,7 @@ public class StockPrice {
      * @param args the command line arguments
      */
 	public static void main(String[] args) throws IOException {        
-        boolean avecWarmup = Integer.parseInt(args[0]) != 0;
+        int avecWarmup = Integer.parseInt(args[0]);
         String inputFile = args.length >= 2 ? args[1] : DEFAULT_INPUT_FILE;
 
         // Utilise pour verifier le bon fonctionnement du programme
@@ -74,7 +74,7 @@ public class StockPrice {
 		// Code bidon pour rechauffement: on emet le nombre d'elements
 		// produits, pour etre certain que le resultat soit utilise
 		// (pour eviter le dead code elimination?).
-        if (avecWarmup) {
+        if (avecWarmup == 1) {
             int stockPrice_ = 
                 Files.lines(Paths.get(inputFile))
                 .parallel()
@@ -82,8 +82,20 @@ public class StockPrice {
                 .collect( Collectors.toList() )
                 .size();
             System.err.println( stockPrice_ );
-        }
+        } else if (avecWarmup >= 2) {
+            int stockPrice_ = 
+                Files.lines(Paths.get(inputFile))
+                .limit( (long) Math.pow(10, avecWarmup) )
+                .parallel()
+                .map(StockPrice::getOptionData)
+                .map( StockPrice::calculateStockPrice )
+                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .toMap()
+                .entrySet()
+                .size();
 
+            System.err.println( stockPrice_ );
+        }
 
         // Execution du *vrai* programme.
 		long startTime = System.nanoTime();
