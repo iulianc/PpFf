@@ -8,7 +8,7 @@ NUM_EXPERIENCE=0
 NB=2
 EXP_FINALE=5
 
-def: accs_revises
+def: StockPrice
 
 accs_revises:
 	./plot.sh 'WordCount' 'accs'  c34581 401 30 '*' _ "Tous les programmes" 1
@@ -50,8 +50,8 @@ StockPrice_preliminaires:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) 3 10 '*' _   "Programmes FastFlow"
 
 StockPrice:
-	./plot.sh 'StockPrice' 'temps'  $(HOST) 4 30 '*' _   "Tous les programmes"
-	./plot.sh 'StockPrice' 'debits' $(HOST) 4 30 '*' _   "Tous les programmes"
+	./plot.sh 'StockPrice' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"
+	./plot.sh 'StockPrice' 'debits' $(HOST) 11 20 '*' _   "Tous les programmes"
 
 WC:
 	./plot.sh 'WC' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"

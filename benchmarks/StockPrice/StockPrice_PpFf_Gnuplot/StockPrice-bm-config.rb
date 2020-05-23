@@ -7,7 +7,7 @@ Program.define( "Java+", "java -cp . #{PGM} 0" )
 Program.define( "Java-", "java -Djava.compiler=NONE -cp . #{PGM} 0" )
 Program.define( "Java*", "java -cp . #{PGM} 1" )
 
-[*1..4].each do |k|
+[*1..8].each do |k|
   Program.define( "Java*#{k}", "java -cp . #{PGM} #{k}" )
 end
 
