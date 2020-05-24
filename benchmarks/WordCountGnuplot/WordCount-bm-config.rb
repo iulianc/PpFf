@@ -25,6 +25,10 @@ end
 end
 
 [*1..8].each do |k|
+  Program.define( "PpFf-merged-#{k}", "./#{PGM}Merged #{k}" )
+end
+
+[*1..8].each do |k|
   Program.define( "FastFlow-#{k}", "./#{PGM}FastFlow #{k}" )
 end
 
@@ -105,6 +109,13 @@ Experience.define( 11,
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 20,
                    programs: ['Java+', 'Java*', 'Java*2', 'Java*3', 'Java*4']
+                )
+
+# Pour comparer versions PpFf sans vs. avec fusion
+Experience.define( 22,
+                   nb_items: donnees_preliminaires,
+                   nb_repetitions: 2,
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf-merged-1', 'PpFf-merged-2', 'PpFf-merged-4']
                 )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats

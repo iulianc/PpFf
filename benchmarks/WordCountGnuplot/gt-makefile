@@ -3,7 +3,7 @@
 NUM_EXPERIENCE=0
 
 def_run:  compile
-	./run_bms.rb 'WordCount' 11
+	./run_bms.rb 'WordCount' 22
 
 bms_preliminaires: compile
 	./run_bms.rb 'WordCount' 1
@@ -17,8 +17,8 @@ ATTENDUS_78792="attendus-78792.txt"
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-#TEST_FILE="testdata/752856Words.txt"
-#ATTENDUS="attendus-752856.txt"
+TEST_FILE="testdata/752856Words.txt"
+ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 NB_TIMES=5
@@ -26,7 +26,7 @@ NB_TIMES=5
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq 
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -67,6 +67,12 @@ run_cpp: WordCount
 	diff obtenus-cpp.txt $(ATTENDUS)
 	@./WordCount 4 $(TEST_FILE) 0
 
+run_cpp_merged: WordCountMerged
+	@echo "*** Execution C++ *** "
+	@./WordCountMerged 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
+	diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCountMerged 4 $(TEST_FILE) 0
+
 run_ff: WordCountFastFlow
 	@echo "*** Execution FastFlow *** "
 	@./WordCountFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
@@ -91,10 +97,13 @@ run_java_warmup: WordCount.class
 	java -cp . WordCount 1 $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
 	diff obtenus-java-warmup.txt $(ATTENDUS)
 
-WordCount: $(OBJ)
+WordCount: WordCount.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
 
-WordCountSeq: $(OBJ)
+WordCountMerged: WordCountMerged.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountMerged.o $(LDLIBS) -o WordCountMerged
+
+WordCountSeq: WordCountSeq.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq
 
 WordCount.class: WordCount.java
@@ -109,10 +118,10 @@ WordCountFastFlowSansType: $(OBJ)
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
 	\rm -f *.class
-
-cleanx cleanall cleanxtra: clean
 	\rm -f *.o *~
 	\rm -f obtenus*txt temps-sh.txt res.txt
+
+cleanx cleanall cleanxtra: clean
 
 # Include the dependency
 -include $(DEP)
