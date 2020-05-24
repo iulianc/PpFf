@@ -8,6 +8,7 @@ FICHIERS = [
             'appendice-wc.tex',
             'appendice-accs.tex',
             'appendice-finaux.tex',
+            'appendice-ppff-merged.tex',
             'experiences.tex',
            ]
 
