@@ -113,8 +113,8 @@ Experience.define( 11,
 
 # Pour comparer versions PpFf sans vs. avec fusion
 Experience.define( 22,
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 2,
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 30,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf-merged-1', 'PpFf-merged-2', 'PpFf-merged-4']
                 )
 
