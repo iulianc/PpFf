@@ -199,5 +199,12 @@ Experience.define( 2001,
                    machines: ['java', 'MacOS'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java*', 'PpFf*-4']
+                )
+
+Experience.define( 2003,
+                   machines: ['c34581', 'MacOS'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java*', 'PpFf*-2']
                 )
