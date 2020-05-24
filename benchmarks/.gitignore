@@ -7,3 +7,5 @@ StockPrice/testdata/stock_options_512K.txt
 WC/WC
 WC/WCFastFlow
 WC/WCSeq
+WC/WCMerged
+
