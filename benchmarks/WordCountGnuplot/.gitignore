@@ -3,6 +3,7 @@ ff
 WordCount
 WordCountSeq
 WordCountFastFlow
+WordCountMerged
 WordCountFastFlowSansType
 WordCount.class
 WordCountWarmup.class
