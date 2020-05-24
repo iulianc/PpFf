@@ -25,7 +25,7 @@ end
 end
 
 [*1..8].each do |k|
-  Program.define( "PpFf-merged-#{k}", "./#{PGM}Merged #{k}" )
+  Program.define( "PpFf*-#{k}", "./#{PGM}Merged #{k}" )
 end
 
 [*1..8].each do |k|
@@ -115,7 +115,7 @@ Experience.define( 11,
 Experience.define( 22,
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 2,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf-merged-1', 'PpFf-merged-2', 'PpFf-merged-4']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf*-1', 'PpFf*-2', 'PpFf*-4']
                 )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
@@ -214,4 +214,11 @@ Experience.define( 1003,
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java*', 'PpFf-1', 'FastFlow-1']
+                )
+
+Experience.define( 2001,
+                   machines: ['java', 'MacOS'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'PpFf*-4']
                 )

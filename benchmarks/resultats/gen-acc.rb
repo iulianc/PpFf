@@ -38,25 +38,29 @@ File.new(FICH, chomp: true).readlines.each do |ligne|
   taille, *temps = ligne.split
 
   seq = temps[0..2].map(&:to_f)
-  java = temps[3..5].map(&:to_f)
-  ppff = temps[6..8].map(&:to_f)
-  fastflow = temps[9..11].map(&:to_f)
+  pgm1 = temps[3..5].map(&:to_f)
+  pgm2 = temps[6..8].map(&:to_f)
+  pgm3 = temps[9..11].map(&:to_f)
+  pgm4 = temps[12..14].map(&:to_f)
 
   seq_ = Array.new(3)
-  java_ = Array.new(3)
-  ppff_ = Array.new(3)
-  fastflow_ = Array.new(3)
+  pgm1_ = Array.new(3)
+  pgm2_ = Array.new(3)
+  pgm3_ = Array.new(3)
+  pgm4_ = Array.new(3)
 
   seq_ = accs( seq, seq )
-  java_ = accs( java, seq )
-  ppff_ = accs( ppff, seq )
-  fastflow_ = accs( fastflow, seq )
+  pgm1_ = accs( pgm1, seq )
+  pgm2_ = accs( pgm2, seq )
+  pgm3_ = accs( pgm3, seq )
+  pgm4_ = accs( pgm4, seq )
 
   fich_sortie.puts format( "%9d ", taille) +
     format_acc( seq_ ) +
-    format_acc( java_ ) +
-    format_acc( ppff_ ) +
-    format_acc( fastflow_ )
+    format_acc( pgm1_ ) +
+    format_acc( pgm2_ ) +
+    format_acc( pgm3_ ) +
+    format_acc( pgm4_ )
 end
 
 fich_sortie.close
