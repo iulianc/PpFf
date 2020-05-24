@@ -4,9 +4,8 @@
 #
 # make HOST=autreMachine NB=20 NUM_EXPERIENCE=2
 
-NUM_EXPERIENCE=0
-NB=2
-EXP_FINALE=5
+EXP=2001
+NB=40
 
 def: StockPrice
 
@@ -54,8 +53,7 @@ StockPrice:
 	./plot.sh 'StockPrice' 'debits' $(HOST) 11 20 '*' _   "Tous les programmes"
 
 WC:
-	./plot.sh 'WC' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"
-	./plot.sh 'WC' 'debits' $(HOST) 11 20 '*' _   "Tous les programmes"
+	./plot.sh 'WC' 'temps'  $(HOST) $(EXP) $(NB) '*' _   "Tous les programmes"
 
 
 clean cleanxtra:
