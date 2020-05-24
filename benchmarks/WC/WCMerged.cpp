@@ -1,0 +1,80 @@
+#include <iostream>
+#include <ff/pipeline.hpp>
+#include <ff/farm.hpp>
+#include <functional>
+#include <regex>
+#include <chrono>
+#include <ctime>
+#include <ratio>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <string>
+#include <sstream>
+#include<fstream>
+#include <locale>
+#include <Flow.hpp>
+#include <unordered_map>
+#include <ctype.h>
+
+using namespace PpFf;
+
+#define DEFAULT_INPUT_FILE "testdata/78792Words.txt"
+#define DEFAULT_FARM_PARALLELISM 1
+
+typedef std::vector<std::string> Words;
+typedef std::tuple<int,int,long long> Triple;
+
+#include "auxiliary-functions.hpp"
+
+int main(int argc, char* argv[]) {
+    uint32_t farmParallelism = argc >= 2 ? atoi(argv[1]) : DEFAULT_FARM_PARALLELISM;
+    std::string inputFile = argc >= 3 ? argv[2] : DEFAULT_INPUT_FILE;
+
+    // Utilisé pour vérifier le bon fonctionnement du programme
+    bool emitOutput = argc >= 4 && atoi(argv[3]) == 1;
+    
+    auto begin = std::chrono::high_resolution_clock::now();
+    
+    Reducer<std::string, Triple> reducer( Triple(0,0, 0), 
+                                          [](Triple p, std::string s) {
+                                              std::get<0>(p) += 1;
+                                              std::get<1>(p) += s.size();
+                                              std::get<2>(p) = std::max(std::get<2>(p), compute_hash(&s));
+
+                                              return p;
+                                          },
+                                          [](Triple p1, Triple p2) {
+                                              std::get<0>(p1) += std::get<0>(p2);
+                                              std::get<1>(p1) += std::get<1>(p2);
+                                              std::get<2>(p1) = std::max(std::get<2>(p1), std::get<2>(p2));
+
+                                              return p1;
+                                          } );
+    
+    Triple currentResult = 
+        Flow
+        ::source(inputFile)
+        .parallel(farmParallelism)
+        .flatMap<std::string, std::string, Words>(splitInNonEmptyLowerCaseWords)			
+        .reduce<std::string, Triple>(reducer);  
+    
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+
+    if (!emitOutput) {
+        printf("%5ld ", duration_ms);
+    } else {
+        std::cout
+            << std::get<0>(currentResult)
+            << " "
+            << std::get<1>(currentResult)
+            << " "
+            << std::get<2>(currentResult)
+            << " "
+            << std::endl;
+    } 
+
+    return 0;
+}

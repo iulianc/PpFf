@@ -1,11 +1,9 @@
 .IGNORE:
 
-_def: bms_preliminaires
-
-run_all: run_cpp
+#run_all: run_cpp_merged
 
 bms_preliminaires: compile
-	./run_bms.rb 'WC' 11
+	./run_bms.rb 'WC' 22
 
 
 TEST_FILE_0="testdata/10Words.txt"
@@ -26,7 +24,7 @@ ATTENDUS=$(ATTENDUS_3)
 ########################################################
 
 # Specify the final target name
-EXE 		:= WC WC.class WCFastFlow WCSeq
+EXE 		:= WC WC.class WCFastFlow WCSeq WCMerged
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -62,7 +60,7 @@ compile: $(EXE)
 run: run_ff
 
 run_cpp: WC
-	@echo "*** Execution PpFf. *** "
+	@echo "*** Execution PpFf *** "
 	@./WC 4 $(TEST_FILE_0) 1 > obtenus-seq.txt
 	diff -bitw obtenus-seq.txt $(ATTENDUS_0)
 	@./WC 4 $(TEST_FILE_1) 1 > obtenus-seq.txt
@@ -70,6 +68,17 @@ run_cpp: WC
 	@./WC 4 $(TEST_FILE_2) 1 > obtenus-seq.txt
 	diff -bitw obtenus-seq.txt $(ATTENDUS_2)
 	@./WC 4 $(TEST_FILE_3) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_3)
+
+run_cpp_merged: WCMerged
+	@echo "*** Execution PpFf (Merged) *** "
+	@./WCMerged 4 $(TEST_FILE_0) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_0)
+	@./WCMerged 4 $(TEST_FILE_1) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_1)
+	@./WCMerged 4 $(TEST_FILE_2) 1 > obtenus-seq.txt
+	diff -bitw obtenus-seq.txt $(ATTENDUS_2)
+	@./WCMerged 4 $(TEST_FILE_3) 1 > obtenus-seq.txt
 	diff -bitw obtenus-seq.txt $(ATTENDUS_3)
 
 run_ff: WCFastFlow
@@ -108,6 +117,9 @@ run_java: WC.class
 WC: WC.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WC.o $(LDLIBS) -o WC
 
+WCMerged: WCMerged.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WCMerged.o $(LDLIBS) -o WCMerged
+
 WCSeq: WCSeq.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WCSeq.o $(LDLIBS) -o WCSeq
 
@@ -121,10 +133,10 @@ WCFastFlow: WCFastFlow.o
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
 	\rm -f *.class
-
-cleanx cleanall cleanxtra: clean
 	\rm -f *.o *~
 	\rm -f obtenus*txt temps-sh.txt res.txt
+
+cleanx cleanall cleanxtra: clean
 
 # Include the dependency
 -include $(DEP)
