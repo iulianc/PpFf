@@ -139,8 +139,8 @@ Experience.define( 71,
 
 
 # Experiences avec intervalle de confiance
-NB_REPETITIONS_IC = 2 #40
-DONNEES_IC = peu_de_donnees #beaucoup_de_donnees
+NB_REPETITIONS_IC = 40
+DONNEES_IC = beaucoup_de_donnees
 
 Experience.define( 1001,
                    machines: ['java'],

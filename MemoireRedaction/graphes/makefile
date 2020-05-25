@@ -49,11 +49,13 @@ StockPrice_preliminaires:
 	./plot.sh 'StockPrice' 'temps'  $(HOST) 3 10 '*' _   "Programmes FastFlow"
 
 StockPrice:
-	./plot.sh 'StockPrice' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"
-	./plot.sh 'StockPrice' 'debits' $(HOST) 11 20 '*' _   "Tous les programmes"
+	./plot.sh 'StockPrice' 'temps'  $(HOST) 2003 40 '*' _   "Tous les programmes"
+	./plot.sh 'StockPrice' 'temps'  $(HOST) 2003 40 '*' log  "Tous les programmes"
+	./plot.sh 'StockPrice' 'debits'  $(HOST) 2003 40 '*' _  "Tous les programmes"
 
 WC:
 	./plot.sh 'WC' 'temps'  $(HOST) $(EXP) $(NB) '*' _   "Tous les programmes"
+
 
 
 clean cleanxtra:
