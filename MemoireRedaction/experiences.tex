@@ -368,3 +368,33 @@ On remarque que dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ec
 %La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut
 %introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref{GrapheTempsMapstJapet.fig}, que les lignes du graphe pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de 300~ms. Le volume de traitement des deux applications est tr\`es grand. Le pipeline traite 100~000 \'el\'ements et l'algorithme de calcul appliqu\'e \`a chaque \'el\'ement consiste \`a incr\'ementer une valeur de 0 \`a 10~000 dans le cas avec la granularit\'e 4, ou de 0 \`a 100~000 avec la granularit\'e 5. Or, en prenant en consid\'eration ce grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
 
+
+\section{Discussion des résultats et limites de \ppff}
+
+
+
+\begin{figure}
+\grapheH{WordCount-temps-java-2001-40-1345}
+
+\grapheH{WordCount-temps-c34581-2003-40-1345}
+
+\caption[Les temps d'exécution des programmes pour \TT{WordCount}
+<<optimisé>> sur les machines \M1 et \M2.]{Les temps d'exécution des
+programmes pour \TT{WordCount} <<optimisé>> sur les machines \M1 et
+\M2. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
+indique le temps d'exécution, en millisecondes.}
+\label{WordCount-merged-temps.fig}
+\end{figure}
+
+\begin{figure}
+\grapheH{WordCount-debits-java-2001-40-1345}
+
+\grapheH{WordCount-debits-c34581-2003-40-1345}
+
+\caption[Les debits des programmes pour \TT{WordCount}
+<<optimisé>> sur les machines \M1 et \M2.]{Les debits des
+programmes pour \TT{WordCount} <<optimisé>> sur les machines \M1 et
+\M2. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
+indique le debits, en millirs de mots traités par second.}
+\label{WordCount-merged-debit.fig}
+\end{figure}
