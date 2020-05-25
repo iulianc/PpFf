@@ -1,0 +1,112 @@
+\chapter{Extraits des programmes utilisés pour les expérimentations pour \TT{WordCount}}
+\label{appendice-code-experiences.ann}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{WordCount.java}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=java]
+class GroupByKey implements Consumer<String> {
+    @SuppressWarnings("unchecked")
+        private Map<String,Integer> map = (Map) new HashMap();
+    
+    public void accept( String s ) {
+        map.put(s, map.getOrDefault(s, 0) + 1);
+    }
+    
+    public void combine( GroupByKey other ) {
+        for ( Map.Entry<String,Integer> entry : other.map.entrySet() ) {
+            Integer value = map.getOrDefault(entry.getKey(), 0);
+            map.put( entry.getKey(), value + entry.getValue() );
+        } 
+    }
+
+    public Map<String,Integer> toMap() {
+        return map;
+    }
+}
+
+public class WordCount {
+
+    public static Stream<String> splitInWords(String line) {
+        return Arrays.stream(line.trim().split(" "));
+    }
+    
+    public static String toLowerCaseLetters(String word) {
+        return word.replaceAll("[^a-zA-Z]", "").toLowerCase();
+    }
+    
+    public static boolean notEmpty( String word ) {
+        return word.length() > 0;
+    }
+    
+    public static void main(String[] args) throws IOException {
+        // ...
+        long startTime = System.nanoTime();
+        
+        Map<String,Integer> wordsCount = 
+            Files.lines( Paths.get(inputFile) )
+            .parallel()
+            .flatMap( WordCount::splitInWords )
+            .map( WordCount::toLowerCaseLetters )
+            .filter( WordCount::notEmpty )
+            .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+            .toMap();
+        
+        long duration = (System.nanoTime() - startTime);
+        double milliseconds = (double) duration / 1000000;
+        //..
+}        
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fonctions auxiliaires communes aux programmes \TT{WordCountSeq.cpp},
+\TT{WordCount.cpp} et \TT{WordCountFastFlow.cpp}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{WordCountSeq.cpp}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{WordCount.cpp} (version \ppff)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+    // ...
+
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    Reducer<std::string, int> reducer(
+             0, 
+             [](int count, std::string _) { return count + 1; },
+             std::plus<int>{}
+           );
+
+    std::unordered_map<std::string, int> currentResult = 
+        Flow
+        ::source(inputFile)
+        .parallel(farmParallelism)
+        .flatMap<std::string, std::string, Words>(splitInWords)			
+        .map<std::string, std::string>(toLowercaseLetters)			
+        .find<std::string>(notEmpty)	
+        .reduceByKey<std::string, std::string, int>(reducer);  
+
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+
+    // ...
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{WordCountFastFlow.cpp}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+\end{lstlisting}
