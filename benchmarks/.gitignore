@@ -1,4 +1,5 @@
 StockPrice/StockPrice_PpFf_Gnuplot/StockPrice
+StockPrice/StockPrice_PpFf_Gnuplot/StockPriceMerged
 StockPrice/StockPrice_PpFf_Gnuplot/StockPriceFastFlow
 StockPrice/StockPrice_PpFf_Gnuplot/StockPriceSeq
 StockPrice/testdata/stock_options_1024K.txt
