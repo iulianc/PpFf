@@ -157,20 +157,53 @@ dans lequel j'ai inclus deux éléments, pour voir ce que ça donnerait:
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
+\begin{figure}
+\grapheH{WordCount-temps-java-1001-40}
 
-\graphe{WordCount-temps-java-1001-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{WordCount-debits-java-1001-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{WordCount-accs-java-1001-40}{Programmes Seq, Java, PpFf et FastFlow}
+\grapheH{WordCount-temps-japet-1002-40}
+
+\grapheH{WordCount-temps-c34581-1003-40}
+
+\caption[Les temps d'exécution des programmes pour \TT{WordCount} sur
+les machines \M1, \M2 et \M3.]{Les temps d'exécution des programmes
+pour \TT{WordCount} sur les machines \M1, \M2 et \M3. L'axe des $x$
+indique le nombre de mots traités. L'axe des $y$ indique le temps
+d'exécution, en millisecondes.}
+\label{temps-wordcount.fig}
+\end{figure}
 
 
-\graphe{WordCount-temps-japet-1002-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{WordCount-debits-japet-1002-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{WordCount-accs-japet-1002-40}{Programmes Seq, Java, PpFf et FastFlow}
+\begin{figure}
+\grapheH{WordCount-debits-java-1001-40}
+
+\grapheH{WordCount-debits-japet-1002-40}
+
+\grapheH{WordCount-debits-c34581-1003-40}
+
+\caption[Les débits pour \TT{WordCount} sur
+les machines \M1, \M2 et \M3.]{Les débits des programmes
+pour \TT{WordCount} sur les machines \M1, \M2 et \M3. L'axe des $x$
+indique le nombre de mots traités. L'axe des $y$ indique le nombre de
+milliers de mots par seconde (K-mots/s).}
+\label{debits-wordcount.fig}
+\end{figure}
 
 
-\graphe{WordCount-temps-c34581-1003-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{WordCount-debits-c34581-1003-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{WordCount-accs-c34581-1003-40}{Programmes Seq, Java, PpFf et FastFlow}
+\begin{figure}
+\grapheH{WordCount-accs-java-1001-40}
+
+\grapheH{WordCount-accs-japet-1002-40}
+
+\grapheH{WordCount-accs-c34581-1003-40}
+
+\caption[Les accélérations pour \TT{WordCount} sur les machines \M1,
+\M2 et \M3.]{Les accélérations des programmes pour \TT{WordCount} sur
+les machines \M1, \M2 et \M3. L'axe des $x$ indique le nombre de mots
+traités. L'axe des $y$ indique l'accélération absolue par rapport à
+\TT{WordCountSeq.cpp} (\TT{Seq}).}
+\label{accs-wordcount.fig}
+\end{figure}
+
 
 \GT{Encore ci-bas: threads!}
 
