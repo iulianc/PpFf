@@ -1,5 +1,5 @@
 
-\chapter{\'Etudes de cas et exp\'erimentations~: Comparaisons de \ppff\ avec Java et FastFlow}
+\chapter{Exp\'erimentations~: Comparaisons de \ppff\ avec Java et FastFlow}
 \label{experiences.chap}
 
 \GT{Ci-bas comme ailleurs~: tel qu'indiqué par un évaluateur, tu dois
@@ -18,13 +18,9 @@ Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esento
 \section{M\'ethode utilis\'ee pour les exp\'erimentations}
 \label{usedMethodsForBenchmarks.chap}
 
+\subsection{Caractéristiques des machines et compilateurs utilisés}
+
 Chaque syst\`eme informatique a des caract\'eristiques propres. Quelques-uns des facteurs qui influencent les performances d'un tel syst\`eme sont le type de processeur, le nombre de processeurs ou de c\oe{}urs, et la vitesse des processeurs. 
-
-\GT{Ci-haut: tu indiquais le réseau de communication, mais tu n'en
-traites pas par la suite. Et comme c'est une machine à mémoire
-partagée, cela n'a pas vraiment d'importance.}
-
-\IC{C'est vrai}
 
 
 \newcommand{\LARGEUR}{3cm}
@@ -40,7 +36,7 @@ partagée, cela n'a pas vraiment d'importance.}
 \\\hline
 \textbf{Type de processeur} & GenuineIntel  & AuthenticAMD & GenuineIntel
 \\\hline
-\textbf{Vitesse du processeur (GHz)} & 2.66 & 2.3 & 3.96
+\textbf{Vitesse du processeur (GHz)} & 2.66 & 2.30 & 3.96
 \\\hline
 \textbf{Mono/multi-usager} & Multi & Multi & Mono
 \\\hline
@@ -66,22 +62,17 @@ partagée, cela n'a pas vraiment d'importance.}
 
 Afin d'avoir des r\'esultats plus représentatifs, nous avons conduit nos exp\'eriences sur trois machines diff\'erentes. Le tableau~\ref{machines.table} montre les caract\'eristiques de ces machines. Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
 
+\subsection{Choix des programmes comparés}
+
 Le fonctionnement des programmes \TT{Java}, \TT{PpFf} et~\TT{FastFlow} n'est pas le m\^eme. Alors que \TT{PpFf} et \TT{FastFlow} permettent de varier le nombre de fils d'ex\'ecution (\emph{threads}), \TT{Java} ne le permet pas. Afin de montrer les meilleurs temps d'ex\'ecution et l'\'evolutivit\'e de \TT{PpFf}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees, sur chaque machine, pour identifier les meilleures versions, et ce tant pour \TT{PpFf} que pour \TT{Java} et \TT{FastFlow}.
 Ces exp\'eriences pr\'eliminaires ont \'et\'e conduites avec un nombre de r\'ep\'etitions de 10 et avec une quantit\'e <<moyenne>> de donn\'ees. 
 
-Dans le cas de \TT{PpFf} et \TT{FastFlow}, l'objectif \'etait de d\'eterminer le meilleur niveau de parall\'elisme \`a utiliser dans les \TT{farm}s, c'est-\`a-dire, pour \TT{PpFf}, la valeur pour la m\'ethode \TT{parallel()}, pour le parall\'elisme de donn\'ees.
+Dans le cas de \TT{PpFf} et \TT{FastFlow}, l'objectif \'etait de d\'eterminer le meilleur niveau de parall\'elisme \`a utiliser dans les \emph{farm}s, c'est-\`a-dire, pour \TT{PpFf}, la valeur pour la m\'ethode \TT{parallel()}, pour le parall\'elisme de donn\'ees.
 %
-Par contre, dans le cas de \TT{Java}, l'objectif était de comparer trois versions~: Java avec \emph{warmup}, Java avec et sans \emph{JIT} (~\ref{jitDescription.sect}).
+Par contre, dans le cas de \TT{Java}, l'objectif était de comparer trois versions~: sans \emph{warmup} et avec ou sans \emph{JIT}, avec \emph{warmup} et \emph{JIT} (voir ci-bas).
 %
-\GT{décrire brièvement ces trois versions}. \IC{J'ai enuméré les trois versions de Java}
-%
-C'est la version avec \emph{warmup} qui a \'et\'e utilis\'ee.
+C'est la version avec \emph{warmup} et \emph{JIT} qui a \'et\'e utilis\'ee.
 
-
-\GT{Il faudrait indiquer quelque part que, dans les graphes, cette
-version avec réchauffement est indiquée par \TT{Java*}.}
-
-\IC{J'ai copi\'e cette remarque dans la section 4.2.2. Je pense qu'il est plus appropri\'e d'en parler o\`u je pr\'sente les graphes}
 
 L'effet de pr\'echauffage (\emph{warmup} en anglais) est g\'en\'eralement d\^u au chargement des classes et \`a l'interpr\'etation du \emph{bytecode} au d\'emarrage du programme plutôt qu'à l'exécution directe d'instructions machines. Lorsqu'une nouvelle application d\'emarre, toutes les classes requises sont charg\'ees en m\'emoire par le mod\`ele de chargement paresseux (\emph{lazy loading} en anglais). Un tel mod\`ele est couramment utilis\'e pour reporter l'initialisation d'un objet jusqu'au moment o\`u il est n\'ecessaire.
 %
@@ -90,25 +81,23 @@ L'effet de pr\'echauffage (\emph{warmup} en anglais) est g\'en\'eralement d\^u a
 Il y a aussi l'effet de la compilation 
 \emph{JIT}~\citep{cramer1997compiling} (\emph{Just-In-Time compiler}),
 %
-un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du \emph{bytecode} en langage machine a un impact significatif sur la vitesse d'ex\'ecution.
+un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du \emph{bytecode} en langage machine a un impact positif significatif sur la vitesse d'ex\'ecution une fois que le code machine s'exécute directement.
 
-Dans toutes nos exp\'eriences, les programmes \TT{Java} comparés avec \ppff\ ont donc \'et\'e pr\'echauff\'es en lan\c{c}ant une proc\'edure de pr\'echauffage avant de mesurer le temps pour la portion de code pertinente. Cette proc\'edure de pr\'echauffage a consisté à faire un appel à presque toutes les m\'ethodes utilis\'ees.
+Dans toutes nos exp\'eriences, les programmes \TT{Java} comparés avec \ppff\ ont donc \'et\'e pr\'echauff\'es en lan\c{c}ant une proc\'edure de pr\'echauffage avant de mesurer le temps pour la portion de code pertinente. Cette proc\'edure de pr\'echauffage a consisté à faire un traitement préalable des données avec presque toutes les m\'ethodes utilis\'ees.
+
+\subsection{Temps mesurés}
  
-Il faut noter que le temps mesur\'e dans toutes les exp\'eriences \emph{exclut le lancement du programme}. La mesure du temps se fait de l'int\'erieur du programme m\^eme, une fois celui-ci lanc\'e. Lorsque le traitement est termin\'e, le temps est \'emis en sortie du programme sur \TT{stdout}. Donc, le temps n'est pas mesur\'e avec la commande <<\TT{time}>>. Notamment, dans le cas de \TT{Java}, cela exclut le temps de lancement de la machine virtuelle. De plus, les quantit\'es de donn\'ees utilis\'ees dans exp\'eriences ont \'et\'e choisies de sorte que les temps d'ex\'ecution soient d'au moins 200 millisecondes.
+Il faut noter que le temps mesur\'e dans toutes les exp\'eriences \emph{exclut le lancement du programme}. La mesure du temps se fait de l'int\'erieur du programme m\^eme, une fois celui-ci lanc\'e. Lorsque le traitement est termin\'e, le temps est \'emis en sortie du programme sur \TT{stdout}. Donc, le temps n'est pas mesur\'e avec la commande <<\TT{time}>>. Notamment, dans le cas de \TT{Java}, cela exclut le temps de lancement de la machine virtuelle. De plus, les quantit\'es de donn\'ees utilis\'ees dans les exp\'eriences ont \'et\'e choisies de sorte que les temps d'ex\'ecution soient d'au moins 200 millisecondes.
 
 
-\GT{Finalement, comme tu réfères ou devrais référer plusieurs fois aux
-figures, il est préférable de les mettre dans le corps du mémoire,
-sinon le lecteur devra aller en annexe pour comprendre les détails.
-Par contre, le script lui peut être en annexe.}
-
-\IC{J'ai vu que les références à ces deux graphiques vont dans l'annexe B. Le même nom existe déjà dans cette annexe. Ce sera correct si nous allons supprimer l'annexe B dans la version finale du document.}
+\subsection{Exemples d'expériences préliminaires}
 
 \graphe{WordCount-temps-java-2-10}{Temps PpFf}
 \graphe{WordCount-log-temps-java-2-10}{Temps PpFf (log)}
 
+Afin de montrer les \'etapes des diverses exp\'eriences qui ont conduit aux r\'esultats finaux, l'annexe~\ref{ExperiencesPreliminairesWordCount.ann} pr\'esente un extrait d'un fichier de configuration \TT{WordCount-bm-config.rb}, utilis\'e pour l'ex\'ecution des expériences, alors ques les figures~\grapheref{WordCount-temps-java-2-10} et ~\grapheref{WordCount-log-temps-java-2-10} présentent quelques-uns des r\'esultats préliminaires obtenus.
 
-Afin de montrer les \'etapes des diverses exp\'eriences qui ont conduit aux r\'esultats finaux, l'annexe~\ref{ExperiencesPreliminairesWordCount.ann} pr\'esente un extrait d'un fichier de configuration \TT{WordCount-bm-config.rb}, utilis\'e pour l'ex\'ecution des expériences, ainsi que quelques-uns des r\'esultats préliminaires obtenus. Cr\'e\'e par mon directeur de recherche, ce script permet de configurer les expériences \`a ex\'ecuter. Dans ce fichier on peut sp\'ecifier tous les param\`etres dont on a besoin : le nom de la machine, les quantités de donn\'ees, le nombre de r\'ep\'etitions, et les programmes \`a ex\'ecuter. Les donn\'ees sont regroup\'ees par taille en diverses cat\'egories, les plus importantes étant \TT{donnees\_preliminaires}, \TT{pas\_mal\_de\_donnees} et \TT{beaucoup\_de\_donnees}. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser pour chacun des programmes. Par exemple, les graphes des figures~\grapheref{WordCount-temps-java-2-10} et~\grapheref{WordCount-log-temps-java-2-10} montrent les temps d'ex\'ecution pour \TT{WordCount} --- avec échelle linéaire vs.\ logarithmique --- sur la machine \M1 pour le programme \TT{PpFf} en utilisant la premi\`ere cat\'egorie de donn\'ees (expérience no.~2). Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 10 ex\'ecutions.  Trois  s\'eries de mesures ont \'et\'e effectu\'ees : \TT{PpFf-1} avec un \emph{thread}, \TT{PpFf-2} avec deux \emph{threads} et \TT{PpFf-3} avec trois \emph{threads}. 
+Cr\'e\'e par mon directeur de recherche, ce script permet de configurer les expériences \`a ex\'ecuter. Dans ce fichier on peut sp\'ecifier tous les param\`etres dont on a besoin : la machine pour laquelle est définie l'expérience, les quantités de donn\'ees, le nombre de r\'ep\'etitions, et les programmes \`a ex\'ecuter. Les donn\'ees sont regroup\'ees par taille en diverses cat\'egories, les plus importantes étant \TT{donnees\_preliminaires}, \TT{pas\_mal\_de\_donnees} et \TT{beaucoup\_de\_donnees}. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser pour chacun des programmes. Par exemple, les graphes des figures~\grapheref{WordCount-temps-java-2-10} et~\grapheref{WordCount-log-temps-java-2-10} montrent les temps d'ex\'ecution pour \TT{WordCount} --- avec échelle linéaire vs.\ logarithmique --- sur la machine \M1 pour le programme \TT{PpFf} en utilisant la premi\`ere cat\'egorie de donn\'ees (expérience no.~2). Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 10 ex\'ecutions.  Trois  s\'eries de mesures ont \'et\'e effectu\'ees : \TT{PpFf-1} avec un \emph{thread}, \TT{PpFf-2} avec deux \emph{threads} et \TT{PpFf-3} avec trois \emph{threads}. 
 
 \GT{Ci-haut: là aussi il faut changer \emph{thread}! Et, de fa\c{c}on plus générale, il faut utiliser \emph{thread} et non \TT{thread}.}
 
@@ -122,57 +111,23 @@ L'objectif de ces mesures pr\'eliminaires est de d\'eterminer la valeur qui semb
 %
 Pour mieux distinguer les performances entre les deux autres versions de \TT{PpFf}, une échelle logarithmique peut être utilis\'ee, comme illustrée dans le graphe de la figure~\grapheref{WordCount-log-temps-java-2-10}~: on peut constater que \TT{PpFf-2}, avec 2 \emph{threads}, est plus performant que \TT{PpFf-1}, avec un seul \emph{thread}. 
 %
-\TT{PpFf-2} est donc la version qui sera compar\'ee aux autres programmes lors des expériences finales. Ces expériences comparent donc les meilleures versions entre elles, en utilisant de plus grandes quantit\'es de donn\'ees et avec un plus grand nombre de r\'ep\'etitions, soit 40.
+\TT{PpFf-2} est donc la version qui sera compar\'ee aux autres programmes lors des expériences finales sur la machine \M1. Ces expériences comparent donc les meilleures versions entre elles, en utilisant de plus grandes quantit\'es de donn\'ees et avec un plus grand nombre de r\'ep\'etitions, soit 40.
 
 
+Le nombre de r\'ep\'etitions indique combien de fois chaque programme est exécuté et son temps mesuré.
+%
+On calcule ensuite la moyenne et l'écart-type. Dans un graphe comme celui de la figure~\grapheref{WordCount-temps-java-2-10}, les moyennes sont repr\'esent\'ees par les valeurs qui composent la courbe sur le graphe et les dispersions par des petits barres verticales (par ex., voir les valeurs pour \TT{PpFf-3}
+de la figure~\grapheref{WordCount-temps-java-2-10}). Plus précisément, la barre verticale indique un intervalle de 2 écart-types, donc un intervalle qui contient approximativement 95~\% des mesures.
 
+Chaque s\'erie des exp\'eriences finales inclut le programme \TT{Seq}, une version s\'equentielle utilisant les m\^emes fonctions auxiliaires que les versions pour \TT{PpFf} et \TT{FastFlow}, mais s'ex\'ecutant de fa\c con s\'equentielle. Ce programme a aussi \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, nous avons utilis\'e l'acc\'el\'eration \emph{absolue}. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseurs avec le meilleur programme s\'equentiel qui r\'esout le m\^eme probl\`eme. 
 
-\GT{C'est ici qu'il faudrait que tu expliques le r\^ole du nombre de
-répétitions, et que tu expliques brièvement la signification de la
-barre verticale dans ces graphes. Finalement, contrairement à ce que
-j'ai dit hier, je ne ferai pas un fichier \TT{annexe-ic.tex}, car il
-m'a semblé préférable d'utiliser une méthode plus simple. Le point
-milieu est donc la moyenne de 40 mesures. La barre verticale indique
-l'intervalle qui contient $\approx\ 95$~\% des mesures, puisque la
-valeur maximum = moyenne + 2 écart-types et la valeur minimum =
-moyenne - 2 écart-types.  Est-ce que ça te dit quelque chose, cette
-notion d'écart-type? L'autre méthode que j'avais essayée donnait des
-barres plus courtes, moins représentatives de la variabilité des temps
-mesurés, et pas mal plus compliqué à expliquer.}
+Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moyenne a été calculée, ainsi deux autres valeurs donnant un intervalle pour la valeur minimale et maximale de l'acc\'el\'eration. Repr\'esent\'ees aussi par des petites barres verticales dans les graphes des sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, ces valeurs ainsi que l'accélération moyenne sont calcul\'ees comme suit~: 
 
-
-\GT{Si tu veux présenter les figures d'accélération, il faudrai aussi
-que tu expliques que toutes les expériences incluaient le programme
-\TT{Seq}, une version séquentielle utilisant les mêmes fonctions
-auxiliaires que PpFf et FastFlow, mais s'exécutant de façon
-séquentielle.}
-
-\GT{Autres explications pour les accélérations: dans ce cas, les
-valeurs mininum et maximum sont des approximations = acc. min = temps
-min seq. / temps max par. ET acc. max = temps max seq / temps min
-par. Il faut donc aussi que tu expliques qu'il s'agit d'accélérations
-\emph{absolues}, i.e., par rapport à une bonne version séquentielle.}
-
-\IC{J'ai ajouté des explications ci-dessous}
-
-Le nombre de r\'ep\'etitions est utilis\'e pour d\'eterminer la valeur moyenne de chaque programme et pour illustrer la dispersion des r\'esultats. Dans les graphes des sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, les moyennes sont repr\'esent\'ees par les valeurs qui compose une courbe sur le graphe et la dispersion par une barre verticale pour chaque valeur moyenne. Selon la loi normale (ou loi de \emph{Laplace-Gauss}), la barre verticale indique l'intervalle qui contient approximatif 95\% des mesures. 
-
-Chaque s\'erie des exp\'eriences inclut le programme \TT{Seq}, une version s\'equentielle utilisant les m\^emes fonctions
-auxiliaires que \TT{PpFf} et \TT{FastFlow}, mais s'ex\'ecutant de fa\c con s\'equentielle. Il a \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, on a utilis\'e l'acc\'el\'eration absolue. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseur avec le meilleur programme s\'equentiel qui r\'esout le m\^eme probl\`eme. 
-
-\begin{lstlisting}[
-label={acc_min_max.exp},
-caption={Les formules des calcule pour les acc\'el\'erations approximatives minimale et maximale},
-frame=single,
-float]
-acc. min = temps min seq. / temps max par.
-acc. max = temps max seq / temps min par.
-
-\end{lstlisting}
-
-Afin de montrer la dispersion des acc\'el\'erations, deux autres valeurs ont \'et\'e calcul\'ees : les valeurs approximatives minimale et maximale de l'acc\'el\'eration. Repr\'esent\'ees par une barre verticale dans les graphes des sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, ces valeurs sont calcul\'ees avec les formules montr\'ees dans le listing~\ref{acc_min_max.exp}.
-
-
+\begin{itemize}
+\item acc. moyenne  =  temps moyen séq. / temps moyen par.
+\item acc. min  =  temps min séq. / temps max par.
+\item acc. max = temps max séq. / temps min par.
+\end{itemize}
 
 \section{Analyse de l'application \TT{WordCount}}
 \label{wordcount.sect}
