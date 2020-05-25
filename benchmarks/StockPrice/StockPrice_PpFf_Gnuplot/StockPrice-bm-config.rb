@@ -16,6 +16,10 @@ end
 end
 
 [*1..8].each do |k|
+  Program.define( "PpFf*-#{k}", "./#{PGM}Merged #{k}" )
+end
+
+[*1..8].each do |k|
   Program.define( "FastFlow-#{k}", "./#{PGM}FastFlow #{k}" )
 end
 
@@ -92,7 +96,7 @@ Experience.define( 3,
 Experience.define( 11,
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 20,
-                   programs: ['Java*', 'Java*4', 'Java-6']
+                   programs: ['Java*', 'Java*4', 'Java*6']
                 )
 
 # Les plus performants.
@@ -135,8 +139,8 @@ Experience.define( 71,
 
 
 # Experiences avec intervalle de confiance
-NB_REPETITIONS_IC = 40
-DONNEES_IC = beaucoup_de_donnees
+NB_REPETITIONS_IC = 2 #40
+DONNEES_IC = peu_de_donnees #beaucoup_de_donnees
 
 Experience.define( 1001,
                    machines: ['java'],
@@ -157,4 +161,20 @@ Experience.define( 1003,
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+
+Experience.define( 2001,
+                   machines: ['java'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java*', 'PpFf-4', 'PpFf*-4', 'PpFf*-6']
+                )
+
+
+Experience.define( 2003,
+                   machines: ['MacOS', 'c34581'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java*', 'PpFf-2', 'PpFf*-2', 'PpFf*-4']
                 )

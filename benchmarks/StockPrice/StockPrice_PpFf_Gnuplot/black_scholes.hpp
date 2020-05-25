@@ -201,4 +201,15 @@ StockAndPrice* calculateStockPrice(OptionData* opt) {
     return stockAndPrice;
 }
 
+StockAndPrice* getOptionDataAndCalculateStockPrice(std::string* str) {
+    OptionData* opt = getOptionData(str);
+
+    StockAndPrice* stockAndPrice = new StockAndPrice();
+    stockAndPrice->StockName = opt->StockName;
+    stockAndPrice->StockPrice = BlkSchlsEqEuroNoDiv(opt->s, opt->strike, opt->r, opt->v, 
+                                                    opt->t, opt->OptionType, 0);
+	
+    return stockAndPrice;
+}
+
 #endif /* EXAMPLES_STOCK_MARKET_BLACK_SCHOLES_HPP_ */

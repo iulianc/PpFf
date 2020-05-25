@@ -1,7 +1,7 @@
-_DEF: warmup
+_DEF: merged
 
-warmup: compile
-	./run_bms.rb 'StockPrice' 11
+merged: compile
+	./run_bms.rb 'StockPrice' 2003
 
 bms_preliminaires: compile
 	./run_bms.rb 'StockPrice' 1
@@ -41,6 +41,11 @@ run_ppff: StockPrice
 	@./StockPrice 5 $(TEST_FILE) 1 > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
+run_ppff_merged: StockPriceMerged
+	@echo "*** On execute StockPriceMerged"
+	@./StockPriceMerged 5 $(TEST_FILE) 1 > obtenus.txt
+	diff obtenus.txt $(ATTENDUS)
+
 benchmarks: compile
 	@echo "*** Execution avec divers nombres d'iterations et de threads *** "
 	@./StockPrice $(TEST_FILE) 1 
@@ -58,7 +63,7 @@ benchmarks: compile
 NB_TIMES=5
 
 # Specify the final target name
-EXE 		:= StockPrice StockPriceFastFlow StockPrice.class StockPriceSeq
+EXE 		:= StockPrice StockPriceFastFlow StockPrice.class StockPriceSeq StockPriceMerged
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -106,9 +111,11 @@ compile_fastflow: StockPriceFastFlow
 all	: $(EXE)
 	./StockPrice 
 
-
 StockPrice: StockPrice.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPrice.o $(LDLIBS) -o StockPrice
+
+StockPriceMerged: StockPriceMerged.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceMerged.o $(LDLIBS) -o StockPriceMerged
 
 StockPriceSeq: StockPriceSeq.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) StockPriceSeq.o $(LDLIBS) -o StockPriceSeq
@@ -122,10 +129,10 @@ StockPrice.class: StockPrice.java
 clean: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
 	\rm -f *.class
-
-cleanx cleanall cleanxtra: clean
 	\rm -f *.o *~
 	\rm -f obtenus*txt
+
+cleanx cleanall cleanxtra: clean
 
 # Include the dependency
 -include $(DEP)
