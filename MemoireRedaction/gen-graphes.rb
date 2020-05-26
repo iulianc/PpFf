@@ -3,12 +3,7 @@
 DEBUG = false
 
 FICHIERS = [
-            'appendice-wordcount.tex',
-            'appendice-stockprice.tex',
-            'appendice-wc.tex',
-            'appendice-accs.tex',
-            'appendice-finaux.tex',
-            'appendice-ppff-merged.tex',
+            'appendice-experiences-preliminaires.tex',
             'experiences.tex',
            ]
 
@@ -31,6 +26,15 @@ graphes = FICHIERS
   .map { |x| split_arguments_sous_titre(x) }
 
 
+graphes_h = FICHIERS
+  .map { |f| %x{grep '^[^%]*\\grapheH{.*}' #{f}} }
+  .flat_map { |l| l.split("\n") }
+  .map(&:chomp)
+  .reject(&:empty?)
+  .map { |x| x.gsub('\\grapheH', '') }
+  .map { |x| split_arguments_sous_titre(x) }
+
+
 script = "\#!\n" + "cd graphes\n"
 
 graphes.each do |g, sous_titre|
@@ -48,6 +52,24 @@ graphes.each do |g, sous_titre|
   end
 
   cmd = "./plot.sh '#{pgm}' '#{sorte}' '#{machine}' '#{num_experience}' '#{nb_repetitions}' '#{champs}' '#{avec_log}' '#{sous_titre}' '1'"
+  script += "echo \"** On execute <<#{cmd}>>\"\n" + cmd + "\n"
+end
+
+graphes_h.each do |g, sous_titre|
+  avec_log = '_'
+  if g =~ /log-/
+    avec_log = 'log'
+    g.gsub!( 'log-', '' )
+  end
+  pgm, sorte, machine, num_experience, nb_repetitions, champs = g.split('-')
+
+  if champs
+    champs = champs.split('').join(',')
+  else
+    champs = '*'
+  end
+
+  cmd = "./plot.sh '#{pgm}' '#{sorte}' '#{machine}' '#{num_experience}' '#{nb_repetitions}' '#{champs}' '#{avec_log}' '#{sous_titre}' '2'"
   script += "echo \"** On execute <<#{cmd}>>\"\n" + cmd + "\n"
 end
 

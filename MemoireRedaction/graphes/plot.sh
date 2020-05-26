@@ -39,7 +39,7 @@ NB_REPETITIONS="$1"; shift
 CHAMPS="$1"; shift
 AVEC_LOG=$([[ $1 == log ]] && echo "1" || echo "0"); shift
 SOUS_TITRE="$1"; shift
-AVEC_LATEX=$( [[ $# == 0 ]] && echo "0" || echo "1"); shift
+AVEC_LATEX=$( [[ $# == 0 ]] && echo "0" || echo "$1"); shift
 
 
 # On identifie la sorte d'items traites par le programme
@@ -81,14 +81,14 @@ fi
 # On specificie les noms des fichiers de donnees et de sortie.
 ########################################################################
 suffixe_champs=$( [[ $CHAMPS == '*' ]] && echo '' ||  echo "-$(echo ${CHAMPS} | sed 's/,//g')")
-sous_rep_finaux=$( [[ AVEC_LATEX == 1 ]] && echo "${REP_FINAUX}/" || echo "")
+sous_rep_finaux=$( [[ AVEC_LATEX != 0 ]] && echo "${REP_FINAUX}/" || echo "")
 
 fichier_infos="resultats/${PGM}-infos-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
 fichier_donnees="resultats/${PGM}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
 fichier_infos_finaux="resultats/${REP_FINAUX}/${PGM}-infos-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
 fichier_donnees_finaux="resultats/${REP_FINAUX}/${PGM}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}.txt"
 
-if [[ ${AVEC_LATEX} == 1 ]]; then
+if [[ ${AVEC_LATEX} != 0 ]]; then
     if [[ ! -f ${fichier_infos_finaux} ]] || [[ ! -f ${fichier_donnees_finaux} ]]; then
         read -p "On copie les fichiers de donnees (${fichier_infos} et al.) dans finaux [o/N]?" on_copie
         if [[ ${on_copie} == o || ${on_copie} == O ]]; then
@@ -100,9 +100,11 @@ if [[ ${AVEC_LATEX} == 1 ]]; then
     fichier_donnees=${fichier_donnees_finaux}
 fi
 
-avec_sans_log=$([[ $AVEC_LOG == 1 ]] && echo '-log')
+avec_sans_log=$( [[ $AVEC_LOG == 1 ]] && echo '-log' )
 
-fichier_graphe="${PGM}${avec_sans_log}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}${suffixe_champs}.png"
+here=$( [[ $AVEC_LATEX == 2 ]] && echo '-here' || echo '' )
+
+fichier_graphe="${PGM}${avec_sans_log}-${SORTE}-${MACHINE}-${NUM_EXPERIENCE}-${NB_REPETITIONS}${suffixe_champs}${here}.png"
 
 if [[ $DEBUG == 1 ]]; then
     echo "*** fichier_infos = ${fichier_infos}"
@@ -134,6 +136,17 @@ avec_sans_log2=$([[ $AVEC_LOG == 1 ]] && echo '(log) ')
 
 XTICS="$(head -1 ${fichier_infos})"
 
+if [[ $AVEC_LATEX != 2 ]]; then
+    TITLE="${PGM} -- ${SOUS_TITRE}\nMachine ${NUM_MACHINE}\nNombre de ${ITEMS} traités vs. ${avec_sans_log2}${MESURE}\n"
+    #XLABEL="set xlabel 'Nombre de ${ITEMS} traités'"
+    XLABEL="'Nombre de ${ITEMS} traités'"
+    OFFSET=''
+else
+    TITLE="Machine ${NUM_MACHINE}"
+    XLABEL=''
+    OFFSET='offset 0,-3'
+fi
+
 # On genere le script gnuplot.
 cat >script.plot <<EOF
 set terminal png
@@ -143,10 +156,9 @@ set format x '%.0f'
 set xtics rotate by 310
 set xtics font ", 6"
 set xtics (${XTICS})
-
-set xlabel "Nombre de ${ITEMS} traités"
+set xlabel ${XLABEL}
 set ylabel "${MESURE} (${avec_sans_log1}${UNITE})"
-set title "${PGM} -- ${SOUS_TITRE}\nMachine ${NUM_MACHINE}\nNombre de ${ITEMS} traités vs. ${avec_sans_log2}${MESURE}\n"
+set title "${TITLE}" ${OFFSET}
 EOF
 
 /bin/echo -n "plot [$taille_min:$taille_max][$temps_min:$temps_max] " >>script.plot
@@ -211,7 +223,9 @@ fi
 # On genere les fichiers auxiliaires latex, si demande.
 ########################################################################
 
-if [[ $AVEC_LATEX == 1 ]]; then
+if [[ $AVEC_LATEX != 0 ]]; then
     cp -f ${fichier_graphe} ${REP_FINAUX}
+fi
+if [[ $AVEC_LATEX == 1 ]]; then
     ruby ./gen-latex.rb "${PGM}" "${SORTE}" "${MACHINE}" "${NUM_EXPERIENCE}" "${NB_REPETITIONS}" "${suffixe_champs}" "${SOUS_TITRE}" "${avec_sans_log}"
 fi
