@@ -118,6 +118,13 @@ Experience.define( 22,
                    programs: ['PpFf-2', 'PpFf*-2', 'PpFf*-4']
                 )
 
+Experience.define( 23,
+                   machines: 'c34581',
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 10,
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf*-1', 'PpFf*-2', 'PpFf*-3']
+                )
+
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
 # avec 3, donc on va voir ce qu'il en est si on augmente encore.
 Experience.define( 20,
