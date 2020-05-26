@@ -113,9 +113,9 @@ Experience.define( 11,
 
 # Pour comparer versions PpFf sans vs. avec fusion
 Experience.define( 22,
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 2,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf*-1', 'PpFf*-2', 'PpFf*-4']
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 10,
+                   programs: ['PpFf-2', 'PpFf*-2', 'PpFf*-4']
                 )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
