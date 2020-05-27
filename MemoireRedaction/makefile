@@ -1,6 +1,10 @@
 #
 # makefile for gnu make (gmake)
 #
+latex_diff:
+	./mkdiff.sh
+	tail -20 diff.tex
+
 def:
 	#./gen-graphes.rb
 	pdflatex $(MAIN)
@@ -34,7 +38,7 @@ colored_links:
 clean cleanxtra:
 	rm -f *~ Text/*~ $(MAIN).log $(MAIN).lol $(MAIN).lot $(MAIN).lof $(MAIN).toc *.aux $(MAIN).aux $(MAIN).blg Text/*.bak $(MAIN).pdf $(MAIN).bbl *.bak $(MAIN).out
 	rm -f diff.*
-	rm -f flat.tex
+	rm -f flat.tex mem.tex
 
 xv:
 	evince $(MAIN).pdf &

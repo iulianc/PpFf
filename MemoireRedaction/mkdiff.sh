@@ -14,20 +14,19 @@
 #
 
 
-echo "perl LatexDiff/latexpand.pl memoire.tex > flat.tex"
-perl LatexDiff/latexpand.pl memoire.tex > flat.tex
+sed  's/^\\include{appendice/%\\include}appendice/' memoire.tex > mem.tex
+perl LatexDiff/latexpand.pl mem.tex > flat.tex
+
 
 echo "cd VersionAComparer"
 cd VersionAComparer
-
-echo "perl ../LatexDiff/latexpand.pl memoire.tex > flat.tex"
-perl ../LatexDiff/latexpand.pl memoire.tex > flat.tex
-
+sed  's/^\\include{appendice/%\\include}appendice/' memoire.tex > mem.tex
+perl ../LatexDiff/latexpand.pl mem.tex > flat.tex
 cd ..
 
-echo "latexdiff -c ld.cfg flat.tex VersionAComparer/flat.tex >diff.tex"
-latexdiff -c LatexDiff/ld.cfg VersionAComparer/flat.tex flat.tex >diff.tex
+echo "latexdiff -c LatexDiff/ld.cfg VersionAComparer/flat.tex flat.tex >diff.tex"
+latexdiff -c LatexDiff/ld.cfg VersionAComparer/flat.tex flat.tex > diff.tex
 
-pdflatex diff
+#pdflatex diff
 
 
