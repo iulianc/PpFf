@@ -66,6 +66,38 @@ public class WordCount {
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+Words* splitInWords(std::string* line) {
+    std::string delimiter = " ";
+
+    Words* words = new Words();
+    size_t start = 0, end = 0;
+    do {
+        end = line->find(delimiter, start);
+        size_t len = end - start;
+        words->push_back( line->substr(start, len) );
+        start += len + delimiter.length();
+    } while (end != std::string::npos);
+
+    return words;
+}
+
+std::string* toLowercaseLetters(std::string* data) {
+    std::string* result = new std::string;
+    for (char c: *data) {
+        if ('a' <= c && c <= 'z') {
+            result->push_back(c);
+        } else if ('A' <= c && c <= 'Z') {
+            result->push_back(c-('Z'-'z')); 
+        } else {
+            // NOOP: Le caractere est ignore/supprime!
+        }
+    }
+    return result;
+}
+
+bool notEmpty(std::string* s) {
+    return s->size() > 0;
+}
 \end{lstlisting}
 
 
@@ -73,6 +105,30 @@ public class WordCount {
 \section{Programme \TT{WordCountSeq.cpp}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+int main(int argc, char *argv[]) {
+	// ...
+	auto begin = std::chrono::high_resolution_clock::now();
+	
+    std::unordered_map<std::string, size_t> currentResult;
+
+    std::ifstream file(inputFile);
+    std::string* line = new std::string;
+    while (std::getline(file, *line)) {
+        Words* words = splitInWords(line);
+        for (auto word = words->begin(); word != words->end(); word++) {
+            std::string* wordLC = toLowercaseLetters(&(*word));
+            if ( notEmpty(wordLC) ) {
+                currentResult[*wordLC] += 1;
+            }
+        }
+        line = new std::string;
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+	//..
+}
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,4 +165,90 @@ public class WordCount {
 \section{Programme \TT{WordCountFastFlow.cpp}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+
+struct linesFromFileStage : ff_node {
+    std::string const &path;
+    linesFromFileStage(std::string const &path) : path(path){}
+    
+    void* svc(void*) {
+        std::ifstream file(path);
+
+        std::string* line = new std::string;
+        while (std::getline(file, *line)) {
+            ff_send_out(line);
+            line = new std::string;
+        }
+        return EOS;
+    }
+};
+
+struct splitInWordsStage : ff_node_t<std::string, Words> {
+    Words* svc(std::string* task) {
+        return splitInWords(task);
+    }
+};
+
+struct flatStage : ff_node_t<Words,std::string> {
+    std::string* svc(Words* task) {
+        for (auto &elem: *task) {
+            ff_send_out(&elem);
+        }
+        return GO_ON;
+    }
+};
+
+struct toLowercaseLettersStage : ff_node_t<std::string> {
+    std::string* svc(std::string* task) {
+        return toLowercaseLetters(task);
+    }
+};
+
+struct filterEmptyWordsStage : ff_node_t<std::string> {
+    std::string* svc(std::string* task) {
+        return notEmpty(task) ? task : GO_ON;
+    }
+};
+
+struct groupByKeyStage : ff_node_t<std::string,void> {
+    typedef std::unordered_map<std::string, int> CONTAINER;
+    CONTAINER& container;
+
+    groupByKeyStage(CONTAINER& container) : container(container){}
+
+    void* svc(std::string* task) {
+        container[*task] += 1;
+        return GO_ON;
+    }
+};
+
+
+int main(int argc, char *argv[]) {
+    // ...
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    // Cree les workers pour le farm.
+    std::vector<ff_node*> workers;
+    for ( uint32_t i = 0; i < nbFarmWorkers; i++ ) {
+        workers.push_back( new ff_Pipe<>( new splitInWordsStage,
+                                          new flatStage,
+                                          new toLowercaseLettersStage,
+                                          new filterEmptyWordsStage ) );
+    }
+
+    // Cree le pipeline dans son ensemble.
+    std::unordered_map<std::string, int> result;
+
+    ff_Pipe<> ffp( new linesFromFileStage(inputFile),
+                   new ff_farm(workers),
+                   new groupByKeyStage(result) );
+
+    if (ffp.run_and_wait_end() < 0) 
+        error("running pipe");
+
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+
+    // ...
+}
 \end{lstlisting}
