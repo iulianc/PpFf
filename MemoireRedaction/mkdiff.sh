@@ -16,17 +16,16 @@
 
 sed  's/^\\include{appendice/%\\include}appendice/' memoire.tex > mem.tex
 perl LatexDiff/latexpand.pl mem.tex > flat.tex
-
+\rm -f mem.tex
 
 echo "cd VersionAComparer"
 cd VersionAComparer
 sed  's/^\\include{appendice/%\\include}appendice/' memoire.tex > mem.tex
 perl ../LatexDiff/latexpand.pl mem.tex > flat.tex
+\rm -f mem.tex
 cd ..
 
 echo "latexdiff -c LatexDiff/ld.cfg VersionAComparer/flat.tex flat.tex >diff.tex"
 latexdiff -c LatexDiff/ld.cfg VersionAComparer/flat.tex flat.tex > diff.tex
 
-#pdflatex diff
-
-
+pdflatex diff

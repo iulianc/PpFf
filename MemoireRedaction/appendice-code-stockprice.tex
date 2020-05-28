@@ -1,0 +1,83 @@
+\chapter{Extraits des programmes utilisés pour les expérimentations pour \TT{StockPrice}}
+\label{appendice-code-stockprice.ann}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{StockPrice.java}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lstlisting}[gobble=3,basicstyle=\ttfamily\footnotesize,language=java]
+   Map<String, Double> stockPrice =
+     Files.lines( Paths.get(inputFile) )
+          .parallel()
+          .map( StockPrice::getOptionData )
+          .map( StockPrice::calculateStockPrice )
+          .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+          .toMap();
+\end{lstlisting}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{StockPriceSeq.cpp} (version séquentielle)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
+    std::unordered_map<std::string, double> currentResult;
+    std::ifstream file(inputFile);
+    std::string* line = new std::string;
+    while (std::getline(file, *line)) {
+        OptionData* od = getOptionData(line);
+        StockAndPrice* sp = calculateStockPrice(od);
+        
+        auto mapIt = currentResult.find(sp->StockName);
+        if (mapIt != currentResult.end()) {
+            mapIt->second = std::max(sp->StockPrice, mapIt->second);
+        } else {
+            currentResult[sp->StockName] = sp->StockPrice;
+        }
+
+        line = new std::string;
+    }
+\end{lstlisting}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{StockPrice.cpp} (version \ppff)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
+    Reducer<StockAndPrice, double>
+       reducer(0.0, 
+               [](double maxPrice, StockAndPrice sp) {
+                 return sp.StockPrice > maxPrice ? sp.StockPrice : maxPrice; 
+               },
+               [](double max, double workerResult) { 
+                 return workerResult > max ? workerResult : max; 
+               });
+    std::unordered_map<std::string, double> currentResult =
+        Flow
+        ::source(inputFile)
+        .parallel(nbFarmWorkers)
+        .map<std::string, OptionData>(getOptionData)
+        .map<OptionData, StockAndPrice>(calculateStockPrice)
+        .reduceByKey<StockAndPrice, std::string, double>(
+               reducer, 
+               [](StockAndPrice* sp) { return &(sp->StockName); } );
+\end{lstlisting}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{StockPriceFastFlow.cpp}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
+    std::vector<ff_node*> workers;
+    for (uint32_t i = 0; i < nbFarmWorkers; i++) {
+        workers.push_back(  new ff_Pipe<>( new GetOptionDataStage(),
+                                           new CalculateStockPriceStage() ) );
+    }        
+
+    std::unordered_map<std::string, double> result;
+    ff_Pipe<> ffp( new LinesFromFileStage(inputFile),
+                   new ff_farm(workers),
+                   new ReduceByKeyStage(result) );
+
+    if (ffp.run_and_wait_end()<0)
+        error("running pipe");
+\end{lstlisting}

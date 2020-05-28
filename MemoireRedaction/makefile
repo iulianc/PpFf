@@ -1,11 +1,13 @@
 #
 # makefile for gnu make (gmake)
 #
+def: latex_diff
+
 latex_diff:
 	./mkdiff.sh
 	tail -20 diff.tex
 
-def:
+latex_run:
 	#./gen-graphes.rb
 	pdflatex $(MAIN)
 	#cat graphes/finaux/*tex

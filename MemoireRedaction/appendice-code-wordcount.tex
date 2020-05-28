@@ -1,5 +1,5 @@
 \chapter{Extraits des programmes utilisés pour les expérimentations pour \TT{WordCount}}
-\label{appendice-code-experiences.ann}
+\label{appendice-code-wordcount.ann}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programme \TT{WordCount.java}}
@@ -8,7 +8,7 @@
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=java]
 class GroupByKey implements Consumer<String> {
     @SuppressWarnings("unchecked")
-        private Map<String,Integer> map = (Map) new HashMap();
+    private Map<String,Integer> map = (Map) new HashMap();
     
     public void accept( String s ) {
         map.put(s, map.getOrDefault(s, 0) + 1);
@@ -25,9 +25,8 @@ class GroupByKey implements Consumer<String> {
         return map;
     }
 }
-
+
 public class WordCount {
-
     public static Stream<String> splitInWords(String line) {
         return Arrays.stream(line.trim().split(" "));
     }
@@ -55,7 +54,8 @@ public class WordCount {
         
         long duration = (System.nanoTime() - startTime);
         double milliseconds = (double) duration / 1000000;
-        //..
+        // ...
+    }
 }        
 \end{lstlisting}
 
@@ -102,10 +102,9 @@ bool notEmpty(std::string* s) {
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Programme \TT{WordCountSeq.cpp}}
+\section{Programme \TT{WordCountSeq.cpp} (version séquentielle)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
-int main(int argc, char *argv[]) {
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
 	// ...
 	auto begin = std::chrono::high_resolution_clock::now();
 	
@@ -127,16 +126,15 @@ int main(int argc, char *argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = 
         std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-	//..
-}
+	// ...
 \end{lstlisting}
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programme \TT{WordCount.cpp} (version \ppff)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
     // ...
-
     auto begin = std::chrono::high_resolution_clock::now();
 
     Reducer<std::string, int> reducer(
@@ -157,15 +155,14 @@ int main(int argc, char *argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = 
         std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-
     // ...
 \end{lstlisting}
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programme \TT{WordCountFastFlow.cpp}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
-
 struct linesFromFileStage : ff_node {
     std::string const &path;
     linesFromFileStage(std::string const &path) : path(path){}
@@ -197,6 +194,7 @@ struct flatStage : ff_node_t<Words,std::string> {
     }
 };
 
+
 struct toLowercaseLettersStage : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
         return toLowercaseLetters(task);
@@ -221,12 +219,11 @@ struct groupByKeyStage : ff_node_t<std::string,void> {
     }
 };
 
-
+
 int main(int argc, char *argv[]) {
     // ...
     auto begin = std::chrono::high_resolution_clock::now();
 
-    // Cree les workers pour le farm.
     std::vector<ff_node*> workers;
     for ( uint32_t i = 0; i < nbFarmWorkers; i++ ) {
         workers.push_back( new ff_Pipe<>( new splitInWordsStage,
@@ -235,9 +232,7 @@ int main(int argc, char *argv[]) {
                                           new filterEmptyWordsStage ) );
     }
 
-    // Cree le pipeline dans son ensemble.
     std::unordered_map<std::string, int> result;
-
     ff_Pipe<> ffp( new linesFromFileStage(inputFile),
                    new ff_farm(workers),
                    new groupByKeyStage(result) );
@@ -248,7 +243,6 @@ int main(int argc, char *argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = 
         std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-
     // ...
 }
 \end{lstlisting}
