@@ -1,7 +1,7 @@
 #
 # makefile for gnu make (gmake)
 #
-def: latex_diff
+def: latex_run
 
 latex_diff:
 	./mkdiff.sh

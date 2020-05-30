@@ -28,15 +28,13 @@ class GroupByKey implements Consumer<String> {
 
 public class WordCount {
     public static Stream<String> splitInWords(String line) {
-        return Arrays.stream(line.trim().split(" "));
+        return Arrays
+            .stream( line.trim().split("[^a-zA-Z]") )
+            .filter( word -> word.length() > 0 );
     }
     
     public static String toLowerCaseLetters(String word) {
-        return word.replaceAll("[^a-zA-Z]", "").toLowerCase();
-    }
-    
-    public static boolean notEmpty( String word ) {
-        return word.length() > 0;
+        return word.toLowerCase();
     }
     
     public static void main(String[] args) throws IOException {
@@ -48,7 +46,6 @@ public class WordCount {
             .parallel()
             .flatMap( WordCount::splitInWords )
             .map( WordCount::toLowerCaseLetters )
-            .filter( WordCount::notEmpty )
             .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
             .toMap();
         
@@ -60,6 +57,7 @@ public class WordCount {
 \end{lstlisting}
 
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Fonctions auxiliaires communes aux programmes \TT{WordCountSeq.cpp},
 \TT{WordCount.cpp} et \TT{WordCountFastFlow.cpp}}
@@ -67,40 +65,32 @@ public class WordCount {
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
 Words* splitInWords(std::string* line) {
-    std::string delimiter = " ";
+    std::string lettres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     Words* words = new Words();
-    size_t start = 0, end = 0;
-    do {
-        end = line->find(delimiter, start);
-        size_t len = end - start;
-        words->push_back( line->substr(start, len) );
-        start += len + delimiter.length();
-    } while (end != std::string::npos);
+    size_t next_start = 0;
+    while ( next_start < line->length() ) {
+        size_t next_letter = line->find_first_of(lettres, next_start);
+        if ( next_letter >= line->length() ) break;
+        next_start = line->find_first_not_of(lettres, next_letter+1);
+        std::string word = line->substr(next_letter, next_start - next_letter); 
+        words->push_back( word );
+    };
 
     return words;
 }
 
 std::string* toLowercaseLetters(std::string* data) {
-    std::string* result = new std::string;
-    for (char c: *data) {
-        if ('a' <= c && c <= 'z') {
-            result->push_back(c);
-        } else if ('A' <= c && c <= 'Z') {
-            result->push_back(c-('Z'-'z')); 
-        } else {
-            // NOOP: Le caractere est ignore/supprime!
-        }
-    }
-    return result;
-}
+    std::for_each( data->begin(),
+                   data->end(),
+                   [](char& c) { c = ::tolower(c); } );
 
-bool notEmpty(std::string* s) {
-    return s->size() > 0;
+    return data;
 }
 \end{lstlisting}
 
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programme \TT{WordCountSeq.cpp} (version séquentielle)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,9 +106,7 @@ bool notEmpty(std::string* s) {
         Words* words = splitInWords(line);
         for (auto word = words->begin(); word != words->end(); word++) {
             std::string* wordLC = toLowercaseLetters(&(*word));
-            if ( notEmpty(wordLC) ) {
-                currentResult[*wordLC] += 1;
-            }
+            currentResult[*wordLC] += 1;
         }
         line = new std::string;
     }
@@ -149,7 +137,6 @@ bool notEmpty(std::string* s) {
         .parallel(farmParallelism)
         .flatMap<std::string, std::string, Words>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
-        .find<std::string>(notEmpty)	
         .reduceByKey<std::string, std::string, int>(reducer);  
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -201,12 +188,6 @@ struct toLowercaseLettersStage : ff_node_t<std::string> {
     }
 };
 
-struct filterEmptyWordsStage : ff_node_t<std::string> {
-    std::string* svc(std::string* task) {
-        return notEmpty(task) ? task : GO_ON;
-    }
-};
-
 struct groupByKeyStage : ff_node_t<std::string,void> {
     typedef std::unordered_map<std::string, int> CONTAINER;
     CONTAINER& container;
@@ -228,8 +209,7 @@ int main(int argc, char *argv[]) {
     for ( uint32_t i = 0; i < nbFarmWorkers; i++ ) {
         workers.push_back( new ff_Pipe<>( new splitInWordsStage,
                                           new flatStage,
-                                          new toLowercaseLettersStage,
-                                          new filterEmptyWordsStage ) );
+                                          new toLowercaseLettersStage ) );
     }
 
     std::unordered_map<std::string, int> result;
