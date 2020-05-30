@@ -1,6 +1,8 @@
 #.IGNORE:
 
-def: run_cpp_merged run_cpp run_ff run_seq run_java
+def: run_all
+
+run_all: run_cpp_merged run_cpp run_ff run_seq run_java
 
 def_run:  compile
 	./run_bms.rb 'WordCount' 22
@@ -72,7 +74,7 @@ run_cpp: WordCount
 	@echo "*** Execution C++ *** "
 	@./WordCount 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
 	diff obtenus-cpp.txt $(ATTENDUS)
-	@./WordCount 4 $(TEST_FILE) 0
+	@@./WordCount 4 $(TEST_FILE) 0
 
 run_cpp_merged: WordCountMerged
 	@echo "*** Execution C++ Merged *** "
@@ -95,7 +97,6 @@ run_java: WordCount.class
 	@echo "*** Execution Java ***"
 	java -cp . WordCount 0 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
-	cp -f obtenus-java.txt $(ATTENDUS)
 
 run_java_warmup: WordCount.class
 	@echo "*** Execution Java avec Warmup ***"
