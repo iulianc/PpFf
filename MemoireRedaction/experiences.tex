@@ -210,13 +210,19 @@ débits et accélérations.  Ce sont simplement des calculs différents,
 des résultats différents extraits des temps d'exécution pour ces
 expériences.}
 
-La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a comparer les acc\'el\'erations. Illustr\'ees sur la figure~\ref{WordCount-accs.fig}, les acc\'el\'erations indiquent \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. En comparant les acc\'el\'erations du programme \TT{PpFf} avec celle de \TT{FastFlow}, on peut observer qu'elles sont presque identiques, et ce pour les trois machines. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont n\'egligeables.  
-%
-Par contre, \GT{il faudrait quand même écrire quelques mots sur le
+\IC{C'est vrai. Vous m'avez déjà expliqué ça dans les remarques précédentes.}
+
+La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a comparer les acc\'el\'erations. Illustr\'ees sur la figure~\ref{WordCount-accs.fig}, les acc\'el\'erations indiquent \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. En comparant les acc\'el\'erations du programme \TT{PpFf} avec celle de \TT{FastFlow}, on peut observer qu'elles sont presque identiques, et ce pour les trois machines. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont n\'egligeables. Par contre, \TT{Java} a de meilleures acc\'el\'erations pour \M1 et \M3, mais pas pour \M2. Comme on peut le constater dans tableau~\ref{machines.table}, la machine \M2 dispose d'un plus grand nombre de processeurs par rapport \`a \M1 et \M3. Cet avantage est exploit\'e par les instances de \emph{farm}, permettant \`a \TT{PpFf} d'obtenir une meilleure acc\'el\'eration que \TT{Java} sur cette machine.
+
+\GT{il faudrait quand même écrire quelques mots sur le
 fait que Java a de meilleures accélérations pour \M1 et \M3, mais pas
 pour \M2. Cause/explication possible: \M2 a un plus grand nombre de
 processeurs, qui peuvent être exploités par les instances de
 \emph{farm}?}
+
+\IC{J'ai ajouté votre commentaire.}
+
+
 
 \section{Analyse de l'application \TT{StockPrice}}
 \label{stockprice.sect}
@@ -270,14 +276,35 @@ Toutes les \'etapes qui suivent cette op\'eration seront donc ex\'ecut\'ees en p
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
-\graphe{StockPrice-temps-java-1001-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{StockPrice-debits-java-1001-40}{Programmes Seq, Java, PpFf et FastFlow}
+\begin{figure}
+\grapheH{StockPrice-temps-java-1001-40}
 
-\graphe{StockPrice-temps-japet-1002-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{StockPrice-debits-japet-1002-40}{Programmes Seq, Java, PpFf et FastFlow}
+\grapheH{StockPrice-temps-japet-1002-40}
 
-\graphe{StockPrice-temps-c34581-1003-40}{Programmes Seq, Java, PpFf et FastFlow}
-\graphe{StockPrice-debits-c34581-1003-40}{Programmes Seq, Java, PpFf et FastFlow}
+\grapheH{StockPrice-temps-c34581-1003-40}
+
+\caption[Les temps d'exécution des programmes pour \TT{StockPrice} sur
+les machines \M1, \M2 et \M3.]{Les temps d'exécution des programmes
+pour \TT{StockPrice} sur les machines \M1, \M2 et \M3. L'axe des $x$
+indique le nombre de transactions traitées. L'axe des $y$ indique le temps d'exécution, en millisecondes.}
+\label{StockPrice-temps.fig}
+\end{figure}
+
+
+\begin{figure}
+\grapheH{StockPrice-debits-java-1001-40}
+
+\grapheH{StockPrice-debits-japet-1002-40}
+
+\grapheH{StockPrice-debits-c34581-1003-40}
+
+\caption[Les débits pour \TT{StockPrice} sur
+les machines \M1, \M2 et \M3.]{Les débits des programmes
+pour \TT{StockPrice} sur les machines \M1, \M2 et \M3. L'axe des $x$
+indique le nombre de transactions traitées. L'axe des $y$ indique le nombre de milliers de transactions par seconde (K-transactions/s).}
+\label{StockPrice-debits.fig}
+\end{figure}
+
 
 
 
