@@ -45,7 +45,6 @@ int main(int argc, char* argv[]) {
         .parallel(farmParallelism)
         .flatMap<std::string, std::string, Words>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
-        .find<std::string>(notEmpty)	
         .reduceByKey<std::string, std::string, int>(reducer);  
 
     auto end = std::chrono::high_resolution_clock::now();

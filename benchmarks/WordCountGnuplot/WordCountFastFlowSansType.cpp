@@ -68,12 +68,6 @@ struct toLowercaseLettersStage : ff_node_t<std::string> {
     }
 };
 
-struct filterEmptyWordsStage : ff_node_t<std::string> {
-    std::string* svc(std::string* task) {
-        return notEmpty(task) ? task : GO_ON;
-    }
-};
-
 struct dummyCollector : ff_node_t<std::string> {
     std::string* svc(std::string* task) {
         return task;
@@ -123,7 +117,6 @@ int main(int argc, char *argv[]) {
         p->add_stage( new splitInWordsStage );
         p->add_stage( new flatStage );
         p->add_stage( new toLowercaseLettersStage );
-        p->add_stage( new filterEmptyWordsStage );
         workers.push_back(p);
     }
     ff_farm farm;

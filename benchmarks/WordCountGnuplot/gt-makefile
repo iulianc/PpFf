@@ -1,6 +1,6 @@
 #.IGNORE:
 
-NUM_EXPERIENCE=0
+def: run_cpp_merged run_cpp run_ff run_seq run_java
 
 def_run:  compile
 	./run_bms.rb 'WordCount' 22
@@ -10,18 +10,25 @@ bms_preliminaires: compile
 	./run_bms.rb 'WordCount' 2
 	./run_bms.rb 'WordCount' 3
 
-NB_FOIS=30
 TEST_FILE_78792="testdata/78792Words.txt"
 ATTENDUS_78792="attendus-78792.txt"
+
+TEST_FILE="testdata/3Words.txt"
+ATTENDUS="attendus-3.txt"
+
+TEST_FILE="testdata/10Words.txt"
+ATTENDUS="attendus-10.txt"
+
+TEST_FILE="testdata/131Words.txt"
+ATTENDUS="attendus-131.txt"
 
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-TEST_FILE="testdata/752856Words.txt"
-ATTENDUS="attendus-752856.txt"
+#TEST_FILE="testdata/752856Words.txt"
+#ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
-NB_TIMES=5
 
 ########################################################
 
@@ -68,7 +75,7 @@ run_cpp: WordCount
 	@./WordCount 4 $(TEST_FILE) 0
 
 run_cpp_merged: WordCountMerged
-	@echo "*** Execution C++ *** "
+	@echo "*** Execution C++ Merged *** "
 	@./WordCountMerged 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
 	diff obtenus-cpp.txt $(ATTENDUS)
 	@./WordCountMerged 4 $(TEST_FILE) 0
@@ -82,15 +89,13 @@ run_ff: WordCountFastFlow
 run_seq: WordCountSeq
 	@echo "*** Execution seq. *** "
 	@./WordCountSeq $(TEST_FILE) 1 | sort > obtenus-seq.txt
-	@#head -10 obtenus-seq.txt
-	@#(echo; echo "VS."; @echo)
-	@#head -10 $(ATTENDUS)
 	diff obtenus-seq.txt $(ATTENDUS)
 
 run_java: WordCount.class
 	@echo "*** Execution Java ***"
 	java -cp . WordCount 0 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
+	cp -f obtenus-java.txt $(ATTENDUS)
 
 run_java_warmup: WordCount.class
 	@echo "*** Execution Java avec Warmup ***"

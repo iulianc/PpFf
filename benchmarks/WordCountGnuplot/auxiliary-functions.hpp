@@ -1,14 +1,14 @@
 Words* splitInWords(std::string* line) {
-    std::string delimiter = " ";
+    std::string lettres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     Words* words = new Words();
-    size_t start = 0, end = 0;
+    size_t next_start = 0;
     do {
-        end = line->find(delimiter, start);
-        size_t len = end - start;
-        words->push_back( line->substr(start, len) );
-        start += len + delimiter.length();
-    } while (end != std::string::npos);
+        size_t next_letter = line->find_first_of(lettres, next_start);
+        if ( next_letter == std::string::npos ) break;
+        next_start = line->find_first_not_of(lettres, next_letter+1);
+        words->push_back( line->substr(next_letter, next_start - next_letter) );
+    } while ( next_start != std::string::npos );
 
     return words;
 }
@@ -22,30 +22,25 @@ std::string* toLowercaseLetters(std::string* data) {
             result->push_back(c-('Z'-'z')); 
         } else {
             // NOOP: Le caractere est ignore/supprime!
+            printf( "Cas impossible: '%c'\n", c );
         }
     }
     return result;
 }
 
-bool notEmpty(std::string* s) {
-    return s->size() > 0;
-}
-
-Words* splitInNonEmptyLowerCaseWords(std::string* line) {
-    std::string delimiter = " ";
+Words* splitInLowerCaseWords(std::string* line) {
+    std::string lettres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     Words* words = new Words();
-    size_t start = 0, end = 0;
+    size_t next_start = 0;
     do {
-        end = line->find(delimiter, start);
-        size_t len = end - start;
-        std::string word = line->substr(start, len);
+        size_t next_letter = line->find_first_of(lettres, next_start);
+        if ( next_letter == std::string::npos ) break;
+        next_start = line->find_first_not_of(lettres, next_letter+1);
+        std::string word = line->substr(next_letter, next_start - next_letter); 
         std::string* lc_word = toLowercaseLetters(&word);
-        if (notEmpty(lc_word)) {
-            words->push_back( *lc_word );
-        }
-        start += len + delimiter.length();
-    } while (end != std::string::npos);
+        words->push_back( *lc_word );
+    } while ( next_start != std::string::npos );
 
     return words;
 }

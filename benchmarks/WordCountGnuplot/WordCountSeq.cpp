@@ -34,9 +34,7 @@ int main(int argc, char *argv[]) {
         Words* words = splitInWords(line);
         for (auto word = words->begin(); word != words->end(); word++) {
             std::string* wordLC = toLowercaseLetters(&(*word));
-            if ( notEmpty(wordLC) ) {
-                currentResult[*wordLC] += 1;
-            }
+            currentResult[*wordLC] += 1;
         }
         line = new std::string;
     }

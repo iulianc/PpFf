@@ -56,11 +56,13 @@ public class WordCount {
     static final String DEFAULT_INPUT_FILE = "testdata/78792Words.txt";
   
     public static Stream<String> splitInWords(String line) {
-        return Arrays.stream(line.trim().split(" "));
+        return Arrays
+            .stream( line.trim().split("[^a-zA-Z]") )
+            .filter( word -> word.length() > 0 );
     }
     
     public static String toLowerCaseLetters(String word) {
-        return word.replaceAll("[^a-zA-Z]", "").toLowerCase();
+        return word.toLowerCase();
     }
     
     public static boolean notEmpty( String word ) {
@@ -109,7 +111,6 @@ public class WordCount {
             .parallel()
             .flatMap( WordCount::splitInWords )
             .map( WordCount::toLowerCaseLetters )
-            .filter( WordCount::notEmpty )
             .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
             .toMap();
         

@@ -1,0 +1,10 @@
+also => 1
+but => 1
+dursley => 1
+everything => 1
+had => 2
+house => 1
+s => 1
+the => 1
+they => 2
+wanted => 1

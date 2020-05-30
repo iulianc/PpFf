@@ -67,12 +67,6 @@ struct toLowercaseLettersStage : ff_node_t<std::string> {
     }
 };
 
-struct filterEmptyWordsStage : ff_node_t<std::string> {
-    std::string* svc(std::string* task) {
-        return notEmpty(task) ? task : GO_ON;
-    }
-};
-
 struct groupByKeyStage : ff_node_t<std::string,void> {
     typedef std::unordered_map<std::string, int> CONTAINER;
     CONTAINER& container;
@@ -101,8 +95,7 @@ int main(int argc, char *argv[]) {
     for ( uint32_t i = 0; i < nbFarmWorkers; i++ ) {
         workers.push_back( new ff_Pipe<>( new splitInWordsStage,
                                           new flatStage,
-                                          new toLowercaseLettersStage,
-                                          new filterEmptyWordsStage ) );
+                                          new toLowercaseLettersStage ) );
     }
 
     // Crée le pipeline dans son ensemble.
