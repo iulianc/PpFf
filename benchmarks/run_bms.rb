@@ -20,7 +20,7 @@ if ARGV.empty?
   show_experiences = true
   show_experience = false
 else
-  if ARGV[0] =~ /^[0-9]$/
+  if ARGV[0] =~ /^[0-9]+$/
     NUM_EXPERIENCE = ARGV.shift.to_i
     if ARGV.empty?
       show_experience = false
@@ -92,7 +92,7 @@ class Experience
   end
 
   def to_s
-    "\#<#{@num_experience}:\n\t#{@machines.inspect}\n\t#{@nb_items.inspect}\n\t#{@nb_repetitions}\n\t#{@programs}>"
+    "#{@num_experience} :\n  #{@machines ? (@machines.to_s + "\n  ") : ''}#{@nb_items.inspect}\n  #{@nb_repetitions}\n  #{@programs}"
   end
 end
 
