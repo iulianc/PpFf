@@ -27,8 +27,8 @@ ATTENDUS="attendus-131.txt"
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-#TEST_FILE="testdata/752856Words.txt"
-#ATTENDUS="attendus-752856.txt"
+TEST_FILE="testdata/752856Words.txt"
+ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 
@@ -74,7 +74,7 @@ run_cpp: WordCount
 	@echo "*** Execution C++ *** "
 	@./WordCount 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
 	diff obtenus-cpp.txt $(ATTENDUS)
-	@@./WordCount 4 $(TEST_FILE) 0
+	@./WordCount 4 $(TEST_FILE) 0
 
 run_cpp_merged: WordCountMerged
 	@echo "*** Execution C++ Merged *** "

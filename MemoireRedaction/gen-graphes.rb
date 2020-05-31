@@ -4,6 +4,7 @@ DEBUG = false
 
 FICHIERS = [
             'appendice-experiences-preliminaires.tex',
+            'appendice-ppff-merged.tex',
             'experiences.tex',
            ]
 

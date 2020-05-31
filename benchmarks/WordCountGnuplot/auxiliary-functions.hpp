@@ -1,13 +1,15 @@
 Words* splitInWords(std::string* line) {
-    std::string lettres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     Words* words = new Words();
-    size_t next_start = 0;
-    while ( next_start < line->length() ) {
-        size_t next_letter = line->find_first_of(lettres, next_start);
+    size_t start = 0;
+    while ( start < line->length() ) {
+        size_t next_letter = start;
+        while ( next_letter < line->length() && !isalpha(line->at(next_letter)) )
+            next_letter += 1;
         if ( next_letter >= line->length() ) break;
-        next_start = line->find_first_not_of(lettres, next_letter+1);
-        std::string word = line->substr(next_letter, next_start - next_letter); 
+        start = next_letter + 1;
+        while ( start < line->length() && isalpha(line->at(start)) )
+            start += 1;
+        std::string word = line->substr(next_letter, start - next_letter); 
         words->push_back( word );
     };
 
@@ -23,15 +25,17 @@ std::string* toLowercaseLetters(std::string* data) {
 }
 
 Words* splitInLowerCaseWords(std::string* line) {
-    std::string lettres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     Words* words = new Words();
-    size_t next_start = 0;
-    while ( next_start < line->length() ) {
-        size_t next_letter = line->find_first_of(lettres, next_start);
+    size_t start = 0;
+    while ( start < line->length() ) {
+        size_t next_letter = start;
+        while ( next_letter < line->length() && !isalpha(line->at(next_letter)) )
+            next_letter += 1;
         if ( next_letter >= line->length() ) break;
-        next_start = line->find_first_not_of(lettres, next_letter+1);
-        std::string word = line->substr(next_letter, next_start - next_letter); 
+        start = next_letter + 1;
+        while ( start < line->length() && isalpha(line->at(start)) )
+            start += 1;
+        std::string word = line->substr(next_letter, start - next_letter); 
         words->push_back( *toLowercaseLetters(&word) );
     };
 
