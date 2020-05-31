@@ -7,8 +7,6 @@ EXP=1001
 #HOST=c34581
 #EXP=1003
 
-def: accs
-
 ic:
 	./ch-ic.rb WordCount-temps-$(HOST)-$(EXP)-40.txt
 	./ch-ic.rb StockPrice-temps-$(HOST)-$(EXP)-40.txt
