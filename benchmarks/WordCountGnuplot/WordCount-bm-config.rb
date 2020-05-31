@@ -216,6 +216,13 @@ Experience.define( 10010,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
+Experience.define( 10011,
+                   machines: ['java'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
 Experience.define( 1002,
                    machines: ['japet'],
                    nb_items: DONNEES_IC,
