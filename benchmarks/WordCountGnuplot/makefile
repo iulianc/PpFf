@@ -1,6 +1,6 @@
 .IGNORE:
 def_run:
-	make -f gt-makefile
+	@make -f gt-makefile
 
 
 

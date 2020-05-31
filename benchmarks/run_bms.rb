@@ -9,12 +9,27 @@ DEBUG = true
 ######################################################
 
 if ARGV.empty?
-  puts "*** #{__FILE__} NomDuProgramme NumExperience"
+  puts "usage:"
+  puts "  #{__FILE__} NomDuProgramme NumExperience"
   exit -1
 end
 
-PGM = ARGV[0]
-NUM_EXPERIENCE = ARGV[1].to_i || 0
+PGM = ARGV.shift
+
+if ARGV.empty?
+  show_experiences = true
+  show_experience = false
+else
+  if ARGV[0] =~ /^[0-9]$/
+    NUM_EXPERIENCE = ARGV.shift.to_i
+    if ARGV.empty?
+      show_experience = false
+    else
+      show_experience = true
+    end
+  end
+  show_experiences = false
+end
 
 # Pour utiliser facilement sur diverses machines, dont MacBook, Linux, etc.
 SERVER = ENV['HOST'] || %x{hostname}.chomp
@@ -74,6 +89,10 @@ class Experience
     $programs.keys
       .select { |pgm_name| @programs.include?(pgm_name) }
       .map { |pgm_name| [$programs[pgm_name], pgm_name] }
+  end
+
+  def to_s
+    "\#<#{@num_experience}:\n\t#{@machines.inspect}\n\t#{@nb_items.inspect}\n\t#{@nb_repetitions}\n\t#{@programs}>"
   end
 end
 
@@ -152,12 +171,27 @@ end
 # LE PROGRAMME PRINCIPAL.
 ######################################################
 
+if show_experiences
+  puts "Experiences pour #{SERVER}:"
+  $experiences.each_pair do |num_exp, exp|
+    if exp.machines && exp.machines.include?(SERVER)
+      puts exp
+    end
+  end
+  exit 0
+end
+
 experience = $experiences[NUM_EXPERIENCE]
 
 if experience.machines && !experience.machines.include?(SERVER)
   puts "*** Erreur: experience #{NUM_EXPERIENCE} pas definie sur la machine #{SERVER}"
   puts "    Definie sur #{experience.machines} seulement"
   exit -1
+end
+
+if show_experience
+  puts experience
+  exit 0
 end
 
 nb_items = experience.nb_items

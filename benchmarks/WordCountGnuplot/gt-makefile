@@ -1,5 +1,4 @@
-#.IGNORE:
-
+.IGNORE:
 def: run_all
 
 run_all: run_cpp_merged run_cpp run_ff run_seq run_java
