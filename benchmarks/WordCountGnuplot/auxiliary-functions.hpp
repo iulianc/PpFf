@@ -1,14 +1,15 @@
 Words* splitInWords(std::string* line) {
     Words* words = new Words();
-    size_t start = 0;
+    size_t start = 0, next_letter;
     while ( start < line->length() ) {
-        size_t next_letter = start;
-        while ( next_letter < line->length() && !isalpha(line->at(next_letter)) )
-            next_letter += 1;
+        for ( next_letter = start;
+              next_letter < line->length() && !isalpha(line->at(next_letter));
+              next_letter++ )
+            {};
         if ( next_letter >= line->length() ) break;
-        start = next_letter + 1;
-        while ( start < line->length() && isalpha(line->at(start)) )
-            start += 1;
+        for ( start = next_letter + 1;
+              start < line->length() && isalpha(line->at(start)); start++ )
+            {};
         std::string word = line->substr(next_letter, start - next_letter); 
         words->push_back( word );
     };
@@ -26,15 +27,16 @@ std::string* toLowercaseLetters(std::string* data) {
 
 Words* splitInLowerCaseWords(std::string* line) {
     Words* words = new Words();
-    size_t start = 0;
+    size_t start = 0, next_letter;
     while ( start < line->length() ) {
-        size_t next_letter = start;
-        while ( next_letter < line->length() && !isalpha(line->at(next_letter)) )
-            next_letter += 1;
+        for ( next_letter = start;
+              next_letter < line->length() && !isalpha(line->at(next_letter));
+              next_letter++ )
+            {};
         if ( next_letter >= line->length() ) break;
-        start = next_letter + 1;
-        while ( start < line->length() && isalpha(line->at(start)) )
-            start += 1;
+        for ( start = next_letter + 1;
+              start < line->length() && isalpha(line->at(start)); start++ )
+            {};
         std::string word = line->substr(next_letter, start - next_letter); 
         words->push_back( *toLowercaseLetters(&word) );
     };

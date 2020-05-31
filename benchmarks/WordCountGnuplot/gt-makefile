@@ -15,20 +15,17 @@ bms_preliminaires: compile
 TEST_FILE_78792="testdata/78792Words.txt"
 ATTENDUS_78792="attendus-78792.txt"
 
-TEST_FILE="testdata/3Words.txt"
-ATTENDUS="attendus-3.txt"
-
 TEST_FILE="testdata/10Words.txt"
 ATTENDUS="attendus-10.txt"
 
-TEST_FILE="testdata/131Words.txt"
-ATTENDUS="attendus-131.txt"
+#TEST_FILE="testdata/131Words.txt"
+#ATTENDUS="attendus-131.txt"
 
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-TEST_FILE="testdata/752856Words.txt"
-ATTENDUS="attendus-752856.txt"
+#TEST_FILE="testdata/752856Words.txt"
+#ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 
