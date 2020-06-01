@@ -3,9 +3,10 @@
 ################################################################
 Program.define( 'Seq', "./#{PGM}Seq" )
 
-Program.define( 'Java+', "java -cp . #{PGM} 0" )
-Program.define( 'Java-', "java -Djava.compiler=NONE -cp . #{PGM} 0" )
-Program.define( 'Java*', "java -cp . #{PGM} 1" )
+Program.define( 'Java-', "java -cp . #{PGM} 10" )  # Seq. sans warmup
+Program.define( 'Java',  "java -cp . #{PGM} 11" )  # Seq. avec warmup
+Program.define( 'Java+', "java -cp . #{PGM} 20" )  # Par. sans warmup
+Program.define( 'Java*', "java -cp . #{PGM} 21" )  # Par. avec warmup
 
 [*1..8].each do |k|
   Program.define( "PpFf-#{k}", "./#{PGM} #{k}" )
@@ -33,26 +34,16 @@ beaucoup_de_donnees = [752856, 1639684, 2614743, 5293812, 10587624]
 ################################################################
 # Les experiences.
 ################################################################
-Experience.define( 0,
-                   nb_items: peu_de_donnees,
-                   nb_repetitions: 2,
-                   programs: ['Seq',
-                              'Java+', 'Java-', 'Java*',
-                              'PpFf-1', 'PpFf-2', 'PpFf-4',
-                              'FastFlow-1', 'FastFlow-2', 'FastFlow-4',
-                             ]
-                )
 
 ####################################################
 # Experiences faites sur les machines indiquees pour identifier les
 # programmes de chaque groupe (Java, PpFf et FastFlow) qui sont les
 # plus performants.
 ####################################################
-Experience.define( 1,
-                   machines: ['c34581', 'java', 'japet'],
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 10,
-                   programs: ['Java+', 'Java-', 'Java*']
+Experience.define( 11,
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
+                   programs: ['Java-', 'Java', 'Java+', 'Java*']
                 )
 
 Experience.define( 2,
@@ -80,23 +71,23 @@ Experience.define( 30,
 NB_REPETITIONS_IC = 40
 DONNEES_IC = beaucoup_de_donnees
 
-Experience.define( 1001,
+Experience.define( 3001,
                    machines: ['java'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
-Experience.define( 1002,
+Experience.define( 3002,
                    machines: ['japet'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java*', 'PpFf-8', 'FastFlow-8']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-8', 'FastFlow-5']
                 )
 
-Experience.define( 1003,
+Experience.define( 3003,
                    machines: ['MacOS', 'c34581'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java*', 'PpFf-1', 'FastFlow-1']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-1', 'FastFlow-1']
                 )
