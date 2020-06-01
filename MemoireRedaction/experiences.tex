@@ -175,9 +175,9 @@ Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wor
 
 
 \begin{figure}
-\grapheH{WordCount-temps-japet-1002-40}
+\grapheH{WordCount-temps-java-10010-40}
 
-\grapheH{WordCount-temps-japet-1002-40}
+\grapheH{WordCount-temps-japet-10020-40}
 
 \grapheH{WordCount-temps-c34581-1003-40}
 
@@ -191,9 +191,9 @@ d'exécution, en millisecondes.}
 
 
 \begin{figure}
-\grapheH{WordCount-debits-java-1001-40}
+\grapheH{WordCount-debits-java-10010-40}
 
-\grapheH{WordCount-debits-japet-1002-40}
+\grapheH{WordCount-debits-japet-10020-40}
 
 \grapheH{WordCount-debits-c34581-1003-40}
 
@@ -207,9 +207,9 @@ milliers de mots par seconde (K-mots/s).}
 
 
 \begin{figure}
-\grapheH{WordCount-accs-java-1001-40}
+\grapheH{WordCount-accs-java-10010-40}
 
-\grapheH{WordCount-accs-japet-1002-40}
+\grapheH{WordCount-accs-japet-10020-40}
 
 \grapheH{WordCount-accs-c34581-1003-40}
 
@@ -310,7 +310,7 @@ Les valeurs \TT{DerivaGem}, la valeur et le taux de dividende ne sont pas utilis
 \item Une op\'eration qui r\'epartit les \'el\'ements du flux entre divers \emph{threads}.
 Toutes les \'etapes qui suivent cette op\'eration seront donc ex\'ecut\'ees en parall\`ele.
 
-\item Une op\'eration  \TT{map}, qui permet d'extraire le nom et les options de chaque action.
+\item Une op\'eration \TT{map}, qui permet d'extraire le nom et les options de chaque action.
 
 
 \item  Une op\'eration qui calcule le prix de chaque action. L'algorithme utilis\'e est celui de \emph{Black-Scholes}~\citep{macbeth1979empirical}. 
@@ -352,68 +352,24 @@ indique le nombre de transactions traitées. L'axe des $y$ indique le nombre de 
 \end{figure}
 
 
+Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution et le d\'edit sur les trois machines : \M1, \M2 et \M3. Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiqu\'ee dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Les meilleures versions choisies pour les deux programmes sont les versions utilisant quatre instances parall\`eles d'un \emph{farm} sur les machines \M1 et \M2 et deux sur la machine \M3. Le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqu\'e sur chaque graphe par \TT{Seq}. Chaque programme calcule le prix maximum pour plusieurs actions. Le temps d'ex\'ecution et le d\'ebit r\'esultant sont repr\'esent\'es sur l'axe des~$y$ de chaque graphe, alors que le nombre de transactions trait\'es sont repr\'esent\'es sur l'axe des~$x$. Les r\'esultats de exp\'eriences finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit :
 
 
-Les r\'esultats  pour l'application \TT{StockPrice} sont pr\'esent\'es dans la figure~\ref{executionTimesStockPrice.fig}. Les expériences ont aussi \'et\'e menées sur les deux machines \M1 et~\M2 et les temps d'ex\'ecution pour \ppff\ et \TT{Java} sont indiqu\'es sur la m\^eme figure --- gauche: \M1, droite: \M2. 
-%
-%\IC{J'ai ajout\'e des d\'etails concernant les \emph{threads} utilis\'es par \ppff.}
-Dans le cas de \ppff\, plusieurs exp\'eriences ont \'et\'e men\'ees en variant le nombre de \emph{threads}. La figure~\ref{executionTimesStockPrice.fig} montre le meilleur temps d'ex\'ecution obtenu par celui-ci sur les deux machines. La meilleure performance sur la machine \M1\ a \'et\'e obtenue avec deux \emph{threads} et avec quatre sur la machine \M2.
-%
-Chaque programme calcule le prix maximum pour plusieurs actions. Le temps d'ex\'ecution r\'esultant est repr\'esent\'e sur l'axe des $y$ de la figure~\ref{executionTimesStockPrice.fig}. 
+\begin{itemize}
 
-On remarque que dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ecution en comparaison avec \TT{Java}. Sur la machine \M1, \TT{PpFf} est plus de 7 fois plus rapide que \TT{Java}. Tandis que \TT{PpFf} trouve le prix maximum de l'action en seulement 232~ms, Java requiert 1~629~ms pour la m\^eme t\^ache. Un meilleur temps d'ex\'ecution est obtenu par \TT{Java} sur la machine \M2 que sur la machine \M1. Avec un temps d'ex\'ecution de 411~ms, \TT{Java} est presque 4 fois plus rapide en comparaison avec le m\^eme programme \TT{Java} sur la machine \M1. Toutefois, m\^eme si \TT{Java} se comporte mieux sur cette machine, son temps d'ex\'ecution n'est pas meilleur que celui de \TT{PpFf}. Avec 304~ms, \TT{PpFf} est toujours plus rapide que \TT{Java}. 
+\item La figure~\ref{StockPrice-temps.fig} pr\'esente les temps d'ex\'ecution sur les machines \M1, \M2 et \M3.
 
+\item La figure~\ref{StockPrice-debits.fig} pr\'esente les d\'ebits sur les machines \M1, \M2 et \M3.
+
+\end{itemize}
 
 
+En examinant les temps d'ex\'ecution sur les trois machines, on peut constater que \TT{Java} est plus rapide que \TT{PpFf}. On verra dans la section~\ref{limitesppff.sect} pourquoi \TT{Java} est plus performant. Par contre, si on compare \TT{PpFf} et \TT{FastFlow}, les diff\'erences -- tant pour le temp d'ex\'ecution que pour le d\'ebit -– sont n\'egligeables. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont quasi inexistants.
 
-
-%
-%\section{Analyse des surco\^uts de \TT{PpFf} par rapport \`a \TT{FastFlow}}
-%\label{coutsPpFf.sect}
-%
-%Tel que d\'ecrit dans le chapitre~\ref{implementation.chap}, \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\`eque \TT{FastFlow}. Cette section examine les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow}. 
-%
-%\subsection{Description de l'application}
-%
-%Pour cette exp\'erience, nous avons cr\'e\'e un \emph{micro benchmark} consistant en un {pipeline} avec un seul op\'erateur. L'op\'erateur choisi pour cette exp\'erience est un \TT{map} qui fait un simple calcul it\'eratif, plus pr\'ecis\'ement qui incr\'emente  \TT{nb} fois une variable \TT{*res}, avec~\TT{nb}~=~$10^{\TT{granularity}}$~:
-%{
-%\begin{lstlisting}[language=c++]
-%  int nb = pow(10, granularity);
-%  for (int i = 1; i <= nb; i++) {
-%    *res += 1;   
-%  }
-%\end{lstlisting}
-%} 
-%
-%Ici, \TT{granularity} est un param\`etre sp\'ecifi\'e en argument lors du lancement de l'application. Le code source de cette application pour~\TT{PpFf} et~\TT{FastFlow} est pr\'esent\'e en annexe (Annexes~\ref{sourceCodeMicrobenchmarkPpFf.ann} et~\ref{sourceCodeMicrobenchmarkFastFlow.ann} respectivement). Le m\^eme calcul se r\'ep\`ete pour chaque \'el\'ement dans le pipeline, o\`u la source est constitu\'ee d'une suite d'\'el\'ements. Plus sp\'ecifiquement, pour cette exp\'erience, la suite est compos\'ee des entiers allant de 1 \`a 100~000.  
-%
-%
-%\subsection{Mesures obtenues et analyse des r\'esultats}
-%
-%Afin d'identifer les surco\^uts introduits par \PpFf{} par rapport \`a \TT{FastFlow}, deux s\'eries d'exp\'eriences ont \'et\'e men\'ees~: une avec \TT{granularity = 4}, l'autre avec \TT{granularity~=~5}. Pour la suite d'entiers allant de 1 \`a 100~000, les exp\'eriences ont \'et\'e r\'ealis\'ees avec un nombre variable de \emph{threads} sur deux machines diff\'erentes : \M1\ et \M2.  
-%
-%
-%\begin{figure}
-%\centering
-%     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Java_Maps.png}
-%      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M1.}
-%       \label{GrapheTempsMapsJava.fig}
-%\end{figure}
-%
-%\begin{figure}
-%\centering
-%     \includegraphics[width=1.0\textwidth]{Figures/graphe_temps_Japet_Maps.png}
-%      \caption{Les temps d'ex\'ecution pour \TT{MicroBenchmarkMaps} sur la machine \M2.}
-%       \label{GrapheTempsMapstJapet.fig}
-%\end{figure}
-%
-%
-%La figure~\ref{GrapheTempsMapsJava.fig} montre les r\'esultats des exp\'eriences sur la machine \M1\ alors que la figure~\ref{GrapheTempsMapstJapet.fig} montre les r\'esultats des exp\'eriences sur la machine \M2. On constate un faible surco\^ut
-%introduit par \TT{PpFf} sur la machine \M1. Ce surco\^ut est plus \'evident lorsque la surcharge du calcul est moins grande. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans la figure~\ref{GrapheTempsMapstJapet.fig}, que les lignes du graphe pour \TT{PfFf} et \TT{FastFlow}, tant avec 4 que 5 \emph{threads}, soient quasiment identiques~: la plus grande diff\'erence entre les temps d'ex\'ecutions de deux applications est de 300~ms. Le volume de traitement des deux applications est tr\`es grand. Le pipeline traite 100~000 \'el\'ements et l'algorithme de calcul appliqu\'e \`a chaque \'el\'ement consiste \`a incr\'ementer une valeur de 0 \`a 10~000 dans le cas avec la granularit\'e 4, ou de 0 \`a 100~000 avec la granularit\'e 5. Or, en prenant en consid\'eration ce grand volume de traitement des deux applications, ces 300~ms semblent n\'egligeables.
-
+\`A partir des m\^emes s\'eries d'exp\'eriences, nous avons aussi calcul\'e le d\'ebit, soit le nombre de transactions trait\'ees par seconde. Tel que montr\'e dans la figure~\ref{StockPrice-debits.fig}, ces d\'ebits ont \'et\'e calcul\'es comme suit : les d\'ebits moyens repr\'esent\'es par les valeurs qui composent la courbe sur le graphe et les d\'ebits minimums et maximums repr\'esent\'es par des petites barres verticales. Un point int\'eressant, qui peut \^etre observ\'e dans les graphes de d\'ebits, est que la dispersion du d\'ebit pour \TT{Java} est plus grande que celle de \TT{PpFf}. Cela d\'emontre que \TT{PpFf} est plus stable que \TT{Java}. 
 
 \section{Discussion des résultats et limites de \ppff}
-
+\label{limitesppff.sect}
 
 
 \begin{figure}
@@ -422,9 +378,9 @@ On remarque que dans les deux cas, \TT{PpFf} obtient de meilleurs temps d'ex\'ec
 \grapheH{WordCount-temps-c34581-2003-40-1345}
 
 \caption[Les temps d'exécution des programmes pour \TT{WordCount}
-<<optimisé>> sur les machines \M1 et \M2.]{Les temps d'exécution des
+<<optimisé>> sur les machines \M1 et \M3.]{Les temps d'exécution des
 programmes pour \TT{WordCount} <<optimisé>> sur les machines \M1 et
-\M2. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
+\M3. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
 indique le temps d'exécution, en millisecondes.}
 \label{WordCount-merged-temps.fig}
 \end{figure}
@@ -435,9 +391,9 @@ indique le temps d'exécution, en millisecondes.}
 \grapheH{WordCount-debits-c34581-2003-40-1345}
 
 \caption[Les debits des programmes pour \TT{WordCount}
-<<optimisé>> sur les machines \M1 et \M2.]{Les debits des
+<<optimisé>> sur les machines \M1 et \M3.]{Les debits des
 programmes pour \TT{WordCount} <<optimisé>> sur les machines \M1 et
-\M2. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
+\M3. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
 indique le debits, en millirs de mots traités par second.}
 \label{WordCount-merged-debit.fig}
 \end{figure}
