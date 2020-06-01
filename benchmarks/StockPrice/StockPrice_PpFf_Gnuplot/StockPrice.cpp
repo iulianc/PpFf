@@ -49,10 +49,10 @@ int main(int argc, char* argv[]) {
 
     Reducer<StockAndPrice, double> reducer(0.0, 
                                            [](double maxPrice, StockAndPrice sp) {
-                                               return sp.StockPrice > maxPrice ? sp.StockPrice : maxPrice; 
+                                               return std::max(maxPrice, sp.StockPrice);
                                            },
                                            [](double max, double workerResult) { 
-                                               return workerResult > max ? workerResult : max; 
+                                               return std::max(max, workerResult);
                                            });
     std::unordered_map<std::string, double> currentResult =
         Flow
