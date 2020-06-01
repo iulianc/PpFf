@@ -96,7 +96,7 @@ Experience.define( 3,
 # Pour voir les differentes variantes de java.
 Experience.define( 11,
                    nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 2, #20,
+                   nb_repetitions: 20,
                    programs: ['Java-', 'Java', 'Java+', 'Java*']
                 )
 
