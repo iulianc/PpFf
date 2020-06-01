@@ -65,16 +65,24 @@ public class StockPrice {
      * @param args the command line arguments
      */
 	public static void main(String[] args) throws IOException {        
-        int avecWarmup = Integer.parseInt(args[0]);
+        int sorte = Integer.parseInt(args[0]);
         String inputFile = args.length >= 2 ? args[1] : DEFAULT_INPUT_FILE;
 
+        boolean parallele = (sorte / 10) > 1;
+        boolean avecWarmup = (sorte % 10) == 1;
+
+        int nbLignesWarmup = Integer.parseInt(inputFile
+                                              .replaceAll("[a-zA-Z_]", "")
+                                              .replaceAll("[./]", "")) * 1024 / 10;
+        
         // Utilise pour verifier le bon fonctionnement du programme
         boolean emitOutput = args.length >= 3 && Integer.parseInt(args[2]) == 1;
 
 		// Code bidon pour rechauffement: on emet le nombre d'elements
 		// produits, pour etre certain que le resultat soit utilise
 		// (pour eviter le dead code elimination?).
-        if (avecWarmup == 1) {
+        if (avecWarmup) {
+            System.err.println( "avecWarmup sur " + nbLignesWarmup + " lignes" );
             int stockPrice_ = 
                 Files.lines(Paths.get(inputFile))
                 .parallel()
@@ -82,31 +90,28 @@ public class StockPrice {
                 .collect( Collectors.toList() )
                 .size();
             System.err.println( stockPrice_ );
-        } else if (avecWarmup >= 2) {
-            int stockPrice_ = 
-                Files.lines(Paths.get(inputFile))
-                .limit( (long) Math.pow(10, avecWarmup) )
-                .parallel()
-                .map(StockPrice::getOptionData)
-                .map( StockPrice::calculateStockPrice )
-                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
-                .toMap()
-                .entrySet()
-                .size();
-
-            System.err.println( stockPrice_ );
         }
 
         // Execution du *vrai* programme.
 		long startTime = System.nanoTime();
 
-		Map<String, Double> stockPrice =
-            Files.lines( Paths.get(inputFile) )
-            .parallel()
-            .map( StockPrice::getOptionData )
-            .map( StockPrice::calculateStockPrice )
-            .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
-            .toMap();
+		Map<String, Double> stockPrice;
+        if (parallele) {
+            stockPrice = 
+                Files.lines( Paths.get(inputFile) )
+                .parallel()
+                .map( StockPrice::getOptionData )
+                .map( StockPrice::calculateStockPrice )
+                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .toMap();
+        } else {
+            stockPrice = 
+                Files.lines( Paths.get(inputFile) )
+                .map( StockPrice::getOptionData )
+                .map( StockPrice::calculateStockPrice )
+                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .toMap();
+        }
 
      	long duration = (System.nanoTime() - startTime);
 		double milliseconds = (double) duration / 1000000;
