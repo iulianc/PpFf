@@ -174,7 +174,7 @@ end
 if show_experiences
   puts "Experiences pour #{SERVER}:"
   $experiences.each_pair do |num_exp, exp|
-    if exp.machines && exp.machines.include?(SERVER)
+    if exp.machines.nil? || exp.machines.include?(SERVER)
       puts exp
     end
   end
