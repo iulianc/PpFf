@@ -1,13 +1,7 @@
-_DEF: merged
+_DEF: run_java
 
 merged: compile
 	./run_bms.rb 'StockPrice' 2003
-
-bms_preliminaires: compile
-	./run_bms.rb 'StockPrice' 1
-	./run_bms.rb 'StockPrice' 2
-	./run_bms.rb 'StockPrice' 3
-
 
 TEST_FILE="../testdata/stock_options_64K.txt"
 ATTENDUS="../testdata/pico_result.txt"
@@ -30,10 +24,17 @@ run_ff: StockPriceFastFlow
 	diff obtenus.txt $(ATTENDUS)
 
 run_java: StockPrice.class
-	@echo "*** On compile et execute StockPrice.java"
-	java StockPrice 0 $(TEST_FILE) 1 | sort > obtenus.txt
+	@echo "*** On compile et execute StockPrice.java (seq. sans)"
+	java StockPrice 10 $(TEST_FILE) 1 | sort > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
-	java StockPrice 1 $(TEST_FILE) 1 | sort > obtenus.txt
+	@echo "*** On compile et execute StockPrice.java (seq. avec)"
+	java StockPrice 11 $(TEST_FILE) 1 | sort > obtenus.txt
+	diff obtenus.txt $(ATTENDUS)
+	@echo "*** On compile et execute StockPrice.java (par. sans)"
+	java StockPrice 20 $(TEST_FILE) 1 | sort > obtenus.txt
+	diff obtenus.txt $(ATTENDUS)
+	@echo "*** On compile et execute StockPrice.java (par. avec)"
+	java StockPrice 21 $(TEST_FILE) 1 | sort > obtenus.txt
 	diff obtenus.txt $(ATTENDUS)
 
 run_ppff: StockPrice
