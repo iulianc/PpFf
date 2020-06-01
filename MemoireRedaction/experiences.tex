@@ -128,50 +128,6 @@ Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wor
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
-\begin{figure}[htbp]
-\grapheH{WordCount-temps-java-1001-40}
-\grapheH{WordCount-temps-java-10010-40}
-\caption{Temps~: Avant vs.\ Après optimisations.} 
-\label{temps-avant-apres.fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\grapheH{WordCount-debits-java-1001-40}
-\grapheH{WordCount-debits-java-10010-40}
-\caption{Débits~: Avant vs.\ Après optimisations.} 
-\label{debits-avant-apres.fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\grapheH{WordCount-accs-java-1001-40}
-\grapheH{WordCount-accs-java-10010-40}
-\caption{Accélérations~: Avant vs.\ Après optimisations.} 
-\label{accs-avant-apres.fig}
-\end{figure}
-
-
-
-\begin{figure}[htbp]
-\grapheH{WordCount-temps-japet-1002-40}
-\grapheH{WordCount-temps-japet-10020-40}
-\caption{Temps~: Avant vs.\ Après optimisations.} 
-\label{temps-avant-apres.fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\grapheH{WordCount-debits-japet-1002-40}
-\grapheH{WordCount-debits-japet-10020-40}
-\caption{Débits~: Avant vs.\ Après optimisations.} 
-\label{debits-avant-apres.fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\grapheH{WordCount-accs-japet-1002-40}
-\grapheH{WordCount-accs-japet-10020-40}
-\caption{Accélérations~: Avant vs.\ Après optimisations.} 
-\label{accs-avant-apres.fig}
-\end{figure}
-
 
 
 \begin{figure}
@@ -251,13 +207,6 @@ En comparant les temps d'ex\'ecution entre les programmes \TT{PpFf} et \TT{FastF
 Afin de mieux comparer les deux programmes, \TT{PpFf} et \TT{Java}, nous avons aussi calculé, à partir des mêmes séries d'exp\'eriences, le d\'ebit, soit le nombre de mots trait\'e par seconde. Tel que montr\'e dans la figure~\ref{WordCount-debits.fig}, ces débits ont \'et\'e calculés pour les trois machines. L'axe des $x$ indique le nombre de mots trait\'es et l'axe des $y$ indique le nombre de milliers de mots par seconde (\TT{K-mots/s}). Un point int\'eressant, qui peut \^etre observ\'e dans les diagrammes de d\'ebits, est que le d\'ebit est relativement constant. En prenant comme exemple le diagramme pour \TT{PpFf-2} pour \M1 de la figure~\ref{WordCount-debits.fig}, on peut noter que le d\'ebit reste relativement stable peu importe la taille du fichier. Cela d\'emontre que \TT{PpFf} est efficace non seulement pour un petit volume de travail, mais aussi pour de grands traitements de donn\'ees.
 
 
-\GT{Attention: ce sont toujours les mêmes expériences, pour temps,
-débits et accélérations.  Ce sont simplement des calculs différents,
-des résultats différents extraits des temps d'exécution pour ces
-expériences.}
-
-\IC{C'est vrai. Vous m'avez déjà expliqué ça dans les remarques précédentes.}
-
 La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a comparer les acc\'el\'erations. Illustr\'ees sur la figure~\ref{WordCount-accs.fig}, les acc\'el\'erations indiquent \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. En comparant les acc\'el\'erations du programme \TT{PpFf} avec celle de \TT{FastFlow}, on peut observer qu'elles sont presque identiques, et ce pour les trois machines. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont n\'egligeables. Par contre, \TT{Java} a de meilleures acc\'el\'erations pour \M1 et \M3, mais pas pour \M2. Comme on peut le constater dans tableau~\ref{machines.table}, la machine \M2 dispose d'un plus grand nombre de processeurs par rapport \`a \M1 et \M3. Cet avantage est exploit\'e par les instances de \emph{farm}, permettant \`a \TT{PpFf} d'obtenir une meilleure acc\'el\'eration que \TT{Java} sur cette machine.
 
 \GT{il faudrait quand même écrire quelques mots sur le
@@ -280,7 +229,28 @@ Dans le monde informatique actuel, les institutions financi\`eres produisent d'\
 
 L'application \TT{StockPrice} calcule le prix d'une action en utilisant le modèle \emph{Black-Scholes}~\citep{macbeth1979empirical}. Ce mod\`ele d'\'evaluation est utilis\'e pour d\'eterminer le prix juste ou la valeur th\'eorique d'une option d'achat ou de vente, et ce en fonction de six variables telles que la valeur de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, la volatilit\'e du prix de l'action, la dur\'ee et le type d'option. 
 
-L'application \TT{StockPrice} est compos\'ee de cinq op\'erations principales~: 
+\begin{lstlisting}[float,label={StockPrice-code.listing},gobble=4,basicstyle=\ttfamily\footnotesize,language=c++,caption={Extrait du code de \TT{StockPrice.cpp} (version \ppff).},frame=single]
+    Reducer<StockAndPrice, double>
+       reducer(0.0, 
+               [](double maxPrice, StockAndPrice sp) {
+                  return std::max(maxPrice, sp.StockPrice);
+               },
+               [](double max, double workerResult) { 
+                  return std::max(max, workerResult);
+               });
+    std::unordered_map<std::string, double> currentResult =
+        Flow
+        ::source(inputFile)
+        .parallel(nbFarmWorkers)
+        .map<std::string, OptionData>(getOptionData)
+        .map<OptionData, StockAndPrice>(calculateStockPrice)
+        .reduceByKey<StockAndPrice, std::string, double>(
+               reducer, 
+               [](StockAndPrice* sp) { return &(sp->StockName); } );
+\end{lstlisting}
+
+
+L'application \TT{StockPrice} est compos\'ee de cinq op\'erations principales, comme on peut le voir dans le listing~\ref{StockPrice-code.listing} qui présente un extrait de la version \ppff.
 
 \begin{lstlisting}[
 label={exampleInfoActionFromFile},
@@ -300,23 +270,26 @@ HSEA 100.00 90.00 0.1000 0.00 0.25 1.00 C 0.00 21.16345465848
 LENS 100.00 100.00 0.1000 0.00 0.25 0.10 C 0.00 3.65996266031
 \end{lstlisting}
 
+
+\GT{Comme tu décrivais ce que faisait le code, il m'a semblé
+préférable qu'il soit visible, juste à coté.}
+
+
 \begin{itemize}
 
-\item Une op\'eration qui d\'efinit la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier. Le listing~\ref{exampleInfoActionFromFile} montre un exemple avec quelques enregistrements tir\'es d'un des fichiers de données. 
+\item Une op\'eration \TT{Flow::source} qui d\'efinit la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier. Le listing~\ref{exampleInfoActionFromFile} montre un exemple avec quelques enregistrements tir\'es d'un des fichiers de données. 
 
 Un enregistrement est identifi\'e par les informations suivantes : le nom de l'action, la valeur actuelle de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, le taux de dividende, la volatilit\'e du prix de l'action, le temps qu'il reste \`a l'option avant son \'ech\'eance (exprim\'e en ann\'ees), le type d'option (\TT{C=CALL}~: prix pour une option d'achat~; \TT{P=PUT}~: prix pour une option de vente), la valeur de dividende et la valeur de r\'ef\'erence \TT{DerivaGem}. 
 Les valeurs \TT{DerivaGem}, la valeur et le taux de dividende ne sont pas utilis\'es dans \TT{StockPrice} pour calculer le prix d'une action.
 
-\item Une op\'eration qui r\'epartit les \'el\'ements du flux entre divers \emph{threads}.
-Toutes les \'etapes qui suivent cette op\'eration seront donc ex\'ecut\'ees en parall\`ele.
+\item Une op\'eration \TT{parallel} qui r\'epartit les \'el\'ements du flux entre divers \emph{threads} de parallélisme de données.
+Toutes les \'etapes qui suivent cette op\'eration seront donc ex\'ecut\'ees en parall\`ele, via une \emph{farm}.
 
 \item Une op\'eration \TT{map}, qui permet d'extraire le nom et les options de chaque action.
 
+\item  Une autre op\'eration \TT{map} qui calcule le prix de chaque action. L'algorithme utilis\'e est celui de \emph{Black-Scholes}~\citep{macbeth1979empirical}. 
 
-\item  Une op\'eration qui calcule le prix de chaque action. L'algorithme utilis\'e est celui de \emph{Black-Scholes}~\citep{macbeth1979empirical}. 
-
-\item Une derni\`ere op\'eration qui extrait le prix maximum pour chaque action.
-
+\item Une derni\`ere op\'eration, \TT{reduceByKey}, qui extrait le prix maximum pour chaque action.
 
 \end{itemize}
 
@@ -352,7 +325,7 @@ indique le nombre de transactions traitées. L'axe des $y$ indique le nombre de 
 \end{figure}
 
 
-Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution et le d\'edit sur les trois machines : \M1, \M2 et \M3. Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiqu\'ee dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Les meilleures versions choisies pour les deux programmes sont les versions utilisant quatre instances parall\`eles d'un \emph{farm} sur les machines \M1 et \M2 et deux sur la machine \M3. Le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqu\'e sur chaque graphe par \TT{Seq}. Chaque programme calcule le prix maximum pour plusieurs actions. Le temps d'ex\'ecution et le d\'ebit r\'esultant sont repr\'esent\'es sur l'axe des~$y$ de chaque graphe, alors que le nombre de transactions trait\'es sont repr\'esent\'es sur l'axe des~$x$. Les r\'esultats de exp\'eriences finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit :
+Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution et le d\'edit sur les trois machines : \M1, \M2 et \M3. Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiqu\'ee dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Les meilleures versions choisies pour les deux programmes sont les versions utilisant quatre instances parall\`eles d'un \emph{farm} sur les machines \M1 et \M2 et deux sur la machine \M3. Le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqu\'e sur chaque graphe par \TT{Seq}. Chaque programme calcule le prix maximum pour plusieurs actions. Les temps d'ex\'ecution et les d\'ebit r\'esultants sont repr\'esent\'es sur l'axe des~$y$ de chaque graphe, alors que les nombres de transactions trait\'ees sont repr\'esent\'es sur l'axe des~$x$. Les r\'esultats de exp\'eriences finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit :
 
 
 \begin{itemize}
@@ -364,9 +337,9 @@ Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant l
 \end{itemize}
 
 
-En examinant les temps d'ex\'ecution sur les trois machines, on peut constater que \TT{Java} est plus rapide que \TT{PpFf}. On verra dans la section~\ref{limitesppff.sect} pourquoi \TT{Java} est plus performant. Par contre, si on compare \TT{PpFf} et \TT{FastFlow}, les diff\'erences -- tant pour le temp d'ex\'ecution que pour le d\'ebit -– sont n\'egligeables. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont quasi inexistants.
+En examinant les temps d'ex\'ecution sur les trois machines, on peut constater que \TT{Java} est plus rapide que \TT{PpFf}. On verra dans la section~\ref{limitesppff.sect} pourquoi \TT{Java} est plus performant. Par contre, si on compare \TT{PpFf} et \TT{FastFlow}, les diff\'erences des temps d'ex\'ecution sont faibles. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont négligeables.
 
-\`A partir des m\^emes s\'eries d'exp\'eriences, nous avons aussi calcul\'e le d\'ebit, soit le nombre de transactions trait\'ees par seconde. Tel que montr\'e dans la figure~\ref{StockPrice-debits.fig}, ces d\'ebits ont \'et\'e calcul\'es comme suit : les d\'ebits moyens repr\'esent\'es par les valeurs qui composent la courbe sur le graphe et les d\'ebits minimums et maximums repr\'esent\'es par des petites barres verticales. Un point int\'eressant, qui peut \^etre observ\'e dans les graphes de d\'ebits, est que la dispersion du d\'ebit pour \TT{Java} est plus grande que celle de \TT{PpFf}. Cela d\'emontre que \TT{PpFf} est plus stable que \TT{Java}. 
+\`A partir des m\^emes s\'eries d'exp\'eriences, nous avons aussi calcul\'e les d\'ebits, soit le nombre de transactions trait\'ees par seconde. Dans la figure~\ref{StockPrice-debits.fig}, on trouve les d\'ebits moyens, indiqués par les valeurs qui composent la courbe sur le graphe, ainsi que des petites barres verticales qui indiquent la dispersion de débits mesurés~; comme pour \TT{WordCount}, cet intervalle indique la moyenne $\pm$ deux fois l'écart-type. Un point int\'eressant, qui peut \^etre observ\'e dans les graphes de d\'ebits, est que la dispersion du d\'ebit pour \TT{Java} est plus grande que celle de \TT{PpFf}. Cela d\'emontre que \TT{PpFf} semble plus stable que \TT{Java}. 
 
 \section{Discussion des résultats et limites de \ppff}
 \label{limitesppff.sect}
