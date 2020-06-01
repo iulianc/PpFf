@@ -1,21 +1,20 @@
 #!
 if [[ $HOST == 'java' ]]; then
-    EXP=1001
+    EXP=3001
 elif [[ $HOST == 'japet' ]]; then
     if [[ $(ruby --version) =~ jruby ]]; then
         echo "*** Sur japet, il faut appeler 'rvm use 2.2.1'"
         exit -1
     fi
-    EXP=1002
+    EXP=3002
 else
-    EXP=1003
+    EXP=3003
 fi
 
 mk='make -f gt-makefile'
 
 echo "*** Execution sur ${HOST} ***"
-for pgm in WordCount StockPrice WC; do
-#for pgm in StockPrice WC; do
+for pgm in WordCount StockPrice; do
     echo "*** ${pgm} ***"
     date
 
