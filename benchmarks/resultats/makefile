@@ -9,7 +9,7 @@ def: accs_rel
 #EXP=1003
 
 accs_rel:
-	./gen-acc-rel.rb WordCount-temps-japet-3002-40.txt
+	./gen-accsrel.rb WordCount-temps-japet-3002-40.txt
 
 ic:
 	./ch-ic.rb WordCount-temps-$(HOST)-$(EXP)-40.txt
@@ -22,10 +22,10 @@ ic:
 
 
 accs:
-	./gen-acc.rb WordCount-temps-$(HOST)-$(EXP)-40.txt
-	./gen-acc.rb StockPrice-temps-$(HOST)-$(EXP)-40.txt
-	./gen-acc.rb WC-temps-$(HOST)-$(EXP)-40.txt
+	./gen-accs.rb WordCount-temps-$(HOST)-$(EXP)-40.txt
+	./gen-accs.rb StockPrice-temps-$(HOST)-$(EXP)-40.txt
+	./gen-accs.rb WC-temps-$(HOST)-$(EXP)-40.txt
 	#
-	./gen-acc.rb WordCount-temps-$(HOST)-$(EXP)-40.txt
-	./gen-acc.rb StockPrice-temps-$(HOST)-$(EXP)-40.txt
-	./gen-acc.rb WC-temps-$(HOST)-$(EXP)-40.txt
+	./gen-accs.rb WordCount-temps-$(HOST)-$(EXP)-40.txt
+	./gen-accs.rb StockPrice-temps-$(HOST)-$(EXP)-40.txt
+	./gen-accs.rb WC-temps-$(HOST)-$(EXP)-40.txt

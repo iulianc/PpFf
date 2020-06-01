@@ -151,7 +151,7 @@ Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wor
 
 
 \begin{figure}
-\grapheH{WordCount-temps-java-10010-40}
+\grapheH{WordCount-temps-java-3001-40}
 
 \grapheH{WordCount-temps-japet-3002-40}
 
@@ -167,7 +167,7 @@ d'exécution, en millisecondes.}
 
 
 \begin{figure}
-\grapheH{WordCount-debits-java-10010-40}
+\grapheH{WordCount-debits-java-3001-40}
 
 \grapheH{WordCount-debits-japet-3002-40}
 
@@ -183,7 +183,7 @@ milliers de mots par seconde (K-mots/s).}
 
 
 \begin{figure}
-\grapheH{WordCount-accs-java-10010-40}
+\grapheH{WordCount-accs-java-3001-40}
 
 \grapheH{WordCount-accs-japet-3002-40}
 
@@ -213,6 +213,7 @@ d'ex\'ecution sur les machines \M1, \M2 et \M3.
 les machines \M1, \M2 et \M3.
 
 \item La figure~\ref{WordCount-accs.fig} pr\'esente les accélérations
+par rapport à la version \TT{Seq}entielle
 sur les machines \M1, \M2 et \M3.
 \end{itemize}
 
@@ -236,6 +237,28 @@ processeurs, qui peuvent être exploités par les instances de
 \emph{farm}?}
 
 \IC{J'ai ajouté votre commentaire.}
+
+
+\begin{figure}
+\grapheH{WordCount-accsrel-java-3001-40-1234}
+
+\grapheH{WordCount-accsrel-japet-3002-40-1234}
+
+\grapheH{WordCount-accsrel-c34581-3003-40-1234}
+
+\caption[Les accélérations \emph{relatives} pour \TT{WordCount} sur les machines \M1,
+\M2 et \M3.]{Les accélérations relatives des programmes pour \TT{WordCount} sur
+les machines \M1, \M2 et \M3 par rapport à leur version séquentielle. L'axe des $x$ indique le nombre de mots
+traités. L'axe des $y$ indique l'accélération absolue par rapport à
+\TT{WordCountSeq.cpp} (\TT{Seq}). Les résultats pour la version
+\TT{FastFlow} ont été omis (semblables à ceux de la version \ppff).}
+\label{WordCount-accsrel.fig}
+\end{figure}
+
+
+\GT{J'ai ajouté la figure avec les accélérations relatives. Il faudra
+voir si ça vaut la peine de l'expliquer et d'en discuter! Mais je
+voulais voir ce dont elle aurait l'air. }
 
 
 

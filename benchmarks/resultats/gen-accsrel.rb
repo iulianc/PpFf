@@ -31,7 +31,7 @@ if DEBUG
   puts
 end
 
-fich_accs = FICH.gsub('temps', 'accs-rel')
+fich_accs = FICH.gsub('temps', 'accsrel')
 fich_sortie = File.open( fich_accs, "w" )
 
 File.new(FICH, chomp: true).readlines.each do |ligne|
