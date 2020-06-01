@@ -12,9 +12,10 @@
 ################################################################
 Program.define( 'Seq', "./#{PGM}Seq" )
 
-Program.define( 'Java+', "java -cp . #{PGM} 0" )
-Program.define( 'Java-', "java -Djava.compiler=NONE -cp . #{PGM} 0" )
-Program.define( 'Java*', "java -cp . #{PGM} 1" )
+Program.define( 'Java-', "java -cp . #{PGM} 10" )  # Seq. sans warmup
+Program.define( 'Java',  "java -cp . #{PGM} 11" )  # Seq. avec warmup
+Program.define( 'Java+', "java -cp . #{PGM} 20" )  # Par. sans warmup
+Program.define( 'Java*', "java -cp . #{PGM} 21" )  # Par. avec warmup
 
 [*1..4].each do |k|
   Program.define( "Java*#{k}", "java -cp . #{PGM} #{k}" )
@@ -104,11 +105,11 @@ Experience.define( 3,
                 )
 
 
-# Pour voir si differents types de warm-up font une difference.
+# Pour voir les differences entre les diverses versions de Java.
 Experience.define( 11,
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 20,
-                   programs: ['Java+', 'Java*', 'Java*2', 'Java*3', 'Java*4']
+                   programs: ['Java-', 'Java', 'Java+', 'Java*']
                 )
 
 # Pour comparer versions PpFf sans vs. avec fusion

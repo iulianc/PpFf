@@ -70,8 +70,17 @@ public class WordCount {
     }
     
     public static void main(String[] args) throws IOException {
-        int avecWarmup = Integer.parseInt(args[0]);
+        int sorte = Integer.parseInt(args[0]);
         String inputFile = args.length >= 2 ? args[1] : DEFAULT_INPUT_FILE;
+
+        boolean parallele = (sorte / 10) > 1;
+        boolean avecWarmup = (sorte % 10) == 1;
+
+        int nbLignesWarmup = Integer.parseInt(inputFile
+                                            .replaceAll("[a-zA-Z]", "")
+                                            .replaceAll("/", "")
+                                            .replaceAll("[.]", "")) / 200 ;
+        
 
         // Utilise pour verifier le bon fonctionnement du programme
         boolean emitOutput = args.length >= 3 && Integer.parseInt(args[2]) == 1;
@@ -79,20 +88,11 @@ public class WordCount {
 		// Code bidon pour rechauffement: on emet le nombre d'elements
 		// produits, pour etre certain que le resultat soit utilise
 		// (pour eviter le dead code elimination?).
-        if (avecWarmup == 1) {
-            int wordsCount_ = 
-                Files.lines(Paths.get(inputFile))
-                .parallel()
-                .flatMap( WordCount::splitInWords )
-                .map( WordCount::toLowerCaseLetters )
-                .filter( WordCount::notEmpty )
-                .collect( Collectors.toList() )
-                .size();
-            System.err.println( wordsCount_ );
-        } else if (avecWarmup >= 2) {
+        if (avecWarmup) {
+            System.err.println( "avecWarmup sur " + nbLignesWarmup + " lignes" );
             Map<String,Integer> wordsCount = 
                 Files.lines( Paths.get(inputFile) )
-                .limit( (long) Math.pow(10, avecWarmup) )
+                .limit( nbLignesWarmup )
                 .parallel()
                 .flatMap( WordCount::splitInWords )
                 .map( WordCount::toLowerCaseLetters )
@@ -105,14 +105,25 @@ public class WordCount {
 
         // Execution du *vrai* programme.
         long startTime = System.nanoTime();
-        
-        Map<String,Integer> wordsCount = 
-            Files.lines( Paths.get(inputFile) )
-            .parallel()
-            .flatMap( WordCount::splitInWords )
-            .map( WordCount::toLowerCaseLetters )
-            .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
-            .toMap();
+        Map<String,Integer> wordsCount;
+        if (parallele) {
+            //System.err.println( "Execution avec parallel()" );
+            wordsCount =
+                Files.lines( Paths.get(inputFile) )
+                .parallel()
+                .flatMap( WordCount::splitInWords )
+                .map( WordCount::toLowerCaseLetters )
+                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .toMap();
+        } else {
+            //System.err.println( "Execution *sans* parallel()" );
+            wordsCount =
+                Files.lines( Paths.get(inputFile) )
+                .flatMap( WordCount::splitInWords )
+                .map( WordCount::toLowerCaseLetters )
+                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .toMap();
+        }
         
         long duration = (System.nanoTime() - startTime);
         double milliseconds = (double) duration / 1000000;
