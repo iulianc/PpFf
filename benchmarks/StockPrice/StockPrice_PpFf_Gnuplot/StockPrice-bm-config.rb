@@ -179,3 +179,26 @@ Experience.define( 2003,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'PpFf*-2', 'PpFf*-4']
                 )
+
+Experience.define( 3001,
+                   machines: ['java'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-4', 'FastFlow-4']
+                 )
+
+Experience.define( 3002,
+                   machines: ['japet'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-4', 'FastFlow-4']
+                 )
+
+Experience.define( 3003,
+                   machines: ['MacOS', 'c34581'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+
