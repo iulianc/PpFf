@@ -3,9 +3,8 @@
 DEBUG = false
 
 FICHIERS = [
-            'appendice-experiences-preliminaires.tex',
-            'appendice-java.tex',
             'experiences.tex',
+            'appendice-java.tex'
            ]
 
 SCRIPT_TMP = 'gen-g.sh'

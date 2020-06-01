@@ -61,6 +61,9 @@ elif [[ $SORTE == "debits" ]]; then
 elif [[ $SORTE == "accs" ]]; then
     MESURE="Accélération"
     UNITE="absolue"
+elif [[ $SORTE == "accs-rel" ]]; then
+    MESURE="Accélération"
+    UNITE="relative"
 else
     echo "*** Sorte invalide: $sorte"
     exit
@@ -115,7 +118,7 @@ fi
 ########################################################################
 # On definit le script pour la generation du graphe.
 ########################################################################
-if [[ $SORTE == "accs" ]]; then
+if [[ $SORTE == "accs" || $SORTE = "accs-rel" ]]; then
     temps_min="0.0"
 else
     temps_min=$(ruby min_temps.rb <$fichier_donnees)

@@ -106,7 +106,7 @@ Par exemple, les graphes des figures~\grapheref{WordCount-temps-java-11-20} et~\
 Pour la version \TT{Java}, quatre séries de mesures ont été
 effectuées~: séquentielle sans préchauffage (\TT{Java-}), séquentielle
 avec préchauffage (\TT{Java}), parallèle sans préchauffage
-(\TT{Java+}), et parallèle avec préchauffage (\TT{Java*}),
+(\TT{Java+}), et parallèle avec préchauffage (\TT{Java*}) --- pour les résultats, voir l'annexe~\ref{wordcount-java.ann}.
 %
 Pour la version \ppff, trois  s\'eries de mesures ont \'et\'e effectu\'ees : \TT{PpFf-1} avec une seule instance parallèle d'un \emph{farm}, \TT{PpFf-2} avec deux et \TT{PpFf-3} avec trois.
 
@@ -125,7 +125,7 @@ On calcule ensuite la moyenne et l'écart-type. Dans un graphe comme celui de la
 de la figure~\grapheref{WordCount-temps-java-11-20}). Plus précisément, la barre verticale indique un intervalle de 2 écart-types, donc un intervalle qui contient approximativement \emph{95~\% des temps mesurés}.
 
 
-\GT{Ci-bas. Je crois qu'il serait aussi bon d'inclure \TT{Java}. À voir!!}
+\GT{Ci-bas. Je crois qu'il serait aussi bon d'inclure \TT{Java} = version séquentielle avec warm-up. À voir!!}
 
 Chaque s\'erie d'exp\'eriences finales inclut le programme \TT{Seq}, une version s\'equentielle utilisant les m\^emes fonctions auxiliaires que les versions pour \TT{PpFf} et \TT{FastFlow}, mais s'ex\'ecutant de fa\c con s\'equentielle. Ce programme a aussi \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, nous avons utilis\'e l'acc\'el\'eration \emph{absolue}. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseurs avec le meilleur programme s\'equentiel qui r\'esout le m\^eme probl\`eme. 
 
@@ -153,9 +153,9 @@ Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{Wor
 \begin{figure}
 \grapheH{WordCount-temps-java-10010-40}
 
-\grapheH{WordCount-temps-japet-10020-40}
+\grapheH{WordCount-temps-japet-3002-40}
 
-\grapheH{WordCount-temps-c34581-1003-40}
+\grapheH{WordCount-temps-c34581-3003-40}
 
 \caption[Les temps d'exécution des programmes pour \TT{WordCount} sur
 les machines \M1, \M2 et \M3.]{Les temps d'exécution des programmes
@@ -169,9 +169,9 @@ d'exécution, en millisecondes.}
 \begin{figure}
 \grapheH{WordCount-debits-java-10010-40}
 
-\grapheH{WordCount-debits-japet-10020-40}
+\grapheH{WordCount-debits-japet-3002-40}
 
-\grapheH{WordCount-debits-c34581-1003-40}
+\grapheH{WordCount-debits-c34581-3003-40}
 
 \caption[Les débits pour \TT{WordCount} sur
 les machines \M1, \M2 et \M3.]{Les débits des programmes
@@ -185,9 +185,9 @@ milliers de mots par seconde (K-mots/s).}
 \begin{figure}
 \grapheH{WordCount-accs-java-10010-40}
 
-\grapheH{WordCount-accs-japet-10020-40}
+\grapheH{WordCount-accs-japet-3002-40}
 
-\grapheH{WordCount-accs-c34581-1003-40}
+\grapheH{WordCount-accs-c34581-3003-40}
 
 \caption[Les accélérations pour \TT{WordCount} sur les machines \M1,
 \M2 et \M3.]{Les accélérations des programmes pour \TT{WordCount} sur
