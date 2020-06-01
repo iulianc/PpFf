@@ -107,7 +107,7 @@ Experience.define( 3,
 
 # Pour voir les differences entre les diverses versions de Java.
 Experience.define( 11,
-                   nb_items: donnees_preliminaires,
+                   nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
                    programs: ['Java-', 'Java', 'Java+', 'Java*']
                 )
