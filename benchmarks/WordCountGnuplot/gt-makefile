@@ -1,10 +1,9 @@
 .IGNORE:
 
-_:
-	./run_bms.rb WordCount 0 ?
-	./run_bms.rb WordCount 2001 _
+__:
+	./run_bms.rb WordCount 11
 
-def: run_all
+def: run_java
 
 run_all: run_cpp_merged run_cpp run_ff run_seq run_java
 
@@ -28,8 +27,11 @@ ATTENDUS="attendus-10.txt"
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-#TEST_FILE="testdata/752856Words.txt"
-#ATTENDUS="attendus-752856.txt"
+TEST_FILE="testdata/752856Words.txt"
+ATTENDUS="attendus-752856.txt"
+
+TEST_FILE="testdata/752856Words.txt"
+ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 
@@ -95,8 +97,21 @@ run_seq: WordCountSeq
 	diff obtenus-seq.txt $(ATTENDUS)
 
 run_java: WordCount.class
-	@echo "*** Execution Java ***"
-	java -cp . WordCount 0 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	@echo "*** Execution Java sequentielle avec warmup ***"
+	wc -lw $(TEST_FILE)
+	java -cp . WordCount 11 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
+
+wip:
+	@echo "*** Execution Java sequentielle sans warmup ***"
+	java -cp . WordCount 10 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
+	echo
+	@echo "*** Execution Java parallele sans warmup ***"
+	java -cp . WordCount 20 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
+	@echo "*** Execution Java parallele avec warmup ***"
+	java -cp . WordCount 21 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
 
 run_java_warmup: WordCount.class
