@@ -80,16 +80,16 @@ Experience.define( 1,
 
 Experience.define( 2,
                    machines: ['c34581', 'java', 'japet'],
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 10,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf-6', 'PpFf-8']
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf-4', 'PpFf-5']
                 )
 
 Experience.define( 3,
                    machines: ['c34581', 'java', 'japet'],
                    nb_items: donnees_preliminaires,
-                   nb_repetitions: 10,
-                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-4', 'FastFlow-6', 'FastFlow-8']
+                   nb_repetitions: 20,
+                   programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3', 'FastFlow-4', 'FastFlow-5']
                 )
 
 
@@ -200,5 +200,3 @@ Experience.define( 3003,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
-
-
