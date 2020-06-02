@@ -1,3 +1,5 @@
+def:
+	make -f gt-makefile
 
 # Specify the final target name
 EXE 		:= testAll

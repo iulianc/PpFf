@@ -171,7 +171,7 @@ namespace PpFf {
         };
 
         template< typename In, typename Out, typename OutContainer = In >
-        Flow& flatMap() {
+        Flow& flatten() {
             typedef FlatOperator<In, Out> Flat;
             
             BaseStage<Flat>* stage = new BaseStage<Flat>();

@@ -1,6 +1,8 @@
 # Specify the final target name
 EXE 		:= testAll
 
+def: run
+
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
