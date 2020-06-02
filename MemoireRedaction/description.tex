@@ -174,7 +174,7 @@ L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui pe
 \hline
 	\begin{tabular}{@{}l@{}}
 	\tt template<In, Out, Container=In> \\
-	\tt flatMap()
+	\tt flatten()
 	\end{tabular} &
   	\TT{Flow\&} &
     Aplanit un flux multi-niveaux en cr\'eant un flux unique \`a partir du contenu des divers flux/conteneurs.
@@ -451,7 +451,14 @@ La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en
 Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
 
 
-\subsection{M\'ethode \TT{flatMap}}
+\subsection{M\'ethodes \TT{flatten} et \TT{flatMap}}
+
+\GT{À corriger ci-bas, car il ne faut pas que ce soit deux signatures
+pour une seule méthode, mais plutôt deux méthodes différentes~:
+flatten, qui ne reçoit aucun argument explicite (pas de map), et
+flatMap, qui reçoit une fonction. J'ai fait le changement dans
+src/Flow.hpp et dans les tests unitaires.}
+
 
 La m\'ethode \TT{flatMap}  permet d'aplanir un flux multiniveaux en associant \`a chaque \'el\'ement du flux d'entr\'ee un conteneur de type STL, puis en cr\'eant un flux unique \`a partir du contenu des divers conteneurs. Cette op\'eration correspond en fait au chainage des m\'ethodes \TT{map} et \TT{flatten}. L'\TT{API} fournit deux signatures pour la m\'ethode \TT{flatMap}. Les deux signatures sont pr\'esent\'ees dans le tableau~\ref{methodes_api.tab}. Le type du flux avant d'appliquer la m\'ethode \TT{flatMap} est \TT{In} alors que \TT{Out} est le type du flux apr\`es le traitement des \'el\'ements du flux. Le type \TT{OutContainer} est le type interm\'ediaire r\'esultant de l'application du \TT{map} sur le flux. Par exemple, dans le listing~\ref{wordcount.c++}, \TT{OutContainer} est de type \TT{Words} --- un vecteur de chaines de caract\`eres. Dans cet exemple, les lignes d'un fichier divis\'ees en mots sont accumul\'ees dans un conteneur et ensuite le contenu du conteneur est transmis sur le flux.
 
