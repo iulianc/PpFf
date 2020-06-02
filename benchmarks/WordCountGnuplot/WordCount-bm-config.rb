@@ -92,15 +92,15 @@ Experience.define( 1,
 
 Experience.define( 2,
                    machines: ['c34581', 'java'],
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 10,
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-3']
                 )
 
 Experience.define( 3,
                    machines: ['c34581', 'java'],
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 10,
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
                 )
 
