@@ -92,15 +92,15 @@ Experience.define( 1,
 
 Experience.define( 2,
                    machines: ['c34581', 'java'],
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 10,
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-3']
                 )
 
 Experience.define( 3,
                    machines: ['c34581', 'java'],
-                   nb_items: donnees_preliminaires,
-                   nb_repetitions: 10,
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
                 )
 
@@ -122,7 +122,7 @@ Experience.define( 22,
 Experience.define( 23,
                    machines: 'c34581',
                    nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 10,
+                   nb_repetitions: 30,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf*-1', 'PpFf*-2', 'PpFf*-3']
                 )
 
@@ -263,7 +263,7 @@ Experience.define( 2003,
                    machines: ['c34581', 'MacOS'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java+', 'Java*', 'PpFf-1', 'PpFf*-2']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-1', 'PpFf*-2']
                    )
 
 Experience.define( 3001,
@@ -284,5 +284,5 @@ Experience.define( 3003,
                    machines: ['MacOS', 'c34581'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java', 'Java*', 'PpFf-1', 'FastFlow-1']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
