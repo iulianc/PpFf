@@ -116,7 +116,7 @@ Experience.define( 22,
                 )
 
 Experience.define( 23,
-                   machines: 'c34581',
+                   machines: ['c34581', 'java'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf*-1', 'PpFf*-2', 'PpFf*-3']

@@ -4,6 +4,8 @@ DEBUG = false
 
 FICHIERS = [
             'experiences.tex',
+            'appendice-wordcount.tex',
+            'appendice-stockprice.tex',
             'appendice-java.tex'
            ]
 
