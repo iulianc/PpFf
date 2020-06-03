@@ -193,9 +193,15 @@ else
     les_labels_selectionnes=$(echo "$les_labels" | cut -f "$CHAMPS" -d ' ')
 fi
 col=2
+if [[ $DEBUG == 2 ]]; then
+    echo "les_labels = $les_labels"
+    echo "les_labels_selectionnes = $les_labels_selectionnes"
+fi
 for item in $les_labels; do
     item_="$(echo $item | sed 's/*/\\*/')"
+    [[ $DEBUG == 2 ]] && echo "item_ = $item_"
     if [[ $(echo "$les_labels_selectionnes" | grep "$item_" ) ]]; then
+        [[ $DEBUG == 2 ]] && echo "col = $col; item = $item"
         /bin/echo -n $(line_and_points "$fichier_donnees" $col $item ", ") >>script.plot
     fi
     (( col=col+$NB_PAR_POINT ))

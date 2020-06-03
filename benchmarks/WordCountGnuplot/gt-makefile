@@ -24,8 +24,8 @@ ATTENDUS="attendus-10.txt"
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-#TEST_FILE="testdata/752856Words.txt"
-#ATTENDUS="attendus-752856.txt"
+TEST_FILE="testdata/752856Words.txt"
+ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 

@@ -21,6 +21,10 @@ Program.define( 'Java*', "java -cp . #{PGM} 21" )  # Par. avec warmup
   Program.define( "PpFf-#{k}", "./#{PGM} #{k}" )
 end
 
+[*1..10].each do |k|
+  Program.define( "PpFf_-#{k}", "./#{PGM}FM_ #{k}" )
+end
+
 [*1..9].each do |k|
   Program.define( "PpFf*-#{k}", "./#{PGM}Merged #{k}" )
 end
@@ -120,6 +124,13 @@ Experience.define( 23,
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf*-1', 'PpFf*-2', 'PpFf*-3']
+                )
+
+Experience.define( 222,
+                   machines: ['c34581', 'java'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf_-1', 'PpFf_-2', 'PpFf_-3']
                 )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
