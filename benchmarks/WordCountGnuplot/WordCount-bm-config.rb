@@ -127,10 +127,24 @@ Experience.define( 23,
                 )
 
 Experience.define( 222,
-                   machines: ['c34581', 'java'],
+                   machines: ['c34581'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf_-1', 'PpFf_-2', 'PpFf_-3']
+                )
+
+Experience.define( 2221,
+                   machines: ['java'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
+                   programs: ['PpFf-2', 'PpFf-3', 'PpFf_-2', 'PpFf_-3', 'PpFf_-4']
+                )
+
+Experience.define( 2222,
+                   machines: ['japet'],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
+                   programs: ['PpFf-6', 'PpFf-8', 'PpFf-9', 'PpFf_-6', 'PpFf_-8', 'PpFf_-9', 'PpFf_-10']
                 )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
