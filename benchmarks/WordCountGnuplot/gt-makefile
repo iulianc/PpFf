@@ -1,6 +1,6 @@
 .IGNORE:
 
-def: run_cpp_merged
+def: run_cpp_fm_
 
 run_all: run_cpp_merged run_cpp run_ff run_seq run_java
 
@@ -24,18 +24,15 @@ ATTENDUS="attendus-10.txt"
 TEST_FILE="testdata/78792Words.txt"
 ATTENDUS="attendus-78792.txt"
 
-TEST_FILE="testdata/752856Words.txt"
-ATTENDUS="attendus-752856.txt"
-
-TEST_FILE="testdata/752856Words.txt"
-ATTENDUS="attendus-752856.txt"
+#TEST_FILE="testdata/752856Words.txt"
+#ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged WordCountFM_
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -82,6 +79,12 @@ run_cpp_merged: WordCountMerged
 	diff obtenus-cpp.txt $(ATTENDUS)
 	@./WordCountMerged 4 $(TEST_FILE) 0
 
+run_cpp_fm_: WordCountFM_
+	@echo "*** Execution C++ WordCountFM_ *** "
+	@./WordCountFM_ 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
+	diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCountFM_ 4 $(TEST_FILE) 0
+
 run_ff: WordCountFastFlow
 	@echo "*** Execution FastFlow *** "
 	@./WordCountFastFlow 4 $(TEST_FILE) 1 | sort > obtenus-ff.txt
@@ -121,6 +124,9 @@ WordCount: WordCount.o
 
 WordCountMerged: WordCountMerged.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountMerged.o $(LDLIBS) -o WordCountMerged
+
+WordCountFM_: WordCountFM_.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFM_.o $(LDLIBS) -o WordCountFM_
 
 WordCountSeq: WordCountSeq.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq

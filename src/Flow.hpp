@@ -7,6 +7,7 @@
 #include <operators/FindOperator.hpp>
 #include <operators/MapOperator.hpp>
 #include <operators/FlatOperator.hpp>
+#include <operators/FlatMapOperator.hpp>
 #include <operators/PeekOperator.hpp>
 #include <operators/ReduceOperator.hpp>
 #include <operators/Reducer.hpp>
@@ -166,6 +167,18 @@ namespace PpFf {
 
             pipe.addStage(mapStage);
             pipe.addStage(flatStage);
+
+            return *this;
+        };
+
+        template< typename In, typename TContainer, typename Out >
+        Flow& flatMap_(std::function<TContainer*(In*)> const& taskFunc) {
+            typedef FlatMapOperator<In, TContainer, Out> FlatMap;
+
+            BaseStage<FlatMap>* flatMapStage = new BaseStage<FlatMap>();
+
+            flatMapStage->addOperator(pipe.nbWorkers(), taskFunc);
+            pipe.addStage(flatMapStage);
 
             return *this;
         };
