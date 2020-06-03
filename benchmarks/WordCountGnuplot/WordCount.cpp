@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
         Flow
         ::source(inputFile)
         .parallel(farmParallelism)
-        .flatMap<std::string, std::string, Words>(splitInWords)			
+        .flatMap<std::string, Words, std::string>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
         .reduceByKey<std::string, std::string, int>(reducer);  
 

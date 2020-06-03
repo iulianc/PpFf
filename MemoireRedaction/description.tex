@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
   std::unordered_map<std::string, int> result = 
     Flow::source(path) 
         .parallel(4)
-        .flatMap<std::string, std::string, Words>(splitInWords)
+        .flatMap<std::string, Words, std::string>(splitInWords)
         .map<std::string, std::string>(toLowerCase)
         .find<std::string>(notEmpty)
         .reduceByKey<std::string, std::string, int>(sumOccurrences);
@@ -164,7 +164,7 @@ L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui pe
     \\
 \hline
 	\begin{tabular}{@{}l@{}}
-	\tt template<In, Out, Container> \\
+	\tt template<In, Container, Out> \\
 	\tt flatMap(Func<Container*(In*)> const\& taskFunc)
 	\end{tabular} &
   	\TT{Flow\&} & 

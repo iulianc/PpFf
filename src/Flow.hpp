@@ -154,25 +154,8 @@ namespace PpFf {
             return *this;
         }
 
-        template< typename In, typename Out, typename OutContainer >
-        Flow& flatMap(std::function<OutContainer*(In*)> const& taskFunc) {
-            typedef MapOperator<In, OutContainer> Map;
-            typedef FlatOperator<OutContainer, Out> Flat;
-
-            BaseStage<Map>* mapStage = new BaseStage<Map>();
-            BaseStage<Flat>* flatStage = new BaseStage<Flat>();
-
-            mapStage->addOperator(pipe.nbWorkers(), taskFunc);
-            flatStage->addOperator(pipe.nbWorkers());
-
-            pipe.addStage(mapStage);
-            pipe.addStage(flatStage);
-
-            return *this;
-        };
-
         template< typename In, typename TContainer, typename Out >
-        Flow& flatMap_(std::function<TContainer*(In*)> const& taskFunc) {
+        Flow& flatMap(std::function<TContainer*(In*)> const& taskFunc) {
             typedef FlatMapOperator<In, TContainer, Out> FlatMap;
 
             BaseStage<FlatMap>* flatMapStage = new BaseStage<FlatMap>();

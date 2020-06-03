@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
         Flow
         ::source(inputFile)
         .parallel(farmParallelism)
-        .flatMap<std::string, std::string, Words>(splitInLowerCaseWords)
+        .flatMap<std::string, Words, std::string>(splitInLowerCaseWords)
         .reduceByKey<std::string, std::string, int>(reducer);  
 
     auto end = std::chrono::high_resolution_clock::now();

@@ -108,32 +108,7 @@ TEST_CASE( "FlatCollectionApplyingFunction", "FlatMapOperator" ) {
     std::vector<std::string> currentResult = 
         Flow
         ::source<Employee>(employees.begin(), employees.end())
-        .flatMap<Employee, std::string, Languages>(GetLanguages)
-        .collect<std::string, std::vector>();
-
-    REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
-}
-
-
-TEST_CASE( "FlatCollectionApplyingFunction_", "FlatMapOperator" ) {
-    int noElems = 3;
-    std::vector<Employee> employees(noElems);
-    for (unsigned int i = 0; i < employees.size(); i++) {
-        Employee employee("Employee" + ConvertNumberToString(i));
-        employees[i] = employee;
-    };
-    employees[0].languages = {"French", "English"};
-    employees[1].languages = {"Chinese", "Arabic", "French"};
-    employees[2].languages = {"Spanish", "Portuguese"};
-
-    std::vector<std::string> expectedResult =
-        {"French", "English", "Chinese", "Arabic", "French", "Spanish", "Portuguese"};
-
-
-    std::vector<std::string> currentResult = 
-        Flow
-        ::source<Employee>(employees.begin(), employees.end())
-        .flatMap_<Employee, Languages, std::string>(GetLanguages)
+        .flatMap<Employee, Languages, std::string>(GetLanguages)
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
@@ -165,7 +140,6 @@ TEST_CASE( "FlatCollectionApplyingFunctionInTwoSteps", "FlatMapOperator" ) {
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
 
-
 TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
     std::vector<Employee> employees(3);
     for (unsigned int i = 0; i < employees.size(); i++) {
@@ -184,43 +158,9 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel", "FlatMapOperator" ) {
         Flow
         ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .flatMap<Employee, std::string, Languages>( [](Employee *empl)
-                                                    {
-                                                        Languages *languages = new Languages();
-                                                        *languages = empl->languages;
-                                                        return languages;
-                                                    } )
-        .collect<std::string, std::vector>();
-    std::sort(currentResult.begin(), currentResult.end());
-
-    REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
-}
-
-
-TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallel_", "FlatMapOperator" ) {
-    std::vector<Employee> employees(3);
-    for (unsigned int i = 0; i < employees.size(); i++) {
-        Employee employee("Employee" + ConvertNumberToString(i));
-        employees[i] = employee;
-    };
-    employees[0].languages = {"French", "English"};
-    employees[1].languages = {"Chinese", "Arabic", "French"};
-    employees[2].languages = {"Spanish", "Portuguese"};
-
-    std::vector<std::string> expectedResult =
-        {"Arabic", "Chinese", "English", "French", "French", "Portuguese", "Spanish" };
-
-
-    std::vector<std::string> currentResult =
-        Flow
-        ::source<Employee>(employees.begin(), employees.end())
-        .parallel(4)
-        .flatMap_<Employee, Languages, std::string>( [](Employee *empl)
-                                                     {
-                                                         Languages *languages = new Languages();
-                                                         *languages = empl->languages;
-                                                         return languages;
-                                                     } )
+        .flatMap<Employee, Languages, std::string>( [](Employee *empl) {
+                return new Languages(empl->languages);
+            } )
         .collect<std::string, std::vector>();
     std::sort(currentResult.begin(), currentResult.end());
 
@@ -246,19 +186,15 @@ TEST_CASE( "FlatCollectionApplyingLambdaFunctionParallelInTwoStages", "FlatMapOp
         Flow
         ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .map<Employee, Languages>( [](Employee *empl)
-                                   {
-                                       Languages *languages = new Languages();
-                                       *languages = empl->languages;
-                                       return languages;
-                                   } )
+        .map<Employee, Languages>( [](Employee *empl) {
+                return new Languages(empl->languages);
+            } )
         .flatten<Languages, std::string>()
         .collect<std::string, std::vector>();
     std::sort(currentResult.begin(), currentResult.end());
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
-
 
 TEST_CASE( "FlatCollectionGrosNombreElements", "FlatMapOperator" ) {
     int n = 1000;
@@ -273,40 +209,9 @@ TEST_CASE( "FlatCollectionGrosNombreElements", "FlatMapOperator" ) {
         Flow
         ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .flatMap<Employee, std::string, Languages>( [](Employee *empl)
-                                                    {
-                                                        Languages *languages = new Languages();
-                                                        *languages = empl->languages;
-                                                        return languages;
-                                                    } )
-        .collect<std::string, std::vector>();
-    std::sort(currentResult.begin(), currentResult.end());
-
-    for (int i = 0; i < n; i++ ) {
-        REQUIRE( currentResult[i] == "English" );
-        REQUIRE( currentResult[n + i] == "French" );
-        REQUIRE( currentResult[2 * n + i] == "Spanish" );
-    }
-}
-TEST_CASE( "FlatCollectionGrosNombreElements_", "FlatMapOperator" ) {
-    int n = 1000;
-
-    std::vector<Employee> employees(n);
-    for (unsigned int i = 0; i < employees.size(); i++) {
-        Employee employee(0, "Employee" + ConvertNumberToString(i), 0, {"French", "English", "Spanish"});
-        employees[i] = employee;
-    };
-
-    std::vector<std::string> currentResult =
-        Flow
-        ::source<Employee>(employees.begin(), employees.end())
-        .parallel(4)
-        .flatMap_<Employee, Languages, std::string>( [](Employee *empl)
-                                                     {
-                                                         Languages *languages = new Languages();
-                                                         *languages = empl->languages;
-                                                         return languages;
-                                                     } )
+        .flatMap<Employee, Languages, std::string>( [](Employee *empl) {
+                return new Languages(empl->languages);
+            } )
         .collect<std::string, std::vector>();
     std::sort(currentResult.begin(), currentResult.end());
 
@@ -330,12 +235,9 @@ TEST_CASE( "FlatCollectionGrosNombreElementsInTwoStages", "FlatMapOperator" ) {
         Flow
         ::source<Employee>(employees.begin(), employees.end())
         .parallel(4)
-        .map<Employee, Languages>( [](Employee *empl)
-                                   {
-                                       Languages *languages = new Languages();
-                                       *languages = empl->languages;
-                                       return languages;
-                                   } )
+        .map<Employee, Languages>( [](Employee *empl) {
+                return new Languages(empl->languages);
+            } )
         .flatten<Languages, std::string>()
         .collect<std::string, std::vector>();
     std::sort(currentResult.begin(), currentResult.end());
