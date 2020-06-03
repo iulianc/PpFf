@@ -298,7 +298,7 @@ Experience.define( 3001,
                    machines: ['java'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-3', 'FastFlow-2']
                 )
 
 Experience.define( 3002,
