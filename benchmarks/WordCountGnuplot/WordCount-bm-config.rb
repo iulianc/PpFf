@@ -22,17 +22,17 @@ Program.define( 'Java*', "java -cp . #{PGM} 21" )  # Par. avec warmup
 end
 
 [*1..10].each do |k|
-  Program.define( "PpFf_-#{k}", "./#{PGM}FM_ #{k}" )
-end
-
-[*1..10].each do |k|
   [1, 10, 100, 1000].each do |bs|
     Program.define( "PpFf-#{k}-#{bs}", "./#{PGM}LFF #{k} #{bs}" )
   end
 end
 
 [*1..9].each do |k|
-  Program.define( "PpFf*-#{k}", "./#{PGM}Merged #{k}" )
+  Program.define( "PpFfEmplace-#{k}", "./#{PGM}Emplace #{k}" )
+end
+
+[*1..9].each do |k|
+  Program.define( "PpFfMerged-#{k}", "./#{PGM}Merged #{k}" )
 end
 
 [*1..9].each do |k|
@@ -122,35 +122,14 @@ Experience.define( 11,
 Experience.define( 22,
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 10,
-                   programs: ['PpFf-2', 'PpFf*-2', 'PpFf*-4']
+                   programs: ['PpFf-2', 'PpFfMerged-2', 'PpFfMerged-4']
                 )
 
 Experience.define( 23,
                    machines: ['c34581', 'java'],
                    nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 30,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf*-1', 'PpFf*-2', 'PpFf*-3']
-                )
-
-Experience.define( 222,
-                   machines: ['c34581'],
-                   nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf_-1', 'PpFf_-2', 'PpFf_-3']
-                )
-
-Experience.define( 2221,
-                   machines: ['java'],
-                   nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 20,
-                   programs: ['PpFf-2', 'PpFf-3', 'PpFf_-2', 'PpFf_-3', 'PpFf_-4']
-                )
-
-Experience.define( 2222,
-                   machines: ['japet'],
-                   nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 20,
-                   programs: ['PpFf-6', 'PpFf-8', 'PpFf-9', 'PpFf_-6', 'PpFf_-8', 'PpFf_-9', 'PpFf_-10']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2', 'PpFfMerged-3']
                 )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
@@ -234,7 +213,7 @@ Experience.define( 600,
                 )
 
 # Experiences avec intervalle de confiance
-NB_REPETITIONS_IC = 40
+NB_REPETITIONS_IC = 2 #40
 DONNEES_IC = beaucoup_de_donnees
 
 Experience.define( 1001,
@@ -283,21 +262,21 @@ Experience.define( 2001,
                    machines: ['java', 'MacOS'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'PpFf*-4']
+                   programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'PpFfMerged-4']
                    )
 
 Experience.define( 20010,
                    machines: ['java', 'MacOS'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java*', 'PpFf-1', 'PpFf-2', 'PpFf*-1', 'PpFf*-2']
+                   programs: ['Seq', 'Java*', 'PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2']
                    )
 
 Experience.define( 2003,
                    machines: ['c34581', 'MacOS'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java', 'Java*', 'PpFf-1', 'PpFf*-2']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-1', 'PpFfMerged-2']
                    )
 
 Experience.define( 3001,
@@ -324,15 +303,15 @@ Experience.define( 3003,
 
 # Experiences pour LinesFromFile modifie (par blocs).
 Experience.define( 901,
-                   machines: ['java'],
+                   machines: ['MacOS', 'java'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['PpFf-3', 'PpFf-3-1', 'PpFf-3-10', 'PpFf-3-100', 'PpFf-3-1000']
+                   programs: ['PpFf-3', 'PpFfEmplace-3', 'PpFfMerged-3']
                 )
 
 Experience.define( 903,
-                   machines: ['c34581'],
+                   machines: ['MacOS', 'c34581'],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['PpFf-2', 'PpFf-2-1', 'PpFf-2-10', 'PpFf-2-100', 'PpFf-2-1000']
+                   programs: ['PpFf-2', 'PpFfEmplace-2', 'PpFfMerged-2']
                 )
