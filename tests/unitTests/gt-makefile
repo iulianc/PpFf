@@ -5,7 +5,7 @@ def: run
 
 # Specify the tests path
 ROOT_TESTS 	:= linesFromFileTest.cpp linesFromFile_Test.cpp testAll.cpp
-#ROOT_TESTS 	:= $(wildcard *.cpp)
+ROOT_TESTS 	:= $(wildcard *.cpp)
 
 # Specify the pipe path
 ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src

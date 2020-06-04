@@ -31,6 +31,7 @@ namespace PpFf {
                 ff_send_out(line);
                 line = new std::string;
             }
+            file.close();
             return EOS;
         }
 
@@ -66,6 +67,7 @@ namespace PpFf {
                     next = 0;
                 }
             }
+            file.close();
             return EOS;
         }
 

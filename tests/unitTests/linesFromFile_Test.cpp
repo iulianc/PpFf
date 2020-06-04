@@ -30,6 +30,12 @@ TEST_CASE( "GetDataFromFileIntoCollectionUsingLinesStaticVersion_", "LinesFromFi
         .collect<std::string, std::vector>();
 
     REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
+
+    currentResult = 
+        Flow::source(test_file, BLOCK_SIZE)
+        .collect<std::string, std::vector>();
+
+    REQUIRE_THAT( currentResult, Catch::Equals(expectedResult) );
 }
 
 TEST_CASE( "GetDataFromFileIntoCollectionUsingLinesStaticVersion_2", "LinesFromFileOperator" ) {
