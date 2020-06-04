@@ -3,9 +3,10 @@ EXE 		:= testAll
 
 def: run
 
-
 # Specify the tests path
-ROOT_TESTS 	:= $(wildcard *.cpp)
+ROOT_TESTS 	:= linesFromFileTest.cpp linesFromFile_Test.cpp testAll.cpp
+#ROOT_TESTS 	:= $(wildcard *.cpp)
+
 # Specify the pipe path
 ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
 ROOT_PIPE 	:= $(HOME)/PpFf/Release2/PpFf/src
@@ -13,6 +14,7 @@ ROOT_PIPE 	:= $(HOME)/PpFf/src
 
 # Decommenter pour compilation sur Mac OS X -- Guy T.
 TESTFILE=-DTEST_FILE=\"testdata/lorem.txt\"
+TESTFILE_2=-DTEST_FILE_2=\"testdata/lorem_2.txt\"
 
 # Get the corresponding object file list
 OBJ 		:= $(ROOT_TESTS:.cpp=.o)
@@ -20,7 +22,7 @@ OBJ 		:= $(ROOT_TESTS:.cpp=.o)
 DEP 		:= $(OBJ:.o=.d)
 
 # Compiler
-CXX		= g++ -std=c++17 $(TESTFILE)
+CXX		= g++ -std=c++17 $(TESTFILE) $(TESTFILE_2)
 # Specify preprocessor flags
 CPPFLAGS 	:= -I./ -I $(ROOT_PIPE)
 # Required flags to enable the automatic dependency generation by the compiler
@@ -43,11 +45,17 @@ $(EXE)		: $(OBJ)
 
 run: $(EXE)
 	./testAll
+	./testAll
+	./testAll
+	./testAll
+	./testAll
+	./testAll
+	./testAll
 
 clean		: 
 	\rm -f $(EXE) $(OBJ) $(DEP)
 cleanx cleanxtra cleanall: clean
-	\rm -f *.o *~
+	\rm -f *.o *~ *.d
 
 # Include the dependency
 -include $(DEP)
