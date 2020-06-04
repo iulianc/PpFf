@@ -8,7 +8,6 @@
 
 NB_REPETITIONS = 40
 
-
 ################################################################
 # Les divers programmmes et commandes pour les executer.
 ################################################################
@@ -120,7 +119,7 @@ Experience.define( 22,
 Experience.define( 23,
                    machines: ['c34581', 'java'],
                    nb_items: beaucoup_de_donnees,
-                   nb_repetitions: 20,
+                   nb_repetitions: 40,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2', 'PpFfMerged-3']
                 )
 
@@ -291,6 +290,8 @@ Experience.define( 3003,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
+
+#  Version emplace_back et al.
 Experience.define( 4001,
                    machines: ['java'],
                    nb_items: DONNEES,
@@ -310,4 +311,28 @@ Experience.define( 4003,
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+
+
+# VERSIONS MERGED avec emplace_back et al.
+Experience.define( 5001,
+                   machines: ['java'],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['PpFf-2', 'PpFf-3', 'PpFfMerged-2', 'PpFfMerged-3', 'PpFfMerged-4']
+                )
+
+Experience.define( 5002,
+                   machines: ['japet'],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['PpFf-8', 'PpFf-9', 'PpFfMerged-8', 'PpFfMerged-9']
+                )
+
+Experience.define( 5003,
+                   machines: ['MacOS', 'c34581'],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2', 'PpFfMerged-3']
                 )
