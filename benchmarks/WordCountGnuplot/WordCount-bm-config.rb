@@ -6,7 +6,7 @@
 # definis ci-bas sous forme de CONSTANTES -- sinon, elles ne
 # semblaient pas visibles.
 
-NB_REPETITIONS = 2 #40
+NB_REPETITIONS = 40
 
 
 ################################################################
@@ -285,6 +285,27 @@ Experience.define( 3002,
                 )
 
 Experience.define( 3003,
+                   machines: ['MacOS', 'c34581'],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+Experience.define( 4001,
+                   machines: ['java'],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-3', 'FastFlow-2']
+                )
+
+Experience.define( 4002,
+                   machines: ['japet'],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-9', 'FastFlow-5']
+                )
+
+Experience.define( 4003,
                    machines: ['MacOS', 'c34581'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
