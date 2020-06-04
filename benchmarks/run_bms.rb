@@ -173,7 +173,8 @@ end
 
 if show_experiences
   puts "Experiences pour #{SERVER}:"
-  $experiences.each_pair do |num_exp, exp|
+  $experiences.keys.sort.each do |num_exp|
+    exp = $experiences[num_exp]
     if exp.machines.nil? || exp.machines.include?(SERVER)
       puts exp
     end

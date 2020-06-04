@@ -1,5 +1,8 @@
 .IGNORE:
 
+_def: 
+	./run_bms.rb WordCount
+
 def: run_cpp_merged run_cpp
 
 run_all: run_cpp_merged run_cpp run_ff run_seq run_java
