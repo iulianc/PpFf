@@ -6,6 +6,8 @@
 # definis ci-bas sous forme de CONSTANTES -- sinon, elles ne
 # semblaient pas visibles.
 
+NB_REPETITIONS = 2 #40
+
 
 ################################################################
 # Les divers programmmes et commandes pour les executer.
@@ -19,16 +21,6 @@ Program.define( 'Java*', "java -cp . #{PGM} 21" )  # Par. avec warmup
 
 [*1..10].each do |k|
   Program.define( "PpFf-#{k}", "./#{PGM} #{k}" )
-end
-
-[*1..10].each do |k|
-  [1, 10, 100, 1000].each do |bs|
-    Program.define( "PpFf-#{k}-#{bs}", "./#{PGM}LFF #{k} #{bs}" )
-  end
-end
-
-[*1..9].each do |k|
-  Program.define( "PpFfEmplace-#{k}", "./#{PGM}Emplace #{k}" )
 end
 
 [*1..9].each do |k|
@@ -213,105 +205,88 @@ Experience.define( 600,
                 )
 
 # Experiences avec intervalle de confiance
-NB_REPETITIONS_IC = 2 #40
-DONNEES_IC = beaucoup_de_donnees
+DONNEES = beaucoup_de_donnees
 
 Experience.define( 1001,
                    machines: ['java'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 10010,
                    machines: ['java'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 10011,
                    machines: ['java'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 1002,
                    machines: ['japet'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-8', 'FastFlow-8']
                 )
 
 Experience.define( 10020,
                    machines: ['japet'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-8', 'FastFlow-5']
                 )
 
 Experience.define( 1003,
                    machines: ['MacOS', 'c34581'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-1', 'FastFlow-1']
                 )
 
 Experience.define( 2001,
                    machines: ['java', 'MacOS'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'PpFfMerged-4']
                    )
 
 Experience.define( 20010,
                    machines: ['java', 'MacOS'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2']
                    )
 
 Experience.define( 2003,
                    machines: ['c34581', 'MacOS'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-1', 'PpFfMerged-2']
                    )
 
 Experience.define( 3001,
                    machines: ['java'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-3', 'FastFlow-2']
                 )
 
 Experience.define( 3002,
                    machines: ['japet'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-9', 'FastFlow-5']
                 )
 
 Experience.define( 3003,
                    machines: ['MacOS', 'c34581'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
-                )
-
-
-# Experiences pour LinesFromFile modifie (par blocs).
-Experience.define( 901,
-                   machines: ['MacOS', 'java'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['PpFf-3', 'PpFfEmplace-3', 'PpFfMerged-3']
-                )
-
-Experience.define( 903,
-                   machines: ['MacOS', 'c34581'],
-                   nb_items: DONNEES_IC,
-                   nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['PpFf-2', 'PpFfEmplace-2', 'PpFfMerged-2']
                 )

@@ -10,8 +10,7 @@ Words* splitInWords(std::string* line) {
         for ( start = next_letter + 1;
               start < line->length() && isalpha(line->at(start)); start++ )
             {};
-        std::string word = line->substr(next_letter, start - next_letter); 
-        words->push_back( word );
+        words->emplace_back( *line, next_letter, start - next_letter );
     };
 
     return words;
@@ -37,8 +36,8 @@ Words* splitInLowerCaseWords(std::string* line) {
         for ( start = next_letter + 1;
               start < line->length() && isalpha(line->at(start)); start++ )
             {};
-        std::string word = line->substr(next_letter, start - next_letter); 
-        words->push_back( *toLowercaseLetters(&word) );
+        words->emplace_back( *line, next_letter, start - next_letter );
+        toLowercaseLetters(&words->back());
     };
 
     return words;

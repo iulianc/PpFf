@@ -62,17 +62,6 @@ namespace PpFf {
             return *pipe;
         }
 
-        static Flow& source(const std::string& path, const int blockSize) {
-            Flow* pipe = new Flow();
-            typedef LinesFromFileOperator_ LinesFromFile;
-
-            Source<LinesFromFile>* stage = new Source<LinesFromFile>();
-            stage->addOperator(pipe->pipe.nbWorkers(), path, blockSize);
-            pipe->pipe.addStage(stage);
-
-            return *pipe;
-        }
-
         template < typename T, typename Iterator >
         static Flow& source(Iterator begin, Iterator end) {
             Flow* pipe = new Flow();

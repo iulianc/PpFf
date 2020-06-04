@@ -1,6 +1,6 @@
 .IGNORE:
 
-def: run_cpp_emplace run_cpp_merged run_cpp
+def: run_cpp_merged run_cpp
 
 run_all: run_cpp_merged run_cpp run_ff run_seq run_java
 
@@ -32,7 +32,7 @@ ATTENDUS="attendus-752856.txt"
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged WordCountLFF WordCountEmplace
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -72,20 +72,6 @@ run_cpp: WordCount
 	@./WordCount 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
 	diff obtenus-cpp.txt $(ATTENDUS)
 	@./WordCount 4 $(TEST_FILE) 0
-
-run_cpp_lff: WordCountLFF
-	@echo "*** Execution C++ *** "
-	@./WordCountLFF 4 1 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
-	diff obtenus-cpp.txt $(ATTENDUS)
-	@./WordCountLFF 4 99 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
-	diff obtenus-cpp.txt $(ATTENDUS)
-	@./WordCountLFF 4 102 $(TEST_FILE) 0
-
-run_cpp_emplace: WordCountEmplace
-	@echo "*** Execution C++ Emplace *** "
-	@./WordCountEmplace 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
-	diff obtenus-cpp.txt $(ATTENDUS)
-	@./WordCountEmplace 4 $(TEST_FILE) 0
 
 run_cpp_merged: WordCountMerged
 	@echo "*** Execution C++ Merged *** "
@@ -127,12 +113,6 @@ run_java_warmup: WordCount.class
 
 WordCount: WordCount.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
-
-WordCountLFF: WordCountLFF.o
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountLFF.o $(LDLIBS) -o WordCountLFF
-
-WordCountEmplace: WordCountEmplace.o
-		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountEmplace.o $(LDLIBS) -o WordCountEmplace
 
 WordCountMerged: WordCountMerged.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountMerged.o $(LDLIBS) -o WordCountMerged

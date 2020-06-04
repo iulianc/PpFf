@@ -39,43 +39,6 @@ namespace PpFf {
         const std::string& path;
     };
 
-    class LinesFromFileOperator_: public BaseOperator {
-    public:
-        LinesFromFileOperator_(const std::string& path, const int blockSize) : path(path), blockSize(blockSize)
-        {}
-        LinesFromFileOperator_(const LinesFromFileOperator_& other) : path(other.path), blockSize(other.blockSize)
-        {}
-        LinesFromFileOperator_(LinesFromFileOperator_&& other) noexcept : path(std::move(other.path)), blockSize(other.blockSize)
-        {}
-
-        ~LinesFromFileOperator_()
-        {}
-
-        void* svc(void* task) {
-            std::ifstream file(path);
-
-            //std::cerr << "** blockSize = " << blockSize << std::endl;
-
-            std::string* strings = new std::string[blockSize];
-
-            int next = 0;
-            while (std::getline(file, strings[next])) {
-                ff_send_out(&strings[next]);
-                next += 1;
-                if (next == blockSize) {
-                    strings = new std::string[blockSize];
-                    next = 0;
-                }
-            }
-            file.close();
-            return EOS;
-        }
-
-    private:
-        const std::string& path;
-        int blockSize;
-    };
-
 }
 
 #endif

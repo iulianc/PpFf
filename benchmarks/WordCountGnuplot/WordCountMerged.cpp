@@ -25,7 +25,6 @@ using namespace PpFf;
 typedef std::vector<std::string> Words;
 
 #include "auxiliary-functions.hpp"
-#include "auxiliary-functions-emplace.hpp"
 
 int main(int argc, char* argv[]) {
     uint32_t farmParallelism = argc >= 2 ? atoi(argv[1]) : DEFAULT_FARM_PARALLELISM;
@@ -44,7 +43,7 @@ int main(int argc, char* argv[]) {
         Flow
         ::source(inputFile)
         .parallel(farmParallelism)
-        .flatMap<std::string, Words, std::string>(splitInLowerCaseWords_)
+        .flatMap<std::string, Words, std::string>(splitInLowerCaseWords)
         .reduceByKey<std::string, std::string, int>(reducer);  
 
     auto end = std::chrono::high_resolution_clock::now();
