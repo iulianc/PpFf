@@ -1,12 +1,16 @@
 HOST=java
 EXP=1001
-def: accs_rel
+
+def: moys
 
 #HOST=japet
 #EXP=1002
 
 #HOST=c34581
 #EXP=1003
+
+moys:
+	./moyennes.rb WordCount-temps-java-901-40.txt
 
 accs_rel:
 	./gen-accsrel.rb WordCount-temps-japet-3002-40.txt

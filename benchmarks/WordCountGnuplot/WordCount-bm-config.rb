@@ -323,6 +323,13 @@ Experience.define( 3003,
 
 
 # Experiences pour LinesFromFile modifie (par blocs).
+Experience.define( 901,
+                   machines: ['java'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['PpFf-3', 'PpFf-3-1', 'PpFf-3-10', 'PpFf-3-100', 'PpFf-3-1000']
+                )
+
 Experience.define( 903,
                    machines: ['c34581'],
                    nb_items: DONNEES_IC,
