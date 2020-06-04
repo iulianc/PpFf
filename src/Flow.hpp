@@ -32,7 +32,6 @@
 #include <map>
 #include <unordered_map>
 
-#include <operators/ReduceByKeyOperator2.hpp>
 #include <pipeline/PipeManager.hpp>
 
 using namespace PpFf;
