@@ -2,7 +2,7 @@
 
 FICH = ARGV[0]
 
-puts lignes = IO.readlines(FICH)
+lignes = IO.readlines(FICH)
 
 lignes.each do |ligne|
   nb, *vals = ligne.split
@@ -13,12 +13,12 @@ lignes.each do |ligne|
     moys << moy.to_f
   end
 
-  min = moys.min
-  min2 = moys.reject { |m| (m - min).abs < 0.01 }.min
+  max = moys.max
+  max2 = moys.reject { |m| (m - max).abs < 0.01 }.max
   moys.each do |moy|
-    if (moy - min).abs < 0.01
+    if (moy - max).abs < 0.01
       printf "%7.1f*   ", moy
-    elsif (moy - min2).abs < 0.01
+    elsif (moy - max2).abs < 0.01
       printf "%7.1f**  ", moy
     else
       printf "%7.1f    ", moy
