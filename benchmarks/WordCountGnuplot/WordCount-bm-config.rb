@@ -25,6 +25,12 @@ end
   Program.define( "PpFf_-#{k}", "./#{PGM}FM_ #{k}" )
 end
 
+[*1..10].each do |k|
+  [1, 10, 100, 1000].each do |bs|
+    Program.define( "PpFf-#{k}-#{bs}", "./#{PGM}LFF #{k} #{bs}" )
+  end
+end
+
 [*1..9].each do |k|
   Program.define( "PpFf*-#{k}", "./#{PGM}Merged #{k}" )
 end
@@ -313,4 +319,13 @@ Experience.define( 3003,
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+
+# Experiences pour LinesFromFile modifie (par blocs).
+Experience.define( 903,
+                   machines: ['c34581'],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['PpFf-2', 'PpFf-2-1', 'PpFf-2-10', 'PpFf-2-100', 'PpFf-2-1000']
                 )

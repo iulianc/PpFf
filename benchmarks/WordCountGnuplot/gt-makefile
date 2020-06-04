@@ -1,6 +1,6 @@
 .IGNORE:
 
-def: run_cpp
+def: run_cpp_lff
 
 run_all: run_cpp_merged run_cpp run_ff run_seq run_java
 
@@ -32,7 +32,7 @@ ATTENDUS="attendus-752856.txt"
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged WordCountLFF
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -73,6 +73,14 @@ run_cpp: WordCount
 	diff obtenus-cpp.txt $(ATTENDUS)
 	@./WordCount 4 $(TEST_FILE) 0
 
+run_cpp_lff: WordCountLFF
+	@echo "*** Execution C++ *** "
+	@./WordCountLFF 4 1 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
+	diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCountLFF 4 99 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
+	diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCountLFF 4 102 $(TEST_FILE) 0
+
 run_cpp_merged: WordCountMerged
 	@echo "*** Execution C++ Merged *** "
 	@./WordCountMerged 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
@@ -95,8 +103,6 @@ run_java: WordCount.class
 	wc -lw $(TEST_FILE)
 	java -cp . WordCount 11 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
-
-wip:
 	@echo "*** Execution Java sequentielle sans warmup ***"
 	java -cp . WordCount 10 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
@@ -115,6 +121,9 @@ run_java_warmup: WordCount.class
 
 WordCount: WordCount.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
+
+WordCountLFF: WordCountLFF.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountLFF.o $(LDLIBS) -o WordCountLFF
 
 WordCountMerged: WordCountMerged.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountMerged.o $(LDLIBS) -o WordCountMerged
