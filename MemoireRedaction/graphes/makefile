@@ -7,7 +7,7 @@
 def: graphe_h
 
 graphe_h:
-	./plot.sh 'WordCount' 'temps' java 2221 20 '2,3,4,5' _  "flatMap vs. flatMap_"
+	./plot.sh 'WordCount' 'temps' java 5001 40 '1,5' _  "Orig. ou Merged"
 
 WordCount:
 	./plot.sh 'WordCount' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"
