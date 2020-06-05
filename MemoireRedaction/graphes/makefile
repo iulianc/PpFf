@@ -7,7 +7,8 @@
 def: graphe_h
 
 graphe_h:
-	./plot.sh 'WordCount' 'temps' java 5001 40 '1,5' _  "Orig. ou Merged"
+	./plot.sh 'WordCount' 'temps' $(HOST) 5003 40 '2,4' _  "Normal ou Merged_"
+	./plot.sh 'WordCount' 'debits' $(HOST) 5003 40 '2,4' _  "Normal ou Merged_"
 
 WordCount:
 	./plot.sh 'WordCount' 'temps'  $(HOST) 11 20 '*' _   "Tous les programmes"
