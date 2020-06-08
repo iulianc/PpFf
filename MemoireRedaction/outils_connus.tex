@@ -1,5 +1,5 @@
 
-\chapter{APIs de traitement de flux de donn\'ees~: \TT{Spark}, \TT{Java} et \TT{FastFlow}}
+\chapter{Logiciels et bibliothèques de traitement de flux de donn\'ees~: \TT{Spark}, \TT{Java}, \TT{FastFlow} et autres}
 \label{outils_connus}
 \label{outils_connus.chap}
 
@@ -520,20 +520,55 @@ Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \T
 
 \section{Autres biblioth\`eques C++}    
 \subsection{RaftLib} 
-\TT{RaftLib} \cite{beard2017raftlib} est une plus r\'ecente biblioth\`eque \emph{C++} con\c{c}ue pour traiter le flux de donn\'ees. \'Ecrit \`a l'aide de templates, \TT{RaftLib} vise \`a parall\'eliser de mani\`ere transparente une application, tout en minimisant la refactorisation du code h\'erit\'e. Comme \TT{FastFlow}, il fournit aux programmeurs un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees. Les programmes r\'esultants sont capables de fonctionner sur des plates-formes multi-cœurs avec m\'emoire partag\'ee ainsi que des plates-formes avec m\'emoire distribu\'ee.
+\TT{RaftLib}~\citep{beard2017raftlib} est une plus r\'ecente biblioth\`eque \emph{C++} con\c{c}ue pour traiter des flux de donn\'ees. \'Ecrit \`a l'aide de templates, \TT{RaftLib} vise \`a parall\'eliser de mani\`ere transparente une application, tout en minimisant la refactorisation du code h\'erit\'e. Comme \TT{FastFlow}, il fournit aux programmeurs un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees. Les programmes r\'esultants sont capables de fonctionner sur des plates-formes multi-cœurs avec m\'emoires partag\'ees ainsi que sur des plates-formes avec m\'emoires distribu\'ees.
 
 
-\subsubsection*{Conception}
-\TT{RaftLib} construit le flux de traitement sous forme de graphes en connectant les nœuds aux ports. Les nœuds, appel\'es noyaux de calcul, sont des classes \emph{C++} qui \'etendent la classe \TT{raft::kernel}. Dans le constructeur de cette classe sont d\'efinis les ports. Les ports sont d'entrée ou sortie pour chaque noyau de calcul. Chacun de ces noyaux impl\'emente une m\'ethode d'ex\'ecution o\`u des op\'erations de traitement sont effectu\'ees. Le graphe est construit dans la m\'ethode main o\`u les noyaux d\'eclar\'es sont li\'es en connectant des ports \`a l'aide d'op\'erateurs de liaison. 
+\GT{À moins que tu en dises beaucoup plus, pas besoin il me semble
+d'avoir des sous-sections.}
 
-La communication entre les noyaux s'effectue via des files d'attente de type \TT{FIFO} (premier entr\'e, premier sorti ou \emph{first-in, first-out} en anglais). C'est-\`a-dire que les donn\'ees envoy\'ees dans le flux sont garanties d'arriver dans l'ordre. Les donn\'ees entrent dans le nœud via le port d'entr\'ee d\'efinie dans chaque classe de noyau de calcul. Une fois les donn\'ees trait\'ees, elles sont envoy\'ees \`a la sortie via le port de sortie d\'efinie dans la m\^eme classe.  Les files d'attente sont simul\'ees \`a l'aide de diff\'erents types de tampons tels que la m\'emoire partag\'ee ou la m\'emoire dynamique (\emph{heap memory} en anglais). L'\`etat du traitement est conserv\'e en interne par chaque noyau de calcul, mais il n'est pas conserv\'e entre les noyaux. Cela permet une parall\'elisation beaucoup plus simplifi\'ee.
+%\subsubsection*{Conception}
+\TT{RaftLib} construit le flux de traitement sous forme d'un graphe en connectant des nœuds à des ports. Les nœuds, appel\'es noyaux de calcul, sont des classes \emph{C++} qui \'etendent la classe \TT{raft::kernel}. Dans le constructeur de cette classe sont d\'efinis les ports. Les ports sont d'entrée ou sortie pour chaque noyau de calcul. Chacun de ces noyaux impl\'emente une m\'ethode d'ex\'ecution o\`u des op\'erations de traitement sont effectu\'ees. Le graphe est construit dans la m\'ethode \TT{main} o\`u les noyaux d\'eclar\'es sont li\'es en connectant des ports \`a l'aide d'op\'erateurs de liaison. 
+
+La communication entre les noyaux s'effectue via des files de type \TT{FIFO} (\emph{First-In, First-Out}), et les donn\'ees envoy\'ees dans le flux sont assurées d'arriver dans l'ordre. Les donn\'ees entrent dans le nœud via le port d'entr\'ee d\'efinie dans chaque classe de noyau de calcul. Une fois les donn\'ees trait\'ees, elles sont envoy\'ees \`a la sortie via le port de sortie d\'efinie dans la m\^eme classe.  Les files sont réalisées \`a l'aide de diff\'erents types de tampons tels que la m\'emoire partag\'ee ou la m\'emoire dynamique (\emph{heap memory}). L'\`etat du traitement est conserv\'e en interne par chaque noyau de calcul, mais il n'est pas conserv\'e entre les noyaux. Cela permet une parall\'elisation beaucoup plus simplifi\'ee.
 
 
-\subsubsection*{Acc\`es aux donn\'ees}
+%\subsubsection*{Acc\`es aux donn\'ees}
+%
+\GT{Ci-bas: tu veux dire <<échanger>> plutôt que <<changer>>?}
+%
 Dans \TT{RaftLib}, il existe plusieurs options pour changer les donn\'ees entre des noyaux de calcul. Le processus comprend deux \'etapes: lire les donn\'ees \`a partir des ports d'entr\'ee et \'ecrire les donn\'ees sur les ports de sortie. Une fois les données envoy\'ees au port de sortie, elles sont disponibles pour le noyau en aval.
 
-Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les m\'ethodes sans copie (\emph{zero copy} en anglais) et les m\'ethodes avec copie \cite{accessingDataInRaftLib}. \emph{Zero copy} signifie que les donn\'ees ne sont pas d\'eplac\'ees du noyau vers le contexte de l'application. Cela \'elimine les copies inutiles des donn\'ees. Les m\'ethodes avec copie peuvent \^etre plus rapides pour les transferts petits tels que les donn\'ees de type.
+\GT{Pas besoin de dire <<en anglais>>. Simplement mettre le terme en
+italiques entre parenthèses.}
 
-Dans \TT{RaftLib} deux m\'ethodes de type \emph{zero copy} sont d\'efinies : \emph{allocate()} et \emph{allocate\_s()}. La premi\`ere m\'ethode, \emph{allocate()} retourne une r\'ef\'erence \`a la fin de la file d'attente \emph{FIFO}. Une fois que quelque chose est \'ecrit, un appel \`a la m\'ethode \emph{send()} doit \^etre effectu\'e pour envoyer les donn\'ees sur la file d'attend. Contrairement \`a \emph{allocate()}, la deuxi\`eme m\'ethode \emph{allocate\_s()} retourne un objet au lieu d'une r\'ef\'erence. Dans ce cas l'utilisateur doit d\'er\'ef\'erencer l'objet pour acc\'eder \`a la m\'emoire.
+\GT{Attention: si tu utilises \TT{$\backslash$cite}, alors c'est que
+tu veux utiliser le nom de l'auteur comme sujet de la phrase. Sinon,
+tu dois utiliser \TT{$\backslash$citep}. Et il faut mettre un espace
+insécable <<\~{}>> juste avant.}
 
-Les m\'ethodes avec copie d\'efinies dans \TT{RaflLib} sont \emph{push()} et \emph{insert()}. La m\'ethode \emph{push()} transmet \`a la file d'attente une copie de chaque objet cr\'e\'e \`a l'aide de son constructeur. Afin de transf\'erer un conteneur \emph{C++}, la m\'ethode \emph{insert()} peut \^etre utilis\'ee. Elle utilise les deux param\`etres de type it\'erateur, l'un qui point vers le d\'ebut du container el l'autre vers la fin. 
+Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les m\'ethodes sans copie (\emph{zero copy}) et les m\'ethodes avec copie~\citep{accessingDataInRaftLib}. \emph{Zero copy} signifie que les donn\'ees ne sont pas d\'eplac\'ees du noyau vers le contexte de l'application, ce qui \'elimine les copies inutiles des donn\'ees. Les m\'ethodes avec copie peuvent \^etre plus rapides pour les transferts de petite taille tels que les donn\'ees de type.
+%
+\GT{Il manque quelque chose ici: type de base? type primitif?}
+
+\GT{Petit rappel: on utilise $\backslash$emph pour les termes en
+anglais, mais on utilise $\backslash$texttt (ou $\backslash$TT) pour
+les noms qui représentent des identificateurs de code.}
+
+\GT{Après lecture, pas clair pour moi la différence entre allocate et
+allocate\_s. Pas certain non plus que ce soit nécessaire de traiter de
+cette différence. Peut-être simplement omettre ce paragraphe?}
+
+Dans \TT{RaftLib}, deux m\'ethodes de type \emph{zero copy} sont d\'efinies : \TT{allocate()} et \TT{allocate\_s()}. La premi\`ere m\'ethode, \TT{allocate()}, retourne une r\'ef\'erence \`a la fin de la file \emph{FIFO}. Une fois que quelque chose est \'ecrit, un appel \`a la m\'ethode \TT{send()} doit \^etre effectu\'e pour envoyer les donn\'ees dans la file. Contrairement \`a \TT{allocate()}, la deuxi\`eme m\'ethode, \TT{allocate\_s()} retourne un objet au lieu d'une r\'ef\'erence. Dans ce cas, l'utilisateur doit d\'er\'ef\'erencer l'objet pour acc\'eder \`a la m\'emoire.
+
+\GT{Idem pour cet autre paragraphe. Je ne sais pas si ce sont des
+détails utiles à connaitre?}
+
+\GT{Est-ce qu'il y avait des exemples dans l'article? Sans montrer ces
+exemples, sur la base de leur lecture, pourrais-tu plutôt dire
+quelques mots sur le style de programme que cela crée?  On doit, comme
+en FastFlow, créer le graphe de facçon impérative, un noeud/une
+connection à la fois? Ou c'est implicite comme en PpFf via chainage de
+méthodes?  C'est plutôt sur cet aspect qu'il faudrait insister, si tu
+peux.}
+
+Les m\'ethodes avec copie d\'efinies dans \TT{RaflLib} sont \TT{push()} et \TT{insert()}. La m\'ethode \TT{push()} ajoute dans la file une copie de chaque objet cr\'e\'e \`a l'aide de son constructeur. Afin de transf\'erer un conteneur \TT{C++}, la m\'ethode \TT{insert()} peut \^etre utilis\'ee. Elle utilise les deux param\`etres de type it\'erateur, l'un qui pointe vers le d\'ebut du conteneur el l'autre vers la fin. 
