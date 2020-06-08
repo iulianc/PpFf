@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toMap;
  * @author iciobanu & Guy Tremblay
  */
 
-class GroupByKey implements Consumer<String> {
+class ReduceByKey implements Consumer<String> {
     @SuppressWarnings("unchecked")
         private Map<String,Integer> map = (Map) new HashMap();
     
@@ -40,7 +40,7 @@ class GroupByKey implements Consumer<String> {
         map.put(s, map.getOrDefault(s, 0) + 1);
     }
     
-    public void combine( GroupByKey other ) {
+    public void combine( ReduceByKey other ) {
         for ( Map.Entry<String,Integer> entry : other.map.entrySet() ) {
             Integer value = map.getOrDefault(entry.getKey(), 0);
             map.put( entry.getKey(), value + entry.getValue() );
@@ -97,7 +97,7 @@ public class WordCount {
                 .flatMap( WordCount::splitInWords )
                 .map( WordCount::toLowerCaseLetters )
                 .filter( WordCount::notEmpty )
-                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .collect( ReduceByKey::new, ReduceByKey::accept, ReduceByKey::combine )
                 .toMap();
 
             System.err.println( wordsCount.entrySet().size() );
@@ -113,7 +113,7 @@ public class WordCount {
                 .parallel()
                 .flatMap( WordCount::splitInWords )
                 .map( WordCount::toLowerCaseLetters )
-                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .collect( ReduceByKey::new, ReduceByKey::accept, ReduceByKey::combine )
                 .toMap();
         } else {
             //System.err.println( "Execution *sans* parallel()" );
@@ -121,7 +121,7 @@ public class WordCount {
                 Files.lines( Paths.get(inputFile) )
                 .flatMap( WordCount::splitInWords )
                 .map( WordCount::toLowerCaseLetters )
-                .collect( GroupByKey::new, GroupByKey::accept, GroupByKey::combine )
+                .collect( ReduceByKey::new, ReduceByKey::accept, ReduceByKey::combine )
                 .toMap();
         }
         
