@@ -1,6 +1,6 @@
 .IGNORE:
 
-_def: run_java
+_def: run_java2
 
 
 def: run_cpp_merged run_cpp
@@ -109,6 +109,24 @@ run_java: WordCount.class
 	java -cp . WordCount 21 $(TEST_FILE) 1 | sort > obtenus-java.txt
 	diff obtenus-java.txt $(ATTENDUS)
 
+run_java2: WordCount2.class
+	@echo "*** Execution Java sequentielle avec warmup ***"
+	wc -lw $(TEST_FILE)
+	java -cp . WordCount2 11 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
+
+wip:
+	@echo "*** Execution Java sequentielle sans warmup ***"
+	java -cp . WordCount2 10 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
+	echo
+	@echo "*** Execution Java parallele sans warmup ***"
+	java -cp . WordCount2 20 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
+	@echo "*** Execution Java parallele avec warmup ***"
+	java -cp . WordCount2 21 $(TEST_FILE) 1 | sort > obtenus-java.txt
+	diff obtenus-java.txt $(ATTENDUS)
+
 run_java_warmup: WordCount.class
 	@echo "*** Execution Java avec Warmup ***"
 	java -cp . WordCount 1 $(TEST_FILE) 1 | sort > obtenus-java-warmup.txt
@@ -125,6 +143,9 @@ WordCountSeq: WordCountSeq.o
 
 WordCount.class: WordCount.java
 	javac WordCount.java
+
+WordCount2.class: WordCount2.java
+	javac WordCount2.java
 
 WordCountFastFlow: $(OBJ)
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountFastFlow.o $(LDLIBS) -o WordCountFastFlow

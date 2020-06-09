@@ -523,8 +523,7 @@ Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \T
 \TT{RaftLib}~\citep{beard2017raftlib} est une plus r\'ecente biblioth\`eque \emph{C++} con\c{c}ue pour traiter des flux de donn\'ees. \'Ecrit \`a l'aide de templates, \TT{RaftLib} vise \`a parall\'eliser de mani\`ere transparente une application, tout en minimisant la refactorisation du code h\'erit\'e. Comme \TT{FastFlow}, il fournit aux programmeurs un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees. Les programmes r\'esultants sont capables de fonctionner sur des plates-formes multi-cœurs avec m\'emoires partag\'ees ainsi que sur des plates-formes avec m\'emoires distribu\'ees.
 
 
-\GT{À moins que tu en dises beaucoup plus, pas besoin il me semble
-d'avoir des sous-sections.}
+%\gt{À moins que tu en dises beaucoup plus, pas besoin il me semble d'avoir des sous-sections.}
 
 %\subsubsection*{Conception}
 \TT{RaftLib} construit le flux de traitement sous forme d'un graphe en connectant des nœuds à des ports. Les nœuds, appel\'es noyaux de calcul, sont des classes \emph{C++} qui \'etendent la classe \TT{raft::kernel}. Dans le constructeur de cette classe sont d\'efinis les ports. Les ports sont d'entrée ou sortie pour chaque noyau de calcul. Chacun de ces noyaux impl\'emente une m\'ethode d'ex\'ecution o\`u des op\'erations de traitement sont effectu\'ees. Le graphe est construit dans la m\'ethode \TT{main} o\`u les noyaux d\'eclar\'es sont li\'es en connectant des ports \`a l'aide d'op\'erateurs de liaison. 
@@ -534,38 +533,22 @@ La communication entre les noyaux s'effectue via des files de type \TT{FIFO} (\e
 
 %\subsubsection*{Acc\`es aux donn\'ees}
 %
-\GT{Ci-bas: tu veux dire <<échanger>> plutôt que <<changer>>?}
-\IC{Oui <<échanger>> est plus approprié. }
-%
 Dans \TT{RaftLib}, il existe plusieurs options pour \'echanger les donn\'ees entre des noyaux de calcul. Le processus comprend deux \'etapes: lire les donn\'ees \`a partir des ports d'entr\'ee et \'ecrire les donn\'ees sur les ports de sortie. Une fois les données envoy\'ees au port de sortie, elles sont disponibles pour le noyau en aval.
 
-\GT{Pas besoin de dire <<en anglais>>. Simplement mettre le terme en
-italiques entre parenthèses.}
+% \gt{Pas besoin de dire <<en anglais>>. Simplement mettre le terme en
+% italiques entre parenthèses.}
 
-\GT{Attention: si tu utilises \TT{$\backslash$cite}, alors c'est que
-tu veux utiliser le nom de l'auteur comme sujet de la phrase. Sinon,
-tu dois utiliser \TT{$\backslash$citep}. Et il faut mettre un espace
-insécable <<\~{}>> juste avant.}
-\IC{J'en ai pris note. J'ai toujours cherché un exemple et j'ai pris le prémier trouvé}
+% \gt{Attention: si tu utilises \TT{$\backslash$cite}, alors c'est que
+% tu veux utiliser le nom de l'auteur comme sujet de la phrase. Sinon,
+% tu dois utiliser \TT{$\backslash$citep}. Et il faut mettre un espace
+% insécable <<\~{}>> juste avant.}
 
 Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les m\'ethodes sans copie (\emph{zero copy}) et les m\'ethodes avec copie~\citep{accessingDataInRaftLib}. \emph{Zero copy} signifie que les donn\'ees ne sont pas d\'eplac\'ees du noyau vers le contexte de l'application, ce qui \'elimine les copies inutiles des donn\'ees. Les m\'ethodes avec copie peuvent \^etre plus rapides pour les transferts de petite taille tels que les donn\'ees de type primitif.
 %
-\GT{Il manque quelque chose ici: type de base? type primitif?}
-\IC{Je voulais dire primitif.}
 
-\GT{Petit rappel: on utilise $\backslash$emph pour les termes en
-anglais, mais on utilise $\backslash$texttt (ou $\backslash$TT) pour
-les noms qui représentent des identificateurs de code.}
-\IC{J'en ai également pris note.}
-
-\GT{Après lecture, pas clair pour moi la différence entre allocate et
-allocate\_s. Pas certain non plus que ce soit nécessaire de traiter de
-cette différence. Peut-être simplement omettre ce paragraphe?}
-
-
-\GT{Idem pour cet autre paragraphe. Je ne sais pas si ce sont des
-détails utiles à connaitre?}
-\IC{Je les ai effacé.}
+% \gt{Petit rappel: on utilise $\backslash$emph pour les termes en
+% anglais, mais on utilise $\backslash$texttt (ou $\backslash$TT) pour
+% les noms qui représentent des identificateurs de code.}
 
 \GT{Est-ce qu'il y avait des exemples dans l'article? Sans montrer ces
 exemples, sur la base de leur lecture, pourrais-tu plutôt dire
@@ -576,3 +559,4 @@ méthodes?  C'est plutôt sur cet aspect qu'il faudrait insister, si tu
 peux.}
 
 \IC{Je vais y réflechier. C'est un bon point. Ce sera peut-être une bonne idée de parler aussi de la différence de style entre PpFf et FastFlow. Je crois que l'un d'évaluateurs l'a méntionné dans ses commentaires.}
+
