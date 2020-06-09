@@ -535,8 +535,9 @@ La communication entre les noyaux s'effectue via des files de type \TT{FIFO} (\e
 %\subsubsection*{Acc\`es aux donn\'ees}
 %
 \GT{Ci-bas: tu veux dire <<échanger>> plutôt que <<changer>>?}
+\IC{Oui <<échanger>> est plus approprié. }
 %
-Dans \TT{RaftLib}, il existe plusieurs options pour changer les donn\'ees entre des noyaux de calcul. Le processus comprend deux \'etapes: lire les donn\'ees \`a partir des ports d'entr\'ee et \'ecrire les donn\'ees sur les ports de sortie. Une fois les données envoy\'ees au port de sortie, elles sont disponibles pour le noyau en aval.
+Dans \TT{RaftLib}, il existe plusieurs options pour \'echanger les donn\'ees entre des noyaux de calcul. Le processus comprend deux \'etapes: lire les donn\'ees \`a partir des ports d'entr\'ee et \'ecrire les donn\'ees sur les ports de sortie. Une fois les données envoy\'ees au port de sortie, elles sont disponibles pour le noyau en aval.
 
 \GT{Pas besoin de dire <<en anglais>>. Simplement mettre le terme en
 italiques entre parenthèses.}
@@ -545,23 +546,26 @@ italiques entre parenthèses.}
 tu veux utiliser le nom de l'auteur comme sujet de la phrase. Sinon,
 tu dois utiliser \TT{$\backslash$citep}. Et il faut mettre un espace
 insécable <<\~{}>> juste avant.}
+\IC{J'en ai pris note. J'ai toujours cherché un exemple et j'ai pris le prémier trouvé}
 
-Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les m\'ethodes sans copie (\emph{zero copy}) et les m\'ethodes avec copie~\citep{accessingDataInRaftLib}. \emph{Zero copy} signifie que les donn\'ees ne sont pas d\'eplac\'ees du noyau vers le contexte de l'application, ce qui \'elimine les copies inutiles des donn\'ees. Les m\'ethodes avec copie peuvent \^etre plus rapides pour les transferts de petite taille tels que les donn\'ees de type.
+Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les m\'ethodes sans copie (\emph{zero copy}) et les m\'ethodes avec copie~\citep{accessingDataInRaftLib}. \emph{Zero copy} signifie que les donn\'ees ne sont pas d\'eplac\'ees du noyau vers le contexte de l'application, ce qui \'elimine les copies inutiles des donn\'ees. Les m\'ethodes avec copie peuvent \^etre plus rapides pour les transferts de petite taille tels que les donn\'ees de type primitif.
 %
 \GT{Il manque quelque chose ici: type de base? type primitif?}
+\IC{Je voulais dire primitif.}
 
 \GT{Petit rappel: on utilise $\backslash$emph pour les termes en
 anglais, mais on utilise $\backslash$texttt (ou $\backslash$TT) pour
 les noms qui représentent des identificateurs de code.}
+\IC{J'en ai également pris note.}
 
 \GT{Après lecture, pas clair pour moi la différence entre allocate et
 allocate\_s. Pas certain non plus que ce soit nécessaire de traiter de
 cette différence. Peut-être simplement omettre ce paragraphe?}
 
-Dans \TT{RaftLib}, deux m\'ethodes de type \emph{zero copy} sont d\'efinies : \TT{allocate()} et \TT{allocate\_s()}. La premi\`ere m\'ethode, \TT{allocate()}, retourne une r\'ef\'erence \`a la fin de la file \emph{FIFO}. Une fois que quelque chose est \'ecrit, un appel \`a la m\'ethode \TT{send()} doit \^etre effectu\'e pour envoyer les donn\'ees dans la file. Contrairement \`a \TT{allocate()}, la deuxi\`eme m\'ethode, \TT{allocate\_s()} retourne un objet au lieu d'une r\'ef\'erence. Dans ce cas, l'utilisateur doit d\'er\'ef\'erencer l'objet pour acc\'eder \`a la m\'emoire.
 
 \GT{Idem pour cet autre paragraphe. Je ne sais pas si ce sont des
 détails utiles à connaitre?}
+\IC{Je les ai effacé.}
 
 \GT{Est-ce qu'il y avait des exemples dans l'article? Sans montrer ces
 exemples, sur la base de leur lecture, pourrais-tu plutôt dire
@@ -571,4 +575,4 @@ connection à la fois? Ou c'est implicite comme en PpFf via chainage de
 méthodes?  C'est plutôt sur cet aspect qu'il faudrait insister, si tu
 peux.}
 
-Les m\'ethodes avec copie d\'efinies dans \TT{RaflLib} sont \TT{push()} et \TT{insert()}. La m\'ethode \TT{push()} ajoute dans la file une copie de chaque objet cr\'e\'e \`a l'aide de son constructeur. Afin de transf\'erer un conteneur \TT{C++}, la m\'ethode \TT{insert()} peut \^etre utilis\'ee. Elle utilise les deux param\`etres de type it\'erateur, l'un qui pointe vers le d\'ebut du conteneur el l'autre vers la fin. 
+\IC{Je vais y réflechier. C'est un bon point. Ce sera peut-être une bonne idée de parler aussi de la différence de style entre PpFf et FastFlow. Je crois que l'un d'évaluateurs l'a méntionné dans ses commentaires.}
