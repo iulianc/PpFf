@@ -558,26 +558,39 @@ connection à la fois? Ou c'est implicite comme en PpFf via chainage de
 méthodes?  C'est plutôt sur cet aspect qu'il faudrait insister, si tu
 peux.}
 
-\IC{Je vais y réflechier. C'est un bon point. Ce sera peut-être une bonne idée de parler aussi de la différence de style entre PpFf et FastFlow. Je crois que l'un d'évaluateurs l'a méntionné dans ses commentaires.}
+\IC{Je vais y réflechir. C'est un bon point. Ce sera peut-être une bonne idée de parler aussi de la différence de style entre PpFf et FastFlow. Je crois que l'un d'évaluateurs l'a méntionné dans ses commentaires.}
 
 
 \subsection{StarPU} 
 
 \begin{figure}
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/StarPUInternalStructure.png}
+     \includegraphics[width=0.8\textwidth]{Figures/StarPUInternalStructure.png}
       \caption[La structure interne de \TT{StarPU}.]{ La structure interne de \TT{StarPU} --- figure tir\'ee de~\citep{starPuRuntime}.}
        \label{StarPUInternalStructure.fig}
 \end{figure}
 
 
-Un outre outil pour le traitement de flux de donn\'ees est \TT{StarPu}. \TT{StarPU}~\citep{starPuReferenceEnLigne} est un syst\`eme d'ex\'ecution visant \`a permettre aux programmeurs de g\'en\'erer des t\^aches parall\`eles sur des unit\'es de traitement comme \emph{CPU} et \emph{GPU}, tout en les d\'echargeant de la n\'ecessit\'e d'adapter sp\'ecialement leurs programmes \`a la machine cible.
+Un outre outil pour le traitement de flux de donn\'ees est \TT{StarPU}~\citep{starPuReferenceEnLigne}.  \TT{StarPU} est un syst\`eme d'ex\'ecution visant \`a permettre aux programmeurs de g\'en\'erer des t\^aches parall\`eles sur des unit\'es de traitement comme  des \emph{CPU}s et \emph{GPU}s, tout en les d\'echargeant de la n\'ecessit\'e d'adapter sp\'ecialement leurs programmes \`a la machine cible.
 
 
-Le mod\`ele de programmation \TT{StarPU} est un mod\`ele bas\'e sur les t\^aches. Les applications soumettent des t\^aches de calcul et \TT{StarPU} distribue ces t\^aches aux unit\'es de traitement disponibles. La figure~\ref{StarPUInternalStructure.fig} montre la structure interne de \TT{StarPU}. Le composant responsable de la distribution de t\^aches est << Scheduling engine >>. Les donn\'ees qu'une t\^ache manipule sont automatiquement transf\'er\'ees entre les unit\'es de traitement et la m\'emoire principale par le composant << High-level data management library >>. Ce composant vient \`a l'aide de d\'eveloppeurs en les lib\'erant de la charge des transferts de donn\'ees. De plus, il optimise le traitement en \'evitant les transferts inutiles. Les donn\'ees sont gard\'ees l\`a o\`u elles \'etaient n\'ecessaires la derni\`ere fois, m\^eme si elles ont \'et\'e modifi\'ees.
+Le mod\`ele de programmation \TT{StarPU} est un mod\`ele bas\'e sur les t\^aches. Les applications soumettent des t\^aches de calcul et \TT{StarPU} distribue ces t\^aches aux unit\'es de traitement disponibles. La figure~\ref{StarPUInternalStructure.fig} montre la structure interne de \TT{StarPU}. Le composant responsable de la distribution de t\^aches est le <<\emph{Scheduling engine}>>. Les donn\'ees qu'une t\^ache manipule sont automatiquement transf\'er\'ees entre les unit\'es de traitement et la m\'emoire principale par le composant <<\emph{High-level data management library}>>. Ce composant facilite le travail des d\'eveloppeurs en les lib\'erant de la charge des transferts de donn\'ees. De plus, il optimise le traitement en \'evitant les transferts inutiles~: les donn\'ees sont conserv\'ees l\`a o\`u elles ont été utilisées la derni\`ere fois, pour bénéficier de la localité.
 
-Afin de r\'eutiliser le code existent,  \TT{StarPU} introduise la notion de \emph{codelet}. Un \emph{codelet} d\'ecrit une unit\'e de calcul. Plut\^ot que de r\'e\'ecrire tout le code, les programmeurs peuvent encapsuler des fonctions existant dans des \emph{codelets}. En effet, dans  \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes telles que \TT{CUDA} ou \TT{OpenCL}.  
+\GT{Ci-bas: pas clair à quoi réfère <<le code existant>>. Du code
+séquentiel, comme on ferait avec OpenMp, qu'on rend parallèle avec des
+annotations? Ou autre?  En fait, même remarque que ci-haut: ajouter
+une phrase qui distingue cette approche de celle de PpFf en termes du
+modèle de programmation --- modèle pour PpFf = chainage de méthodes
+fonctionnelles, chaque méthode effectuant un traitement spécifique du
+flux.}
+
+
+\GT{Toujours ci-bas: habituellement, le terme <<unité de calcul>>
+réfère à une instance d'une machine physique, i.e., coeur, processeur,
+etc.  Donc, dans le cas des codelets, comme il s'agit de code
+(logiciel) et non matériel, ce n'est probablement pas le meilleur
+terme. Quel est le terme en anglais?}
+
+Afin de r\'eutiliser le code existant, \TT{StarPU} introduit la notion de \emph{codelet}. Un \emph{codelet} d\'ecrit une unit\'e de calcul. Plut\^ot que de r\'e\'ecrire tout le code, les programmeurs peuvent encapsuler des fonctions existant dans des \emph{codelets}. En effet, dans  \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut ensuite \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes, telles que \TT{CUDA} ou \TT{OpenCL}.  
 
 Toutes les t\^aches dans \TT{StarPU} sont asynchrones. Autrement dit, soumettre une t\^ache \`a \TT{StarPU} est une op\'eration non bloquante. Comme tout autre syst\`eme, \TT{StarPU} introduit des co\^uts pour g\'erer les t\^aches. Ces co\^uts peuvent \^etre importants si la quantit\'e de travail \`a effectuer n'est pas assez grande. 
-
-
