@@ -1,6 +1,6 @@
 .IGNORE:
 
-_def: run_java2
+_def: run_bash
 
 
 def: run_cpp_merged run_cpp
@@ -21,14 +21,14 @@ ATTENDUS_78792="attendus-78792.txt"
 TEST_FILE="testdata/10Words.txt"
 ATTENDUS="attendus-10.txt"
 
-#TEST_FILE="testdata/131Words.txt"
-#ATTENDUS="attendus-131.txt"
+TEST_FILE="testdata/131Words.txt"
+ATTENDUS="attendus-131.txt"
 
-#TEST_FILE="testdata/78792Words.txt"
-#ATTENDUS="attendus-78792.txt"
+TEST_FILE="testdata/78792Words.txt"
+ATTENDUS="attendus-78792.txt"
 
-TEST_FILE="testdata/752856Words.txt"
-ATTENDUS="attendus-752856.txt"
+#TEST_FILE="testdata/752856Words.txt"
+#ATTENDUS="attendus-752856.txt"
 
 #MAP_TYPE=-D__ORDERED_MAP__
 
@@ -75,6 +75,11 @@ run_cpp: WordCount
 	@./WordCount 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
 	diff obtenus-cpp.txt $(ATTENDUS)
 	@./WordCount 4 $(TEST_FILE) 0
+
+run_bash:
+	@echo "*** Execution bash++ *** "
+	cat  $(TEST_FILE) | word-count.sh > obtenus-bash.txt
+	diff obtenus-bash.txt $(ATTENDUS)
 
 run_cpp_merged: WordCountMerged
 	@echo "*** Execution C++ Merged *** "
