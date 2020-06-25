@@ -558,7 +558,12 @@ connection à la fois? Ou c'est implicite comme en PpFf via chainage de
 méthodes?  C'est plutôt sur cet aspect qu'il faudrait insister, si tu
 peux.}
 
-\IC{Je vais y réflechir. C'est un bon point. Ce sera peut-être une bonne idée de parler aussi de la différence de style entre PpFf et FastFlow. Je crois que l'un d'évaluateurs l'a méntionné dans ses commentaires.}
+\IC{J'ai ajouté quelques mots pour comparer les biblioth\`eques.}
+
+Les deux biblioth\`eques, \TT{RaftLib} et \TT{PpFf} ont plusieurs caract\'eristiques en commun. Elles sont \'ecrites en utilisant les \emph{templates} de \TT{C++} avec une parall\'elisation automatique. Les nœuds dans le flux pour \TT{RaftLib} et \TT{PpFf} s'ex\'ecutent dans des \emph{threads} diff\'erents. Dans ce contexte, \TT{PpFf} ajoute plus de flexibilit\'e en utilisant le parall\'elisme optionnel introduit par les instances parall\`eles d'un \TT{farm}. 
+
+M\^eme si les deux biblioth\`eques ont plusieurs caract\'eristiques en commun, leur conception est diff\'erente. Tandis que \TT{RaftLib} a \'et\'e con\c {c}u pour prendre en charge le traitement des flux par lot et distribu\'e sur des plates-formes h\'et\'erog\`enes, \TT{PpFf} a \'et\'e con\c {c}u pour traiter des donn\'ees en flux incr\'emental, mais aussi des collections en lot. Avec un style fonctionnel, \TT{PpFf} vise la simplicit\'e et l'efficacit\'e en utilisant le cha\^inage de m\'ethodes et les expressions \TT{lambda}.
+
 
 
 \subsection{StarPU} 
