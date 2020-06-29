@@ -550,19 +550,9 @@ Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les
 % anglais, mais on utilise $\backslash$texttt (ou $\backslash$TT) pour
 % les noms qui représentent des identificateurs de code.}
 
-\GT{Est-ce qu'il y avait des exemples dans l'article? Sans montrer ces
-exemples, sur la base de leur lecture, pourrais-tu plutôt dire
-quelques mots sur le style de programme que cela crée?  On doit, comme
-en FastFlow, créer le graphe de facçon impérative, un noeud/une
-connection à la fois? Ou c'est implicite comme en PpFf via chainage de
-méthodes?  C'est plutôt sur cet aspect qu'il faudrait insister, si tu
-peux.}
+Les deux biblioth\`eques, \TT{RaftLib} et \TT{PpFf}, ont plusieurs caract\'eristiques en commun. Elles sont \'ecrites en utilisant les \emph{templates} de \TT{C++} avec une parall\'elisation automatique. Les divers nœuds d'un flux pour \TT{RaftLib} et \TT{PpFf} s'ex\'ecutent dans des \emph{threads} diff\'erents. Dans ce contexte, \TT{PpFf} permet plus de flexibilit\'e en utilisant aussi le parall\'elisme introduit par les instances parall\`eles d'un \TT{farm}. 
 
-\IC{J'ai ajouté quelques mots pour comparer les biblioth\`eques.}
-
-Les deux biblioth\`eques, \TT{RaftLib} et \TT{PpFf} ont plusieurs caract\'eristiques en commun. Elles sont \'ecrites en utilisant les \emph{templates} de \TT{C++} avec une parall\'elisation automatique. Les nœuds dans le flux pour \TT{RaftLib} et \TT{PpFf} s'ex\'ecutent dans des \emph{threads} diff\'erents. Dans ce contexte, \TT{PpFf} ajoute plus de flexibilit\'e en utilisant le parall\'elisme optionnel introduit par les instances parall\`eles d'un \TT{farm}. 
-
-M\^eme si les deux biblioth\`eques ont plusieurs caract\'eristiques en commun, leur conception est diff\'erente. Tandis que \TT{RaftLib} a \'et\'e con\c {c}u pour prendre en charge le traitement des flux par lot et distribu\'e sur des plates-formes h\'et\'erog\`enes, \TT{PpFf} a \'et\'e con\c {c}u pour traiter des donn\'ees en flux incr\'emental, mais aussi des collections en lot. Avec un style fonctionnel, \TT{PpFf} vise la simplicit\'e et l'efficacit\'e en utilisant le cha\^inage de m\'ethodes et les expressions \TT{lambda}.
+M\^eme si les deux biblioth\`eques ont plusieurs caract\'eristiques en commun, leur conception est diff\'erente. Tandis que \TT{RaftLib} a \'et\'e conçu pour prendre en charge le traitement des flux par lot et distribu\'e sur des plates-formes h\'et\'erog\`enes, \TT{PpFf} a \'et\'e conçu pour traiter des donn\'ees de flux incr\'emental, mais aussi des collections en lot. Et avec son style fonctionnel, \TT{PpFf} vise la simplicit\'e et l'efficacit\'e en utilisant le cha\^inage de m\'ethodes et les expressions \TT{lambda}.
 
 
 
@@ -581,28 +571,11 @@ Un outre outil pour le traitement de flux de donn\'ees est \TT{StarPU}~\citep{st
 
 Le mod\`ele de programmation \TT{StarPU} est un mod\`ele bas\'e sur les t\^aches. Les applications soumettent des t\^aches de calcul et \TT{StarPU} distribue ces t\^aches aux unit\'es de traitement disponibles. La figure~\ref{StarPUInternalStructure.fig} montre la structure interne de \TT{StarPU}. Le composant responsable de la distribution de t\^aches est le <<\emph{Scheduling engine}>>. Les donn\'ees qu'une t\^ache manipule sont automatiquement transf\'er\'ees entre les unit\'es de traitement et la m\'emoire principale par le composant <<\emph{High-level data management library}>>. Ce composant facilite le travail des d\'eveloppeurs en les lib\'erant de la charge des transferts de donn\'ees. De plus, il optimise le traitement en \'evitant les transferts inutiles~: les donn\'ees sont conserv\'ees l\`a o\`u elles ont été utilisées la derni\`ere fois, pour bénéficier de la localité.
 
-\GT{Ci-bas: pas clair à quoi réfère <<le code existant>>. Du code
-séquentiel, comme on ferait avec OpenMp, qu'on rend parallèle avec des
-annotations? Ou autre?  En fait, même remarque que ci-haut: ajouter
-une phrase qui distingue cette approche de celle de PpFf en termes du
-modèle de programmation --- modèle pour PpFf = chainage de méthodes
-fonctionnelles, chaque méthode effectuant un traitement spécifique du
-flux.}
-\IC{<<Le code existant>> doit être n'importe quel code. Plus précisément, c'est une fonction. Le codelet garde une référence vers une fonction et le codelet à son tour c'est une référence à une tâche. J’ai modifié la description et j’ai ajouté une phrase qui distingue cette approche de celle de PpFf.}
+Un programme \TT{StarPU} est \'ecrit sous forme de graphe de t\^aches, chaque t\^ache travaillant sur un ensemble de donn\'ees. Le programmeur doit sp\'ecifier pour chaque t\^ache les donn\'ees d'entr\'ee et de sortie, cr\'eant ainsi des d\'ependances entre les t\^aches. De cette fa\c{c}on, une application \TT{StarPU} g\'en\`ere un graphe des t\^aches au moment de l'ex\'ecution. Les t\^aches sont asynchrones, et donc soumettre une t\^ache \`a \TT{StarPU} est une op\'eration non bloquante. Comme tout autre syst\`eme, \TT{StarPU} introduit des co\^uts pour g\'erer les t\^aches. Ces co\^uts peuvent \^etre importants si la quantit\'e de travail \`a effectuer n'est pas assez grande.
 
+La partie calcul d'une t\^ache est appel\'ee \emph{codelet}. En effet, dans \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut ensuite \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes, telles que \TT{CUDA} ou \TT{OpenCL}.
 
-\GT{Toujours ci-bas: habituellement, le terme <<unité de calcul>>
-réfère à une instance d'une machine physique, i.e., coeur, processeur,
-etc.  Donc, dans le cas des codelets, comme il s'agit de code
-(logiciel) et non matériel, ce n'est probablement pas le meilleur
-terme. Quel est le terme en anglais?}
-\IC{Par <<unité de calcul>> je voulais dire qu'un codelet peut fonctionner sur un CPU ou GPU. Le terme en anglais est <<computational kernel>>. J'ai modifé la description.}
-
-Un programme \TT{StarPU} est \'ecrit sous forme de graphique de t\^aches, chaque t\^ache travaillant sur un ensemble de donn\'ees. Le programmeur doit sp\'ecifier pour chaque t\^ache les donn\'ees d'entr\'ee et de sortie, cr\'eant ainsi des d\'ependances entre les t\^aches. De cette fa\c {c}on, une application \TT{StarPU} g\'en\`ere un graphique des t\^aches au moment de l'ex\'ecution. Les t\^aches sont asynchrones. Autrement dit, soumettre une t\^ache \`a \TT{StarPU} est une op\'eration non bloquante. Comme tout autre syst\`eme, \TT{StarPU} introduit des co\^uts pour g\'erer les t\^aches. Ces co\^uts peuvent \^etre importants si la quantit\'e de travail \`a effectuer n'est pas assez grande.
-
-La partie de calcul de la t\^ache est appel\'ee \emph{codelet}. En effet, dans  \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut ensuite \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes, telles que \TT{CUDA} ou \TT{OpenCL}.
-
-Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement dans le flux est beaucoup simplifi\'e par l'utilisation du chainage de m\'ethodes fonctionnelles. Chaque m\'ethode effectu\'e un traitement sp\'ecifique dans le flux. De plus, dans \TT{PpFf} le \emph{codelet} \TT{StarPU} peut \^etre d\'efini lors de la d\'eclaration du flux de traitement \`a l'aide d'expressions \emph{lambda}. Avec moins de code, les expressions \emph{lambda} facilitent la compr\'ehension de la partie de traitement du flux.
+Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement du flux est  simplifi\'e par l'utilisation du chainage de m\'ethodes fonctionnelles. Chaque m\'ethode effectu\'e un traitement sp\'ecifique sur le flux. De plus, dans \TT{PpFf}, l'équivalent d'un \emph{codelet} \TT{StarPU} peut \^etre d\'efini lors de la d\'eclaration du flux de traitement, \`a l'aide d'expressions \emph{lambda}. Avec moins de code, les expressions \emph{lambda} facilitent la compr\'ehension de la partie de traitement du flux.
 
 
 
@@ -612,22 +585,15 @@ Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement dans le 
 
 \subsection{SkePU} 
 
-\TT{SkePU}~\citep{skePuReferenceEnLigne} est une biblioth\`eque \TT{C++} con\c {c}ue pour les syst\`emes parall\`eles h\'et\'erog\`enes. Il propose un ensemble de squelettes algorithmiques pour sp\'ecifier les t\^aches parall\`eles sur des syst\`emes \emph{multi-GPU} utilisant \TT{CUDA} et \TT{OpenCL}.
+\TT{SkePU}~\citep{skePuReferenceEnLigne} est une biblioth\`eque \TT{C++} con\c {c}ue pour les syst\`emes parall\`eles h\'et\'erog\`enes. Elle propose un ensemble de squelettes algorithmiques pour sp\'ecifier les t\^aches parall\`eles sur des syst\`emes \emph{multi-GPU} utilisant \TT{CUDA} ou \TT{OpenCL}.
 
-\TT{SkePU} fournit sept fonctions squelettes \`a usage g\'en\'eral pour traiter les donn\'ees en parall\`ele : \TT{Map}, \TT{Reduce}, \TT{MapReduce}, \TT{MapArray}, \TT{MapOverlap}, \TT{Scan} et \TT{Generate}. Ces fonctions sont impl\'ementées pour diff\'erents types de processeurs et plates-formes, y compris des processeurs s\'equentiels et multicœurs en utilisant \TT{OpenMP}, \TT{OpenCL} et \TT{CUDA} pour l'ex\'ecution mono et \TT{multi-GPU}.
+\TT{SkePU} fournit sept fonctions squelettes \`a usage g\'en\'eral pour traiter les donn\'ees en parall\`ele : \TT{Map}, \TT{Reduce}, \TT{MapReduce}, \TT{MapArray}, \TT{MapOverlap}, \TT{Scan} et \TT{Generate}. Ces fonctions sont impl\'ementées pour diff\'erents types de processeurs et plates-formes, y compris des processeurs s\'equentiels et multicœurs en utilisant \TT{OpenMP}, \TT{OpenCL} et \TT{CUDA} pour l'ex\'ecution mono et \emph{multi-GPU}.
 
-\GT{Il me semble que ça se répète, non, dans les deux paragraphes ci-bas?}
-\IC{Dans le deuxième paragraphe je voulais décrire comment cela se fait. J'ai fusionné les deux paragraphes.}
-
-Dans \TT{SkePU}, les donn\'ees sur lesquelles les fonctions opèrent sont conserv\'ees dans conteneurs dits <<intelligents>>. Ces conteneurs sont disponibles sous forme de vecteurs et matrices avec des \'el\'ements de type g\'en\'erique. Les donn\'ees sont transf\'er\'ees uniquement lorsque cela est n\'ecessaire en gardant une trace des parties qui sont allou\'ees et t\'el\'echarg\'ees sur le \TT{GPU}. Si un calcul est effectu\'e, en changeant le conteneur dans la m\'emoire \TT{GPU}, il n'est pas imm\'ediatement transf\'er\'e dans la m\'emoire h\^ote. La copie n'est effectu\'ee que si l'\'el\'ement est utilis\'e. Ce m\'ecanisme s'appelle \emph{lazy memory copy}.
+Dans \TT{SkePU}, les donn\'ees sur lesquelles les fonctions opèrent sont conserv\'ees dans des conteneurs dits <<intelligents>>. Ces conteneurs sont disponibles sous forme de vecteurs et matrices avec des \'el\'ements de type g\'en\'erique. Les donn\'ees sont transf\'er\'ees uniquement lorsque cela est n\'ecessaire en gardant une trace des parties qui sont allou\'ees et t\'el\'echarg\'ees sur le \TT{GPU}. Si un calcul est effectu\'e, en changeant le conteneur dans la m\'emoire \TT{GPU}, il n'est pas imm\'ediatement transf\'er\'e dans la m\'emoire h\^ote. La copie n'est effectu\'ee que si l'\'el\'ement est utilis\'e. Ce m\'ecanisme s'appelle \emph{lazy memory copy}.
 
 
 
 \TT{SkePU} donne aux d\'eveloppeurs la possibilit\'e de d\'efinir leurs propres op\'erateurs. Cela est r\'ealis\'e via des \emph{user functions}, lesquelles sont des op\'erateurs utilis\'es pour instancier et initialiser une fonction squelette. Il y a deux fa\c {c}ons de d\'efinir une \emph{user fonction} : par une fonction \emph{template} ou par une expression lambda. Une fonction \emph{template} est toujours pr\'ef\'erable car elle pourrait ensuite \^etre partag\'ee entre des instances.
 
-
-\GT{Ci-bas: je ne comprends pas ce que tu veux dire par <<déclarées de
-façon [\ldots] non implicite>>?}
-\IC{Je voulais dire implicite via chainage de méthodes. J'ai effacé le mot implicite}
 
 Malgr\'e le fait que \TT{SkePU} supporte une large gamme de squelettes algorithmiques en cachant les d\'etails du parall\'elisme, de la communication et de la synchronisation, cela reste une biblioth\`eque de bas niveau de traitement de flux de donn\'ees. Par rapport \`a \TT{PpFf}, dans \TT{SkePU} les fonctions sont d\'eclar\'ees de fa\c {c}on imp\'erative. \TT{PpFf} propose une mani\`ere plus simple de d\'efinir les traitement via le cha\^inage de m\'ethodes. De plus, \TT{PpFf} offre de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations les plus utilis\'ees de traitement de flux.
