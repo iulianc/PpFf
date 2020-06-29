@@ -588,6 +588,7 @@ une phrase qui distingue cette approche de celle de PpFf en termes du
 modèle de programmation --- modèle pour PpFf = chainage de méthodes
 fonctionnelles, chaque méthode effectuant un traitement spécifique du
 flux.}
+\IC{<<Le code existant>> doit être n'importe quel code. Plus précisément, c'est une fonction. Le codelet garde une référence vers une fonction et le codelet à son tour c'est une référence à une tâche. J’ai modifié la description et j’ai ajouté une phrase qui distingue cette approche de celle de PpFf.}
 
 
 \GT{Toujours ci-bas: habituellement, le terme <<unité de calcul>>
@@ -595,10 +596,18 @@ réfère à une instance d'une machine physique, i.e., coeur, processeur,
 etc.  Donc, dans le cas des codelets, comme il s'agit de code
 (logiciel) et non matériel, ce n'est probablement pas le meilleur
 terme. Quel est le terme en anglais?}
+\IC{Par <<unité de calcul>> je voulais dire qu'un codelet peut fonctionner sur un CPU ou GPU. Le terme en anglais est <<computational kernel>>. J'ai modifé la description.}
 
-Afin de r\'eutiliser le code existant, \TT{StarPU} introduit la notion de \emph{codelet}. Un \emph{codelet} d\'ecrit une unit\'e de calcul. Plut\^ot que de r\'e\'ecrire tout le code, les programmeurs peuvent encapsuler des fonctions existant dans des \emph{codelets}. En effet, dans  \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut ensuite \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes, telles que \TT{CUDA} ou \TT{OpenCL}.  
+Un programme \TT{StarPU} est \'ecrit sous forme de graphique de t\^aches, chaque t\^ache travaillant sur un ensemble de donn\'ees. Le programmeur doit sp\'ecifier pour chaque t\^ache les donn\'ees d'entr\'ee et de sortie, cr\'eant ainsi des d\'ependances entre les t\^aches. De cette fa\c {c}on, une application \TT{StarPU} g\'en\`ere un graphique des t\^aches au moment de l'ex\'ecution. Les t\^aches sont asynchrones. Autrement dit, soumettre une t\^ache \`a \TT{StarPU} est une op\'eration non bloquante. Comme tout autre syst\`eme, \TT{StarPU} introduit des co\^uts pour g\'erer les t\^aches. Ces co\^uts peuvent \^etre importants si la quantit\'e de travail \`a effectuer n'est pas assez grande.
 
-Toutes les t\^aches dans \TT{StarPU} sont asynchrones. Autrement dit, soumettre une t\^ache \`a \TT{StarPU} est une op\'eration non bloquante. Comme tout autre syst\`eme, \TT{StarPU} introduit des co\^uts pour g\'erer les t\^aches. Ces co\^uts peuvent \^etre importants si la quantit\'e de travail \`a effectuer n'est pas assez grande. 
+La partie de calcul de la t\^ache est appel\'ee \emph{codelet}. En effet, dans  \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut ensuite \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes, telles que \TT{CUDA} ou \TT{OpenCL}.
+
+Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement dans le flux est beaucoup simplifi\'e par l'utilisation du chainage de m\'ethodes fonctionnelles. Chaque m\'ethode effectu\'e un traitement sp\'ecifique dans le flux. De plus, dans \TT{PpFf} le \emph{codelet} \TT{StarPU} peut \^etre d\'efini lors de la d\'eclaration du flux de traitement \`a l'aide d'expressions \emph{lambda}. Avec moins de code, les expressions \emph{lambda} facilitent la compr\'ehension de la partie de traitement du flux.
+
+
+
+
+ 
 
 
 \subsection{SkePU} 
@@ -608,18 +617,17 @@ Toutes les t\^aches dans \TT{StarPU} sont asynchrones. Autrement dit, soumettre 
 \TT{SkePU} fournit sept fonctions squelettes \`a usage g\'en\'eral pour traiter les donn\'ees en parall\`ele : \TT{Map}, \TT{Reduce}, \TT{MapReduce}, \TT{MapArray}, \TT{MapOverlap}, \TT{Scan} et \TT{Generate}. Ces fonctions sont impl\'ementées pour diff\'erents types de processeurs et plates-formes, y compris des processeurs s\'equentiels et multicœurs en utilisant \TT{OpenMP}, \TT{OpenCL} et \TT{CUDA} pour l'ex\'ecution mono et \TT{multi-GPU}.
 
 \GT{Il me semble que ça se répète, non, dans les deux paragraphes ci-bas?}
+\IC{Dans le deuxième paragraphe je voulais décrire comment cela se fait. J'ai fusionné les deux paragraphes.}
 
-Dans \TT{SkePU}, les donn\'ees sur lesquelles les fonctions opèrent sont conserv\'ees dans conteneurs dits <<intelligents>>. Ces conteneurs sont disponibles sous forme de vecteurs et matrices avec des \'el\'ements de type g\'en\'erique. Les donn\'ees sont transf\'er\'ees uniquement lorsque cela est n\'ecessaire. Si, par exemple, les donn\'ees d'entr\'ee sont utilis\'ees pour un autre calcul, elles ne sont pas copi\'ees \`a nouveau. De plus, les donn\'ees r\'esultant de calculs interm\'ediaires restent disponibles dans la m\'emoire \TT{GPU} pour des calculs ult\'erieurs. Elles sont transf\'er\'ees dans la m\'emoire h\^ote lorsque cela est n\'ecessaire. Ce m\'ecanisme s'appelle \emph{lazy memory copy}.
+Dans \TT{SkePU}, les donn\'ees sur lesquelles les fonctions opèrent sont conserv\'ees dans conteneurs dits <<intelligents>>. Ces conteneurs sont disponibles sous forme de vecteurs et matrices avec des \'el\'ements de type g\'en\'erique. Les donn\'ees sont transf\'er\'ees uniquement lorsque cela est n\'ecessaire en gardant une trace des parties qui sont allou\'ees et t\'el\'echarg\'ees sur le \TT{GPU}. Si un calcul est effectu\'e, en changeant le conteneur dans la m\'emoire \TT{GPU}, il n'est pas imm\'ediatement transf\'er\'e dans la m\'emoire h\^ote. La copie n'est effectu\'ee que si l'\'el\'ement est utilis\'e. Ce m\'ecanisme s'appelle \emph{lazy memory copy}.
 
 
-\GT{Ci-bas (à plusieurs endroits): Le vecteur\ldots\ ==> Le conteneur?}
 
-Le \emph{lazy memory copy} a pour r\^ole de r\'eduire le transfert de donn\'ees redondantes. Le vecteur dans \TT{SkePU} garde une trace des parties qui sont allou\'ees et t\'el\'echarg\'ees sur le \TT{GPU}. Si un calcul est effectu\'e, en changeant le vecteur dans la m\'emoire \TT{GPU}, il n'est pas imm\'ediatement transf\'er\'e dans la m\'emoire h\^ote. La copie n'est effectu\'ee que si l'\'el\'ement est utilis\'e.
-
-\TT{SkePU} donne aux d\'eveloppeurs la possibilit\'e de d\'efinir leurs propres op\'erateurs. Cela est r\'ealis\'e via des \emph{user functions}, lesquelles sont sont des op\'erateurs utilis\'es pour instancier et initialiser une fonction squelette. Il y a deux fa\c {c}ons de d\'efinir une \emph{user fonction} : par une fonction \emph{template} ou par une expression lambda. Une fonction \emph{template} est toujours pr\'ef\'erable car elle pourrait ensuite \^etre partag\'ee entre des instances.
+\TT{SkePU} donne aux d\'eveloppeurs la possibilit\'e de d\'efinir leurs propres op\'erateurs. Cela est r\'ealis\'e via des \emph{user functions}, lesquelles sont des op\'erateurs utilis\'es pour instancier et initialiser une fonction squelette. Il y a deux fa\c {c}ons de d\'efinir une \emph{user fonction} : par une fonction \emph{template} ou par une expression lambda. Une fonction \emph{template} est toujours pr\'ef\'erable car elle pourrait ensuite \^etre partag\'ee entre des instances.
 
 
 \GT{Ci-bas: je ne comprends pas ce que tu veux dire par <<déclarées de
 façon [\ldots] non implicite>>?}
+\IC{Je voulais dire implicite via chainage de méthodes. J'ai effacé le mot implicite}
 
-Malgr\'e le fait que \TT{SkePU} supporte une large gamme de squelettes algorithmiques en cachant les d\'etails du parall\'elisme, de la communication et de la synchronisation, cela reste une biblioth\`eque de bas niveau de traitement de flux de donn\'ees. Par rapport \`a \TT{PpFf}, dans \TT{SkePU} les fonctions sont d\'eclar\'ees de fa\c {c}on imp\'erative et non implicite. \TT{PpFf} propose une mani\`ere plus simple de d\'efinir les traitement via le cha\^inage de m\'ethodes. De plus, \TT{PpFf} offre de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations les plus utilis\'ees de traitement de flux.
+Malgr\'e le fait que \TT{SkePU} supporte une large gamme de squelettes algorithmiques en cachant les d\'etails du parall\'elisme, de la communication et de la synchronisation, cela reste une biblioth\`eque de bas niveau de traitement de flux de donn\'ees. Par rapport \`a \TT{PpFf}, dans \TT{SkePU} les fonctions sont d\'eclar\'ees de fa\c {c}on imp\'erative. \TT{PpFf} propose une mani\`ere plus simple de d\'efinir les traitement via le cha\^inage de m\'ethodes. De plus, \TT{PpFf} offre de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations les plus utilis\'ees de traitement de flux.
