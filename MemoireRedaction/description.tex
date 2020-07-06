@@ -5,6 +5,7 @@
 
 
 
+
 \begin{figure}
 \centering
      \includegraphics[height=18cm, width=10cm]{Figures/MethodsAPI.pdf}
@@ -21,9 +22,23 @@ Le principal type exporté par l'API est le type \TT{Flow}, qui permet de défin
 %
 Ensuite, sur la base du type de fonctionnalit\'e export\'ee, l'API se divise en quatre cat\'egories :  \TT{Source} (Sect.~\ref{source.sect}), \TT{Transformation} (Sect.~\ref{transformation.sect}),  \TT{Aggregation} (Sect.~\ref{aggregation.sect}) et \TT{Execution} (Sect.~\ref{execution.sect}). Quant \`a la cat\'egorie \TT{Aggregation}, elle est elle-m\^eme divis\'ee deux sous-cat\'egories, selon le type de r\'esultat produit~: valeur simple (par ex., r\'esultat bool\'een ou entier) ou collection.
 
+
+\GT{Ici, je crois qu'il faudrait dire quelques mots pour répondre au
+commentaire d'un des évaluateurs: <<Bien que ce soit le cœur du
+travail de maitrise, les choix de conception de l’API ne sont pas
+expliqués.>>.  Comme discuté précédemment (il me semble), je ne suis
+pas trop certain de ce qu'il veut dire... Je crois qu'il devrait
+suffire d'expliquer, même si c'est fait un peu dans le chapitre
+précédent il me semble, que l'objectif était d'obtenir une API
+semblable à celle des Streams de Java 8, basée sur le chainage de
+méthodes, donc la construction d'un pipeline de traitement dans un
+style qui ressemble à un pipeline.}
+
+
 Le chapitre pr\'esente \'egalement le code source d'un exemple, \TT{WordCount}, pour illustrer l'utilisation de l'API et l'effet des principales m\'ethodes --- un exemple semblable à celui présenté dans l'article ayant popularisé l'approche \TT{MapReduce}~\citep{DeanGhe04}.
 
 La biblioth\`eque \PpFf{} est impl\'ement\'ee au-dessus de la biblioth\`eque \TT{FastFlow}, impl\'ementation qui sera d\'ecrite au prochain chapitre.
+
 
 
 
@@ -361,7 +376,7 @@ float]
 
 
 
-Il existe des situations o\`u la fonction \TT{accumulator} est identique avec la fonction \TT{combiner}. Un tel exemple est illustr\'e dans le listing~\ref{sumElementsCollectionWithReducerParallel.c++}. L'API de \TT{PpFf} fournit une surcharge de la m\'ethode \TT{reduce} pour pouvoir omettrea la fonction \TT{combiner} m\^eme si l'ex\'ecution est en parall\`ele. Le listing~\ref{sumElementsCollectionParallelWithoutCombiner.c++} montre l'exemple du listing~\ref{sumElementsCollectionWithReducerParallel.c++}, mais r\'e\'ecrit en faisant abstraction de la fonction \TT{combiner}. 
+Il existe des situations o\`u la fonction \TT{accumulator} est identique avec la fonction \TT{combiner}, par exemple, celui illustr\'e dans le listing~\ref{sumElementsCollectionWithReducerParallel.c++}. L'API de \TT{PpFf} fournit une surcharge de la m\'ethode \TT{reduce} pour pouvoir omettre la fonction \TT{combiner} m\^eme si l'ex\'ecution est en parall\`ele. Le listing~\ref{sumElementsCollectionParallelWithoutCombiner.c++} montre l'exemple du listing~\ref{sumElementsCollectionWithReducerParallel.c++}, mais r\'e\'ecrit en omettant la fonction \TT{combiner}. 
 
 
 
@@ -633,6 +648,12 @@ Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'
 Le listing~\ref{reduceByKeyExample.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Le listing pr\'esente un des tests unitaires pour \TT{reduceByKey}, qui d\'enombre les employ\'es en fonction de leur cat\'egorie d'\^age. 
 
 La m\'ethode \TT{reduceByKey} conserve les \'el\'ements dans un conteneur de type cl\'e--valeur --- donc un dictionnaire (\TT{map}). La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si la cl\'e n'est pas trouv\'ee, une nouvelle paire cl\'e--valeur est ajout\'ee. Si la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et sa valeur associ\'ee dans le conteneur. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect})  --- est sp\'ecifi\'ee par l'argument de la m\'ethode \TT{reduceByKey}. Dans le cas particulier de l'exemple fourni dans le listing~\ref{reduceByKeyExample.c++}, l'op\'eration a pour r\^ole de compter le nombre d'employ\'es ayant le m\^eme \^age. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un map de type cl\'e--valeur~: la cl\'e repr\'esente l'\^age d'employ\'es et la valeur associ\'ee repr\'esente le nombre d'employ\'es qui ont l'\^age indiqu\'e par la cl\'e.
+
+\GT{Ici, je crois qu'il faudrait ajouter quelques explications pour
+répondre au commentaire d'un des évaluateurs: <<La méthode reduceByKey
+est-elle recommandée dans un traitement en parallèle?  Comment est
+gérée la contention lors des accès aux éléments par la clé?>>.}
+
 
 \section{Cat\'egorie \TT{Execution}}
 
