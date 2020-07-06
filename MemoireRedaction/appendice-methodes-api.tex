@@ -1,0 +1,250 @@
+
+\chapter{Les m\'ethodes publiques de l'API de \ppff}
+
+\label{methodes-api.ann}
+
+
+\KOMAoptions{paper=landscape,pagesize}
+\recalctypearea
+
+
+\begin{center}
+\footnotesize
+\begin{longtable}{|l|l|p{5cm}|}
+%\caption{Les m\'ethodes publiques de l'API de~\ppff.\label{methodes_api.tab}}\\
+\hline
+\textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{\tablename\ \thetable\ Les méthodes publiques de l'API (\textit{suite})} \\
+\hline
+\textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
+\hline
+\endhead
+\hline \multicolumn{3}{r}{\textit{Suite page suivante}} \\
+\endfoot
+\hline
+\endlastfoot
+\hline
+	\multicolumn{3}{|c|}{\textbf{Source} --- M\'ethodes {\bf statiques} pour cr\'eer un flux \`a partir d'une source\label{source.page}}
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt Flow:$\!$:source(string\& path)
+	\end{tabular} &
+	\TT{Flow\&} & 
+    Retourne un flux avec les lignes
+    contenues dans le fichier indiqu\'e par \TT{path}.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T, Iterator> \\
+	\tt Flow:$\!$:source(Iterator  begin, Iterator end)
+	\end{tabular} &
+	\TT{Flow\&} &
+	Convertit un conteneur de type {STL} en un flux.
+    \\
+\hline
+	\multicolumn{3}{|c|}{\textbf{Transformation} --- M\'ethodes pour produire un flux \`a partir d'un flux existant\label{transformation.page}}
+    \\    
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In> \\
+	\tt find(Func<bool(In*)> const\& predicate)
+	\end{tabular} &
+  	\TT{Flow\&} &
+    Retourne les
+    \'el\'ements du flux qui satisfont \TT{predicate}.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Container, Out> \\
+	\tt flatMap(Func<Container*(In*)> const\& taskFunc)
+	\end{tabular} &
+  	\TT{Flow\&} & 
+    Applique la fonction fournie en argument
+    \`a chaque \'el\'ement du flux et concat\`ene ces \'el\'ements lorsque plusieurs sont produits par la fonction.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Out, Container=In> \\
+	\tt flatten()
+	\end{tabular} &
+  	\TT{Flow\&} &
+    Aplanit un flux multi-niveaux en cr\'eant un flux unique \`a partir du contenu des divers flux/conteneurs.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt limit(int n)
+	\end{tabular} &
+	\TT{Flow\&} & 
+    Retourne un flux compos\'e des~\TT{n}~premiers \'el\'ements du flux d'entr\'ee.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Out> \\
+	\tt map(Func<Out*(In*)> const\& taskFunc)
+	\end{tabular} &
+	\TT{Flow\&} & 
+    Retourne un flux compos\'e de
+    l'application de \TT{taskFunc}
+    \`a chacun des
+    \'el\'ements du flux.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In> \\
+	\tt peek(Func<void(In*)> const\& taskFunc)
+	\end{tabular} &
+	\TT{Flow\&} &
+	Applique la fonction \TT{taskFunc} \`a chaque \'el\'ement du flux et r\'e\'emet l'\'el\'ement (sans le modifier) sur le flux de sortie. Note: Utile pour le d\'ebogage.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt skip(int n)
+	\end{tabular} &
+	\TT{Flow\&} &
+    Retourne un flux compos\'e des \'el\'ements du flux d'entr\'ee, mais en omettant les \TT{n} premiers \'el\'ements.
+    \\
+\hline
+	\multicolumn{3}{|c|}{\textbf{Aggregation} --- M\'ethodes qui produisent une valeur, typiquement scalaire, \`a partir des \'el\'ements d'un flux\label{collector.page}}
+    \\     
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt allMatch(Func<bool(T*)> predicate)
+	\end{tabular} &
+  	\TT{bool} &
+    Retourne \TT{true} si tous les \'el\'ements
+    du flux satisfont \TT{predicate}, sinon \TT{false}.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt anyMatch(Func<bool(T*)> predicate)
+	\end{tabular} &
+  	\TT{bool} & 
+    Retourne \TT{true} si au moins un  
+    \'el\'ement du flux satisfait \TT{predicate}, sinon \TT{false}.
+\\          
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt count()\\
+	\end{tabular} &
+  	\TT{unsigned int} & 
+    Retourne le nombre d'\'el\'ements
+    du flux.
+    \\ 
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt max(Func<void(T*, T*)> compare)
+	\end{tabular} &
+	\TT{T} &
+	Retourne l'\'el\'ement maximum du flux en fonction du comparateur.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt min(Func<void(T*, T*)> compare)
+	\end{tabular} &
+	\TT{T} &
+	Retourne l'\'el\'ement minimum du flux en fonction du comparateur.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt noneMatch(Func<bool(T*)> predicate)
+	\end{tabular} &
+	\TT{bool} &
+    Retourne \TT{true} si aucun des \'el\'ements
+    du flux ne satisfait \TT{predicate},
+    sinon \TT{false}.
+    \\    
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Out=In> \\
+	\tt reduce(Reducer<In, Out> const\& reducer)
+	\end{tabular} &
+	\TT{Out} &
+	Effectue une r\'eduction sur les \'el\'ements du flux. Voir la notion de \TT{Reducer}, Section~\ref{reducer.sect}.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, Out=In> \\
+	\tt reduce(Out init, Func<Out(In, Out)> acc)
+	\end{tabular} &
+	\TT{Out} &
+	Effectue une r\'eduction des \'el\'ements du flux, en utilisant \TT{init} comme valeur initiale et \TT{acc} comme fonction d'accumulation.
+    \\    
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt sum()
+	\end{tabular} &
+	\TT{T} &
+	Retourne la somme des \'el\'ements du flux.
+    \\
+\hline
+	\multicolumn{3}{|c|}{\textbf{Aggregation} --- M\'ethodes qui produisent une collection \`a partir d'un flux}
+    \\     
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T, Container<T>{>}\\
+	\tt collect()
+	\end{tabular} &
+  	\TT{Container<T>} &
+    Retourne un conteneur
+    STL avec tous les \'el\'ements du flux.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, K=In, V=In, MapType> \\
+	\tt groupByKey(Func<K*(In*)> fk, Func<V*(In*)> fv)
+	\end{tabular} &
+  	\TT{MapType} &
+    Retourne un dictionnaire (\emph{map}) avec les \'el\'ements
+    du flux regroupés par cl\'e.
+   \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<In, K=In, V=In, MapType> \\
+	\tt reduceByKey(Reducer<In, V> r, Func<K*(In*)> fk)
+	\end{tabular} &
+	\TT{MapType} &
+    Effectue une r\'eduction sur les valeurs de chaque cl\'e à l'aide d'un \TT{Reducer}. Voir la notion de \TT{Reducer}, Section.~\ref{reducer.sect}.
+    \\
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt template<T> \\
+	\tt sort(Func<bool(T, T)> const\& compare)\label{sort.page}
+	\end{tabular} &
+	\TT{Collection<T, Container>} &
+	Effectue le tri des \'el\'ements du flux selon l'ordre sp\'ecifi\'e par \TT{compare}. Note: Le premier \'el\'ement du flux de sortie n'est \'emis \emph{qu'apr\`es que la fin de flux ait \'et\'e rencontr\'ee}.
+    \\
+\hline
+    \multicolumn{3}{c}{\ }
+\\
+    \multicolumn{3}{c}{\ }
+\\
+    \multicolumn{3}{c}{\ }
+\\
+	\multicolumn{3}{|c|}{\textbf{Execution} --- M\'ethode pour l'ex\'ecution parall\`ele du flux\label{concurrent.page}}
+    \\      
+\hline
+	\begin{tabular}{@{}l@{}}
+	\tt parallel(int workers = 1)
+	\end{tabular} &
+	\TT{Flow\&} &
+	Sp\'ecifie le nombre de travailleurs \`a utiliser pour traiter les \'el\'ements du flux.
+    \\                     
+\hline    
+\end{longtable}
+\normalsize
+\end{center}
+
+\KOMAoptions{paper=portrait,pagesize}
+\recalctypearea
