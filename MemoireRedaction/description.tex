@@ -15,9 +15,13 @@
 
 
 
-Ce chapitre pr\'esente l'API de la biblioth\`eque \ppff,  c'est-\`a-dire, l'interface avec laquelle interagit le d\'eveloppeur. La conception de l'API de \ppff{} permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e des m\'ecanismes concurrents utilis\'es. La figure~\ref{MethodesAPI.fig} pr\'esente une vue d'ensemble des diverses m\'ethodes export\'ees par \ppff. Sur la base du type de fonctionnalit\'e export\'ee, l'API se divise en quatre cat\'egories :  \TT{Source} (Sect.~\ref{source.sect}), \TT{Transformation} (Sect.~\ref{transformation.sect}),  \TT{Aggregation} (Sect.~\ref{aggregation.sect}) et \TT{Execution} (Sect.~\ref{execution.sect}). Quant \`a la cat\'egorie \TT{Aggregation}, elle est elle-m\^eme divis\'ee deux sous-cat\'egories, selon le type de r\'esultat produit~: valeur simple (par ex., r\'esultat bool\'een ou entier) ou collection.
+Ce chapitre pr\'esente l'API de la biblioth\`eque \ppff,  c'est-\`a-dire, l'interface avec laquelle interagit le d\'eveloppeur. La conception de l'API de \ppff{} permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e des m\'ecanismes concurrents utilis\'es. La figure~\ref{MethodesAPI.fig} pr\'esente une vue d'ensemble des diverses m\'ethodes export\'ees par \ppff.
+%
+Le principal type exporté par l'API est le type \TT{Flow}, qui permet de définir un \emph{flux de données} (Sect.~\ref{flow.sect}).
+%
+Ensuite, sur la base du type de fonctionnalit\'e export\'ee, l'API se divise en quatre cat\'egories :  \TT{Source} (Sect.~\ref{source.sect}), \TT{Transformation} (Sect.~\ref{transformation.sect}),  \TT{Aggregation} (Sect.~\ref{aggregation.sect}) et \TT{Execution} (Sect.~\ref{execution.sect}). Quant \`a la cat\'egorie \TT{Aggregation}, elle est elle-m\^eme divis\'ee deux sous-cat\'egories, selon le type de r\'esultat produit~: valeur simple (par ex., r\'esultat bool\'een ou entier) ou collection.
 
-Le chapitre pr\'esente \'egalement le code source d'un exemple, \TT{WordCount}, pour illustrer l'utilisation de l'API et l'effet des principales m\'ethodes --- exemple semblable à celui présenté dans l'article ayant popularisé l'approche \TT{MapReduce}~\citep{DeanGhe04}.
+Le chapitre pr\'esente \'egalement le code source d'un exemple, \TT{WordCount}, pour illustrer l'utilisation de l'API et l'effet des principales m\'ethodes --- un exemple semblable à celui présenté dans l'article ayant popularisé l'approche \TT{MapReduce}~\citep{DeanGhe04}.
 
 La biblioth\`eque \PpFf{} est impl\'ement\'ee au-dessus de la biblioth\`eque \TT{FastFlow}, impl\'ementation qui sera d\'ecrite au prochain chapitre.
 
@@ -30,17 +34,22 @@ La biblioth\`eque \PpFf{} est impl\'ement\'ee au-dessus de la biblioth\`eque \TT
 \begin{lstlisting}[
 label={wordcount.c++},
 language=c++,
-caption={Les extraits du code source de l'application \TT{WordCount} qui compte le nombre d'occurrences des mots dans un texte.},
+caption={Des extraits du code source de l'application \TT{WordCount} qui compte le nombre d'occurrences des mots dans un texte.},
 frame=single,
 float]
     // ...
+
+    // Un conteneur pour les mots d'une ligne.
     typedef std::vector<std::string> Words;
+
+    // Un Reducer pour combiner les elements.
     Reducer<std::string, int> reducer(
              0, 
              [](int count, std::string _) { return count + 1; },
              std::plus<int>{}
            );
 
+    // Le resultat final, un map obtenu par traitement d'un flux.
     std::unordered_map<std::string, int> currentResult = 
         Flow
         ::source(inputFile)
@@ -48,10 +57,11 @@ float]
         .flatMap<std::string, Words, std::string>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
         .reduceByKey<std::string, std::string, int>(reducer); 
+
     // ...
 \end{lstlisting}
 
-L'application \TT{WordCount} pr\'esent\'ee dans ce chapitre illustre le fonctionnement de \TT{PpFf}. Les extraits du code source de l'application sont donn\'e dans le listing~\ref{wordcount.c++}. L'application compte le nombre d'occurrences des mots dans un fichier texte. Cette application est compos\'ee en combinant plusieurs op\'erations.
+L'application \TT{WordCount} pr\'esent\'ee dans ce chapitre sera utilisée pour illustrer le fonctionnement de \TT{PpFf}. Des extraits du code source de l'application sont présentés dans le listing~\ref{wordcount.c++}. L'application compte le nombre d'occurrences des mots dans un fichier texte. Cette application est compos\'ee en combinant plusieurs op\'erations.
 
 
 
@@ -80,15 +90,16 @@ flux avec les lignes du fichier. Le fichier est sp\'ecifi\'e par un nom de fichi
 
 
 \section{Flux de donn\'ees: type \TT{Flow}}
+\label{flow.sect}
 
-L'interface propos\'ee en \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface s'inspire de celle introduite pour les \TT{Stream}s de \TT{Java} 8. L'annexe~\ref{methodes-api.ann} d\'ecrit bri\`evement les m\'ethodes export\'ees par l'API, regroup\'ees selon leur fonctionnalit\'e, puis en ordre alphab\'etique \`a l'int\'erieur d'une cat\'egorie.
-
-
-
-Comme on peut le voir dans le tableau~\ref{methodes-api.ann}, la d\'eclaration des m\'ethodes utilise la programmation \emph{g\'en\'erique} de C++, c'est-\`a-dire les \emph{templates}. Cela permet aux utilisateurs d'avoir une interface g\'en\'erique unique, de sorte qu'une m\'ethode peut \^etre r\'eutilis\'ee pour n'importe quel type de donn\'ees.
+L'interface de programmation propos\'ee par la bibliothèque \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface s'inspire de celle introduite pour les \TT{Stream}s de \TT{Java} 8. L'annexe~\ref{methodes-api.ann} présente et d\'ecrit bri\`evement les m\'ethodes export\'ees par l'API, regroup\'ees selon leur fonctionnalit\'e, puis en ordre alphab\'etique \`a l'int\'erieur d'une cat\'egorie.
 
 
-Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant sa conception d\'etaill\'ee, nous nous \'etions donn\'e comme objectif de fournir un syst\`eme suffisamment intuitif et expressif pour le traitement de flux de donn\'ees. Le cha\^inage des m\'ethodes et l'application des expressions \emph{lambda} sont deux caract\'eristiques de \TT{PpFf} qui simplifient l'utilisation et facilitent la compr\'ehension du code.
+
+Comme on peut le voir dans le tableau de l'annexe~\ref{methodes-api.ann}, la d\'eclaration des m\'ethodes utilise la programmation \emph{g\'en\'erique} de C++, c'est-\`a-dire les \emph{templates}. Cela permet aux utilisateurs d'avoir une interface g\'en\'erique unique, de sorte qu'une m\'ethode peut \^etre r\'eutilis\'ee pour n'importe quel type de donn\'ees.
+
+
+Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant sa conception d\'etaill\'ee, nous nous \'etions donn\'e comme objectif de fournir un syst\`eme suffisamment intuitif et expressif pour le traitement de flux de donn\'ees. Le cha\^inage de m\'ethodes et l'application d'expressions \emph{lambda} sont deux caract\'eristiques de \TT{PpFf} qui simplifient l'utilisation et facilitent la compr\'ehension du code.
 
 
 \section{Cat\'egorie \TT{Source} : m\'ethodes \TT{source}}
@@ -97,7 +108,7 @@ Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant s
 
 La sp\'ecification de la source de donn\'ees est la premi\`ere m\'ethode utilis\'es pour cr\'eer un flux. Plus pr\'ecis\'ement, l'API fournit deux m\'ethodes {\bf statiques} pour cr\'eer un \TT{Flux} \`a partir de diverses sources, telles que des collections ou des fichiers de donn\'ees. Des travaux futurs pourraient \'etendre l'interface pour prendre en charge plus des sources de donn\'ees.
 
-Les signatures pour les deux m\'ethodes sont donn\'ees dans les'annexe~\ref{methodes-api.ann}. Tandis que la premi\`ere m\'ethode, \TT{source(path)}, produit les donn\'ees d'un flux \`a partir du contenu (les lignes) d'un fichier texte, la deuxi\`eme m\'ethode, \TT{source(begin\_iterator, end\_iterator)}, produit les donn\'ees d'un flux \`a partir des \'el\'ements d'un conteneur STL.
+Les signatures pour les deux m\'ethodes sont donn\'ees dans l'annexe~\ref{methodes-api.ann}. Tandis que la premi\`ere m\'ethode, \TT{source(path)}, produit les donn\'ees d'un flux \`a partir du contenu (les lignes) d'un fichier texte, la deuxi\`eme m\'ethode, \TT{source(begin\_iterator, end\_iterator)}, produit les donn\'ees d'un flux \`a partir des \'el\'ements d'un conteneur STL.
 
 \begin{lstlisting}[
 label={mapExample.c++},
@@ -113,18 +124,17 @@ std::vector<int> currentResult =
       .collect<int, std::vector>();            
 \end{lstlisting}
 
-Les deux m\'ethodes pour sp\'ecifier la source d'un flux sont illustr\'ees, respectivement, dans les exemples des listings~\ref{wordcount.c++} et~\ref{mapExample.c++}. La m\'ethode \TT{source} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier. Le param\`etre \TT{inputFile} de la m\'ethode sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple du listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} en fournissant les it\'erateure de d\'ebut et fin du \TT{vector elems}.
+Les deux m\'ethodes pour sp\'ecifier la source d'un flux sont illustr\'ees, respectivement, dans les exemples des listings~\ref{wordcount.c++} et~\ref{mapExample.c++}. La m\'ethode \TT{source} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier. Le param\`etre \TT{inputFile} de la m\'ethode sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple, celui du listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} du \TT{vector elems} en utilisant ses it\'erateurs de d\'ebut et fin.
 
 
 \section{Cat\'egorie \TT{Transformation}}
 
 \label{transformation.sect}
 
-Cette section d\'ecrit plus en d\'etail les principales op\'erations de la cat\'egorie \TT{Transformation}. Ces op\'erations permettent d'exprimer des requ\^etes de traitement de donn\'ees complexes telles que le filtrage et le mappage. L'annexe~\ref{methodes-api.ann} montre les signatures de ces méthodes. 
+Cette section d\'ecrit plus en d\'etail les principales op\'erations de la cat\'egorie \TT{Transformation}. Ces op\'erations permettent d'exprimer des requ\^etes de traitement de donn\'ees complexes telles que le filtrage et le mappage. L'annexe~\ref{methodes-api.ann} présente les signatures détaillées de ces méthodes. 
 
 
 \subsection{M\'ethode \TT{map}}
-
 
 
 
@@ -136,8 +146,8 @@ frame=single,
 float]
 std::vector<std::string> result =
   Flow::source<Employee>(elems.begin(), elems.end())
-  	  .find<Employee>( [](Employee* e) ->bool 
-  	  							 { return e->salary > 1000; } )
+  	  .find<Employee>( [](Employee* e) -> bool 
+					 { return e->salary > 1000; } )
       .map<Employee, std::string>( [](Employee* e) 
                                  { return &e->getName(); } )
       .collect<std::string, std::vector>();
@@ -151,30 +161,24 @@ Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionne
 
 \subsection{M\'ethodes \TT{flatten} et \TT{flatMap}}
 
-\GT{À corriger ci-bas, car il ne faut pas que ce soit deux signatures
-pour une seule méthode, mais plutôt deux méthodes différentes~:
-flatten, qui ne reçoit aucun argument explicite (pas de map), et
-flatMap, qui reçoit une fonction. J'ai fait le changement dans
-src/Flow.hpp et dans les tests unitaires.}
+Les m\'ethodes \TT{flatten} et \TT{flatMap} ont pour r\^ole d'aplanir un flux multiniveau. Alors que la m\'ethode \TT{flatten} cr\'ee un flux unique \`a partir du contenu des divers conteneurs, la m\'ethode \TT{flatMap} cr\'ee un flux unique \`a partir du contenu des divers conteneurs interm\'ediaires r\'esultant de l'application d'une fonction fournie en argument et appliquée \`a chaque \'el\'ement du flux. Notons que cette derni\`ere m\'ethode (\TT{flatMap}) correspond en fait à une op\'eration \TT{map} suivie immédiatement d'une opération \TT{flatten}. Les signatures pour ces deux m\'ethodes sont donn\'ees dans l'annexe~\ref{methodes-api.ann}.
 
-\IC{J'ai modifié la description.}
+% Le type du flux avant d'appliquer les deux m\'ethodes est \TT{In} alors que \TT{Out} est le type du flux apr\`es le traitement des \'el\'ements du flux. 
 
-Les deux m\'ethodes \TT{flatten} et \TT{flatMap} ont pour r\^ole d'aplanir un flux multiniveau. Alors que la m\'ethode \TT{flatten} cr\'e un flux unique \`a partir du contenu des divers conteneurs, la m\'ethode \TT{flatMap} cr\'ee un flux unique \`a partir du contenu des divers conteneurs interm\'ediaires r\'esultant de l'application d'une fonctionne fournie en argument \`a chaque \'el\'ement du flux. Cette derni\`ere m\'ethode correspond th\'eoriquement aux op\'erations de \TT{map} et \TT{flatten}. Les signatures pour les deux m\'ethodes sont donn\'ees dans les'annexe~\ref{methodes-api.ann}. Le type du flux avant d'appliquer les deux m\'ethodes est \TT{In} alors que \TT{Out} est le type du flux apr\`es le traitement des \'el\'ements du flux. 
-
-Dans le cas de la m\'ethode \TT{flatMap}, le type \TT{Container} est le type interm\'ediaire r\'esultant de l'application de la fonction \TT{taskFunc} fournie en argument sur le flux. Par exemple, dans le listing~\ref{wordcount.c++}, \TT{Container} est de type \TT{Words} --- un vecteur de chaines de caract\`eres. Dans cet exemple, les lignes d'un fichier divis\'ees en mots sont accumul\'ees dans un conteneur et ensuite le contenu du conteneur est transmis sur le flux.
+Dans le cas de la m\'ethode \TT{flatMap}, le type \TT{Container} est le type interm\'ediaire r\'esultant de l'application de la fonction \TT{taskFunc} fournie en argument sur le flux. Par exemple, dans le listing~\ref{wordcount.c++}, \TT{Container} est de type \TT{Words} --- un vecteur de chaines de caract\`eres. Dans cet exemple, les lignes d'un fichier divis\'ees en mots sont accumul\'ees dans un conteneur et ensuite le contenu du conteneur est transmis sur le flux, un élément à la fois.
 
 
 \subsection{M\'ethode \TT{find}}
-Une op\'eration courante consiste \`a s\'electionner les \'el\'ements d'un ensemble de donn\'ees qui satisfont une certaine propri\'et\'e. L'API de \TT{PpFf} fournit une telle fonctionnalit\'e via la m\'ethode \TT{find}. D\'ecrite dans l'annexe~\ref{methodes-api.ann}, la m\'ethode \TT{find} s\'electionne les \'el\'ements d'un flux selon un pr\'edicat de sorte que seuls les \'el\'ements qui  satisfont le pr\'edicat sont envoy\'es \`a l'\'etape suivante. \`A noter qu'il est obligatoire que le pr\'edicat retourne une expression bool\'eenne. 
+Une op\'eration courante consiste \`a s\'electionner les \'el\'ements d'un ensemble de donn\'ees qui satisfont une certaine propri\'et\'e. L'API de \TT{PpFf} fournit une telle fonctionnalit\'e via la m\'ethode \TT{find}. Plus précisément, la m\'ethode \TT{find} s\'electionne les \'el\'ements d'un flux selon un pr\'edicat de sorte que seuls les \'el\'ements qui  satisfont le pr\'edicat sont envoy\'es \`a l'\'etape suivante. \`A noter qu'il est obligatoire que le pr\'edicat retourne une expression bool\'eenne. 
 
-Un exemple qui illustre l'utilisation de la m\'ethode \TT{find} est pr\'esent\'e dans le listing~\ref{mapExample2.c++}~: l'appel \`a la m\'ethode \TT{find}  s\'electionne tous les employ\'es du flux dont le salaire est sup\'erieur \`a 1 000 \$.
+Un exemple qui illustre l'utilisation de la m\'ethode \TT{find} est pr\'esent\'e dans le listing~\ref{mapExample2.c++}~: l'appel \`a la m\'ethode \TT{find}  s\'electionne uniquement les employ\'es du flux dont le salaire est sup\'erieur \`a 1~000 \$.
 
 
 \section{Cat\'egorie \TT{Aggregation}}
 
 \label{aggregation.sect}
 
-La derni\`ere \'etape dans le traitement d'un flux est la collecte des \'el\'ements pour produire le r\'esultat. Les m\'ethodes fournies par l'API de la biblioth\`eque offrent quatre fonctionnalit\'es principales: 
+La derni\`ere \'etape dans le traitement d'un flux est la collecte des \'el\'ements pour produire le r\'esultat. Les m\'ethodes fournies par l'API de la biblioth\`eque \ppff\ offrent quatre fonctionnalit\'es principales: 
 
 
 \begin{itemize}
@@ -190,7 +194,7 @@ La derni\`ere \'etape dans le traitement d'un flux est la collecte des \'el\'eme
 
 \subsection{Collecte des \'el\'ements d'un flux dans un conteneur}
 
-Afin de collecter les \'el\'ements d'un flux dans un conteneur, l'{API} de \TT{PpFf} fournit la m\'ethode \TT{collect}, d\'ecrite dans l'annexe~\ref{methodes-api.ann}. Cette m\'ethode retourne un conteneur {STL}. Le type pour les \'el\'ements du conteneur et le type du conteneur sont donn\'es par les types indiqu\'es en param\`etres \emph{template} de la m\'ethode \TT{collect}. 
+Afin de collecter les \'el\'ements d'un flux dans un conteneur, l'{API} de \TT{PpFf} fournit la m\'ethode \TT{collect}. Cette m\'ethode retourne un conteneur {STL}. Le type pour les \'el\'ements du conteneur et le type du conteneur sont donn\'es par les types indiqu\'es en param\`etres \emph{template} de la m\'ethode \TT{collect}. 
 
 L'exemple fourni dans le listing~\ref{mapExample2.c++} montre l'utilisation de la m\'ethode \TT{collect}. La m\'ethode collecte les noms des employ\'es d'une collection d'\TT{Employee}s dans un \TT{vector} de \TT{string}s.
 
@@ -198,7 +202,7 @@ L'exemple fourni dans le listing~\ref{mapExample2.c++} montre l'utilisation de l
 \subsection{R\'eduction des \'el\'ements d'un flux en une seule valeur}
 
 Une r\'eduction
-consiste \`a combiner les \'el\'ements d'un flux en un seul r\'esultat \emph{qui n'est pas un flux}. La m\'ethode \TT{max} d\'ecrite dans l'annexe~\ref{methodes-api.ann} est l'une des m\'ethodes offertes par l'{API} de \TT{PpFf} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. 
+consiste \`a combiner les \'el\'ements d'un flux en un seul r\'esultat \emph{qui n'est pas un flux}. La m\'ethode \TT{max}  est l'une des m\'ethodes offertes par l'{API} de \TT{PpFf} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. 
 
 \begin{lstlisting}[
 label={olderEmployeeExample.c++},
@@ -219,9 +223,9 @@ float]
 Le listing~\ref{olderEmployeeExample.c++} montre un exemple o\`u les \'el\'ements de type \TT{Employee} d'un flux sont compar\'es afin de trouver l'employ\'e le plus \^ag\'e.
 
 
-Oppos\'ee \`a la m\'ethode \TT{max}, l’API de \TT{PpFf} fournit la m\'ethode \TT{min}. Comme son nom l'indique, cette m\'ethode est utilis\'ee pour trouver l'\'el\'ement minimum du flux. Ceci est possible en utilisant le comparateur re\c {c}u comme argument pour comparer les \'el\'ements du flux.
+De façon similaire \`a la m\'ethode \TT{max}, l’API de \TT{PpFf} fournit aussi la m\'ethode \TT{min}, utilis\'ee pour trouver l'\'el\'ement minimum d'un flux. Ceci est fait en utilisant le comparateur re\c{c}u comme argument pour comparer les \'el\'ements du flux.
 
-L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \`a une seule valeur. Les plus utilis\'ees sont \TT{count} et \TT{sum}. D\'ecrites dans l'annexe~\ref{methodes-api.ann}, ces m\'ethodes sont des m\'ethodes jouant un r\^ole tr\`es sp\'ecifique. Autrement dit, en utilisant la m\'ethode \TT{count}, on peut seulement trouver le nombre d'\'el\'ements du flux. Dans le cas de la m\'ethode \TT{sum}, on peut seulement additionner les \'el\'ements du flux. Une autre m\'ethode plus g\'en\'erale fournie par l'{API} de \TT{PpFf} est \TT{reduce}. D\'ecrite dans la m\^eme annexe~\ref{methodes-api.ann}, la m\'ehode \TT{reduce} r\'eduit les \'el\'ements du flux en utilisant un \TT{Reducer}, notion pr\'esent\'ee dans la section suivante.
+L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \`a une seule valeur. Les plus utilis\'ees sont \TT{count} et \TT{sum} En utilisant la m\'ethode \TT{count}, on peut obtenir le nombre d'\'el\'ements d'un flux. Dans le cas de la m\'ethode \TT{sum}, on peut additionner les \'el\'ements d'un flux. Une autre m\'ethode plus g\'en\'erale fournie par l'{API} de \TT{PpFf} est \TT{reduce}, qui \emph{combine} les \'el\'ements d'un flux en utilisant un \TT{Reducer}, notion pr\'esent\'ee dans la section suivante.
 
 
 \subsection{Classe \TT{Reducer}}
@@ -231,64 +235,74 @@ L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \
 La m\'ethode \TT{reduce} est l'une des m\'ethodes les plus complexes de l'API. Afin de r\'eduire les \'el\'ements d'une collection \`a une seule valeur, la m\'ethode \TT{reduce} doit couvrir quatre cas distincts : 
 
 \begin{itemize}
-\item r\'eduire les \'el\'ements d'une collection \`a partir d'une valeur par d\'efaut
-\item r\'eduire les \'el\'ements d'une collection \`a partir d'une valeur fournie par l'utilisateur
-\item r\'eduire les \'el\'ements d'une collection en parall\`ele \`a partir d'une valeur par d\'efaut
-\item r\'eduire les \'el\'ements d'une collection en parall\`ele \`a partir d'une valeur fournie par l'utilisateur
+\item R\'eduire les \'el\'ements d'une collection sans spécifier de valeur initiale~; 
 
+\item R\'eduire les \'el\'ements d'une collection \`a partir d'une valeur initiale fournie par l'utilisateur~; 
+
+\item R\'eduire les \'el\'ements d'une collection en parall\`ele sans spécifier de valeur initiale~; 
+
+\item R\'eduire les \'el\'ements d'une collection en parall\`ele \`a partir d'une valeur initiale fournie par l'utilisateur.
 \end{itemize}
 
-Pour impl\'ementer tous ces cas nous aurions d\^u surcharger la m\'ethode  \TT{reduce} plusieurs fois. Dans le but de garder un API simple \`a utiliser, nous avons introduit la classe  \TT{Reducer}. Cette classe est d'autant plus utile que sa fonctionnalit\'e est r\'eutilis\'ee dans d'autres m\'ethodes de l'API. Voir la section~\ref{reduceByKey.sect}
+Pour impl\'ementer tous ces cas nous aurions d\^u surcharger la m\'ethode  \TT{reduce} plusieurs fois. Dans le but de garder un API simple \`a utiliser, nous avons introduit la classe  \TT{Reducer}. Cette classe est d'autant plus utile que sa fonctionnalit\'e est r\'eutilis\'ee dans d'autres m\'ethodes de l'API --- voir la section~\ref{reduceByKey.sect}
 
 
 \begin{lstlisting}[
 label={reducer.c++},
 gobble=1,
 language=c++,
-caption={La sp\'ecification de la classe \TT{Reducer} avec la signature des quatre constructeurs.},
+caption={La signature de la classe \TT{Reducer} avec ses quatre constructeurs.},
 frame=single,
 float]
  template<typename In, typename Out>
  class Reducer {
- 	   Reducer(Func<Out(Out, In)> const& accumulator)
+     Reducer(std::function<Out(Out, In)> const& accumulator);
 
-       Reducer(Out init, 
-               Func<Out(Out, In)> const& accumulator)
+     Reducer(Out initialValue, 
+             std::function<Out(Out, In)> const& accumulator);
                 	   
-       Reducer(Func<Out(Out, In)> const& accumulator,
-               Func<Out(Out, Out)> const& combiner)
+     Reducer(std::function<Out(Out, In)> const& accumulator,
+             std::function<Out(Out, Out)> const& combiner);
                                	   
-       Reducer(Out init, 
-               Func<Out(Out, In)> const& accumulator,
-               Func<Out(Out, Out)> const& combiner)                
+     Reducer(Out initialValue, 
+             std::function<Out(Out, In)> const& accumulator,
+             std::function<Out(Out, Out)> const& combiner);               
  }
 \end{lstlisting}
 
 
 Un objet de la classe \TT{Reducer} est utilis\'e pour sp\'ecifier comment r\'eduire les \'el\'ements d'un flux \`a une valeur unique. Le listing~\ref{reducer.c++} présente la spécification  de la classe \TT{Reducer} avec les signatures des quatre constructeurs associ\'es. 
 
-Un \TT{Reducer} est construit avec une valeur initiale, une fonction \TT{accumulator} et une fonction \TT{combiner}. La valeur initiale et la fonction \TT{combiner} sont optionnelles, et ce gr\^ace \`a la surcharge du constructeur. Les constructeurs de \TT{Reducer} nous permettent de fournir la fonctionnalit\'e de la m\'ethode \TT{reduce} en couvrant les quatre cas distincts mentionn\'es au d\'ebut de la section.
+Un \TT{Reducer} peut être construit avec une valeur initiale, une fonction \TT{accumulator} et une fonction \TT{combiner}. La valeur initiale et la fonction \TT{combiner} sont optionnelles.%
+%
+\footnote{Notons que si la valeur initiale n'est pas spécifiée, alors
+c'est le premier élément du flux qui est utilisée pour initialiser
+l'accumulateur, et donc le flux doit contenir au moins un élément pour
+qu'un résultat puisse être produit.}
+%
+Les constructeurs de \TT{Reducer} permettent de fournir la fonctionnalit\'e de la m\'ethode \TT{reduce} en couvrant les quatre cas distincts mentionn\'es au d\'ebut de la section.
+%
 
 
 \begin{lstlisting}[
 language=c++,
 label={olderEmployeeWithReduceExample.c++},
-caption={Un autre pipeline pour identifier l'employ\'e le plus ag\'e, mais avec un \TT{Reducer}.},
+caption={Un autre pipeline pour identifier l'employ\'e le plus ag\'e, mais avec un \TT{Reducer} et sans parallélisme.},
 frame=single,
 gobble=4,
 escapechar=\!,
 float]
     Reducer<Employee, Employee> 
-           reducer( [](Employee e1, Employee e2) 
-                      { return e1.age > e2.age !?! e1 : e2; } );
+           reduceAgeMax( [](Employee e1, Employee e2) 
+                         { return e1.age > e2.age !?! e1 : e2; } );
 
     Employee currentResult =
-      Flow::source<Employee>(employees.begin(), employees.end())
-          .reduce<Employee, Employee>(reducer);
+        Flow::source<Employee>(employees.begin(), employees.end())
+            .reduce<Employee, Employee>(reduceAgeMax);
 \end{lstlisting}
 
 
-La fonction \TT{accumulator} est utilis\'ee pour effectuer l'op\'eration de r\'eduction sur le flux. Elle prend deux param\`etres. Le premier param\`etre est le r\'esultat partiel de l'op\'eration de r\'eduction et le deuxi\`eme est l'\`el\'ement suivant dans le flux. Par exemple le listing~\ref{olderEmployeeWithReduceExample.c++} montre l'exemple du listing~\ref{olderEmployeeExample.c++}, mais r\'e\'ecrit avec la m\'ethode \TT{reduce} et un \TT{Reducer}. Le constructeur de la classe \TT{Reduce} prend comme argument la fonction \TT{accumulator} tout en ignorant la valeur initiale est la fonction \TT{combiner}. La fonction \TT{accumulator} effectue l'op\'eration de r\'eduction en trouvant l'employ\'e le plus \^ag\'e. 
+La fonction \TT{accumulator} est utilis\'ee pour effectuer l'op\'eration de r\'eduction sur les éléments du flux. Cette fonction prend deux paramàtres: le premier est le r\'esultat partiel de l'op\'eration de r\'eduction  --- la valeur de l'accumulateur --- et le deuxi\`eme est l'\`el\'ement suivant du flux. Par exemple, le listing~\ref{olderEmployeeWithReduceExample.c++} montre l'exemple du listing~\ref{olderEmployeeExample.c++}, mais r\'e\'ecrit avec la m\'ethode \TT{reduce} et un \TT{Reducer}. Le constructeur de la classe \TT{Reduce} prend comme argument la fonction \TT{accumulator} tout en ignorant la valeur initiale est la fonction \TT{combiner}. La fonction \TT{accumulator} effectue l'op\'eration de r\'eduction en trouvant l'employ\'e le plus \^ag\'e. 
 
 
 \begin{lstlisting}[
@@ -298,7 +312,7 @@ language=c++,
 caption={[Un exemple d'utilisation d'un \TT{Reducer}, ex\'ecut\'e en
 parall\`ele et avec une valeur initiale.]Un exemple
 d'utilisation d'un \TT{Reducer}, ex\'ecut\'e en parall\`ele et avec une
-valeur initiale non nulle sp\'ecifi\'ee explicitement.},
+valeur initiale sp\'ecifi\'ee explicitement.},
 frame=single,
 float]
     int n = 100;
@@ -321,7 +335,7 @@ float]
 \end{lstlisting}
 
 
-Le troisi\`eme param\`etre du constructeur d'un \TT{Reducer}, la fonction \TT{combiner}, est utilis\'e lorsque le flux est trait\'e en parall\`ele, en utilisant les instances parall\`eles d'un farm. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque instance d'un \TT{farm} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les diverses instances d'un \TT{farm} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel.c++} montre un exemple d'utilisation d'un \TT{Reducer} mais ex\'ecut\'e en parall\`ele. Dans cet exemple, \`a des fins d'illustration, une valeur initiale est sp\'ecifi\'ee, \'egale \`a \TT3, alors que les fonctions \TT{combiner} et \TT{accumulator} sont toutes deux indiqu\'ees explicitement comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
+Le troisi\`eme param\`etre du constructeur d'un \TT{Reducer}, la fonction \TT{combiner}, est utilis\'e lorsque le flux est trait\'e en parall\`ele, en utilisant les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux --- i.e., chaque instance d'un \emph{farm} traite un sous-ensembles des éléments --- qui sont r\'eduits en parall\`ele avec la fonction \TT{accumulator}. Les r\'esultats partiels produits par les diverses instances d'un \emph{farm} sont ensuite combin\'es, dans le \emph{thread} principal, avec la fonction \TT{combiner}. Le listing~\ref{sumElementsCollectionWithReducerParallel.c++} montre un exemple d'utilisation d'un \TT{Reducer} mais ex\'ecut\'e en parall\`ele. Dans cet exemple, \`a des fins d'illustration, une valeur initiale est sp\'ecifi\'ee, \'egale \`a \TT3, alors que les fonctions \TT{combiner} et \TT{accumulator} sont toutes deux indiqu\'ees explicitement comme \'etant la fonction d'addition \TT{std::plus<int>\{\}}. 
 
 
 \begin{lstlisting}[
@@ -347,7 +361,7 @@ float]
 
 
 
-Il existe des situations o\`u la fonction \TT{accumulator} est identique avec la fonction \TT{combiner}. Un tel exemple est illustr\'e dans le listing~\ref{sumElementsCollectionWithReducerParallel.c++}. L'API de \TT{PpFf} fournit une surcharge de la m\'ethode \TT{reduce} pour pouvoir ignorer la fonction \TT{combiner} m\^eme si l'ex\'ecution est en parall\`ele. Le listing~\ref{sumElementsCollectionParallelWithoutCombiner.c++} montre l'exemple du listing~\ref{sumElementsCollectionWithReducerParallel.c++}, mais r\'e\'ecrit en faisant abstraction de la fonction \TT{combiner}. 
+Il existe des situations o\`u la fonction \TT{accumulator} est identique avec la fonction \TT{combiner}. Un tel exemple est illustr\'e dans le listing~\ref{sumElementsCollectionWithReducerParallel.c++}. L'API de \TT{PpFf} fournit une surcharge de la m\'ethode \TT{reduce} pour pouvoir omettrea la fonction \TT{combiner} m\^eme si l'ex\'ecution est en parall\`ele. Le listing~\ref{sumElementsCollectionParallelWithoutCombiner.c++} montre l'exemple du listing~\ref{sumElementsCollectionWithReducerParallel.c++}, mais r\'e\'ecrit en faisant abstraction de la fonction \TT{combiner}. 
 
 
 
@@ -396,13 +410,21 @@ foldr f a (x:xs) = f x (foldr f a xs)
 \label{reducer-spec.fig}
 \end{figure}
 
+
+
+\GT{Ci-bas: les évaluateurs n'ont pas semblé apprécier cette
+spécification. Je suggère que tu la mettes en Annexe B plutôt que dans
+le corps du mémoire --- et que tu y réfères quand même comme ci-bas,
+mais sans plus.}
+
+
 La description formelle d'un \TT{Reducer} --- d\'ecrite par mon directeur de recherche --- est pr\'esent\'ee \`a la Figure~\ref{reducer-spec.fig}.
 
 
 
 \subsection{Regroupement des \'el\'ements selon une cl\'e}
 
-Souvent, une op\'eration sur une collection de donn\'ees consiste \`a regrouper ses \'el\'ements dans un ensemble en fonction d'une ou plusieurs propri\'et\'es. Notre {API} fournit une fonctionnalit\'e similaire via la m\'ethode \TT{groupByKey}, d\'efinie dans l'annexe~\ref{methodes-api.ann}. 
+Souvent, une op\'eration sur une collection de donn\'ees consiste \`a regrouper ses \'el\'ements dans un ensemble en fonction d'une ou plusieurs propri\'et\'es. Notre {API} fournit une fonctionnalit\'e similaire via la m\'ethode \TT{groupByKey}.
 
 
 \begin{lstlisting}[
@@ -456,8 +478,8 @@ float]
 typedef std::unordered_map<int, std::vector<std::string>> 
         NOMS_EMPLOYES_PAR_AGE;
 
-// D!\emph{\'e}!finition (omise) d'un vecteur d'objets Employee 
-// o!\emph{\`u} !le nom de employes[0] est "Employee0", etc.
+// Definition (omise) d'un vecteur d'objets Employee 
+// ou le nom de employes[0] est "Employee0", etc.
 std::vector<Employee> employees = ...; 
 employees[3].age = employees[4].age = 18;
 employees[0].age = employees[1].age = employees[2].age = 22;
@@ -486,6 +508,11 @@ NOMS_EMPLOYES_PAR_AGE expected = {
 
 La m\'ethode \TT{groupByKey} comporte en fait deux param\`etres, mais le deuxi\`eme param\`etre est optionnel. Ce param\`etre est une fonction qui s'applique sur les \'el\'ements s\'electionn\'es pour produire les \'el\'ements du \TT{map}. Par exemple,  le listing~\ref{groupByKeyExample2.c++} pr\'esente presque le m\^eme exemple que dans le listing~\ref{groupByKeyExample.c++}, o\`u les employ\'es sont regroup\'es selon leur \^age, mais dans ce deuxi\`eme cas, la valeur r\'esultante ajout\'ee au conteneur est le nom de l'employ\'e --- et non l'employ\'e lui-m\^eme. On obtient donc un \TT{map} o\`u la cl\'e est un \^age et la valeur est un \TT{vector} \emph{des noms d'employ\'es} ayant cet \^age --- et non un \TT{vector} des employ\'es.
 
+
+\GT{Ci-bas: les évaluateurs n'ont pas semblé apprécier cette
+spécification. Je suggère que tu la mettes en Annexe B (même annexe
+que l'autre) plutôt que dans le corps du mémoire --- et que tu y
+réfères quand même comme ci-bas, mais sans plus.}
 
 La description formelle de \TT{groupByKey} --- d\'ecrite par mon directeur de recherche --- est pr\'esent\'ee \`a la Figure~\ref{group-by-key-spec.fig}.
 
@@ -601,7 +628,7 @@ NB_EMPLOYES_PAR_AGE expected = {
   ...
 \end{lstlisting}
 
-Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une fonction qui combine ces deux op\'erations, et ce  dans un style fonctionnel~: la m\'ethode \TT{reduceByKey}, d\'ecrite dans l'annexe~\ref{methodes-api.ann}. 
+Une op\'eration de regroupement et r\'eduction peut \^etre verbeuse et source d'erreurs lorsqu'elle est impl\'ement\'ee dans un style imp\'eratif. L'{API} fournit une fonction qui combine ces deux op\'erations, et ce  dans un style fonctionnel~: la m\'ethode \TT{reduceByKey}.
 
 Le listing~\ref{reduceByKeyExample.c++} montre un exemple o\`u une telle fonctionnalit\'e est utile. Le listing pr\'esente un des tests unitaires pour \TT{reduceByKey}, qui d\'enombre les employ\'es en fonction de leur cat\'egorie d'\^age. 
 
@@ -612,7 +639,9 @@ La m\'ethode \TT{reduceByKey} conserve les \'el\'ements dans un conteneur de typ
 \label{execution.sect}
 
 
-Dans \TT{PpFf}, par d\'efaut, chaque nœud ajout\'e dans le flux du traitement s'ex\'ecute sur un \emph{thread} diff\'erent. Optionnelle, la biblioth\`eque \TT{PpFf} introduit le parall\'elisme d'une instance de \TT{farm}. Ces instances sont cr\'e\'ees en appelant la m\'ethode \TT{parallel} de l’API.  
+Dans \TT{PpFf}, par d\'efaut, chaque nœud ajout\'e dans le flux du traitement s'ex\'ecute sur un \emph{thread} diff\'erent. En plus, la biblioth\`eque \TT{PpFf} permet d'introduire aussi du parall\'elisme de données, par le biais d'instances de \emph{farm}. Ces instances sont cr\'e\'ees en appelant la m\'ethode \TT{parallel} de l’API.  
 
-La signature pour cette m\'ethode est donn\'ee dans l'annexe~\ref{methodes-api.ann}. La valeur de type enti\`ere fournie en argument permet de sp\'ecifier le nombre d'instances parall\`eles d'un \TT{farm} entre lesquels seront r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, dans le listing~\ref{wordcount.c++}, l'appel \`a la m\'ethode \TT{parallel(4)} indique de r\'epartir les \'el\'ements du flux entre quatre (4) instances parall\`eles d'un \TT{farm}.
+Cette méthode reçoit un argument entier.
+%
+La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`eles d'un \emph{farm} entre lesquels seront r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, dans le listing~\ref{wordcount.c++}, l'appel \`a la m\'ethode \TT{parallel(4)} indique de r\'epartir les \'el\'ements du flux entre quatre (4) instances parall\`eles d'un \emph{farm}.
 
