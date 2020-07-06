@@ -4,22 +4,22 @@
 \label{methodes-api.ann}
 
 
-\KOMAoptions{paper=landscape,pagesize}
-\recalctypearea
+% \KOMAoptions{paper=landscape,pagesize}
+% \recalctypearea
 
 
 \begin{center}
 \footnotesize
-\begin{longtable}{|l|l|p{5cm}|}
+\begin{longtable}{|l|p{2.2cm}|p{3.5cm}|}
 %\caption{Les m\'ethodes publiques de l'API de~\ppff.\label{methodes_api.tab}}\\
 \hline
-\textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
+\textbf{M\'ethode} & \textbf{Type} & \textbf{Description}\\
 \hline
 \endfirsthead
 \multicolumn{3}{c}%
 {\tablename\ \thetable\ Les méthodes publiques de l'API (\textit{suite})} \\
 \hline
-\textbf{M\'ethode} & \textbf{Type du r\'esultat} & \textbf{Description du r\'esultat}\\
+\textbf{M\'ethode} & \textbf{Type} & \textbf{Description}\\
 \hline
 \endhead
 \hline \multicolumn{3}{r}{\textit{Suite page suivante}} \\
@@ -46,6 +46,7 @@
 	Convertit un conteneur de type {STL} en un flux.
     \\
 \hline
+\newpage
 	\multicolumn{3}{|c|}{\textbf{Transformation} --- M\'ethodes pour produire un flux \`a partir d'un flux existant\label{transformation.page}}
     \\    
 \hline
@@ -110,7 +111,9 @@
     Retourne un flux compos\'e des \'el\'ements du flux d'entr\'ee, mais en omettant les \TT{n} premiers \'el\'ements.
     \\
 \hline
-	\multicolumn{3}{|c|}{\textbf{Aggregation} --- M\'ethodes qui produisent une valeur, typiquement scalaire, \`a partir des \'el\'ements d'un flux\label{collector.page}}
+\newpage
+	\multicolumn{3}{|c|}{\textbf{Aggregation} --- M\'ethodes qui
+    produisent une valeur (scalaire) \`a partir des \'el\'ements d'un flux\label{collector.page}}
     \\     
 \hline
 	\begin{tabular}{@{}l@{}}
@@ -134,7 +137,7 @@
 	\begin{tabular}{@{}l@{}}
 	\tt count()\\
 	\end{tabular} &
-  	\TT{unsigned int} & 
+  	\TT{unsigned} \TT{int} & 
     Retourne le nombre d'\'el\'ements
     du flux.
     \\ 
@@ -189,6 +192,7 @@
 	Retourne la somme des \'el\'ements du flux.
     \\
 \hline
+\newpage
 	\multicolumn{3}{|c|}{\textbf{Aggregation} --- M\'ethodes qui produisent une collection \`a partir d'un flux}
     \\     
 \hline
@@ -226,12 +230,7 @@
 	Effectue le tri des \'el\'ements du flux selon l'ordre sp\'ecifi\'e par \TT{compare}. Note: Le premier \'el\'ement du flux de sortie n'est \'emis \emph{qu'apr\`es que la fin de flux ait \'et\'e rencontr\'ee}.
     \\
 \hline
-    \multicolumn{3}{c}{\ }
-\\
-    \multicolumn{3}{c}{\ }
-\\
-    \multicolumn{3}{c}{\ }
-\\
+\newpage
 	\multicolumn{3}{|c|}{\textbf{Execution} --- M\'ethode pour l'ex\'ecution parall\`ele du flux\label{concurrent.page}}
     \\      
 \hline
@@ -247,5 +246,5 @@
 \end{center}
 
 \newpage
-\KOMAoptions{paper=portrait,pagesize}
-\recalctypearea
+% \KOMAoptions{paper=portrait,pagesize}
+% \recalctypearea
