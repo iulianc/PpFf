@@ -22,6 +22,7 @@ Le principal type exporté par l'API est le type \TT{Flow}, qui permet de défin
 %
 Ensuite, sur la base du type de fonctionnalit\'e export\'ee, l'API se divise en quatre cat\'egories :  \TT{Source} (Sect.~\ref{source.sect}), \TT{Transformation} (Sect.~\ref{transformation.sect}),  \TT{Aggregation} (Sect.~\ref{aggregation.sect}) et \TT{Execution} (Sect.~\ref{execution.sect}). Quant \`a la cat\'egorie \TT{Aggregation}, elle est elle-m\^eme divis\'ee deux sous-cat\'egories, selon le type de r\'esultat produit~: valeur simple (par ex., r\'esultat bool\'een ou entier) ou collection.
 
+L'objectif de notre API \'etait d'obtenir une API semblable \`a celle des \TT{Stream}s de \TT{Java}~8, bas\'ee sur le cha\^inage de m\'ethodes, donc la construction d'un \TT{pipeline} de traitement dans un style qui ressemble \`a un \TT{pipeline}.
 
 \GT{Ici, je crois qu'il faudrait dire quelques mots pour répondre au
 commentaire d'un des évaluateurs: <<Bien que ce soit le cœur du
@@ -33,6 +34,8 @@ précédent il me semble, que l'objectif était d'obtenir une API
 semblable à celle des Streams de Java 8, basée sur le chainage de
 méthodes, donc la construction d'un pipeline de traitement dans un
 style qui ressemble à un pipeline.}
+
+\IC{J'ai ajouté votre idée. Je l'ai trouvé très expressive.}
 
 
 Le chapitre pr\'esente \'egalement le code source d'un exemple, \TT{WordCount}, pour illustrer l'utilisation de l'API et l'effet des principales m\'ethodes --- un exemple semblable à celui présenté dans l'article ayant popularisé l'approche \TT{MapReduce}~\citep{DeanGhe04}.
@@ -380,60 +383,15 @@ Il existe des situations o\`u la fonction \TT{accumulator} est identique avec la
 
 
 
-\begin{figure}
-
-\begin{framed}
-Soit les \'el\'ements suivants~: 
-
-\begin{itemize}
-
-\item $T$ et $R$ des types de donn\'ees;
-
-\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
-\in T~(i=0, \ldots, k)$;
-
-Soit $S_0, \ldots, S_n$ une partition de $S$;
-
-\item Soit $v_0\in R$;
-
-\item Soit $acc: R\times T \rightarrow R$;
-
-\item Soit $comb: R\times R \rightarrow R$;
-
-
-\end{itemize}
-
-Soit $red$ un \TT{Reducer} avec les attributs $v_0, acc, comb$.
-
-Alors $S$\TT{.reduce($red$)}
-
-
-\begin{lstlisting}[language=haskell,escapechar=\!]
-S.reduce( Reducer v0 acc comb )
-  = foldr comb r!${}_0$! [r!${}_1$!, ..., r!${}_{k-1}$!]
-    where
-      [S!${}_0$!, S!${}_1$!, ..., S!${}_{k-1}$!] = splitIntoSubstreams S k
-      [r!${}_0$!, r!${}_1$!, ..., r!${}_{k-1}$!] = [foldr acc v0 S!${}_i$! | i <- [0, !$\ldots$!, k-1]]
-
-
-foldr f a []     = a
-foldr f a (x:xs) = f x (foldr f a xs)
-\end{lstlisting}
-\end{framed}
-
-\caption{Une sp\'ecification du type \TT{Reducer}.}
-\label{reducer-spec.fig}
-\end{figure}
-
-
-
 \GT{Ci-bas: les évaluateurs n'ont pas semblé apprécier cette
 spécification. Je suggère que tu la mettes en Annexe B plutôt que dans
 le corps du mémoire --- et que tu y réfères quand même comme ci-bas,
 mais sans plus.}
 
+\IC{J'ai déplacé la spécification dans l'annexe B.}
 
-La description (semi-)formelle d'un \TT{Reducer} --- d\'ecrite par mon directeur de recherche --- est pr\'esent\'ee \`a la Figure~\ref{reducer-spec.fig}.
+
+La description (semi-)formelle d'un \TT{Reducer} --- d\'ecrite par mon directeur de recherche --- est pr\'esent\'ee dans l'annexe~\ref{DescriptionFormelleReducer.ann}.
 
 
 
@@ -529,72 +487,9 @@ spécification. Je suggère que tu la mettes en Annexe B (même annexe
 que l'autre) plutôt que dans le corps du mémoire --- et que tu y
 réfères quand même comme ci-bas, mais sans plus.}
 
-La description (semi-)formelle de \TT{groupByKey} --- d\'ecrite par mon directeur de recherche --- est pr\'esent\'ee \`a la Figure~\ref{group-by-key-spec.fig}.
+\IC{J'ai déplacé la spécification dans l'annexe B.}
 
-\begin{figure}
-\begin{framed}
-
-D\'enotons comme suit un \emph{map} $M$ qui associe la cl\'e $c_i$ \`a
-la valeur $v_i$, pour $i=0, \ldots, n$~:%
-%
-\footnote{Dans du code C++, un tel \emph{map} serait repr\'esent\'e
-comme suit~: $\{\{c_0, v_0\}, \ldots, \{c_n, v_n\}\}$}
-%
-\begin{itemize}
-\item $M = \{ c_i \mapsto v_i~\vert~0 \leq i \leq n \}$
-\end{itemize}
-
-Soit alors les \'el\'ements suivants~: 
-\begin{itemize}
-\item $T$, un type de donn\'ees;
-
-\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
-\in T~(i=0, \ldots, k)$;
-
-\item $fc: T \rightarrow C$, une fonction sur  $T$ qui produit une
-<<cl\'e>> de type $C$;
-
-\item $fv: T \rightarrow V$, une fonction sur $T$ qui retourne une
-<<valeur>> de type $V$;
-
-
-\end{itemize}
-
-
-Le r\'esultat d'un appel pour le flux $S$ de la m\'ethode
-\TT{groupByKey} avec deux arguments peut alors \^etre d\'ecrit comme
-suit~:
-%
-\begin{itemize}
-\item $S.\TT{groupByKey}(fc, fv) = \{ c \mapsto vals(c, S)~\vert~c \in
-cles(S)\}$
-
-\item[] O\`u
-\begin{itemize}
-\item $cles(S) = \{ fc(s_i)~\vert~s_i \in S \}$
-\item $vals(c, S) = \{ fv(s_i)~\vert~ s_i\in S \wedge fc(s_i) = c\}$
-\end{itemize}
-
-\end{itemize}
-
-
-\bigskip
-
-
-Quant \`a la m\'ethode $\TT{groupByKey}$ avec un seul argument, elle est
-\'equivalente \`a celle avec deux arguments, mais o\`u le deuxi\`eme est simplement la fonction $id$entit\'e:
-%
-\begin{itemize}
-\item $S.\TT{groupByKey}(fc) = S.\TT{groupByKey}(fc, id)$
-\begin{Items}
-\item[] O\`u $id(x) = x$
-\end{Items}
-\end{itemize}
-\end{framed}
-
-\caption{Une sp\'ecification de la m\'ethode \TT{groupByKey}.}
-\label{group-by-key-spec.fig}
-\end{figure}
+La description (semi-)formelle de \TT{groupByKey} --- d\'ecrite par mon directeur de recherche --- est pr\'esent\'ee dans l'annexe~\ref{DescriptionFormelleGroupByKey.ann}.
 
 
 
@@ -654,6 +549,13 @@ répondre au commentaire d'un des évaluateurs: <<La méthode reduceByKey
 est-elle recommandée dans un traitement en parallèle?  Comment est
 gérée la contention lors des accès aux éléments par la clé?>>.}
 
+\IC{Ci-dessous, j'ai ajouté quelques explications.}
+
+La m\'ethode \TT{reduceByKey} est une op\'eration complexe. Sa complexit\'e augmente encore plus lorsqu'elle est utilis\'ee en parall\`ele. La biblioth\`eque \TT{PpFf} cache cette complexit\'e. En effet, il est fortement recommand\'e de l'utiliser en parall\`ele. Le temps d'ex\'ecution diminue consid\'erablement.
+
+Dans \TT{PpFf} chaque op\'eration dans un flux s'ex\'ecute sur un \emph{thread} diff\'erent. Une op\'eration est constitu\'ee de la fonctionnalit\'e expos\'ee par chaque m\'ethode de l'interface. Plus pr\'ecisément, la m\'ethode \TT{reduceByKey} s'ex\'ecute sur un \emph{thread} s\'epar\'ement et donc l'acc\`es \`a une cl\'e de la m\'ethode est unique par le \emph{thread} sur laquelle la m\'ethode s'ex\'ecute. Lorsque le flux est trait\'e en parall\`ele en utilisant les instances parall\`eles d'un \emph{farm}, le flux est divis\'e en sous-flux. Dans ce cas les r\'esultats partiels produits par chaque m\'ethode \TT{reduceByKey} sont ensuite combin\'es, dans le \emph{thread} principal.
+
+
 
 \section{Cat\'egorie \TT{Execution}}
 
@@ -665,4 +567,38 @@ Dans \TT{PpFf}, par d\'efaut, chaque nœud ajout\'e dans le flux du traitement s
 Cette méthode reçoit un argument entier.
 %
 La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`eles d'un \emph{farm} entre lesquels seront r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, dans le listing~\ref{wordcount.c++}, l'appel \`a la m\'ethode \TT{parallel(4)} indique de r\'epartir les \'el\'ements du flux entre quatre (4) instances parall\`eles d'un \emph{farm}.
+
+
+\section{L'expressivit\'e de \TT{PpFf}}
+
+\label{PpFfExpressivities.sect}
+
+\'Ecrit au-dessous de la biblioth\`eque \TT{FastFlow}, \TT{PpFf} essaie de simplifier le traitement des collections de donn\'ees. Cette section montre la n\'ecessit\'e d'introduire une nouvelle biblioth\`eque. Par rapport \`a la biblioth\`eque \TT{FastFlow}, \TT{PpFf} a introduit plusieurs concepts pour faciliter le traitement des collections de donn\'ees. Dans ce qui suit, nous pr\'esenterons les plus importantes.
+
+
+Chainage de m\'ethodes
+
+\TT{FastFlow} est une biblioth\`eque de base niveau qui permet de traiter des collections de donn\'ees. Travailler avec des collections n'est pas toujours facile. Par exemple, supposons que dans une universit\'e nous devons filtrer les \'etudiants boursiers ayant une moyenne d'A, puis les regrouper par d\'epartement. Le listing (\`A ajouter un FastFlow exemple) montre cet exemple impl\'ement\'e dans \TT{FastFlow}. On peut observer que pour chaque op\'eration dans le flux on doit cr\'eer une nouvelle fonctionnalit\'e. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code. Les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds et ensuite leurs r\'ef\'erences sont utilis\'ees dans la cr\'eation du flux. 
+
+Dans \TT{PpFf} ce probl\`eme peut \^etre r\'esolu en utilisant le chainage de m\'ethodes. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing (\`A ajouter un PpFf exemple) montre l'exemple du listing (\`A ajouter ref vers l'exemple FastFlow), mais r\'e\'ecrit dans \TT{PpFf}. On peut observer que, le code est plus facile \`a comprendre. Les op\'erations sont d\'eclar\'ees \`a la cr\'eation du flux. De plus le nombre de lignes de code utilis\'e dans \TT{PpFf} est consid\'erablement r\'eduit comparatif \`a \TT{FastFlow}. 
+
+Le principal avantage de l'utilisation du chainage de m\'ethodes est que le code est beaucoup plus lisible. Par analogie, les op\'erations sont pass\'ees au flux sous forme de liste d'instructions.
+
+
+Les expressions \emph{lambda}
+
+Un probl\`eme bien connu en g\'enie logiciel est que, les besoins des utilisateurs changent assez souvent. Il est difficile d'\'ecrire du code capable de faire face \`a l'\'evolution des exigences. Par exemple, si on prend l'exemple du listing (\`A ajouter ref \`a l'exemple FastFlow) ou dans une universit\'e on a filtr\'e seulement les \'etudiants boursiers ayant une moyenne d'A. Que se passe-t-il si un autre jour on veut filtrer les \'etudiants qui habite dans une certaine ville ? Dans \TT{FastFlow}, une solution sera d'impl\'ementer une nouvelle fonctionnalit\'e dans un autre nœud et utiliser sa r\'ef\'erence dans la cr\'eation du flux autant de fois que n\'ecessaire. 
+
+Passer des fonctionnalit\'es comme r\'ef\'erence c'est utile, mais c'est un peu ennuyeux d'avoir \`a \'ecrire une d\'efinition pour des fonctionnalit\'es simples dans les conditions o\`u elles ne sont peut-\^etre utilis\'ees qu'une ou deux fois. Id\'ealement, on souhaite minimiser les efforts de d\'eveloppeurs et offrir des fonctionnalit\'es simples \`a mettre en œuvre et \`a maintenir \`a long terme. 
+
+\TT{PpFf} offre la possibilit\'e d'utiliser les expressions \emph{lambda} directement dans la cr\'eation du flux. (À donner un exemple). On peut observer que dans \TT{PpFf}, il n'y a pas n\'ecessaire d'\'ecrire une nouvelle d\'efinition pour la fonctionnalit\'e qui n'est utilis\'ee qu'une seule fois. Le code est plus clair et plus concis.
+
+Le traitement en parall\`ele
+
+Aujourd'hui tous les nouveaux ordinateurs de bureau et portables sont des ordinateurs multicœurs. Au lieu d'un seul processeur, ils en disposent de plusieurs. Les deux biblioth\`eques, \TT{FastFlow} et \TT{PpFf} peuvent am\'eliorer consid\'erablement le traitement d'une grande collection de donn\'ees si les ressources d'une telle machine sont explor\'ees au maximum. 
+
+Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. L'ex\'ecution d'un flux peut \^etre davantage parall\'elis\'ee s'on utilise les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux — i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche augmente les performances, mais augment aussi la complexit\'e. Dans \TT{FastFlow} l'utilisateur doit cr\'eer explicitement chaque sous-flux. (\`A donner un exemple). Dans le cas de \TT{PpFf}, ce m\'ecanisme est transparent pour utilisateur. Il suffit d'ajouter la m\'ethode \TT{parallel} dans le flux en sp\'ecifiant en argument le nombre de sous-flux \`a cr\'eer. (\`A donner un exemple).  
+
+
+
 
