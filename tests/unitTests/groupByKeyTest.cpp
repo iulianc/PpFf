@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "Employee.hpp"
+#include "Student.hpp"
 #include "utility.hpp"
 #include <algorithm>
 #include <map>
@@ -305,3 +306,179 @@ TEST_CASE( "GroupByAgeACollectionEmployeesWithMapParallel", "GroupByKeyOperator"
         }
     }
 }
+
+
+
+//unordered_map
+TEST_CASE( "GroupByDepStudentsAverage", "GroupByKeyOperator" ) {
+    typedef std::vector<Student> VALUE;
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
+
+    unsigned int noStudents = 10;
+    VALUE students;
+    for (unsigned int i = 0; i < noStudents; i++) {
+        Student student("Student" + ConvertNumberToString(i),
+                          "B",
+                          "IT",
+							"Montreal");
+        students.push_back(student);
+    };
+
+
+    students[0].average = students[1].average = students[2].average = "A";
+    students[3].average = students[4].average = "A";
+    students[5].average = students[6].average = "B+";
+    students[7].average = students[8].average = "A";
+    students[9].average = "C";
+
+    students[0].departement = students[1].departement = students[2].departement = "IT";
+    students[3].departement = students[4].departement = "Accounting";
+    students[5].departement = students[6].departement = "Chemistry";
+    students[7].departement = students[8].departement = "Art";
+    students[9].departement = "History";
+
+
+    CONTAINER expectedResult =
+        { {"IT", {students[0], students[1], students[2]}},
+          {"Accounting", {students[3], students[4]}},
+          {"Art", {students[7], students[8]}}
+        };
+
+    CONTAINER result = 
+        Flow
+        ::source<Student>(students.begin(), students.end())
+			.find<Student>( [](Student *s) ->bool { return s->average == "A"; } )
+        	.groupByKey<Student, std::string, Student>([](Student* s) { return &(s->departement); });
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        VALUE resultValue = result[it->first];
+        VALUE expectedResultValue = it->second;
+
+        REQUIRE(resultValue.size() == expectedResultValue.size());
+        for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
+            REQUIRE(resultValue[i].name == expectedResultValue[i].name);
+        }
+    }
+}
+
+
+//unordered_map
+TEST_CASE( "GroupByDepStudentsCity", "GroupByKeyOperator" ) {
+    typedef std::vector<Student> VALUE;
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
+
+    unsigned int noStudents = 10;
+    VALUE students;
+    for (unsigned int i = 0; i < noStudents; i++) {
+        Student student("Student" + ConvertNumberToString(i),
+                          "B",
+                          "IT",
+							"Montreal");
+        students.push_back(student);
+    };
+
+
+    students[0].average = students[1].average = students[2].average = "A";
+    students[3].average = students[4].average = "A";
+    students[5].average = students[6].average = "B+";
+    students[7].average = students[8].average = "A";
+    students[9].average = "C";
+
+    students[0].departement = students[1].departement = students[2].departement = "IT";
+    students[3].departement = students[4].departement = "Accounting";
+    students[5].departement = students[6].departement = "Chemistry";
+    students[7].departement = students[8].departement = "Art";
+    students[9].departement = "History";
+
+    students[0].city_address = students[1].city_address = students[2].city_address = "Montreal";
+    students[3].city_address = students[4].city_address = "Quebec";
+    students[5].city_address = students[6].city_address = "Longueuil";
+    students[7].city_address = students[8].city_address = "Montreal";
+    students[9].city_address = "Saskatchewan";
+
+
+    CONTAINER expectedResult =
+        { {"IT", {students[0], students[1], students[2]}},
+          {"Art", {students[7], students[8]}}
+        };
+
+    CONTAINER result = 
+        Flow
+        ::source<Student>(students.begin(), students.end())
+			.find<Student>( [](Student *s) ->bool { return s->average == "A" && s->city_address == "Montreal"; } )
+        	.groupByKey<Student, std::string, Student>([](Student* s) { return &(s->departement); });
+
+    REQUIRE(result.size() == expectedResult.size());
+    for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+        VALUE resultValue = result[it->first];
+        VALUE expectedResultValue = it->second;
+
+        REQUIRE(resultValue.size() == expectedResultValue.size());
+        for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
+            REQUIRE(resultValue[i].name == expectedResultValue[i].name);
+        }
+    }
+}
+
+
+//unordered_map
+TEST_CASE( "GroupByDepStudentsAverageParallel", "GroupByKeyOperator" ) {
+    typedef std::vector<Student> VALUE;
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
+
+    unsigned int noStudents = 10;
+    VALUE students;
+    for (unsigned int i = 0; i < noStudents; i++) {
+        Student student("Student" + ConvertNumberToString(i),
+                          "B",
+                          "IT",
+							"Montreal");
+        students.push_back(student);
+    };
+
+
+    students[0].average = students[1].average = students[2].average = "A";
+    students[3].average = students[4].average = "A";
+    students[5].average = students[6].average = "B+";
+    students[7].average = students[8].average = "A";
+    students[9].average = "C";
+
+    students[0].departement = students[1].departement = students[2].departement = "IT";
+    students[3].departement = students[4].departement = "Accounting";
+    students[5].departement = students[6].departement = "Chemistry";
+    students[7].departement = students[8].departement = "Art";
+    students[9].departement = "History";
+
+
+	CONTAINER expectedResult =
+		{ 
+			{"IT", {students[0], students[1], students[2]}},
+			{"Accounting", {students[3], students[4]}},
+			{"Art", {students[7], students[8]}}
+		};
+
+    CONTAINER result = 
+        Flow
+        ::source<Student>(students.begin(), students.end())
+			.parallel(4)
+			.find<Student>( [](Student *s) ->bool { return s->average == "A"; } )
+        	.groupByKey<Student, std::string, Student>([](Student* s) { return &(s->departement); });
+
+	
+
+
+	REQUIRE(result.size() == expectedResult.size());
+	for (auto it = expectedResult.begin(); it != expectedResult.end(); it++) {
+		VALUE resultValue = result[it->first];
+		VALUE expectedResultValue = it->second;
+
+		std::sort(resultValue.begin(), resultValue.end(), [](Student s1, Student s2)->bool {return s1.name < s2.name; } );
+
+		REQUIRE(resultValue.size() == expectedResultValue.size());
+		for (unsigned int i = 0; i < expectedResultValue.size(); i++) {
+			REQUIRE(resultValue[i].name == expectedResultValue[i].name);
+		}
+    }
+}
+
