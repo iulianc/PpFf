@@ -578,26 +578,222 @@ La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`el
 
 Chainage de m\'ethodes
 
-\TT{FastFlow} est une biblioth\`eque de base niveau qui permet de traiter des collections de donn\'ees. Travailler avec des collections n'est pas toujours facile. Par exemple, supposons que dans une universit\'e nous devons filtrer les \'etudiants boursiers ayant une moyenne d'A, puis les regrouper par d\'epartement. Le listing (\`A ajouter un FastFlow exemple) montre cet exemple impl\'ement\'e dans \TT{FastFlow}. On peut observer que pour chaque op\'eration dans le flux on doit cr\'eer une nouvelle fonctionnalit\'e. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code. Les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds et ensuite leurs r\'ef\'erences sont utilis\'ees dans la cr\'eation du flux. 
+\begin{lstlisting}[
+label={GroupByDepStudentsAverageFF.c++},
+language=c++,
+caption={[Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en \TT{FastFlow}.]Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en \TT{FastFlow}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+    // ...
+    // Un conteneur pour les etudiants du meme departement.
+    typedef std::vector<Student> VALUE;
+    // Un conteneur pour regrouper les etudiants par departement.
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
 
-Dans \TT{PpFf} ce probl\`eme peut \^etre r\'esolu en utilisant le chainage de m\'ethodes. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing (\`A ajouter un PpFf exemple) montre l'exemple du listing (\`A ajouter ref vers l'exemple FastFlow), mais r\'e\'ecrit dans \TT{PpFf}. On peut observer que, le code est plus facile \`a comprendre. Les op\'erations sont d\'eclar\'ees \`a la cr\'eation du flux. De plus le nombre de lignes de code utilis\'e dans \TT{PpFf} est consid\'erablement r\'eduit comparatif \`a \TT{FastFlow}. 
+     
+    // Premiere operation dans le flux.
+	struct source : ff_node {
+		VALUE students;
+		source(VALUE students) : students(students){}
+
+		void* svc(void*) {
+			for (auto &elem: students) {
+				ff_send_out(&elem);
+			}	
+			return EOS;	
+		}
+	};
+
+	// Une operation de filtrage pour les etudiants boursiers.
+	struct findStudentsAverage : ff_node_t<Student, Student> {
+		Student* svc(Student* task) {
+			if(task->average == "A") {
+				return task;
+			}
+			return GO_ON;
+		}
+	};
+
+	// Une operation de regroupement des etudiants par departement.
+	struct groupByDepartement : ff_node_t<Student, void> {
+		CONTAINER& container;
+		groupByDepartement(CONTAINER& container) :
+							container(container){}
+		
+		void* svc(Student* task) {
+			auto mapIt = container.find(task->departement);
+              
+			if (mapIt != container.end()) {
+				mapIt->second.push_back(*task);
+			} else {
+				VALUE students = {*task};
+				container[task->departement] = students;
+			}
+			return GO_ON;		
+		}
+	};
+
+	// Un conteneur pour le resultat du traitement.
+	CONTAINER result;
+	// Creation du pipeline.
+	ff_Pipe<> ffp( new source(students),
+				   new findStudentsAverage,
+				   new groupByDepartement(result) );        
+    // ...
+\end{lstlisting}
+
+\TT{FastFlow} est une biblioth\`eque de base niveau qui permet de traiter des collections de donn\'ees. Travailler avec des collections n'est pas toujours facile. Par exemple, supposons que dans une universit\'e nous devons filtrer les \'etudiants boursiers ayant une moyenne d'A, puis les regrouper par d\'epartement. Le listing~\ref{GroupByDepStudentsAverageFF.c++} montre cet exemple impl\'ement\'e dans \TT{FastFlow}. On peut observer que pour chaque op\'eration dans le flux on doit impl\'ementer une nouvelle fonctionnalit\'e. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code. Les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds et ensuite leurs r\'ef\'erences sont utilis\'ees dans la cr\'eation du flux. 
+
+\begin{lstlisting}[
+label={GroupByDepStudentsAverage.c++},
+language=c++,
+caption={[Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en \TT{PpFf}.]Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en \TT{PpFf}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+    // ...
+    // Un conteneur pour les etudiants du meme departement.
+    typedef std::vector<Student> VALUE;
+    // Un conteneur pour regrouper les etudiants par departement.
+    typedef std::unordered_map<std::string, VALUE> CONTAINER; 
+
+	// Un conteneur pour le resultat du traitement.
+    CONTAINER result = 
+        Flow
+        ::source<Student>(students.begin(), students.end())
+		.find<Student>( 
+			[](Student *s) ->bool { return s->average == "A"; } )
+        .groupByKey<Student, std::string, Student>(
+        	[](Student* s) { return &(s->departement); });        
+    // ...
+\end{lstlisting}
+
+Dans \TT{PpFf} ce probl\`eme peut \^etre r\'esolu en utilisant le chainage de m\'ethodes. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing~\ref{GroupByDepStudentsAverage.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais r\'e\'ecrit dans \TT{PpFf}. On peut observer que, le code est plus facile \`a comprendre. Les op\'erations sont d\'eclar\'ees \`a la cr\'eation du flux. De plus le nombre de lignes de code utilis\'e dans \TT{PpFf} est consid\'erablement r\'eduit comparatif \`a \TT{FastFlow}. 
 
 Le principal avantage de l'utilisation du chainage de m\'ethodes est que le code est beaucoup plus lisible. Par analogie, les op\'erations sont pass\'ees au flux sous forme de liste d'instructions.
 
 
 Les expressions \emph{lambda}
 
-Un probl\`eme bien connu en g\'enie logiciel est que, les besoins des utilisateurs changent assez souvent. Il est difficile d'\'ecrire du code capable de faire face \`a l'\'evolution des exigences. Par exemple, si on prend l'exemple du listing (\`A ajouter ref \`a l'exemple FastFlow) ou dans une universit\'e on a filtr\'e seulement les \'etudiants boursiers ayant une moyenne d'A. Que se passe-t-il si un autre jour on veut filtrer les \'etudiants qui habite dans une certaine ville ? Dans \TT{FastFlow}, une solution sera d'impl\'ementer une nouvelle fonctionnalit\'e dans un autre nœud et utiliser sa r\'ef\'erence dans la cr\'eation du flux autant de fois que n\'ecessaire. 
+\begin{lstlisting}[
+label={GroupByDepStudentsCityFF.c++},
+language=c++,
+caption={[Un pipeline pour regrouper les \'etudiants d'une certaine ville par d\'epartement en \TT{FastFlow}.]Un pipeline pour regrouper les \'etudiants d'une certaine ville par d\'epartement en \TT{FastFlow}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+    // ...
+    // Un conteneur pour les etudiants du meme departement.
+    typedef std::vector<Student> VALUE;
+    // Un conteneur pour regrouper les etudiants par departement.
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
 
-Passer des fonctionnalit\'es comme r\'ef\'erence c'est utile, mais c'est un peu ennuyeux d'avoir \`a \'ecrire une d\'efinition pour des fonctionnalit\'es simples dans les conditions o\`u elles ne sont peut-\^etre utilis\'ees qu'une ou deux fois. Id\'ealement, on souhaite minimiser les efforts de d\'eveloppeurs et offrir des fonctionnalit\'es simples \`a mettre en œuvre et \`a maintenir \`a long terme. 
+     
+	// Une operation de filtrage pour les etudiants vivant a Montreal.
+	struct findStudentsCity : ff_node_t<Student, Student> {
+		Student* svc(Student* task) {
+			if(task->city_address == "Montreal") {
+				return task;
+			}
+			return GO_ON;
+		}
+	};
 
-\TT{PpFf} offre la possibilit\'e d'utiliser les expressions \emph{lambda} directement dans la cr\'eation du flux. (À donner un exemple). On peut observer que dans \TT{PpFf}, il n'y a pas n\'ecessaire d'\'ecrire une nouvelle d\'efinition pour la fonctionnalit\'e qui n'est utilis\'ee qu'une seule fois. Le code est plus clair et plus concis.
+	// Un conteneur pour le resultat du traitement.
+	CONTAINER result;
+	// Creation du pipeline.
+	ff_Pipe<> ffp( new source(students),
+				   new findStudentsCity,
+				   new groupByDepartement(result) );        
+    // ...
+\end{lstlisting}
+
+Un probl\`eme bien connu en g\'enie logiciel est que, les besoins des utilisateurs changent assez souvent. Il est difficile d'\'ecrire du code capable de faire face \`a l'\'evolution des exigences. Par exemple, si on prend l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++} o\`u dans une universit\'e on a filtr\'e seulement les \'etudiants boursiers ayant une moyenne d'A. Que se passe-t-il si un autre jour on veut filtrer les \'etudiants qui habite dans une certaine ville ? Dans \TT{FastFlow}, une solution sera d'impl\'ementer une nouvelle fonctionnalit\'e dans un autre nœud et utiliser sa r\'ef\'erence dans la cr\'eation du flux autant de fois que n\'ecessaire. Le listing~\ref{GroupByDepStudentsCityFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++} en modifiant le crit\`ere de filtrage. Cette fois, les \'etudiants qui habitent \`a Montr\'eal sont recherchés. On peut observer que, une nouvelle op\'eration \`a \'et\'e impl\'ement\'ee.
+
+Passer des fonctionnalit\'es comme r\'ef\'erence c'est utile, mais c'est un peu ennuyeux d'avoir \`a \'ecrire de code pour des fonctionnalit\'es simples dans les conditions o\`u elles ne sont peut-\^etre utilis\'ees qu'une ou deux fois. Id\'ealement, on souhaite minimiser les efforts de d\'eveloppeurs et offrir des op\'erations simples \`a mettre en œuvre et \`a maintenir \`a long terme. 
+
+
+\begin{lstlisting}[
+label={GroupByDepStudentsCity.c++},
+language=c++,
+caption={[Un pipeline pour regrouper les \'etudiants d'une certaine ville par d\'epartement en \TT{PpFf}.]Un pipeline pour regrouper les \'etudiants d'une certaine ville par d\'epartement en \TT{PpFf}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+    // ...
+    // Un conteneur pour les etudiants du meme departement.
+    typedef std::vector<Student> VALUE;
+    // Un conteneur pour regrouper les etudiants par departement.
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
+
+     
+	// Un conteneur pour le resultat du traitement.
+    CONTAINER result = 
+        Flow
+        ::source<Student>(students.begin(), students.end())
+		.find<Student>( 
+			[](Student *s) ->bool { s->city_address == "Montreal"; } )
+        .groupByKey<Student, std::string, Student>(
+        	[](Student* s) { return &(s->departement); });       
+    // ...
+\end{lstlisting}
+
+\TT{PpFf} offre la possibilit\'e d'utiliser les expressions \emph{lambda} directement dans la cr\'eation du flux. Le listing~\ref{GroupByDepStudentsCity.c++} montre l'exemple du listing~\ref{GroupByDepStudentsCityFF.c++}, mais re\'ecrit dans \TT{PpFf}. On peut observer que dans \TT{PpFf}, il n'y a pas n\'ecessaire de cr\'eer une nouvelle op\'eration pour changer le crit\`ere de filtrage qui n'est utilis\'ee qu'une seule fois. Le code est plus clair et plus concis.
 
 Le traitement en parall\`ele
 
 Aujourd'hui tous les nouveaux ordinateurs de bureau et portables sont des ordinateurs multicœurs. Au lieu d'un seul processeur, ils en disposent de plusieurs. Les deux biblioth\`eques, \TT{FastFlow} et \TT{PpFf} peuvent am\'eliorer consid\'erablement le traitement d'une grande collection de donn\'ees si les ressources d'une telle machine sont explor\'ees au maximum. 
 
-Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. L'ex\'ecution d'un flux peut \^etre davantage parall\'elis\'ee s'on utilise les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux — i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche augmente les performances, mais augment aussi la complexit\'e. Dans \TT{FastFlow} l'utilisateur doit cr\'eer explicitement chaque sous-flux. (\`A donner un exemple). Dans le cas de \TT{PpFf}, ce m\'ecanisme est transparent pour utilisateur. Il suffit d'ajouter la m\'ethode \TT{parallel} dans le flux en sp\'ecifiant en argument le nombre de sous-flux \`a cr\'eer. (\`A donner un exemple).  
+\begin{lstlisting}[
+label={GroupByDepStudentsAverageParallelFF.c++},
+language=c++,
+caption={[Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm} en \TT{FastFlow}.]Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm} en \TT{FastFlow}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+    // ...
+    // Un conteneur pour les etudiants du meme departement.
+    typedef std::vector<Student> VALUE;
+    // Un conteneur pour regrouper les etudiants par departement.
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
+
+     
+	// Creation de quatre instances d'un farm
+	std::vector<ff_node*> workers;
+	for ( uint32_t i = 0; i < 4; i++ ) {
+		workers.push_back( new ff_Pipe<>(new findStudentsAverage) );
+	}
+
+	// Un conteneur pour le resultat du traitement.
+	CONTAINER result;
+	// Creation du flux
+	ff_Pipe<> ffp( new source(students),
+				   new ff_farm(workers),
+				   new groupByDepartement(result) );     
+    // ...
+\end{lstlisting}
+
+\begin{lstlisting}[
+label={GroupByDepStudentsAverageParallel.c++},
+language=c++,
+caption={[Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm} en \TT{PpFf}.]Un pipeline pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm} en \TT{PpFf}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
+    // ...
+    // Un conteneur pour les etudiants du meme departement.
+    typedef std::vector<Student> VALUE;
+    // Un conteneur pour regrouper les etudiants par departement.
+    typedef std::unordered_map<std::string, VALUE> CONTAINER;
+
+	// Un conteneur pour le resultat du traitement.
+    CONTAINER result = 
+        Flow
+        ::source<Student>(students.begin(), students.end())
+        .parallel(4)
+		.find<Student>( 
+			[](Student *s) ->bool { return s->average == "A"; } )
+        .groupByKey<Student, std::string, Student>(
+        	[](Student* s) { return &(s->departement); });    
+    // ...
+\end{lstlisting}
+
+Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. L'ex\'ecution d'un flux peut \^etre davantage parall\'elis\'ee s'on utilise les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux — i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche augmente les performances, mais augment aussi la complexit\'e. Dans \TT{FastFlow} l'utilisateur doit cr\'eer explicitement chaque sous-flux. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais re\'ecrit en uililisant les instances parall\`eles d'un \emph{farm}. Dans le cas de \TT{PpFf}, ce m\'ecanisme est transparent pour utilisateur. Il suffit d'ajouter la m\'ethode \TT{parallel} dans le flux en sp\'ecifiant en argument le nombre de sous-flux \`a cr\'eer. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour ilustrer la simplit\'e d'utilisation de \TT{PpFf}.
 
 
 
