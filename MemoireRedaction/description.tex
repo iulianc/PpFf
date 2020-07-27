@@ -530,7 +530,9 @@ sont fusionnés les uns avec les autres dans le thread principal. Ou
 quelque chose du genre... selon ce que j'ai compris de ta mise en
 oeuvre.}
 
-Dans \TT{PpFf}, chaque op\'eration d'un flux s'ex\'ecute sur un \emph{thread} distinct. Plus pr\'ecisément, la m\'ethode \TT{reduceByKey} s'ex\'ecute sur un \emph{thread} s\'epar\'ement et donc l'acc\`es \`a une cl\'e de la m\'ethode est unique par le \emph{thread} sur laquelle la m\'ethode s'ex\'ecute. Lorsque le flux est trait\'e en parall\`ele en utilisant les instances parall\`eles d'un \emph{farm}, le flux est divis\'e en sous-flux. Dans ce cas les r\'esultats partiels produits par chaque m\'ethode \TT{reduceByKey} sont ensuite combin\'es, dans le \emph{thread} principal.
+\IC{J'ai ajouté votre idée. C'est plus clair.}
+
+Lorsque le flux est trait\'e en parall\`ele, il est divis\`e en sous-flux. Chaque instance cr\'ee et manipule son propre container, son propre \emph{map}, donc sans interf\'erence avec les \emph{threads} qui traitent les autres sous-flux. Puis, lors de la combinaison des r\'esultats des sous-flux, ces divers \emph{containers/maps} sont fusionn\'es les uns avec les autres dans le \emph{thread} principal.
 
 
 
@@ -554,6 +556,7 @@ La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`el
 fois des suites de phrase qui disent presque la même chose, donc ça
 fait redondant~:( J'ai essayé de simplifier et d'oter la redondance.}
 
+\IC{Je n'ai pas observé cela jusqu'à ce que vous ayez fait cette remarque.}
 
 
 \'Ecrit au-dessous de la biblioth\`eque \TT{FastFlow}, \TT{PpFf} essaie de simplifier le traitement des collections de donn\'ees par rapport à \TT{FastFlow}. Dans ce qui suit, à l'aide d'exemples simples, nous pr\'esenterons ce qui distingue \ppff\ de \TT{FastFlow}.
@@ -563,6 +566,8 @@ fait redondant~:( J'ai essayé de simplifier et d'oter la redondance.}
 \GT{Pour séparer en sous-parties, il vaut quand même mieux introduire
 des sous-sections, quitte à ne pas les numéroter pour ne pas alourdir
 la table des matières et ne pas avoir trop de niveaux numérotés.}
+
+\IC{C'est simple et efficace.}
 
 
 \subsection*{Chainage de m\'ethodes et expressions \emph{lambda}}
@@ -576,11 +581,12 @@ section, puisque ces deux exemples étaient à toute fin pratique
 identiques au premier, sauf pour une seule ligne (condition de
 sélection).}
 
+\IC{J'ai séparé le listing contenant l'exemple de FastFlow dans 2 listings pour qu'il entre dans une page.}
 
 \begin{lstlisting}[
-label={GroupByDepStudentsAverageFF.c++},
+label={FastFlowOperationsToGroupStudentsByDep.c++},
 language=c++,
-caption={[Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.]Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[Les op\'erations d'un flux \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.]Les op\'erations d'un flux \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.},
 frame=single,
 float]
     // Premiere operation dans le flux = source de donnees.
@@ -594,7 +600,6 @@ float]
 			return EOS;	
 		}
 	};
-
 	// Operation de filtrage pour les etudiants boursiers.
 	struct findStudentsAverage : ff_node_t<Student, Student> {
 		Student* svc(Student* task) {
@@ -604,12 +609,11 @@ float]
 			return GO_ON;
 		}
 	};
-
 	// Operation de regroupement des etudiants par departement.
 	struct groupByDepartement : ff_node_t<Student, void> {
 		Students_by_Dept& container;
-		groupByDepartement(Students_by_Dept& container) : container(container){}
-		
+		groupByDepartement(Students_by_Dept& container) :
+									container(container){}
 		void* svc(Student* task) {
 			auto mapIt = container.find(task->departement);
 			if (mapIt != container.end()) {
@@ -620,8 +624,16 @@ float]
 			}
 			return GO_ON;		
 		}
-	};
+	};      
+\end{lstlisting}
 
+
+\begin{lstlisting}[
+label={GroupByDepStudentsAverageFF.c++},
+language=c++,
+caption={[Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.]Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement. Les op\'erations sont d\'efinies dans le listing~\ref{FastFlowOperationsToGroupStudentsByDep.c++}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+frame=single,
+float]
 	// Conteneur pour le resultat du traitement.
 	Students_by_Dept result;
 	// Creation du pipeline.
@@ -650,7 +662,7 @@ Supposons aussi qu'on ait les types auxiliaires suivants~:
 \end{samepage}
 
 
-Le listing~\ref{GroupByDepStudentsAverageFF.c++} montre un exemple pour ce problème impl\'ement\'e avec \TT{FastFlow}. On peut observer que pour chaque op\'eration dans le flux, on doit définir une nouvelle fonction qui traite chaque élément. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code: les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds (\TT{struct} de type \TT{ff\_node} ou \TT{ff\_node\_t}) et sont ensuite utilis\'ees dans la cr\'eation du flux. 
+Les listings~\ref{FastFlowOperationsToGroupStudentsByDep.c++} et \ref{GroupByDepStudentsAverageFF.c++} montrent un exemple pour ce problème impl\'ement\'e avec \TT{FastFlow}. Le Listing~\ref{FastFlowOperationsToGroupStudentsByDep.c++} contient les définitions des opérations requises pour créer le flux. La création du flux est illustrée dans le listing~\ref{GroupByDepStudentsAverageFF.c++}. On peut observer que pour chaque op\'eration dans le flux, on doit définir une nouvelle fonction qui traite chaque élément. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code: les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds (\TT{struct} de type \TT{ff\_node} ou \TT{ff\_node\_t}) et sont ensuite utilis\'ees dans la cr\'eation du flux. 
 
 \begin{lstlisting}[
 label={GroupByDepStudentsAverage.c++},
@@ -684,6 +696,8 @@ certain qu'un des évaluateurs va trouver que ce qui était au début de
 ce paragraphe, que j'ai supprimé, n'aurait pas été assez bien
 expliqué/justifié --- trop général (coût/difficulté de traiter de
 nouvelles exigences).}
+
+\IC{Votre remarque m'a fait rire.}
 
 
 L'utilisation d'expressions \emph{lambda} permet, entre autres, de
