@@ -384,7 +384,7 @@ Souvent, une op\'eration sur une collection de donn\'ees consiste \`a regrouper 
 label={groupByKeyExample.c++},
 escapechar=\!,
 language=c++,
-caption={[Un pipeline pour regrouper les employ\'es selon leur \^age.]Un pipeline pour regrouper les employ\'es selon leur \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[Un pipeline pour regrouper les employ\'es selon leur \^age.]Un pipeline pour regrouper les employ\'es selon leur \^age.\ExtraitTestUnitaire},
 frame=single,
 float]
 typedef std::unordered_map<int, std::vector<Employee>> 
@@ -425,7 +425,7 @@ Le listing~\ref{groupByKeyExample.c++} montre un exemple o\`u les employ\'es son
 label={groupByKeyExample2.c++},
 escapechar=\!,
 language=c++,
-caption={[Un pipeline pour regrouper les noms d'employ\'es selon leur \^age.]Un pipeline pour regrouper les noms d'employ\'es selon leur \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[Un pipeline pour regrouper les noms d'employ\'es selon leur \^age.]Un pipeline pour regrouper les noms d'employ\'es selon leur \^age.\ExtraitTestUnitaire},
 frame=single,
 float]
 typedef std::unordered_map<int, std::vector<std::string>> 
@@ -475,7 +475,7 @@ La description (semi-)formelle de \TT{groupByKey} --- d\'ecrite par mon directeu
 label={reduceByKeyExample.c++},
 escapechar=\!,
 language=c++,
-caption={[Un pipeline pour compter le nombre d'employ\'es de chaque \^age.]Un pipeline pour compter le nombre d'employ\'es de chaque \^age. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[Un pipeline pour compter le nombre d'employ\'es de chaque \^age.]Un pipeline pour compter le nombre d'employ\'es de chaque \^age.\ExtraitTestUnitaire},
 frame=single,
 float]
 typedef std::unordered_map<int, int> NO_EMPLOYES_PAR_AGE;
@@ -520,20 +520,7 @@ La m\'ethode \TT{reduceByKey} conserve les \'el\'ements dans un conteneur de typ
 La m\'ethode \TT{reduceByKey} est une op\'eration avec une mise en \oe{}uvre complexe, encore plus lorsqu'elle est utilis\'ee en parall\`ele. Toutefois, la biblioth\`eque \TT{PpFf} cache cette complexit\'e, et donc il est tout à fait possible et intéressant d'utiliser \TT{reduceByKey} en parall\`ele, et dans ce cas le temps d'ex\'ecution diminue consid\'erablement.
 
 
-\GT{Je crois qu'il faut revoir le paragraphe qui suit, que j'ai essayé
-de modifier un peu mais qui ne me semble encore pas assez clair~:( Je
-crois que tu dois plutôt traiter du fait que chaque instance crée et
-manipule son propre container, son propre map, donc sans interférence
-avec les threads qui traitent les autres sous-flux. Puis, lors de la
-combinaison des résultats des sous-flux, ces divers containers/maps
-sont fusionnés les uns avec les autres dans le thread principal. Ou
-quelque chose du genre... selon ce que j'ai compris de ta mise en
-oeuvre.}
-
-\IC{J'ai ajouté votre idée. C'est plus clair.}
-
-Lorsque le flux est trait\'e en parall\`ele, il est divis\`e en sous-flux. Chaque instance cr\'ee et manipule son propre container, son propre \emph{map}, donc sans interf\'erence avec les \emph{threads} qui traitent les autres sous-flux. Puis, lors de la combinaison des r\'esultats des sous-flux, ces divers \emph{containers/maps} sont fusionn\'es les uns avec les autres dans le \emph{thread} principal.
-
+Lorsque le flux est trait\'e en parall\`ele, il est divis\`e en sous-flux. Chaque instance cr\'ee et manipule son propre \emph{container}, son propre \emph{map}, donc sans interf\'erence avec les \emph{threads} qui traitent les autres sous-flux. Puis, lors de la combinaison des r\'esultats des sous-flux, ces divers \emph{containers/maps} sont fusionn\'es les uns avec les autres dans le \emph{thread} principal.
 
 
 \section{Cat\'egorie \TT{Execution}}
@@ -543,7 +530,7 @@ Lorsque le flux est trait\'e en parall\`ele, il est divis\`e en sous-flux. Chaqu
 
 Dans \TT{PpFf}, par d\'efaut, chaque nœud ajout\'e dans le flux du traitement s'ex\'ecute sur un \emph{thread} diff\'erent. En plus, la biblioth\`eque \TT{PpFf} permet d'introduire aussi du parall\'elisme de données, par le biais d'instances de \emph{farm}. Ces instances sont cr\'e\'ees en appelant la m\'ethode \TT{parallel} de l’API.  
 
-Cette méthode reçoit un argument entier.
+La méthode \TT{parallel} reçoit un argument entier.
 %
 La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`eles d'un \emph{farm} entre lesquels seront r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, dans le listing~\ref{wordcount.c++}, l'appel \`a la m\'ethode \TT{parallel(4)} indique de r\'epartir les \'el\'ements du flux entre quatre (4) instances parall\`eles d'un \emph{farm}.
 
@@ -552,41 +539,16 @@ La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`el
 
 \label{PpFfExpressivities.sect}
 
-\GT{Ci-bas: cela arrive souvent (il me semble), que tu écrives deux
-fois des suites de phrase qui disent presque la même chose, donc ça
-fait redondant~:( J'ai essayé de simplifier et d'oter la redondance.}
+\'Ecrit au-dessus de la biblioth\`eque \TT{FastFlow}, \TT{PpFf} essaie de simplifier le traitement des collections de donn\'ees par rapport à \TT{FastFlow}. Dans ce qui suit, à l'aide d'exemples simples, nous pr\'esenterons ce qui distingue \ppff\ de \TT{FastFlow}.
 
-\IC{Je n'ai pas observé cela jusqu'à ce que vous ayez fait cette remarque.}
-
-
-\'Ecrit au-dessous de la biblioth\`eque \TT{FastFlow}, \TT{PpFf} essaie de simplifier le traitement des collections de donn\'ees par rapport à \TT{FastFlow}. Dans ce qui suit, à l'aide d'exemples simples, nous pr\'esenterons ce qui distingue \ppff\ de \TT{FastFlow}.
-
-
-
-\GT{Pour séparer en sous-parties, il vaut quand même mieux introduire
-des sous-sections, quitte à ne pas les numéroter pour ne pas alourdir
-la table des matières et ne pas avoir trop de niveaux numérotés.}
-
-\IC{C'est simple et efficace.}
 
 
 \subsection*{Chainage de m\'ethodes et expressions \emph{lambda}}
 
-\GT{J'ai regroupé les deux sous-sections en une seule car ces deux
-aspects sont intimement liés, le chainage de méthode ayant nettement
-moins de pertinence ou d'intérêt si les expressions lambdas ne sont
-pas disponibles.  De plus, introduire les détails des listings 2.14 et
-2.15 ne me semblait pas utile car cela allongeait inutilement cette
-section, puisque ces deux exemples étaient à toute fin pratique
-identiques au premier, sauf pour une seule ligne (condition de
-sélection).}
-
-\IC{J'ai séparé le listing contenant l'exemple de FastFlow dans 2 listings pour qu'il entre dans une page.}
-
 \begin{lstlisting}[
 label={FastFlowOperationsToGroupStudentsByDep.c++},
 language=c++,
-caption={[Les op\'erations d'un flux \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.]Les op\'erations d'un flux \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.},
+caption={[a)~Les op\'erations auxiliaires utilisées par un pipeline \TT{FastFlow}.]a)~Les op\'erations auxiliaires utilisées par le pipeline \TT{FastFlow} du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), qui vise à regrouper les \'etudiants boursiers par d\'epartement.},
 frame=single,
 float]
     // Premiere operation dans le flux = source de donnees.
@@ -628,18 +590,22 @@ float]
 \end{lstlisting}
 
 
+\addtocounter{lstlisting}{-1}
+
 \begin{lstlisting}[
 label={GroupByDepStudentsAverageFF.c++},
 language=c++,
-caption={[Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.]Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement. Les op\'erations sont d\'efinies dans le listing~\ref{FastFlowOperationsToGroupStudentsByDep.c++}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[b)~Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement.]b)~Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement. Les op\'erations auxiliaires utilisées par le pipeline sont d\'efinies dans le listing~\ref{FastFlowOperationsToGroupStudentsByDep.c++}~a).\ExtraitTestUnitaire},
 frame=single,
 float]
+
 	// Conteneur pour le resultat du traitement.
 	Students_by_Dept result;
 	// Creation du pipeline.
 	ff_Pipe<> ffp( new source(students),
 				   new findStudentsAverage,
 				   new groupByDepartement(result) );        
+
 \end{lstlisting}
 
 \TT{FastFlow} est une biblioth\`eque de bas niveau pour traiter des collections et flux de donn\'ees. Travailler avec des collections n'est pas toujours facile lorsque, comme en \TT{FastFlow}, le traitement doit être décrit en indiquant explicitement, pour chaque élément du flux,  soit le ou les nouveaux éléments à émettre sur le flux (\TT{ff\_send\_out(\ldots)} ou \TT{return task}), soit le fait que le traitement de l'élément ne produit aucun résultat (\TT{return GO\_ON})
@@ -662,12 +628,12 @@ Supposons aussi qu'on ait les types auxiliaires suivants~:
 \end{samepage}
 
 
-Les listings~\ref{FastFlowOperationsToGroupStudentsByDep.c++} et \ref{GroupByDepStudentsAverageFF.c++} montrent un exemple pour ce problème impl\'ement\'e avec \TT{FastFlow}. Le Listing~\ref{FastFlowOperationsToGroupStudentsByDep.c++} contient les définitions des opérations requises pour créer le flux. La création du flux est illustrée dans le listing~\ref{GroupByDepStudentsAverageFF.c++}. On peut observer que pour chaque op\'eration dans le flux, on doit définir une nouvelle fonction qui traite chaque élément. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code: les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds (\TT{struct} de type \TT{ff\_node} ou \TT{ff\_node\_t}) et sont ensuite utilis\'ees dans la cr\'eation du flux. 
+Les listings~\ref{FastFlowOperationsToGroupStudentsByDep.c++}~a) et \ref{GroupByDepStudentsAverageFF.c++}~b) montrent un exemple de solution avec un pipeline \TT{FastFlow} pour ce problème. Le listing~\ref{FastFlowOperationsToGroupStudentsByDep.c++}~a) contient les définitions des opérations requises pour créer le flux. La création du flux est illustrée dans le listing~\ref{GroupByDepStudentsAverageFF.c++}~b). On peut observer que pour chaque op\'eration dans le flux, on doit définir une nouvelle fonction qui traite chaque élément. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code: les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds (\TT{struct} de type \TT{ff\_node} ou \TT{ff\_node\_t}) et sont ensuite utilis\'ees dans la cr\'eation du flux. 
 
 \begin{lstlisting}[
 label={GroupByDepStudentsAverage.c++},
 language=c++,
-caption={[Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement.]Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement.]Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement.\ExtraitTestUnitaire},
 frame=single,
 float]
     // Resultat du traitement.
@@ -681,7 +647,7 @@ float]
 
 Avec \TT{PpFf}, ce probl\`eme peut \^etre r\'esolu plus simplement en utilisant le chainage de m\'ethodes et des expressions \emph{lambda}. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing~\ref{GroupByDepStudentsAverage.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais r\'e\'ecrit avec \TT{PpFf}. On peut noter que le code est plus facile \`a comprendre. Les op\'erations sont définies \`a la cr\'eation du flux. De plus, le nombre de lignes de code utilis\'e dans la version \TT{PpFf} est consid\'erablement r\'eduit comparatif \`a \TT{FastFlow}. 
 
-Le principal avantage de l'utilisation du chainage de m\'ethodes est donc que le code est beaucoup plus lisible, et les op\'erations à exécuter sont pass\'ees au flux sous forme de blocs d'instructions, et ce avec des expressions \emph{lambda}.
+Le principal avantage de l'utilisation du chainage de m\'ethodes est donc que le code est plus lisible, et les op\'erations à exécuter sont pass\'ees au flux sous forme de blocs d'instructions, et ce avec des expressions \emph{lambda}.
 %
 De plus, avec \TT{find}, il n'est pas nécessaire de traiter l'envoi de
 signaux (\TT{return GO\_ON}) lorsqu'un élément ne satisfait pas une
@@ -689,15 +655,6 @@ condition, donc ne produit pas d'élément à la sortie du flux.
 
 
 %\subsection*{Expressions \emph{lambda}}
-
-
-\GT{(Suite à ma remarque précédente et aussi...) Je suis pas mal
-certain qu'un des évaluateurs va trouver que ce qui était au début de
-ce paragraphe, que j'ai supprimé, n'aurait pas été assez bien
-expliqué/justifié --- trop général (coût/difficulté de traiter de
-nouvelles exigences).}
-
-\IC{Votre remarque m'a fait rire.}
 
 
 L'utilisation d'expressions \emph{lambda} permet, entre autres, de
@@ -711,7 +668,7 @@ Il est un peu ennuyeux d'avoir \`a \'ecrire beaucoup de code pour des fonctionna
 
 \TT{PpFf} offre la possibilit\'e d'utiliser des expressions \emph{lambda} directement dans la cr\'eation du flux.
 %
-Il suffirait donc de modifier l'appel à \TT{find} comme suit lors de la création du pipeline pour sélectionner les étudiants provenant de Montréal~: 
+Ici, il suffirait donc de modifier l'appel à \TT{find} comme suit lors de la création du pipeline pour sélectionner les étudiants provenant de Montréal~: 
 {
 \begin{lstlisting}[language=c++]
 		.find<Student>( 
@@ -727,7 +684,7 @@ De nos jours, tous les nouveaux ordinateurs sont des ordinateurs multicœurs. Au
 \begin{lstlisting}[
 label={GroupByDepStudentsAverageParallelFF.c++},
 language=c++,
-caption={[Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.]Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.]Un pipeline \TT{FastFlow} pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.\ExtraitTestUnitaire},
 frame=single,
 float]
 	// Creation des instances de travailleurs d'un farm.
@@ -745,19 +702,19 @@ float]
 \begin{lstlisting}[
 label={GroupByDepStudentsAverageParallel.c++},
 language=c++,
-caption={[Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.]Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}. Ce segment de code est un extrait d'un test unitaire. Les d\'etails exacts de l'assertion ont \'et\'e omis.},
+caption={[Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.]Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.\ExtraitTestUnitaire},
 frame=single,
 float]
     Students_by_Dept result = 
         Flow
         ::source<Student>(students.begin(), students.end())
-        .parallel(NB_WORKERS)
+        .parallel(NB_WORKERS)  // Ajout simple d'un appel a parallel!
         .find<Student>( [](Student *s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
            [](Student* s) { return &(s->departement); } );
 \end{lstlisting}
 
-Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre un extrait de l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais re\'ecrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{NB\_WORKERS} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est beaucoup plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de travailleurs (sous-flux) \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplit\'e d'utilisation de cette méthode de \TT{PpFf}.
+Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), mais réécrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{NB\_WORKERS} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de travailleurs (sous-flux) \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplicit\'e d'utilisation de cette méthode de \TT{PpFf}.
 
 
 
