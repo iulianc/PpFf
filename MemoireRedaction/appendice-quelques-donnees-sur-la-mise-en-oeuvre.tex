@@ -1,0 +1,94 @@
+\chapter{Quelques donn\'ees sur la mise en oeuvre}
+
+\label{QuelquesDonneesSurLaMiseEnOeuvre.ann}
+
+\begin{center}
+\footnotesize
+\begin{longtable}{|l|r|r|r|r|r|r|}
+\caption{Donn\'ees sur la mise en \oe uvre~: les modules et le fichier \TT{Flow.hpp}.\label{statistiquesPpFf.tab}}\\
+\hline
+
+& \multicolumn{5} {c|}{\textbf{Module}}&\\
+\hline
+& \textbf{pipeline} & \textbf{operators} & \textbf{stages} & \textbf{utilities} & \textbf{collections} & \textbf{Flow.hpp}\\
+\hline
+%\endhead
+\hline
+	\textbf{Nombre de fichiers} &	
+	5 &
+	26 &
+	6 &
+	3 &
+	1 &
+    1
+    \\
+\hline
+	\textbf{Nombre de lignes} &
+	297 &
+	1225 &
+	201 &
+	42 &
+	124 &
+    345
+    \\                 
+\hline    
+\end{longtable}
+\normalsize
+\end{center} 
+
+
+
+Cette section donne un aper\c {c}u de l'envergure du projet r\'ealis\'e. \TT{PpFf} est divis\'e en plusieurs modules. Le tableau~\ref{statistiquesPpFf.tab} pr\'esente quelques donn\'ees sur la mise en \oe uvre~: nombre de fichiers et nombre de lignes de code dans chaque module. Il faut noter que les lignes blanches et les lignes de commentaires ont \'et\'e prises en compte lors du calcul des nombres de lignes de code.
+
+
+\begin{itemize}
+\item Le module \TT{pipeline} est le c\oe ur du traitement des flux~: il g\`ere la cr\'eation des \TT{pipeline}s, le traitement en parall\`ele et la communication entre les n\oe uds composant un \TT{pipeline}~; il g\`ere aussi la communication entre \TT{FastFlow} et \TT{PpFf}.
+
+\item Le plus grand module du projet est  \TT{operators}. Totalisant 1225 de lignes de code, ce module d\'efinit la logique de traitement de chacune des op\'erations de l'\TT{API} de \TT{PpFf}. 
+
+\item Le module \TT{stages} g\`ere le groupement logique d'une ou plusieurs op\'erations d'une \'etape dans la cha\^ine de traitement d'un \TT{pipeline}. 
+
+\item Tout projet a besoin d'objets et de fonctionnalit\'es qui sont partag\'es par d'autres modules. Dans \TT{PpFf}, ces objets sont regroup\'es dans le module \TT{utilities}, le plus petit module de la biblioth\`eque.
+
+\item Le module \TT{collections} est le dernier module dans le traitement de flux. Il g\`ere la collecte des \'el\'ements du flux dans un conteneur apr\`es leur traitement.  
+ 
+\item Les m\'ethodes permettant \`a l'utilisateur de manipuler des flux de donn\'ees sont regroup\'ees dans le fichier \TT{Flow.hpp}. Avec 345 lignes de code, ce fichier est le point d'entr\'ee de l'API de \TT{PpFf}. Plus pr\'ecis\'ement, c'est l'interface utilisateur de \TT{PpFf}. 
+
+\end{itemize}
+
+\begin{center}
+\footnotesize
+\begin{longtable}{|r|r|r|}
+\caption{Donn\'ees sur les tests unitaires.\label{statistiquesUnitTest.tab}}\\
+\hline
+
+\textbf{Nb.\ de m\'ethodes de l'API} & \textbf{Nb.\ de cas de tests} & \textbf{Nb.\ d'assertions \'evalu\'ees}\\
+\hline
+%\endhead
+\hline
+	21 &
+	123 &
+	13~895
+    \\                   
+\hline    
+\end{longtable}
+\normalsize
+\end{center} 
+
+Chaque fonctionnalit\'e d\'efinie dans l'interface de \ppff\ est test\'ee avec des tests unitaires. L'outil utilis\'e est \TT{catch},%
+%
+\footnote{\url{https://github.com/catchorg/Catch2}}
+%
+un cadre de tests unitaires en \TT{C++} qui utilise un unique fichier
+d'en-t\^ete.
+%
+\TT{catch} peut \^etre utilis\'e avec une approche de tests TDD
+(\emph{Test-Driven Development}) avec assertions, 
+ou avec une approche BDD (\emph{Behavior Driven Development}), avec \TT{Given--When--Then}.
+
+
+
+
+Le tableau~\ref{statistiquesUnitTest.tab} pr\'esente quelques donn\'ees sur les tests cr\'e\'es.
+
+Chaque m\'ethode de l'API a son propre fichier de test contenant plusieurs cas de test. Au total, les 21 m\'ethodes expos\'ees \`a l'utilisateur sont test\'ees avec 123 cas de tests. Plusieurs assertions sont g\'en\'er\'ees pour chaque cas de test. Au nombre de 13~895, le nombre d'assertions \'evalu\'ees est beaucoup plus grand que le nombre de cas de tests, et ce \`a cause de la fa\c{c}on dont sont test\'ees les structures de donn\'ees --- par ex., chaque \'el\'ement d'un tableau g\'en\'ere l'\'evaluation d'une assertion.
