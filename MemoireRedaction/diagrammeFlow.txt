@@ -1,0 +1,131 @@
+<@startuml
+skinparam classAttributeIconSize 0
+
+class Flow<T> {
+  ..Constructeur de base..
+  {static} source() : Flow<T>
+  ..Observateurs simples..
+  count(): int
+  min(): T
+  max(): T
+  sum(): T
+  ..Prédicats..
+  allMatch(): bool
+  anyMatch(): bool
+  noneMatch(): bool
+  ..Constructeurs..
+  find(): Flow<T>
+  flatMap(): Flow<T>
+  flatten(): Flow<T>
+  limit(): Flow<T>
+  map(): Flow<T>
+  peek(): Flow<T>
+  parallel(): Flow
+  skip(): Flow<T>
+  sort(): Flow<T>
+  ..Aggrégateurs..
+  <Out> reduce(): Out
+  <TContainer> collect(): TContainer<T>
+  <K, V> groupByKey(): Map<K,V>
+  <V> reduceByKey(): V
+}
+
+Flow --> "1" PipeManager
+
+class PipeManager {
+  -no_workers: int
+  -stages: Vector<IStage>
+
+  addStage(): void
+  nbWorkers(): int
+  setNbWorkers(): void
+  isParallel(): bool
+  run(): void
+}
+
+PipeManager --> Pipeline
+
+PipeManager --> "0..*" IStage
+
+class Pipeline {
+  addStage(): void
+  run(): void
+}
+
+Pipeline --|> Node
+Farm --|> Node
+Worker --|> Node
+
+class Farm {
+  nbWorkers(): int
+  addStage(): void
+}
+
+Farm --> "1..*" Worker
+Farm --> ff_farm
+
+class Worker {
+}
+
+class Node {
+  addStage(): void
+}
+
+Node --> ff_node
+
+class ff_node {
+}
+
+class ff_farm {
+}
+
+abstract class IStage {
+}
+
+BaseStage --|> IStage
+
+class BaseStage<TOperator> {
+  addOperator(): void
+}
+
+BaseStage --> "1..*" BaseOperator
+
+abstract class BaseOperator {
+  +=(): BaseOperator
+}
+
+class MapOperator {
+}
+
+MapOperator --|> BaseOperator
+
+class Source {
+}
+
+class Stage<TOperator> {
+}
+
+class BaseCollectors<TOperator> {
+  value(): Value
+  -combineWorkersResults(): void
+}
+
+class Collectors<TOperator> {
+  value(): Value
+  -combineWorkersResults(): void
+}
+
+Source --|> Stage
+
+Stage --|> BaseStage
+
+Collectors --|> BaseCollectors
+
+BaseCollectors --|> BaseStage
+
+
+
+
+@enduml
+
+
