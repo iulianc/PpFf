@@ -1,34 +1,7 @@
-<@startuml
+@startuml
 skinparam classAttributeIconSize 0
 
-class Flow<T> {
-  ..Constructeur de base..
-  {static} source() : Flow<T>
-  ..Observateurs simples..
-  count(): int
-  min(): T
-  max(): T
-  sum(): T
-  ..Prédicats..
-  allMatch(): bool
-  anyMatch(): bool
-  noneMatch(): bool
-  ..Constructeurs..
-  find(): Flow<T>
-  flatMap(): Flow<T>
-  flatten(): Flow<T>
-  limit(): Flow<T>
-  map(): Flow<T>
-  peek(): Flow<T>
-  parallel(): Flow
-  skip(): Flow<T>
-  sort(): Flow<T>
-  ..Aggrégateurs..
-  <Out> reduce(): Out
-  <TContainer> collect(): TContainer<T>
-  <K, V> groupByKey(): Map<K,V>
-  <V> reduceByKey(): V
-}
+!include diagrammeFlow.txt!0
 
 Flow --> "1" PipeManager
 
@@ -124,8 +97,4 @@ Collectors --|> BaseCollectors
 BaseCollectors --|> BaseStage
 
 
-
-
 @enduml
-
-

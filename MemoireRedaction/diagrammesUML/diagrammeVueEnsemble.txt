@@ -1,0 +1,49 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Flow<T> {
+}
+
+
+Flow --> "1" PipeManager
+
+class PipeManager {
+}
+
+PipeManager --> Pipeline
+
+PipeManager --> "0..*" IStage
+
+class Pipeline {
+}
+
+Pipeline --|> Node
+Farm --|> Node
+Worker --|> Node
+
+class Farm {
+}
+
+Farm --> "1..*" Worker
+
+class Worker {
+}
+
+class Node {
+}
+
+
+abstract class IStage {
+}
+
+BaseStage --|> IStage
+
+class BaseStage<TOperator> {
+}
+
+BaseStage --> "1..*" BaseOperator
+
+abstract class BaseOperator {
+}
+
+@enduml

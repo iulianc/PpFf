@@ -1,0 +1,33 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Flow<T> {
+  ..Constructeur de base..
+  {static} source() : Flow<T>
+  ..Observateurs simples..
+  count(): int
+  min(): T
+  max(): T
+  sum(): T
+  ..Prédicats..
+  allMatch(): bool
+  anyMatch(): bool
+  noneMatch(): bool
+  ..Constructeurs..
+  find(): Flow<T>
+  flatMap(): Flow<T>
+  flatten(): Flow<T>
+  limit(): Flow<T>
+  map(): Flow<T>
+  peek(): Flow<T>
+  parallel(): Flow<T>
+  skip(): Flow<T>
+  sort(): Flow<T>
+  ..Aggrégateurs..
+  <V> reduce(): V
+  <Container> collect(): Container<T>
+  <K, V> groupByKey(): Map<K,V>
+  <V> reduceByKey(): V
+}
+
+@enduml

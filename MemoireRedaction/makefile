@@ -1,12 +1,6 @@
 #
 # makefile for gnu make (gmake)
 #
-_DEF: UML
-
-UML:
-	java -jar ~/Software/plantuml.jar diagrammeFlow.txt
-	#open diagrammeFlow.png
-
 def: latex_run
 
 latex_diff:
