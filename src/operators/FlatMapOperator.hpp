@@ -9,13 +9,17 @@ namespace PpFf {
 
     template < typename In, typename TContainer, typename Out >
     class FlatMapOperator: public BaseOperator {
+
     public:
         FlatMapOperator(std::function< TContainer*(In*) > const& taskFunc) : taskFunc(taskFunc) 
         {}
+
         FlatMapOperator(const FlatMapOperator& other) : taskFunc(other.taskFunc) 
         {}
+
         FlatMapOperator(FlatMapOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) 
         {}
+
         FlatMapOperator() 
         {}
 

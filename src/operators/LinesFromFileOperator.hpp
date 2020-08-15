@@ -15,8 +15,10 @@ namespace PpFf {
     public:
         LinesFromFileOperator(const std::string& path) : path(path)
         {}
+
         LinesFromFileOperator(const LinesFromFileOperator& other) : path(other.path)
         {}
+
         LinesFromFileOperator(LinesFromFileOperator&& other) noexcept : path(std::move(other.path))
         {}
 
@@ -25,7 +27,7 @@ namespace PpFf {
 
         void* svc(void* task) {
             std::ifstream file(path);
-
+            
             std::string* line = new std::string;
             while (std::getline(file, *line)) {
                 ff_send_out(line);

@@ -10,9 +10,11 @@ namespace PpFf {
     template < typename T >
     class SkipOperator: public BaseOperator {
     public:
-        SkipOperator(int n): n(n), nb(0) {};
+        SkipOperator(int n): n(n), nb(0)
+        {}
 
-        ~SkipOperator() {}
+        ~SkipOperator()
+        {}
 
         void* svc(void* task) {
             if (nb >= n) {
@@ -23,7 +25,6 @@ namespace PpFf {
             }
         }
 
-        
     private:
         int n;
         int nb;

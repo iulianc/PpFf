@@ -12,19 +12,24 @@ namespace PpFf {
     public:
         typedef T Value;
 
-        MinOperator(std::function< void(T*, T*) > compare): compare(compare) { }
+        MinOperator(std::function< void(T*, T*) > compare): compare(compare)
+        {}
 
-        MinOperator(const MinOperator& other) : compare(other.compare) { }
+        MinOperator(const MinOperator& other) : compare(other.compare)
+        {}
 
-        MinOperator(MinOperator&& other) noexcept : compare(std::move(other.compare)) { }
+        MinOperator(MinOperator&& other) noexcept : compare(std::move(other.compare))
+        {}
 
-        MinOperator& operator+= (MinOperator& other) {
+        MinOperator& operator+=(MinOperator& other) {
             compare(val, other.val);
 
             return *this ;
         }
 
-        ~MinOperator() { delete val; };
+        ~MinOperator() {
+            delete val;
+        }
 
         void* svc(void* task) {
             if (firstVal) {

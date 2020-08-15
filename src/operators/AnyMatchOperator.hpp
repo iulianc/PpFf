@@ -7,39 +7,47 @@
 
 namespace PpFf{
 
-	template < typename T >
-	class AnyMatchOperator: public FinalOperator {
-	public:
-		typedef bool Value;
-		AnyMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) { };
-		AnyMatchOperator(const AnyMatchOperator& other) : taskFunc(other.taskFunc) { }
-		AnyMatchOperator(AnyMatchOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
-		AnyMatchOperator& operator+= ( const AnyMatchOperator& other ) {
-			if(!val){
-				val = other.val;
-			}
-			return *this;
-		}
-		~AnyMatchOperator() { }
+    template < typename T >
+    class AnyMatchOperator: public FinalOperator {
+    public:
+        typedef bool Value;
 
-		void* svc(void* task) {
-			if(val)
-				return EOS;
+        AnyMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc)
+        {}
 
-			val = taskFunc((T*)task);
+        AnyMatchOperator(const AnyMatchOperator& other) : taskFunc(other.taskFunc)
+        {}
 
-			return (T*)GO_ON;
-		}
+        AnyMatchOperator(AnyMatchOperator&& other) noexcept : taskFunc(std::move(other.taskFunc))
+        {}
 
-		bool value(){
-			return val;
-		}
+        AnyMatchOperator& operator+= ( const AnyMatchOperator& other ) {
+            if (!val){
+                val = other.val;
+            }
+            return *this;
+        }
 
+        ~AnyMatchOperator()
+        {}
 
-	private:
-		std::function< bool(T*) > const& taskFunc;
-		bool val = false;
-	};
+        void* svc(void* task) {
+            if (val)
+                return EOS;
+
+            val = taskFunc((T*)task);
+
+            return (T*)GO_ON;
+        }
+
+        bool value() {
+            return val;
+        }
+
+    private:
+        std::function< bool(T*) > const& taskFunc;
+        bool val = false;
+    };
 
 }
 

@@ -31,9 +31,10 @@ namespace PpFf {
             mapContainer(std::move(other.mapContainer))
         {}
 
-        ~GroupByKeyOperator() {}
+        ~GroupByKeyOperator()
+        {}
 
-        GroupByKeyOperator& operator+= (const GroupByKeyOperator& other) {
+        GroupByKeyOperator& operator+=(const GroupByKeyOperator& other) {
             for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
                 auto mapIt = mapContainer.find(otherIt->first);
                 

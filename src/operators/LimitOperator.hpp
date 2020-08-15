@@ -10,9 +10,11 @@ namespace PpFf {
     template < typename T >
     class LimitOperator: public BaseOperator {
     public:
-        LimitOperator(int n): n(n), nb(0) {};
+        LimitOperator(int n): n(n), nb(0)
+        {}
 
-        ~LimitOperator() {}
+        ~LimitOperator()
+        {}
 
         void* svc(void* task) {
             if (nb < n) {
@@ -22,7 +24,6 @@ namespace PpFf {
                 return (T*) GO_ON;
             }
         }
-
         
     private:
         int n;

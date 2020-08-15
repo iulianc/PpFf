@@ -9,13 +9,16 @@ namespace PpFf {
     class SumOperator: public FinalOperator {
     public:
         typedef T Value;
-        SumOperator() {}
+        SumOperator()
+        {}
 
-        SumOperator(const SumOperator& other) : sum(other.sum) {}
+        SumOperator(const SumOperator& other) : sum(other.sum)
+        {}
 
-        SumOperator(SumOperator&& other) noexcept : sum(std::move(other.sum)) {}
+        SumOperator(SumOperator&& other) noexcept : sum(std::move(other.sum))
+        {}
 
-        SumOperator& operator+= (const SumOperator& other) {
+        SumOperator& operator+=(const SumOperator& other) {
             sum += other.sum;
 
             return *this ;

@@ -5,9 +5,10 @@
 
 namespace PpFf {
 
-    class FinalOperator: public BaseOperator {
+    class FinalOperator : public BaseOperator {
     protected:
         bool const isFinalOperator = true;
+ 
         virtual void* svc(void *task) = 0;
     };
 

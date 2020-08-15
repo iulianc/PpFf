@@ -12,11 +12,14 @@ namespace PpFf {
     public:
         typedef TContainer Value;
 
-        CollectorOperator() {}
+        CollectorOperator()
+        {}
 
-        CollectorOperator(const CollectorOperator& other): container(other.container) {}
+        CollectorOperator(const CollectorOperator& other): container(other.container)
+        {}
 
-        CollectorOperator(CollectorOperator&& other) noexcept: container(std::move(other.container)) {}
+        CollectorOperator(CollectorOperator&& other) noexcept: container(std::move(other.container))
+        {}
 
         CollectorOperator& operator+=(const CollectorOperator& other) {
             for (T elem: other.container) {
@@ -26,7 +29,8 @@ namespace PpFf {
             return *this ;
         }
 
-        ~CollectorOperator() {}
+        ~CollectorOperator() 
+        {}
 
         void* svc(void* task) {
             container.push_back(*((T*)task));

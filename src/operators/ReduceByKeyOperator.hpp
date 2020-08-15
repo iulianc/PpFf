@@ -28,9 +28,10 @@ namespace PpFf {
             reducer(std::move(other.reducer))
         {}
 
-        ~ReduceByKeyOperator() {}
+        ~ReduceByKeyOperator()
+        {}
 
-        ReduceByKeyOperator& operator+= (ReduceByKeyOperator& other) {
+        ReduceByKeyOperator& operator+=(ReduceByKeyOperator& other) {
             for (auto otherIt = other.mapContainer.begin(); otherIt != other.mapContainer.end(); otherIt++) {
                 auto mapIt = mapContainer.find(otherIt->first);
                 if (mapIt != mapContainer.end()) {

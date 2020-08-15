@@ -9,9 +9,11 @@ namespace PpFf {
     template < typename TContainer, typename Out >
     class FlatOperator: public BaseOperator {
     public:
-        FlatOperator() { }
+        FlatOperator()
+        {}
 
-        ~FlatOperator() { }
+        ~FlatOperator()
+        {}
 
         void* svc(void* task) {
             for (auto &elem : *(TContainer*)task) {

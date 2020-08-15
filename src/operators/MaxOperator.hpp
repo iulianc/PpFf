@@ -12,19 +12,24 @@ namespace PpFf {
     public:
         typedef T Value;
 
-        MaxOperator(std::function< void(T*, T*) > compare): compare(compare) { }
+        MaxOperator(std::function< void(T*, T*) > compare): compare(compare)
+        {}
 
-        MaxOperator(const MaxOperator& other) : compare(other.compare) { }
+        MaxOperator(const MaxOperator& other) : compare(other.compare)
+        {}
 
-        MaxOperator(MaxOperator&& other) noexcept : compare(std::move(other.compare)) { }
+        MaxOperator(MaxOperator&& other) noexcept : compare(std::move(other.compare))
+        {}
 
-        MaxOperator& operator+= ( MaxOperator& other ) {
+        MaxOperator& operator+=( MaxOperator& other ) {
             compare(val, other.val);
 
             return *this ;
         }
 
-        ~MaxOperator() { delete val; };
+        ~MaxOperator() {
+            delete val;
+        }
 
         void* svc(void* task) {
             if (firstVal) {

@@ -7,36 +7,45 @@
 
 namespace PpFf{
 
-	template < typename T >
-	class NoneMatchOperator: public FinalOperator {
-	public:
-		typedef bool Value;
-		NoneMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) { };
-		NoneMatchOperator(const NoneMatchOperator& other) : taskFunc(other.taskFunc) { }
-		NoneMatchOperator(NoneMatchOperator&& other) noexcept : taskFunc(std::move(other.taskFunc)) { }
-		NoneMatchOperator& operator+= ( const NoneMatchOperator& other ) {
-			if(val){
-				val = other.val;
-			}
-			return *this;
-		}
-		~NoneMatchOperator() { }
+    template < typename T >
+    class NoneMatchOperator: public FinalOperator {
+    public:
+        typedef bool Value;
 
-		void* svc(void* task) {
-			val = !(taskFunc((T*)task)) and val;
+        NoneMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc)
+        {}
 
-			return (T*)GO_ON;
-		}
+        NoneMatchOperator(const NoneMatchOperator& other) : taskFunc(other.taskFunc)
+        {}
 
-		bool value(){
-			return val;
-		}
+        NoneMatchOperator(NoneMatchOperator&& other) noexcept : taskFunc(std::move(other.taskFunc))
+        {}
+
+        NoneMatchOperator& operator+= ( const NoneMatchOperator& other ) {
+            if (val) {
+                val = other.val;
+            }
+            return *this;
+        }
+
+        ~NoneMatchOperator()
+        {}
+
+        void* svc(void* task) {
+            val = !(taskFunc((T*)task)) and val;
+
+            return (T*)GO_ON;
+        }
+
+        bool value(){
+            return val;
+        }
 
 
-	private:
-		std::function< bool(T*) > const& taskFunc;
-		bool val = true;
-	};
+    private:
+        std::function< bool(T*) > const& taskFunc;
+        bool val = true;
+    };
 
 }
 

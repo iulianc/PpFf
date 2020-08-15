@@ -16,16 +16,16 @@ namespace PpFf {
         //        ReduceOperator(std::function< void(Out*, In*) > const& accumulator) 
         //        { reducer.accumulator = accumulator; }
 
-        ReduceOperator(Reducer<In, Out> const& reducer): 
-            reducer(reducer) {}
+        ReduceOperator(Reducer<In, Out> const& reducer): reducer(reducer)
+        {}
 
-        ReduceOperator(const ReduceOperator& other): 
-            reducer(other.reducer) {}
+        ReduceOperator(const ReduceOperator& other): reducer(other.reducer)
+        {}
 
-        ReduceOperator(ReduceOperator&& other) noexcept: 
-            reducer(std::move(other.reducer)) {}
+        ReduceOperator(ReduceOperator&& other) noexcept: reducer(std::move(other.reducer))
+        {}
 
-        ReduceOperator& operator+= (ReduceOperator& other) {
+        ReduceOperator& operator+=(ReduceOperator& other) {
             if (!reducer.hasCombiner) throw std::logic_error( "ReduceOperator::operator+= => There is no combiner!" );
             
             val = reducer.combiner(val, other.val);

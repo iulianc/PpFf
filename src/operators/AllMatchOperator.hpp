@@ -12,20 +12,24 @@ namespace PpFf {
     public:
         typedef bool Value;
 
-        AllMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc) {};
+        AllMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc)
+        {}
+        
+        AllMatchOperator(const AllMatchOperator& other): taskFunc(other.taskFunc)
+        {}
 
-        AllMatchOperator(const AllMatchOperator& other): taskFunc(other.taskFunc) {}
+        AllMatchOperator(AllMatchOperator&& other) noexcept: taskFunc(std::move(other.taskFunc))
+        {}
 
-        AllMatchOperator(AllMatchOperator&& other) noexcept: taskFunc(std::move(other.taskFunc)) {}
-
-        AllMatchOperator& operator+= (const AllMatchOperator& other) {
+        AllMatchOperator& operator+=(const AllMatchOperator& other) {
             if (val) {
                 val = other.val;
             }
             return *this;
         }
 
-        ~AllMatchOperator() { }
+        ~AllMatchOperator()
+        {}
 
         void* svc(void* task) {
             if (!val)

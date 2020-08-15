@@ -15,11 +15,14 @@ namespace PpFf {
     public:
     	typedef std::vector<T> Value;
 
-    	SortOperator(std::function<bool(T, T)> const& compare = std::less<T>()): compare(compare) {}
+    	SortOperator(std::function<bool(T, T)> const& compare = std::less<T>()): compare(compare)
+        {}
 
-    	SortOperator(SortOperator& other): compare(other.compare) {}
+    	SortOperator(SortOperator& other): compare(other.compare)
+        {}
 
-    	SortOperator(SortOperator&& other) noexcept: compare(std::move(other.compare)) {}
+    	SortOperator(SortOperator&& other) noexcept: compare(std::move(other.compare))
+        {}
 
     	SortOperator& operator+=(const SortOperator& other) {
             container.insert(container.end(), other.container.begin(), other.container.end());
@@ -27,7 +30,8 @@ namespace PpFf {
             return *this;
         }
         
-        virtual ~SortOperator() {}
+        virtual ~SortOperator()
+        {}
 
         void* svc(void* task) {
             container.push_back(*((T*)task));
