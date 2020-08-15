@@ -66,9 +66,23 @@ abstract class BaseOperator {
   +=(): BaseOperator
 }
 
+class LimitOperator {
+}
+
 class MapOperator {
 }
 
+class LinesFromFileOperator {
+}
+
+class FinalOperator {
+  isFinalOperator = true
+}
+
+FinalOperator --|> BaseOperator
+CountOperator --|> FinalOperator
+LimitOperator --|> BaseOperator
+LinesFromFileOperator --|> BaseOperator
 MapOperator --|> BaseOperator
 
 class Source<TOperator> {
