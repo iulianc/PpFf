@@ -31,12 +31,12 @@ namespace PpFf {
         template< typename T >
         void addStage(T *stage) {
             assert(stage->workers.size() == no_workers);
-			if(stage->isSource()) {
-				hasSource = true;
-			} else if(hasSource == false){
-				throw std::invalid_argument( "The pipeline must have a source" );
-				return;
-			}
+            if(stage->isSource()) {
+                hasSource = true;
+            } else if(hasSource == false){
+                throw std::invalid_argument( "The pipeline must have a source" );
+                return;
+            }
 
             // On ajoute le stage dans les stages locaux.
             stages.push_back(stage);
@@ -99,9 +99,9 @@ namespace PpFf {
 
     private:
         unsigned int no_workers;
-        std::vector<IStage*> stages;
+        std::vector<Stage*> stages;
         Node *currentNode = NULL;
-		bool hasSource = false;
+        bool hasSource = false;
         Pipeline pipeline;
     };
 

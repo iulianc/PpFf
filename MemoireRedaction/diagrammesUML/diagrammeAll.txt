@@ -7,7 +7,7 @@ Flow --> "1" PipeManager
 
 class PipeManager {
   -no_workers: int
-  -stages: Vector<IStage>
+  -stages: Vector<Stage>
 
   addStage(): void
   nbWorkers(): int
@@ -18,7 +18,7 @@ class PipeManager {
 
 PipeManager --> Pipeline
 
-PipeManager --> "0..*" IStage
+PipeManager --> "0..*" Stage
 
 class Pipeline {
   addStage(): void
@@ -52,10 +52,10 @@ class ff_node {
 class ff_farm {
 }
 
-abstract class IStage {
+interface Stage {
 }
 
-BaseStage --|> IStage
+BaseStage --|> Stage
 
 class BaseStage<TOperator> {
   addOperator(): void
@@ -75,9 +75,6 @@ MapOperator --|> BaseOperator
 class Source {
 }
 
-class Stage<TOperator> {
-}
-
 class BaseCollectors<TOperator> {
   value(): Value
   -combineWorkersResults(): void
@@ -88,9 +85,8 @@ class Collectors<TOperator> {
   -combineWorkersResults(): void
 }
 
-Source --|> Stage
+Source --|> BaseStage
 
-Stage --|> BaseStage
 
 Collectors --|> BaseCollectors
 

@@ -3,12 +3,12 @@
 
 #include <functional>
 #include <utilities/NullType.hpp>
-#include <stages/IStage.hpp>
+#include <stages/Stage.hpp>
 
 namespace PpFf {
 
     template< typename TOperator >
-    class BaseStage: public IStage {
+    class BaseStage: public Stage {
     public:
         std::vector<TOperator*> workers;
 

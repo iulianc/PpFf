@@ -23,7 +23,6 @@
 #include <operators/SkipOperator.hpp>
 #include <operators/SortOperator.hpp>
 #include <collections/Collection.hpp>
-#include <stages/Stage.hpp>
 #include <stages/Collectors.hpp>
 #include <stages/BaseStage.hpp>
 #include <utilities/Debug.hpp>
