@@ -9,7 +9,7 @@ namespace PpFf {
     class Source: public BaseStage<TOperator> {
     public:
     	Source(){
-    		this->isSourceStage = true;
+            this->isSourceStage = true;
     	}
     };
 }

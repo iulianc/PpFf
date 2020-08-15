@@ -55,9 +55,8 @@ class ff_farm {
 interface Stage {
 }
 
-BaseStage --|> Stage
 
-class BaseStage<TOperator> {
+class BaseStage<TOperator> implements Stage {
   addOperator(): void
 }
 
@@ -72,12 +71,7 @@ class MapOperator {
 
 MapOperator --|> BaseOperator
 
-class Source {
-}
-
-class BaseCollectors<TOperator> {
-  value(): Value
-  -combineWorkersResults(): void
+class Source<TOperator> {
 }
 
 class Collectors<TOperator> {
@@ -87,10 +81,7 @@ class Collectors<TOperator> {
 
 Source --|> BaseStage
 
-
-Collectors --|> BaseCollectors
-
-BaseCollectors --|> BaseStage
+Collectors --|> BaseStage
 
 
 @enduml

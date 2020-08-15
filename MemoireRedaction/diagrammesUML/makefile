@@ -1,7 +1,7 @@
 #
 # makefile for gnu make (gmake)
-#
-default: Vue
+
+default: All
 
 All:
 	java -jar ~/Software/plantuml.jar diagrammeAll.txt
