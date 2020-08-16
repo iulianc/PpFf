@@ -1,12 +1,12 @@
 #ifndef COUNTOPERATOR_HPP
 #define COUNTOPERATOR_HPP
 
-#include <operators/FinalOperator.hpp>
+#include <operators/BaseOperator.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class CountOperator: public FinalOperator {
+    class CountOperator: public BaseOperator {
     public:
         typedef T Value;
 

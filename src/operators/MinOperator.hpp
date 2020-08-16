@@ -1,14 +1,14 @@
 #ifndef MINOPERATOR_HPP
 #define MINOPERATOR_HPP
 
-#include <operators/FinalOperator.hpp>
+#include <operators/BaseOperator.hpp>
 #include <operators/Reducer.hpp>
 #include <functional>
 
 namespace PpFf {
 
     template < typename T >
-    class MinOperator: public FinalOperator {
+    class MinOperator: public BaseOperator {
     public:
         typedef T Value;
 

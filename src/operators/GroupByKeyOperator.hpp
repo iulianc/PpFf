@@ -1,7 +1,7 @@
 #ifndef GROUPBYKEYOPERATOR_HPP
 #define GROUPBYKEYOPERATOR_HPP
 
-#include <operators/FinalOperator.hpp>
+#include <operators/BaseOperator.hpp>
 #include <utilities/Identity.hpp>
 #include <functional>
 
@@ -9,7 +9,7 @@ namespace PpFf {
 
 
     template < typename In, typename K, typename V, typename MapContainer >
-    class GroupByKeyOperator: public FinalOperator {
+    class GroupByKeyOperator: public BaseOperator {
     public:
         typedef MapContainer Value;
 

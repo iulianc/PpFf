@@ -1,14 +1,14 @@
 #ifndef ANYMACHOPERATOR_HPP
 #define ANYMACHOPERATOR_HPP
 
-#include <operators/FinalOperator.hpp>
+#include <operators/BaseOperator.hpp>
 #include <functional>
 
 
 namespace PpFf{
 
     template < typename T >
-    class AnyMatchOperator: public FinalOperator {
+    class AnyMatchOperator: public BaseOperator {
     public:
         typedef bool Value;
 
