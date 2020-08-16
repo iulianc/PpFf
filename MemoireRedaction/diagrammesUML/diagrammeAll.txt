@@ -1,8 +1,8 @@
-@startuml
+@startuml diagrammeAll
 skinparam classAttributeIconSize 0
 
 !include diagrammeFlow.txt!0
-
+ 
 Flow --> "1" PipeManager
 
 class PipeManager {
@@ -14,7 +14,7 @@ class PipeManager {
   setNbWorkers(): void
   isParallel(): bool
   run(): void
-}
+} 
 
 PipeManager --> Pipeline
 
@@ -52,11 +52,12 @@ class ff_node {
 class ff_farm {
 }
 
-interface Stage {
+abstract class Stage {
 }
 
 
 class BaseStage<TOperator> implements Stage {
+  -operators: Vector<BaseOperator>
   addOperator(): void
 }
 
@@ -75,12 +76,7 @@ class MapOperator {
 class LinesFromFileOperator {
 }
 
-class FinalOperator {
-  isFinalOperator = true
-}
-
-FinalOperator --|> BaseOperator
-CountOperator --|> FinalOperator
+CountOperator --|> BaseOperator
 LimitOperator --|> BaseOperator
 LinesFromFileOperator --|> BaseOperator
 MapOperator --|> BaseOperator
@@ -90,7 +86,7 @@ class Source<TOperator> {
 
 class Collectors<TOperator> {
   value(): Value
-  -combineWorkersResults(): void
+  -combineOperatorsResults(): void
 }
 
 Source --|> BaseStage

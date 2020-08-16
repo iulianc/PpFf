@@ -1,4 +1,4 @@
-@startuml
+@startuml diagrammeVueEnsemble
 skinparam classAttributeIconSize 0
 
 class Flow<T> {
@@ -12,7 +12,7 @@ class PipeManager {
 
 PipeManager --> Pipeline
 
-PipeManager --> "0..*" IStage
+PipeManager --> "0..*" Stage
 
 class Pipeline {
 }
@@ -33,10 +33,10 @@ class Node {
 }
 
 
-abstract class IStage {
+abstract class Stage {
 }
 
-BaseStage --|> IStage
+BaseStage --|> Stage
 
 class BaseStage<TOperator> {
 }
