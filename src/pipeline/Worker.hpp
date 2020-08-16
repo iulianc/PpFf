@@ -1,7 +1,6 @@
 #ifndef WORKER_HPP
 #define WORKER_HPP
 
-//#include <ff/pipeline.hpp>
 #include <ff/ff.hpp>
 #include <pipeline/Node.hpp>
 

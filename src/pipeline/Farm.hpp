@@ -1,8 +1,6 @@
 #ifndef FARM_HPP
 #define FARM_HPP
 
-//#include <ff/pipeline.hpp>
-//#include <ff/farm.hpp>
 #include <ff/ff.hpp>
 #include <pipeline/Node.hpp>
 #include <pipeline/Worker.hpp>

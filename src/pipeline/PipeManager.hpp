@@ -1,7 +1,6 @@
 #ifndef PIPMANAGER_HPP
 #define PIPMANAGER_HPP
 
-//#include <ff/pipeline.hpp>
 #include <ff/ff.hpp>
 #include <stages/BaseStage.hpp>
 #include <pipeline/Farm.hpp>
