@@ -30,7 +30,7 @@ namespace PpFf {
 
         template< typename T >
         void addStage(T *stage) {
-            assert(stage->workers.size() == no_workers);
+            assert(stage->operators.size() == no_workers);
             if(stage->isSource()) {
                 hasSource = true;
             } else if(hasSource == false){
@@ -48,7 +48,7 @@ namespace PpFf {
                     ffFarm->add_collector(new Empty());
                     pipeline.addStage(ffFarm);
             	}
-                pipeline.addStage(stage->workers[0]);
+                pipeline.addStage(stage->operators[0]);
                 currentNode = NULL;
             } else {
             	Farm *farm;
@@ -65,7 +65,7 @@ namespace PpFf {
             	}
                 
             	std::vector<ff_node*> stages;
-                stages.assign(stage->workers.begin(), stage->workers.end());
+                stages.assign(stage->operators.begin(), stage->operators.end());
             	farm->addStage(stages);
 
             	if (stage->isFinal()) {

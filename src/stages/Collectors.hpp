@@ -13,16 +13,16 @@ namespace PpFf {
     	}
 
         Value value() {
-            combineWorkersResults();
+            combineOperatorsResults();
             
-            return this->workers[0]->value();
+            return this->operators[0]->value();
         }
 
     private:
-        void combineWorkersResults() {
-            if (this->workers.size() > 0) {
-                for (unsigned int i = 1; i < this->workers.size(); i++) {
-                    *(this->workers[0]) += *(this->workers[i]);
+        void combineOperatorsResults() {
+            if (this->operators.size() > 0) {
+                for (unsigned int i = 1; i < this->operators.size(); i++) {
+                    *(this->operators[0]) += *(this->operators[i]);
                 }
             }
         }
