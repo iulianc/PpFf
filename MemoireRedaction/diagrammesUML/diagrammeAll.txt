@@ -3,55 +3,53 @@ skinparam classAttributeIconSize 0
 
 !include diagrammeFlow.txt!0
  
-class PipeManager {
-  nbWorkers(): int
-  setNbWorkers(): void
-  isParallel(): bool
-  run(): void
-} 
+package FastFlow {
 
-Flow --> "1" PipeManager
+  class Pipeline {
+    run(): void
+  }
 
-PipeManager -> "1" Pipeline
+  together {
+    class Farm {
+      nbWorkers(): int
+    }
 
-class Pipeline {
-  run(): void
-}
+    class Worker {
+    }
+
+    class Node {
+    }
+  }
+
+  together {
+    class ff_node {
+    }
+
+    class ff_farm {
+    }
+  }
+
+  enum NodeType {
+    BASIC_NODE
+    WORKER_NODE
+    FARM_NODE
+    PIPELINE_NODE
+    UNDEFINED_NODE
+  }
+  
+}  
 
 Pipeline --|> Node
 Farm --|> Node
 Worker --|> Node
 
-class Farm {
-  nbWorkers(): int
-}
-
-Farm --> "1..*" Worker
+Farm -> "1..*" Worker
 Farm --> ff_farm
 
-class Worker {
-}
-
-class Node {
-}
-
-enum NodeType {
-  BASIC_NODE
-  WORKER_NODE
-  FARM_NODE
-  PIPELINE_NODE
-  UNDEFINED_NODE
-}
-  
 Node --> "type" NodeType
 
 Node --> ff_node
 
-class ff_node {
-}
-
-class ff_farm {
-}
 
 package Operators {
 
@@ -70,14 +68,26 @@ package Operators {
 
   class LinesFromFileOperator {
   }
+
+  note right of CountOperator :  Etc.
 }
 
 CountOperator --|> BaseOperator
+
+
 LimitOperator --|> BaseOperator
 LinesFromFileOperator --|> BaseOperator
 MapOperator --|> BaseOperator
 
 package Stages {
+
+  class PipeManager {
+    nbWorkers(): int
+    setNbWorkers(): void
+    isParallel(): bool
+    ..
+    run(): void
+  } 
 
   interface Stage {
   }
@@ -86,7 +96,7 @@ package Stages {
   }
 
   class CollectorStage<TOperator> {
-    value(): Value
+    value(): TOperator::Value
   }
 }
 
@@ -98,6 +108,8 @@ CollectorStage --|> BaseStage
 
 PipeManager *-- "stages\n0..*" Stage
 
+Flow --> PipeManager : implemented by > 
 
+PipeManager -> Pipeline
 
 @enduml
