@@ -42,12 +42,6 @@ namespace PpFf {
 
         ~Flow() {};
 
-        Flow& parallel(int no_workers = 1) {
-            pipe.setNbWorkers(no_workers);
-
-            return *this;
-        };
-
         static Flow& source(const std::string& path) {
             Flow* pipe = new Flow();
             typedef LinesFromFileOperator LinesFromFile;
@@ -336,10 +330,12 @@ namespace PpFf {
             return Collection;
         }
 		
-        void consume(void) {
-            pipe.run();
-        }		
-    
+        Flow& parallel(int no_workers = 1) {
+            pipe.setNbWorkers(no_workers);
+
+            return *this;
+        };
+
     private:
         PipeManager pipe;
     };

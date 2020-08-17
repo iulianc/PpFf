@@ -16,8 +16,6 @@ namespace PpFf {
 
     class PipeManager {
     public:
-    	bool asPipeline = false;
-
         PipeManager() : no_workers(1)
         {}
 
@@ -40,7 +38,7 @@ namespace PpFf {
 
             // On ajoute le stage dans les stages locaux.
             stages.push_back(stage);
-
+            
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
             if (!isParallel()) {
             	if (currentNode != NULL && currentNode->type() == FARM_NODE) {
