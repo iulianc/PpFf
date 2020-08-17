@@ -7,7 +7,9 @@
 
 namespace PpFf {
 
-    template< typename TOperator, bool isASourceStage = false >
+    enum StageType { SOURCE_STAGE, NON_SOURCE_STAGE };
+
+    template< typename TOperator, StageType stageType = NON_SOURCE_STAGE >
     class BaseStage: public Stage {
     public:
         std::vector<TOperator*> operators;
@@ -96,12 +98,11 @@ namespace PpFf {
         }
 		
         bool isSource() {
-            return isSourceStage;
+            return stageType == SOURCE_STAGE;
         }		
 
     protected:
         bool isFinalStage = false;
-        bool isSourceStage = isASourceStage;
     };
 }
 

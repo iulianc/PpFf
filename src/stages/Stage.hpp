@@ -1,6 +1,6 @@
 
-#ifndef BASE_HPP
-#define BASE_HPP
+#ifndef STAGE_HPP
+#define STAGE_HPP
 
 namespace PpFf {
 

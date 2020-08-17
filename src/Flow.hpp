@@ -46,7 +46,7 @@ namespace PpFf {
             Flow* pipe = new Flow();
             typedef LinesFromFileOperator LinesFromFile;
 
-            BaseStage<LinesFromFile, true>* stage = new BaseStage<LinesFromFile, true>();
+            BaseStage<LinesFromFile, SOURCE_STAGE>* stage = new BaseStage<LinesFromFile, SOURCE_STAGE>();
             stage->addOperator(pipe->pipe.nbWorkers(), path);
             pipe->pipe.addStage(stage);
 
@@ -58,7 +58,7 @@ namespace PpFf {
             Flow* pipe = new Flow();
             typedef SourceOperator<T, Iterator> SourceOp;
 
-            BaseStage<SourceOp, true>* stage = new BaseStage<SourceOp, true>();
+            BaseStage<SourceOp, SOURCE_STAGE>* stage = new BaseStage<SourceOp, SOURCE_STAGE>();
             stage->addOperator(pipe->pipe.nbWorkers(), begin, end);
             pipe->pipe.addStage(stage);
 

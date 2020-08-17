@@ -92,8 +92,14 @@ package Stages {
   interface Stage {
   }
 
-  class BaseStage<TOperator, bool> {
+  enum StageType {
+    SOURCE_STAGE
+    NON_SOURCE_STAGE
   }
+
+ class BaseStage<TOperator, StageType> {
+   isSource(): bool
+ }
 
   class CollectorStage<TOperator> {
     value(): TOperator::Value
