@@ -68,14 +68,9 @@ package Operators {
 
   class LinesFromFileOperator {
   }
-
-  class FinalOperator {
-    isFinalOperator = true
-  }
 }
 
-FinalOperator --|> BaseOperator
-CountOperator --|> FinalOperator
+CountOperator --|> BaseOperator
 LimitOperator --|> BaseOperator
 LinesFromFileOperator --|> BaseOperator
 MapOperator --|> BaseOperator
@@ -89,7 +84,7 @@ package Stages {
     addOperator(): void
   }
 
-  class Collectors<TOperator> {
+  class CollectorStage<TOperator> {
     value(): Value
     -combineWorkersResults(): void
   }
@@ -99,7 +94,7 @@ BaseStage .|> Stage
 
 BaseStage --> "operators\n1..*" BaseOperator 
 
-Collectors --|> BaseStage
+CollectorStage --|> BaseStage
 
 PipeManager *-- "0..*" Stage
 

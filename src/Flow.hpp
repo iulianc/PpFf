@@ -22,7 +22,7 @@
 #include <operators/SkipOperator.hpp>
 #include <operators/SortOperator.hpp>
 #include <collections/Collection.hpp>
-#include <stages/Collectors.hpp>
+#include <stages/CollectorStage.hpp>
 #include <stages/BaseStage.hpp>
 #include <utilities/Debug.hpp>
 #include <utilities/Identity.hpp>
@@ -74,7 +74,7 @@ namespace PpFf {
         unsigned int count() {
             typedef CountOperator<int> Count;
 
-            Collectors<Count>* collectors = new Collectors<Count>();
+            CollectorStage<Count>* collectors = new CollectorStage<Count>();
             collectors->addOperator(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -86,7 +86,7 @@ namespace PpFf {
         T sum() {
             typedef SumOperator<T> Sum;
 
-            Collectors<Sum>* collectors = new Collectors<Sum>();
+            CollectorStage<Sum>* collectors = new CollectorStage<Sum>();
             collectors->addOperator(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -100,7 +100,7 @@ namespace PpFf {
             TContainer<T> collect() {
             typedef CollectorOperator<T, TContainer<T>> Collector;
 
-            Collectors<Collector>* collectors = new Collectors<Collector>();
+            CollectorStage<Collector>* collectors = new CollectorStage<Collector>();
             collectors->addOperator(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -113,7 +113,7 @@ namespace PpFf {
                    class TContainer >
             Collection<T, TContainer, Flow> intermediateCollect() {
             typedef CollectorOperator<T, TContainer<T>> Collector;
-            Collectors<Collector>* collectors = new Collectors<Collector>();
+            CollectorStage<Collector>* collectors = new CollectorStage<Collector>();
             collectors->addOperator(pipe.nbWorkers());
             pipe.addStage(collectors);
             pipe.run();
@@ -189,7 +189,7 @@ namespace PpFf {
         Out reduce(Reducer<In, Out> const& reducer) {
             typedef ReduceOperator<In, Out> Reduce;
             
-            Collectors<Reduce>* collectors = new Collectors<Reduce>();
+            CollectorStage<Reduce>* collectors = new CollectorStage<Reduce>();
             collectors->addOperator(pipe.nbWorkers(), reducer);
             pipe.addStage(collectors);
             pipe.run();
@@ -203,7 +203,7 @@ namespace PpFf {
             typedef ReduceOperator<In, Out> Reduce;
             
             Reducer<In, Out> reducer(initialValue, accumulator, accumulator);
-            Collectors<Reduce>* collectors = new Collectors<Reduce>();
+            CollectorStage<Reduce>* collectors = new CollectorStage<Reduce>();
             collectors->addOperator(pipe.nbWorkers(), reducer);
             pipe.addStage(collectors);
             pipe.run();
@@ -217,7 +217,7 @@ namespace PpFf {
                                std::function<V*(In*)> const& valueFunction = identity<In,V>) {
             typedef GroupByKeyOperator<In, K, V, MapType> GroupByKey;
             
-            Collectors<GroupByKey>* collectors = new Collectors<GroupByKey>();
+            CollectorStage<GroupByKey>* collectors = new CollectorStage<GroupByKey>();
             collectors->addOperator(pipe.nbWorkers(), keyFunction, valueFunction);
             pipe.addStage(collectors);
             pipe.run();
@@ -231,7 +231,7 @@ namespace PpFf {
                             std::function<K*(In*)> const& keyFunction = identity<In,K>) {
             typedef ReduceByKeyOperator<In, K, V, MapType> ReduceByKey;
             
-            Collectors<ReduceByKey>* collectors = new Collectors<ReduceByKey>();
+            CollectorStage<ReduceByKey>* collectors = new CollectorStage<ReduceByKey>();
             collectors->addOperator(pipe.nbWorkers(), keyFunction, reducer);
             pipe.addStage(collectors);
             pipe.run();
@@ -243,7 +243,7 @@ namespace PpFf {
         T min(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a > *b) *a = *b; })) {
             typedef MinOperator<T> Min;
             
-            Collectors<Min>* collectors = new Collectors<Min>();
+            CollectorStage<Min>* collectors = new CollectorStage<Min>();
             collectors->addOperator(pipe.nbWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();
@@ -255,7 +255,7 @@ namespace PpFf {
         T max(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a < *b) *a = *b; })) {
             typedef MaxOperator<T> Max;
             
-            Collectors<Max>* collectors = new Collectors<Max>();
+            CollectorStage<Max>* collectors = new CollectorStage<Max>();
             collectors->addOperator(pipe.nbWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();
@@ -267,7 +267,7 @@ namespace PpFf {
         bool anyMatch(std::function<bool(T*)> predicate) {
             typedef AnyMatchOperator<T> AnyMatch;
             
-            Collectors<AnyMatch>* collectors = new Collectors<AnyMatch>();
+            CollectorStage<AnyMatch>* collectors = new CollectorStage<AnyMatch>();
             collectors->addOperator(pipe.nbWorkers(), predicate);
             pipe.addStage(collectors);
             pipe.run();
@@ -279,7 +279,7 @@ namespace PpFf {
         bool noneMatch(std::function<bool(T*)> predicate) {
             typedef NoneMatchOperator<T> NoneMatch;
             
-            Collectors<NoneMatch>* collectors = new Collectors<NoneMatch>();
+            CollectorStage<NoneMatch>* collectors = new CollectorStage<NoneMatch>();
             collectors->addOperator(pipe.nbWorkers(), predicate);
             pipe.addStage(collectors);
             pipe.run();
@@ -292,7 +292,7 @@ namespace PpFf {
         bool allMatch(std::function<bool(T*)> predicate) {
             typedef AllMatchOperator<T> AllMatch;
             
-            Collectors<AllMatch>* collectors = new Collectors<AllMatch>();
+            CollectorStage<AllMatch>* collectors = new CollectorStage<AllMatch>();
             collectors->addOperator(pipe.nbWorkers(), predicate);
             pipe.addStage(collectors);
             pipe.run();
@@ -327,7 +327,7 @@ namespace PpFf {
         Collection<T, std::vector, Flow> sort(std::function<bool(T, T)> const& compare = std::less<T>()) {
             typedef SortOperator<T> Sort;
 
-            Collectors<Sort>* collectors = new Collectors<Sort>();
+            CollectorStage<Sort>* collectors = new CollectorStage<Sort>();
             collectors->addOperator(pipe.nbWorkers(), compare);
             pipe.addStage(collectors);
             pipe.run();

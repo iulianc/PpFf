@@ -1,16 +1,16 @@
-#ifndef COLLECTORS_HPP
-#define COLLECTORS_HPP
+#ifndef COLLECTOR_STAGE_HPP
+#define COLLECTOR_STAGE_HPP
 
 #include <stages/BaseStage.hpp>
 
 namespace PpFf {
 
     template< typename TOperator >
-    class Collectors : public BaseStage<TOperator> {
+    class CollectorStage : public BaseStage<TOperator> {
     public:
         typedef typename TOperator::Value Value;
 
-    	Collectors(){
+    	CollectorStage(){
             this->isFinalStage = true;
     	}
 
