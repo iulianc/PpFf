@@ -7,7 +7,6 @@ Flow --> "1" PipeManager
 
 class PipeManager {
   -no_workers: int
-  -stages: Vector<Stage>
 
   addStage(): void
   nbWorkers(): int
@@ -18,7 +17,7 @@ class PipeManager {
 
 PipeManager --> Pipeline
 
-PipeManager --> "0..*" Stage
+PipeManager --> "stages\n0..*" Stage
 
 class Pipeline {
   addStage(): void
@@ -61,7 +60,7 @@ class BaseStage<TOperator> implements Stage {
   addOperator(): void
 }
 
-BaseStage --> "1..*" BaseOperator
+BaseStage --> "operators\n1..*" BaseOperator 
 
 abstract class BaseOperator {
   +=(): BaseOperator
