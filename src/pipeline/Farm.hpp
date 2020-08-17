@@ -12,15 +12,15 @@ namespace PpFf {
     class Farm: public Node {
     public:
         Farm(unsigned int no_workers): no_workers(no_workers) {
-            type = NodeTypeFarm;
+            nodeType = FARM_NODE;
             farm = new ff_farm();
             for (unsigned int i = 0 ; i < no_workers; i++) {
                 workers.push_back(new Worker());
             }
         }
 
-        NodeTypes Type(){
-            return type;
+        NodeType type(){
+            return nodeType;
         }
 
         unsigned int nbWorkers() {

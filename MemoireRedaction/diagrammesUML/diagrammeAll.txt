@@ -3,24 +3,18 @@ skinparam classAttributeIconSize 0
 
 !include diagrammeFlow.txt!0
  
-Flow --> "1" PipeManager
-
 class PipeManager {
-  -no_workers: int
-
-  addStage(): void
   nbWorkers(): int
   setNbWorkers(): void
   isParallel(): bool
   run(): void
 } 
 
-PipeManager --> "stages\n0..*" Stage
+Flow --> "1" PipeManager
 
 PipeManager -> "1" Pipeline
 
 class Pipeline {
-  addStage(): void
   run(): void
 }
 
@@ -30,7 +24,6 @@ Worker --|> Node
 
 class Farm {
   nbWorkers(): int
-  addStage(): void
 }
 
 Farm --> "1..*" Worker
@@ -40,8 +33,17 @@ class Worker {
 }
 
 class Node {
-  addStage(): void
 }
+
+enum NodeType {
+  BASIC_NODE
+  WORKER_NODE
+  FARM_NODE
+  PIPELINE_NODE
+  UNDEFINED_NODE
+}
+  
+Node --> "type" NodeType
 
 Node --> ff_node
 
@@ -81,12 +83,10 @@ package Stages {
   }
 
   class BaseStage<TOperator, bool> {
-    addOperator(): void
   }
 
   class CollectorStage<TOperator> {
     value(): Value
-    -combineWorkersResults(): void
   }
 }
 
@@ -96,7 +96,8 @@ BaseStage --> "operators\n1..*" BaseOperator
 
 CollectorStage --|> BaseStage
 
-PipeManager *-- "0..*" Stage
+PipeManager *-- "stages\n0..*" Stage
+
 
 
 @enduml

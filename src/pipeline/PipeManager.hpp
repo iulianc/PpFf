@@ -18,9 +18,10 @@ namespace PpFf {
     public:
     	bool asPipeline = false;
 
-        PipeManager(): no_workers(1) {}
+        PipeManager() : no_workers(1)
+        {}
 
-        ~PipeManager(){
+        ~PipeManager() {
             for (unsigned int i = 0; i < stages.size(); i++) {
                 delete (stages[i]);
             }
@@ -42,7 +43,7 @@ namespace PpFf {
 
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
             if (!isParallel()) {
-            	if (currentNode != NULL && currentNode->Type() == NodeTypeFarm) {
+            	if (currentNode != NULL && currentNode->type() == FARM_NODE) {
                     ff_farm *ffFarm = (ff_farm*) currentNode->getNode();
                     ffFarm->add_collector(new Empty());
                     pipeline.addStage(ffFarm);
@@ -51,7 +52,7 @@ namespace PpFf {
                 currentNode = NULL;
             } else {
             	Farm *farm;
-            	if (currentNode == NULL || currentNode->Type() != NodeTypeFarm) {
+            	if (currentNode == NULL || currentNode->type() != FARM_NODE) {
                     currentNode = farm = new Farm(no_workers);
             	} else {
                     farm = (Farm*) currentNode;
@@ -81,7 +82,7 @@ namespace PpFf {
 
         void setNbWorkers(int no_workers) {
             if (this->no_workers < 1) {
-                std::cerr << "*** Avertissement le nombre de workers ne peut pas être négative ***\n";
+                std::cerr << "*** Avertissement le nombre de workers ne peut pas être nul ou négatif ***\n";
                 return;
             }
 

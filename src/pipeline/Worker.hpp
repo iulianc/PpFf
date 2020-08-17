@@ -11,11 +11,11 @@ namespace PpFf {
     class Worker: public Node {
     public:
         Worker() {
-            type = NodeTypeWorker;
+            nodeType = WORKER_NODE;
         }
 
-        NodeTypes Type(){
-            return type;
+        NodeType type(){
+            return nodeType;
         }
 
         void addStage(ff_node *ffNode) {

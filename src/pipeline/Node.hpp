@@ -7,12 +7,12 @@ using namespace ff;
 
 namespace PpFf {
 
-    enum NodeTypes { NodeTypeNode, NodeTypeWorker, NodeTypeFarm , NodeTypePipeline, Undefined };
+    enum NodeType { BASIC_NODE, WORKER_NODE, FARM_NODE, PIPELINE_NODE, UNDEFINED_NODE };
 
     class Node {
     public:
-        virtual NodeTypes Type(){
-            return type;
+        virtual NodeType type(){
+            return nodeType;
         }
 
         void addStage(ff_node *ffNode) {
@@ -24,7 +24,7 @@ namespace PpFf {
         }
 
     protected:
-        NodeTypes type = NodeTypeNode;
+        NodeType nodeType = BASIC_NODE;
 
     private:
         ff_node *node;

@@ -11,12 +11,12 @@ namespace PpFf {
     class Pipeline: public Node {
     public:
         Pipeline() {
-            type = NodeTypePipeline;
+            nodeType = PIPELINE_NODE;
             pipe = new ff_pipeline();
         }
         
-        NodeTypes Type(){
-            return type;
+        NodeType type(){
+            return nodeType;
         }
 
         void addStage(ff_node *ffNode) {
