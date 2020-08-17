@@ -55,8 +55,7 @@ abstract class Stage {
 }
 
 
-class BaseStage<TOperator> implements Stage {
-  -operators: Vector<BaseOperator>
+class BaseStage<TOperator,bool> implements Stage {
   addOperator(): void
 }
 
@@ -80,15 +79,10 @@ LimitOperator --|> BaseOperator
 LinesFromFileOperator --|> BaseOperator
 MapOperator --|> BaseOperator
 
-class Source<TOperator> {
-}
-
 class Collectors<TOperator> {
   value(): Value
   -combineOperatorsResults(): void
 }
-
-Source --|> BaseStage
 
 Collectors --|> BaseStage
 

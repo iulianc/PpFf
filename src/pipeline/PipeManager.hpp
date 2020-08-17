@@ -30,9 +30,9 @@ namespace PpFf {
         template< typename T >
         void addStage(T *stage) {
             assert(stage->operators.size() == no_workers);
-            if(stage->isSource()) {
+            if (stage->isSource()) {
                 hasSource = true;
-            } else if(hasSource == false){
+            } else if (!hasSource) {
                 throw std::invalid_argument( "The pipeline must have a source" );
                 return;
             }

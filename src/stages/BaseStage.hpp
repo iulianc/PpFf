@@ -7,7 +7,7 @@
 
 namespace PpFf {
 
-    template< typename TOperator >
+    template< typename TOperator, bool isASourceStage = false >
     class BaseStage: public Stage {
     public:
         std::vector<TOperator*> operators;
@@ -101,7 +101,7 @@ namespace PpFf {
 
     protected:
         bool isFinalStage = false;
-		bool isSourceStage = false;
+        bool isSourceStage = isASourceStage;
     };
 }
 

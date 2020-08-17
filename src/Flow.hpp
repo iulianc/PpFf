@@ -1,7 +1,6 @@
 
 #include <operators/CountOperator.hpp>
 #include <operators/SumOperator.hpp>
-#include <stages/Source.hpp>
 #include <operators/SourceOperator.hpp>
 #include <operators/CollectorOperator.hpp>
 #include <operators/FindOperator.hpp>
@@ -53,7 +52,7 @@ namespace PpFf {
             Flow* pipe = new Flow();
             typedef LinesFromFileOperator LinesFromFile;
 
-            Source<LinesFromFile>* stage = new Source<LinesFromFile>();
+            BaseStage<LinesFromFile, true>* stage = new BaseStage<LinesFromFile, true>();
             stage->addOperator(pipe->pipe.nbWorkers(), path);
             pipe->pipe.addStage(stage);
 
@@ -65,7 +64,7 @@ namespace PpFf {
             Flow* pipe = new Flow();
             typedef SourceOperator<T, Iterator> SourceOp;
 
-            Source<SourceOp>* stage = new Source<SourceOp>();
+            BaseStage<SourceOp, true>* stage = new BaseStage<SourceOp, true>();
             stage->addOperator(pipe->pipe.nbWorkers(), begin, end);
             pipe->pipe.addStage(stage);
 

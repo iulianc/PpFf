@@ -1,6 +1,8 @@
 #ifndef COLLECTORS_HPP
 #define COLLECTORS_HPP
 
+#include <stages/BaseStage.hpp>
+
 namespace PpFf {
 
     template< typename TOperator >
