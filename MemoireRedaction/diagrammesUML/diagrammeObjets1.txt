@@ -1,4 +1,4 @@
-@startuml diagrammeCount1
+@startuml diagrammeObjets1
 
 hide empty members
 
@@ -13,28 +13,33 @@ object currentResult {
 
 object sourceStage {
  class = BaseStage<SourceOp, SOURCE_STAGE>
+ .......
  isFinalStage = false
 }
 
-object countStage {
-  class = CollectorStage<Count>
+object maxStage {
+  class = CollectorStage<MaxOperator<int>>
+  .......
+  isFinalStage = true
 }
 
 object sourceOp {
   class = SourceOperator<T, Iterator>
   superclass = BaseOperator < ff_node
+  .......
   begin = ...
   end = ...
 }
 
-object countOp {
-  class = CountOperator<int>
+object maxOp {
+  class = MaxOperator<int>
   superclass = BaseOperator < ff_node
+  .......
 }
 
 sourceStage --> "operators" sourceOp
 
-countStage --> "operators" countOp
+maxStage --> "operators" maxOp
 
 
 object pipe {
@@ -44,14 +49,14 @@ object pipe {
 currentResult --> pipe : implemented by >
 
 pipe --> "stages[0]" sourceStage
-pipe --> "stages[1]" countStage
+pipe --> "stages[1]" maxStage
 
 object ff_pipeline
 
 pipe --> "ff_node_" ff_pipeline
 
 ff_pipeline --> "nodes_list[0]" sourceOp
-ff_pipeline --> "nodes_list[1]" countOp
+ff_pipeline --> "nodes_list[1]" maxOp
 
 
 @enduml

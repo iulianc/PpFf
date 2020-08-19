@@ -1,11 +1,11 @@
 #
 # makefile for gnu make (gmake)
 
-default: Count1
+default: Objets1
 
-Count1:
-	java -jar ~/Software/plantuml.jar diagrammeCount1.txt
-	open diagrammeCount1.png
+Objets1:
+	java -jar ~/Software/plantuml.jar diagrammeObjets1.txt
+	open diagrammeObjets1.png
 
 All:
 	java -jar ~/Software/plantuml.jar diagrammeAll.txt
