@@ -4,6 +4,7 @@
 #include <ff/ff.hpp>
 #include <pipeline/Node.hpp>
 #include <pipeline/Worker.hpp>
+#include <stages/BaseStage.hpp>
 
 using namespace ff;
 
@@ -19,6 +20,13 @@ namespace PpFf {
             }
         }
 
+        template< typename T >
+        void addStage(T *stage) {
+            std::vector<ff_node*> nodes;
+            nodes.assign(stage->operators.begin(), stage->operators.end());
+            addNode(nodes);          
+        } 
+
         NodeType type(){
             return nodeType;
         }
@@ -27,11 +35,11 @@ namespace PpFf {
             return no_workers;
         }
 
-        void addStage(std::vector< ff_node* > stageWorkers) {
+        void addNode(std::vector< ff_node* > stageWorkers) {
             assert(workers.size() == stageWorkers.size());
 
             for (unsigned int i = 0; i < workers.size(); i++){
-                workers[i]->addStage(stageWorkers[i]);
+                workers[i]->addNode(stageWorkers[i]);
             }
         }
 

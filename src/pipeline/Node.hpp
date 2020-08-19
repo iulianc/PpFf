@@ -15,7 +15,7 @@ namespace PpFf {
             return nodeType;
         }
 
-        void addStage(ff_node *ffNode) {
+        void addNode(ff_node *ffNode) {
             node = ffNode;
         }
 

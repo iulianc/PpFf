@@ -30,7 +30,7 @@
 #include <map>
 #include <unordered_map>
 
-#include <pipeline/PipeManager.hpp>
+#include <pipeline/Pipeline.hpp>
 
 using namespace PpFf;
 
@@ -100,27 +100,6 @@ namespace PpFf {
             pipe.run();
 
             return collectors->value();
-        }
-
-        template < typename T,
-                   template <typename ELEM, class ALLOC = std::allocator<ELEM>>
-                   class TContainer >
-            Collection<T, TContainer, Flow> intermediateCollect() {
-            typedef CollectorOperator<T, TContainer<T>> Collector;
-            CollectorStage<Collector>* collectors = new CollectorStage<Collector>();
-            collectors->addOperator(pipe.nbWorkers());
-            pipe.addStage(collectors);
-            pipe.run();
-
-            // Je trouve louche les deux instructions qui suivent --
-            // si je comprends bien le modele d'allocation memoire de
-            // C++.  L'objet Collection que tu definis est alloue sur
-            // la pile. Tu retournes ensuite cet objet comme resultat
-            // de la fonction.  Mais comme il a ete alloue sur la
-            // pile, il pourrait ulterieurement etre ecrase, non?
-
-            Collection<T, TContainer, Flow> Collection(collectors->value());
-            return Collection;
         }
 
         template < typename In, typename Out >
@@ -337,7 +316,7 @@ namespace PpFf {
         };
 
     private:
-        PipeManager pipe;
+        Pipeline pipe;
     };
     
 }
