@@ -16,18 +16,18 @@ namespace PpFf {
         }
 
         void addNode(ff_node *ffNode) {
-            node = ffNode;
+            _ff_node = ffNode;
         }
 
-        virtual ff_node* getNode() {
-            return node;
+        virtual ff_node* ff_node_() {
+            return _ff_node;
         }
 
     protected:
         NodeType nodeType = BASIC_NODE;
 
     private:
-        ff_node *node;
+        ff_node *_ff_node;
     };
 
 }

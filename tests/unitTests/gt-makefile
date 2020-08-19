@@ -4,8 +4,8 @@ EXE 		:= testAll
 def: run
 
 # Specify the tests path
-ROOT_TESTS 	:= linesFromFileTest.cpp linesFromFile_Test.cpp testAll.cpp
-ROOT_TESTS 	:= $(wildcard *.cpp)
+ROOT_TESTS 	:= umlTest.cpp testAll.cpp
+#ROOT_TESTS 	:= $(wildcard *.cpp)
 
 # Specify the pipe path
 ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
@@ -45,6 +45,8 @@ $(EXE)		: $(OBJ)
 
 run: $(EXE)
 	./testAll
+
+run_plusieurs_fois:
 	./testAll
 	./testAll
 	./testAll

@@ -1,0 +1,15 @@
+package Operators {
+
+  class Hidden
+
+  Hidden -- BaseOperator
+  hide Hidden members
+
+  hide Hidden
+  
+
+  abstract class BaseOperator {
+    svc(): void*
+    +=(): BaseOperator
+  }
+}

@@ -22,7 +22,7 @@ namespace PpFf {
             nodes.push_back(ffNode);
         }
 
-        ff_node* getNode() {
+        ff_node* ff_node_() {
             if (nodes.size() > 1) {
                 ff_pipeline *pipe = new ff_pipeline();
                 for (ff_node* node: nodes) {

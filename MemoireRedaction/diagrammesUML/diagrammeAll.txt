@@ -1,89 +1,126 @@
 @startuml diagrammeAll
+
+'skinparam style strictuml
+'skinparam groupInheritance 3
+
+hide empty members
+
+skinparam linetype ortho
+'skinparam groupInheritance 2
+
+' Diagramme contenant l'ensemble de toutes les classes, pour avoir une
+' vue detaillee
+
 skinparam classAttributeIconSize 0
 
 !include diagrammeFlow.txt!0
- 
-Flow --> "1" Pipeline
 
-class Pipeline {
-  -no_workers: int
 
-  addStage(): void
-  nbWorkers(): int
-  setNbWorkers(): void
-  isParallel(): bool
-  run(): void
-} 
+/' Inclure l'un ou l'autre pour simplifier le diagramme...
+   !include diagrammeOperators.txt
+ '/
 
-Pipeline --> "stages\n0..*" Stage
+!include diagrammeOperatorsBase.txt
+
+
+package Pipeline {
+
+  class Pipeline {
+    nbWorkers(): int
+    isParallel(): bool
+    ..
+    run(): void
+  }
+
+  together {
+    class Farm {
+      nbWorkers(): int
+    }
+
+    class Worker {
+    }
+
+    class Node {
+      type(): NodeType
+    }
+  }
+
+  package FastFlow {
+    together {
+      class ff_node {
+        run(): void
+      }
+
+      class ff_farm {
+      }
+
+      class ff_pipeline {
+      }
+    }
+
+    ff_farm --|> ff_node
+    ff_pipeline --|> ff_node
+    ff_farm --> "1..*" ff_node
+    ff_pipeline --> "1..*" ff_node
+  }
+
+
+  enum NodeType {
+    BASIC_NODE
+    WORKER_NODE
+    FARM_NODE
+    PIPELINE_NODE
+    UNDEFINED_NODE
+  }
+  
+}  
 
 
 Pipeline --|> Node
 Farm --|> Node
 Worker --|> Node
+Worker *--> "ff_node_" ff_node
 
-Pipeline --> ff_pipeline
+Farm *-> "1..*" Worker
+Farm *--> "ff_node_" ff_farm
 
-class ff_pipeline {
+'NodeType "type" <- Node
+
+Node *--> "ff_node_" ff_node
+
+package Stages {
+
+  interface Stage {
+  }
+
+  enum StageType {
+    SOURCE_STAGE
+    NON_SOURCE_STAGE
+  }
+
+ class BaseStage<TOperator, StageType> {
+   isSource(): bool
+   isFinal(): bool
+ }
+
+  class CollectorStage<TOperator> {
+    value(): TOperator::Value
+  }
 }
 
-class Farm {
-  nbWorkers(): int
-  addStage(): void
-}
+BaseStage .|> Stage
 
-Farm --> "1..*" Worker
-Farm --> ff_farm
+BaseStage --> "\noperators\n1..*" BaseOperator 
 
-class Worker {
-}
+CollectorStage --|> BaseStage
 
-class Node {
-  addStage(): void
-}
+Pipeline *--> "source" Stage
 
-Node --> ff_node
+Pipeline *--> "stages 1..*" Stage
+note on link : source &#8712; stages 
 
-class ff_node {
-}
+Pipeline *--> "ff_node_" ff_pipeline
 
-class ff_farm {
-}
-
-abstract class Stage {
-}
-
-
-class BaseStage<TOperator,bool> implements Stage {
-  addOperator(): void
-}
-
-BaseStage --> "operators\n1..*" BaseOperator 
-
-abstract class BaseOperator {
-  +=(): BaseOperator
-}
-
-class LimitOperator {
-}
-
-class MapOperator {
-}
-
-class LinesFromFileOperator {
-}
-
-CountOperator --|> BaseOperator
-LimitOperator --|> BaseOperator
-LinesFromFileOperator --|> BaseOperator
-MapOperator --|> BaseOperator
-
-class Collectors<TOperator> {
-  value(): Value
-  -combineOperatorsResults(): void
-}
-
-Collectors --|> BaseStage
-
+Flow --> "pipe" Pipeline : implemented by > 
 
 @enduml

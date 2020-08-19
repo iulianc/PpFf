@@ -17,7 +17,7 @@ namespace PpFf {
     public:
         Pipeline() : no_workers(1) {
             nodeType = PIPELINE_NODE;
-            pipe = new ff_pipeline();
+            _ff_pipeline = new ff_pipeline();
         }
 
         ~Pipeline() {
@@ -43,7 +43,7 @@ namespace PpFf {
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
             if (!isParallel()) {
             	if (currentNode != NULL && currentNode->type() == FARM_NODE) {
-                    ff_farm *ffFarm = (ff_farm*) currentNode->getNode();
+                    ff_farm *ffFarm = (ff_farm*) currentNode->ff_node_();
                     ffFarm->add_collector(new Empty());
                     addNode(ffFarm);
             	}
@@ -56,7 +56,7 @@ namespace PpFf {
             	} else {
                     farm = (Farm*) currentNode;
                     if (farm->nbWorkers() != no_workers) {
-                        ff_farm *ffFarm = (ff_farm*) farm->getNode();
+                        ff_farm *ffFarm = (ff_farm*) farm->ff_node_();
                         ffFarm->add_collector(new Empty());
                         addNode(ffFarm);
                         currentNode = farm = new Farm(no_workers);
@@ -66,7 +66,7 @@ namespace PpFf {
                 farm->addStage(stage);
 
             	if (stage->isFinal()) {
-                    ff_farm *ffFarm = (ff_farm*)farm->getNode();
+                    ff_farm *ffFarm = (ff_farm*)farm->ff_node_();
                     ffFarm->remove_collector();
                     addNode(ffFarm);
             	}
@@ -74,11 +74,11 @@ namespace PpFf {
         }
 
         void addNode(ff_node *ffNode) {
-            pipe->add_stage(ffNode);
+            _ff_pipeline->add_stage(ffNode);
         }
 
-        ff_node* getNode() {
-            return pipe;
+        ff_node* ff_node_() {
+            return _ff_pipeline;
         }
 
         NodeType type(){
@@ -103,11 +103,11 @@ namespace PpFf {
         }        
 
         void run() {
-            if (pipe->run_and_wait_end() < 0) error("running pipeline");
+            if (_ff_pipeline->run_and_wait_end() < 0) error("running pipeline");
         }
 
     private:
-        ff_pipeline *pipe;
+        ff_pipeline *_ff_pipeline;
         unsigned int no_workers;
         std::vector<Stage*> stages;
         Node *currentNode = NULL;

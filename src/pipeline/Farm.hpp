@@ -12,9 +12,9 @@ namespace PpFf {
 
     class Farm: public Node {
     public:
-        Farm(unsigned int no_workers): no_workers(no_workers) {
+        Farm(unsigned int no_workers) : no_workers(no_workers) {
             nodeType = FARM_NODE;
-            farm = new ff_farm();
+            _ff_farm = new ff_farm();
             for (unsigned int i = 0 ; i < no_workers; i++) {
                 workers.push_back(new Worker());
             }
@@ -35,7 +35,7 @@ namespace PpFf {
             return no_workers;
         }
 
-        void addNode(std::vector< ff_node* > stageWorkers) {
+        void addNode(std::vector<ff_node*> stageWorkers) {
             assert(workers.size() == stageWorkers.size());
 
             for (unsigned int i = 0; i < workers.size(); i++){
@@ -43,21 +43,21 @@ namespace PpFf {
             }
         }
 
-        ff_node* getNode() {
-            std::vector< ff_node* > innerWorkers;
+        ff_node* ff_node_() {
+            std::vector<ff_node*> innerWorkers;
             for (Worker* worker: workers) {
-                innerWorkers.push_back((ff_node*) worker->getNode());
+                innerWorkers.push_back((ff_node*) worker->ff_node_());
             }
-            farm->add_workers(innerWorkers);
+            _ff_farm->add_workers(innerWorkers);
 
-            return farm;
+            return _ff_farm;
         }
 
 
     private:
         unsigned int no_workers;
         std::vector<Worker*> workers;
-        ff_farm *farm;
+        ff_farm *_ff_farm;
     };
 }
 

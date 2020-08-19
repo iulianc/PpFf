@@ -1,0 +1,29 @@
+
+package Operators {
+
+  abstract class BaseOperator {
+    svc(): void*
+    +=(): BaseOperator
+  }
+
+  class CountOperator {
+  }
+
+  class LimitOperator {
+  }
+
+  class MapOperator {
+  }
+
+  class LinesFromFileOperator {
+  }
+
+  note right of CountOperator :  Etc.
+}
+
+CountOperator --|> BaseOperator
+
+
+LimitOperator --|> BaseOperator
+LinesFromFileOperator --|> BaseOperator
+MapOperator --|> BaseOperator

@@ -1,0 +1,57 @@
+@startuml diagrammeCount1
+
+hide empty members
+
+'skinparam linetype ortho
+
+skinparam classAttributeIconSize 0
+
+
+object currentResult {
+  class = Flow
+}
+
+object sourceStage {
+ class = BaseStage<SourceOp, SOURCE_STAGE>
+ isFinalStage = false
+}
+
+object countStage {
+  class = CollectorStage<Count>
+}
+
+object sourceOp {
+  class = SourceOperator<T, Iterator>
+  superclass = BaseOperator < ff_node
+  begin = ...
+  end = ...
+}
+
+object countOp {
+  class = CountOperator<int>
+  superclass = BaseOperator < ff_node
+}
+
+sourceStage --> "operators" sourceOp
+
+countStage --> "operators" countOp
+
+
+object pipe {
+  hasSource = true
+}
+
+currentResult --> pipe : implemented by >
+
+pipe --> "stages[0]" sourceStage
+pipe --> "stages[1]" countStage
+
+object ff_pipeline
+
+pipe --> "ff_node_" ff_pipeline
+
+ff_pipeline --> "nodes_list[0]" sourceOp
+ff_pipeline --> "nodes_list[1]" countOp
+
+
+@enduml
