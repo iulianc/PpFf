@@ -3,119 +3,87 @@ skinparam classAttributeIconSize 0
 
 !include diagrammeFlow.txt!0
  
-package FastFlow {
+Flow --> "1" Pipeline
 
-  class Pipeline {
-    run(): void
-  }
+class Pipeline {
+  -no_workers: int
 
-  together {
-    class Farm {
-      nbWorkers(): int
-    }
+  addStage(): void
+  nbWorkers(): int
+  setNbWorkers(): void
+  isParallel(): bool
+  run(): void
+} 
 
-    class Worker {
-    }
+Pipeline --> "stages\n0..*" Stage
 
-    class Node {
-    }
-  }
-
-  together {
-    class ff_node {
-    }
-
-    class ff_farm {
-    }
-  }
-
-  enum NodeType {
-    BASIC_NODE
-    WORKER_NODE
-    FARM_NODE
-    PIPELINE_NODE
-    UNDEFINED_NODE
-  }
-  
-}  
 
 Pipeline --|> Node
 Farm --|> Node
 Worker --|> Node
 
-Farm -> "1..*" Worker
+Pipeline --> ff_pipeline
+
+class ff_pipeline {
+}
+
+class Farm {
+  nbWorkers(): int
+  addStage(): void
+}
+
+Farm --> "1..*" Worker
 Farm --> ff_farm
 
-Node --> "type" NodeType
+class Worker {
+}
+
+class Node {
+  addStage(): void
+}
 
 Node --> ff_node
 
+class ff_node {
+}
 
-package Operators {
+class ff_farm {
+}
 
-  abstract class BaseOperator {
-    +=(): BaseOperator
-  }
+abstract class Stage {
+}
 
-  class CountOperator {
-  }
 
-  class LimitOperator {
-  }
+class BaseStage<TOperator,bool> implements Stage {
+  addOperator(): void
+}
 
-  class MapOperator {
-  }
+BaseStage --> "operators\n1..*" BaseOperator 
 
-  class LinesFromFileOperator {
-  }
+abstract class BaseOperator {
+  +=(): BaseOperator
+}
 
-  note right of CountOperator :  Etc.
+class LimitOperator {
+}
+
+class MapOperator {
+}
+
+class LinesFromFileOperator {
 }
 
 CountOperator --|> BaseOperator
-
-
 LimitOperator --|> BaseOperator
 LinesFromFileOperator --|> BaseOperator
 MapOperator --|> BaseOperator
 
-package Stages {
-
-  class PipeManager {
-    nbWorkers(): int
-    setNbWorkers(): void
-    isParallel(): bool
-    ..
-    run(): void
-  } 
-
-  interface Stage {
-  }
-
-  enum StageType {
-    SOURCE_STAGE
-    NON_SOURCE_STAGE
-  }
-
- class BaseStage<TOperator, StageType> {
-   isSource(): bool
- }
-
-  class CollectorStage<TOperator> {
-    value(): TOperator::Value
-  }
+class Collectors<TOperator> {
+  value(): Value
+  -combineOperatorsResults(): void
 }
 
-BaseStage .|> Stage
+Collectors --|> BaseStage
 
-BaseStage --> "operators\n1..*" BaseOperator 
-
-CollectorStage --|> BaseStage
-
-PipeManager *-- "stages\n0..*" Stage
-
-Flow --> PipeManager : implemented by > 
-
-PipeManager -> Pipeline
 
 @enduml
