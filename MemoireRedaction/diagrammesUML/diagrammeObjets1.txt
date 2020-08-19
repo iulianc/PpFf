@@ -1,5 +1,12 @@
 @startuml diagrammeObjets1
 
+skinparam titleBorderRoundCorner 14
+skinparam titleBorderThinckness 2
+skinparam titleBorderColor black
+
+title Les objets associes a la representation du Flow suivant:\lcurrentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();
+
+
 hide empty members
 
 'skinparam linetype ortho

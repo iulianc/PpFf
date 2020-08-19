@@ -60,8 +60,8 @@ package Pipeline {
 
     ff_farm --|> ff_node
     ff_pipeline --|> ff_node
-    ff_farm --> "1..*" ff_node
-    ff_pipeline --> "1..*" ff_node
+    ff_farm --> "1..* {ordered}" ff_node
+    ff_pipeline --> "1..*  {ordered}" ff_node
   }
 
 
@@ -81,7 +81,7 @@ Farm --|> Node
 Worker --|> Node
 Worker *--> "ff_node_" ff_node
 
-Farm *-> "1..*" Worker
+Farm *-> "1..* {ordered}" Worker
 Farm *--> "ff_node_" ff_farm
 
 'NodeType "type" <- Node
@@ -110,13 +110,13 @@ package Stages {
 
 BaseStage .|> Stage
 
-BaseStage --> "\noperators\n1..*" BaseOperator 
+BaseStage --> "\noperators\n1..* {ordered}" BaseOperator 
 
 CollectorStage --|> BaseStage
 
 Pipeline *--> "source" Stage
 
-Pipeline *--> "stages 1..*" Stage
+Pipeline *--> "stages 1..* {ordered}" Stage
 note on link : source &#8712; stages 
 
 Pipeline *--> "ff_node_" ff_pipeline
