@@ -91,7 +91,7 @@ namespace PpFf {
 
         void setNbWorkers(int no_workers) {
             if (this->no_workers < 1) {
-                std::cerr << "*** Avertissement le nombre de workers ne peut pas être nul ou négatif ***\n";
+                std::cerr << "*** Avertissement le nombre de workers ne peut pas etre nul ou negatif ***\n";
                 return;
             }
 
