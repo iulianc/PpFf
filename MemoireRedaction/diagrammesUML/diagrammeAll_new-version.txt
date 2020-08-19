@@ -1,0 +1,145 @@
+@startuml diagrammeAll_new-version
+
+'skinparam style strictuml
+'skinparam groupInheritance 3
+
+hide empty members
+
+skinparam linetype ortho
+'skinparam groupInheritance 2
+
+' Diagramme contenant l'ensemble de toutes les classes, pour avoir une
+' vue detaillee
+
+skinparam classAttributeIconSize 0
+
+!include diagrammeFlow.txt!0
+
+
+/' Inclure l'un ou l'autre pour simplifier le diagramme...
+   !include diagrammeOperators.txt
+ '/
+
+ 
+/'!include diagrammeOperatorsBase.txt
+'/
+
+package Operators {
+
+  class Hidden
+
+  Hidden -- BaseOperator
+  hide Hidden members
+
+  hide Hidden
+  
+
+  abstract class BaseOperator {
+    svc(): void*
+    +=(): BaseOperator
+  }
+}
+
+
+package Pipeline {
+
+  class Pipeline {
+    nbWorkers(): int
+    isParallel(): bool
+    ..
+    run(): void
+  }
+
+  together {
+    class Farm {
+      nbWorkers(): int
+    }
+
+    class Worker {
+    }
+
+    abstract class Node {
+      type(): NodeType
+    }
+  }
+
+  package FastFlow {
+    together {
+      class ff_node {
+        run(): void
+      }
+
+      class ff_farm {
+      }
+
+      class ff_pipeline {
+      }
+    }
+
+    ff_farm --|> ff_node
+    ff_pipeline --|> ff_node
+    ff_farm --> "1..*" ff_node
+    ff_pipeline --> "1..*" ff_node
+  }
+
+
+  enum NodeType {
+    BASIC_NODE
+    WORKER_NODE
+    FARM_NODE
+    PIPELINE_NODE
+    UNDEFINED_NODE
+  }
+  
+}  
+
+
+Pipeline --|> Node
+Farm --|> Node
+Worker --|> Node
+Worker *--> "Node" Node
+
+Farm *-> "1..*" Worker
+Farm *--> "ff_node_" ff_farm
+
+'NodeType "type" <- Node
+
+Node *--|> ff_node
+BaseOperator --|> Node
+
+package Stages {
+
+  interface Stage {
+  }
+
+  enum StageType {
+    SOURCE_STAGE
+    NON_SOURCE_STAGE
+  }
+
+ class BaseStage<TOperator, StageType> {
+   isSource(): bool
+   isFinal(): bool
+ }
+
+  class CollectorStage<TOperator> {
+    value(): TOperator::Value
+  }
+}
+
+BaseStage .|> Stage
+
+BaseStage --> "\noperators\n1..*" BaseOperator 
+
+CollectorStage --|> BaseStage
+
+Pipeline *--> "source" Node
+
+Pipeline *--> "nodes 1..*" Node
+note on link : source &#8712; stages 
+
+Pipeline *--> "ff_node_" ff_pipeline
+
+Flow --> "pipe" Pipeline : implemented by > 
+
+@enduml
