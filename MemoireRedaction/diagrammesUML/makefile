@@ -1,7 +1,8 @@
 #
-# makefile for gnu make (gmake)
+# Makefile pour generation des diagrammes UML.
+#
 
-default: Objets1
+default: AllNew
 
 Objets1:
 	java -jar ~/Software/plantuml.jar diagrammeObjets1.txt
@@ -10,6 +11,10 @@ Objets1:
 All:
 	java -jar ~/Software/plantuml.jar diagrammeAll.txt
 	open diagrammeAll.png
+
+AllNew:
+	java -jar ~/Software/plantuml.jar diagrammeAll_new-version.txt
+	open diagrammeAll_new-version.png
 
 Vue:
 	java -jar ~/Software/plantuml.jar diagrammeVueEnsemble.txt

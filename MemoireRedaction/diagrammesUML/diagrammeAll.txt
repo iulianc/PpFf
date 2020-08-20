@@ -61,7 +61,7 @@ package Pipeline {
     ff_farm --|> ff_node
     ff_pipeline --|> ff_node
     ff_farm --> "1..* {ordered}" ff_node
-    ff_pipeline --> "1..*  {ordered}" ff_node
+    ff_pipeline --> "1..* {ordered}" ff_node
   }
 
 

@@ -16,29 +16,11 @@ skinparam classAttributeIconSize 0
 !include diagrammeFlow.txt!0
 
 
-/' Inclure l'un ou l'autre pour simplifier le diagramme...
-   !include diagrammeOperators.txt
- '/
+/' Inclure l'un ou l'autre pour simplifier le diagramme...'/
 
- 
-/'!include diagrammeOperatorsBase.txt
-'/
+'!include diagrammeOperators.txt
 
-package Operators {
-
-  class Hidden
-
-  Hidden -- BaseOperator
-  hide Hidden members
-
-  hide Hidden
-  
-
-  abstract class BaseOperator {
-    svc(): void*
-    +=(): BaseOperator
-  }
-}
+!include diagrammeOperatorsBase.txt
 
 
 package Pipeline {
@@ -78,8 +60,8 @@ package Pipeline {
 
     ff_farm --|> ff_node
     ff_pipeline --|> ff_node
-    ff_farm --> "1..*" ff_node
-    ff_pipeline --> "1..*" ff_node
+    ff_farm --> "1..* {ordered}" ff_node
+    ff_pipeline --> "1..* {ordered}" ff_node
   }
 
 
@@ -99,7 +81,7 @@ Farm --|> Node
 Worker --|> Node
 Worker *--> "Node" Node
 
-Farm *-> "1..*" Worker
+Farm *-> "1..* {ordered}" Worker
 Farm *--> "ff_node_" ff_farm
 
 'NodeType "type" <- Node
@@ -129,13 +111,13 @@ package Stages {
 
 BaseStage .|> Stage
 
-BaseStage --> "\noperators\n1..*" BaseOperator 
+BaseStage --> "\noperators\n1..* {ordered}" BaseOperator 
 
 CollectorStage --|> BaseStage
 
 Pipeline *--> "source" Node
 
-Pipeline *--> "nodes 1..*" Node
+Pipeline *--> "nodes 1..* {ordered}" Node
 note on link : source &#8712; stages 
 
 Pipeline *--> "ff_node_" ff_pipeline
