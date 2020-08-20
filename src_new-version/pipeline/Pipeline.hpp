@@ -40,10 +40,6 @@ namespace PpFf {
             return no_workers;
         }
 
-        Node* getCurrentNode() {
-            return nodes.size() > 0 ? nodes.back() : NULL;
-        }
-
         template< typename T >
         void addStage(T *stage) {
             assert(stage->operators.size() == no_workers);
@@ -59,7 +55,8 @@ namespace PpFf {
             stages.push_back(stage);
             
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
-            Node *currentNode = getCurrentNode();
+            Node *currentNode = nodes.size() > 0 ? nodes.back() : NULL;
+
             if (!isParallel()) {
             	if (currentNode != NULL && currentNode->type() == FARM_NODE) {
                     Farm *farm = (Farm*) currentNode;
@@ -77,9 +74,10 @@ namespace PpFf {
                         farm->addCollector(new Empty());
                         farm = new Farm(no_workers);
                         nodes.push_back(farm);
+                    } else {
+                        // NOOP: Nombre de workers demandes = nombre de workers deja actifs.
                     }
             	}
-
                 farm->addStage(stage);
             }
         }
