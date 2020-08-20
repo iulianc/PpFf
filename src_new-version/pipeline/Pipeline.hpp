@@ -64,7 +64,7 @@ namespace PpFf {
                     Farm *farm = (Farm*) currentNode;
                     farm->addCollector(new Empty());                    
             	}
-                addNode(stage->operators[0]);
+                nodes.push_back(stage->operators[0]);
             } else {
             	Farm *farm;
             	if (currentNode == NULL || currentNode->type() != FARM_NODE) {
@@ -81,10 +81,6 @@ namespace PpFf {
 
                 farm->addStage(stage);
             }
-        }
-
-        void addNode(Node *node) {
-            nodes.push_back(node);
         }
 
         ff_node* ff_node_() {

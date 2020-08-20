@@ -36,9 +36,11 @@ namespace PpFf {
                 _ff_farm->remove_collector();
             }
 
-            std::vector<Node*> nodes;
-            nodes.assign(stage->operators.begin(), stage->operators.end());
-            addNode(nodes);  
+            assert(workers.size() == stage->operators.size());
+
+            for (unsigned int i = 0; i < workers.size(); i++){
+                workers[i]->addNode(stage->operators[i]);
+            }
         } 
 
         NodeType type(){
@@ -51,14 +53,6 @@ namespace PpFf {
 
         void addCollector(ff_node *node) {
             _ff_farm->add_collector(node);
-        }
-
-        void addNode(std::vector< Node* > stageWorkers) {
-            assert(workers.size() == stageWorkers.size());
-
-            for (unsigned int i = 0; i < workers.size(); i++){
-                workers[i]->addNode(stageWorkers[i]);
-            }
         }
 
         ff_node* ff_node_() {
