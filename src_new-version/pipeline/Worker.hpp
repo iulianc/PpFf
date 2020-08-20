@@ -16,19 +16,19 @@ namespace PpFf {
 
         ~Worker() {
             for (unsigned int i = 0; i < nodes.size(); i++) {
-                delete (nodes[i]);
+                delete(nodes[i]);
             }
 
             nodes.clear();
         }          
 
-        void* svc(void * task) { return NULL; }
+        void* svc(void* task) { return NULL; }
 
         NodeType type(){
             return nodeType;
         }
-
-        void addNode(Node *node) {
+        
+        void addNode(Node* node) {
             nodes.push_back(node);
         }        
 
@@ -45,7 +45,7 @@ namespace PpFf {
         }
 
     private:
-        std::vector< Node* > nodes;
+        std::vector<Node*> nodes;
     };
 
 }

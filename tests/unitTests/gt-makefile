@@ -10,7 +10,7 @@ ROOT_TESTS 	:= umlTest.cpp testAll.cpp
 # Specify the pipe path
 ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
 ROOT_PIPE 	:= $(HOME)/PpFf/Release2/PpFf/src
-ROOT_PIPE 	:= $(HOME)/PpFf/src
+ROOT_PIPE 	:= $(HOME)/PpFf/src_new-version
 
 # Decommenter pour compilation sur Mac OS X -- Guy T.
 TESTFILE=-DTEST_FILE=\"testdata/lorem.txt\"

@@ -33,7 +33,9 @@ namespace PpFf {
         }
 
         void* svc(void * task) { return NULL; }  
+
         NodeType type() { return nodeType; }
+
         int nbWorkers() { return no_workers; }        
 
         Node* getCurrentNode() {
