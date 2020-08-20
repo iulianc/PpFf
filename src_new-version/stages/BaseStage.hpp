@@ -16,7 +16,7 @@ namespace PpFf {
 
         ~BaseStage() {
             for (unsigned int i = 0; i <operators.size(); i++) {
-                delete (operators[i]);
+                delete operators[i];
             }
             operators.clear();
         }

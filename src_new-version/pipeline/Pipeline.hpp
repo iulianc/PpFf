@@ -106,7 +106,7 @@ namespace PpFf {
             return no_workers > 1;
         }        
 
-        int run(bool =  false) {
+        int run(bool = false) {
             ff_pipeline *pipe = (ff_pipeline*) ff_node_();
             if (pipe->run_and_wait_end() < 0) error("running pipeline");
 
