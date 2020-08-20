@@ -5,7 +5,7 @@
 
 hide empty members
 
-skinparam linetype ortho
+'skinparam linetype ortho
 'skinparam groupInheritance 2
 
 ' Diagramme contenant l'ensemble de toutes les classes, pour avoir une
@@ -48,20 +48,22 @@ package Pipeline {
   package FastFlow {
     together {
       class ff_node {
-        run(): void
+        svc(): void*
       }
 
       class ff_farm {
       }
 
       class ff_pipeline {
+        run(): void
       }
     }
 
     ff_farm --|> ff_node
+    ff_farm --> "1..*\n{ordered}" ff_node
+
     ff_pipeline --|> ff_node
-    ff_farm --> "1..* {ordered}" ff_node
-    ff_pipeline --> "1..* {ordered}" ff_node
+    ff_pipeline --> "1..*\n{ordered}" ff_node
   }
 
 
@@ -76,17 +78,19 @@ package Pipeline {
 }  
 
 
+Node --> "ff_node_" ff_node
+
 Pipeline --|> Node
 Farm --|> Node
 Worker --|> Node
 Worker *--> "Node" Node
 
 Farm *-> "1..* {ordered}" Worker
-Farm *--> "ff_node_" ff_farm
+Farm --> "ff_node_" ff_farm
 
 'NodeType "type" <- Node
 
-Node *--|> ff_node
+Node --|> ff_node
 BaseOperator --|> Node
 
 package Stages {
@@ -115,12 +119,12 @@ BaseStage --> "\noperators\n1..* {ordered}" BaseOperator
 
 CollectorStage --|> BaseStage
 
-Pipeline *--> "source" Node
+'Pipeline *--> "source" Node
 
-Pipeline *--> "nodes 1..* {ordered}" Node
-note on link : source &#8712; stages 
+Pipeline *--> "nodes\n1..* {ordered}" Node
+'note on link : source &#8712; stages 
 
-Pipeline *--> "ff_node_" ff_pipeline
+Pipeline --> "ff_node_" ff_pipeline
 
 Flow --> "pipe" Pipeline : implemented by > 
 
