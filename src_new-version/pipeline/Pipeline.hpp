@@ -36,17 +36,8 @@ namespace PpFf {
         NodeType type() { return nodeType; }
         int nbWorkers() { return no_workers; }        
 
-        template< typename T >
-        bool hasSource(T *stage) {
-            if (stage->isSource()) {
-                existeSource = true;
-            } 
-            
-            return existeSource;
-        }
-
         Node* getCurrentNode() {
-            if(nodes.size() > 0)
+            if (nodes.size() > 0)
                 return nodes[nodes.size() - 1];
 
             return NULL;
@@ -56,7 +47,9 @@ namespace PpFf {
         void addStage(T *stage) {
             assert(stage->operators.size() == no_workers);
 
-            if(!hasSource(stage)) {
+            existeSource = existeSource || stage->isSource();
+
+            if (!existeSource) {
                 throw std::invalid_argument( "The pipeline must have a source" );
                 return;
             }
@@ -96,7 +89,7 @@ namespace PpFf {
 
         ff_node* ff_node_() {
             ff_pipeline *pipe = new ff_pipeline();
-            for(Node *node : nodes) {
+            for (Node *node : nodes) {
                 pipe->add_stage(node->ff_node_());
             }
 
