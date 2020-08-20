@@ -1,4 +1,4 @@
-@startuml diagrammeAll_new-version
+@startuml all
 
 'skinparam style strictuml
 'skinparam groupInheritance 3
@@ -16,9 +16,9 @@ skinparam classAttributeIconSize 0
 !include diagrammeFlow.txt!0
 
 
-/' Inclure l'un ou l'autre pour simplifier le diagramme...'/
-
-'!include diagrammeOperators.txt
+/' Inclure l'un ou l'autre pour simplifier le diagramme...
+   !include diagrammeOperators.txt
+ '/
 
 !include diagrammeOperatorsBase.txt
 
@@ -40,7 +40,7 @@ package Pipeline {
     class Worker {
     }
 
-    abstract class Node {
+    class Node {
       type(): NodeType
     }
   }
@@ -79,15 +79,14 @@ package Pipeline {
 Pipeline --|> Node
 Farm --|> Node
 Worker --|> Node
-Worker *--> "Node" Node
+Worker *--> "ff_node_" ff_node
 
 Farm *-> "1..* {ordered}" Worker
 Farm *--> "ff_node_" ff_farm
 
 'NodeType "type" <- Node
 
-Node *--|> ff_node
-BaseOperator --|> Node
+Node *--> "ff_node_" ff_node
 
 package Stages {
 
@@ -115,9 +114,9 @@ BaseStage --> "\noperators\n1..* {ordered}" BaseOperator
 
 CollectorStage --|> BaseStage
 
-Pipeline *--> "source" Node
+Pipeline *--> "source" Stage
 
-Pipeline *--> "nodes 1..* {ordered}" Node
+Pipeline *--> "stages 1..* {ordered}" Stage
 note on link : source &#8712; stages 
 
 Pipeline *--> "ff_node_" ff_pipeline

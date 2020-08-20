@@ -2,24 +2,24 @@
 # Makefile pour generation des diagrammes UML.
 #
 
-default: AllNew
+default: all_new
 
-Objets1:
-	java -jar ~/Software/plantuml.jar diagrammeObjets1.txt
-	open diagrammeObjets1.png
+objets1:
+	java -jar ~/Software/plantuml.jar objets1.txt
+	open objets1.png
 
-All:
-	java -jar ~/Software/plantuml.jar diagrammeAll.txt
-	open diagrammeAll.png
+all:
+	java -jar ~/Software/plantuml.jar all.txt
+	open all.png
 
-AllNew:
-	java -jar ~/Software/plantuml.jar diagrammeAll_new-version.txt
-	open diagrammeAll_new-version.png
+all_new:
+	java -jar ~/Software/plantuml.jar all_new-version.txt
+	open all_new-version.png
 
-Vue:
-	java -jar ~/Software/plantuml.jar diagrammeVueEnsemble.txt
-	open diagrammeVueEnsemble.png
+vue:
+	java -jar ~/Software/plantuml.jar vueEnsemble.txt
+	open vueEnsemble.png
 
-Flow:
-	java -jar ~/Software/plantuml.jar diagrammeFlow.txt
-	open diagrammeFlow.png
+flow:
+	java -jar ~/Software/plantuml.jar flow.txt
+	open flow.png

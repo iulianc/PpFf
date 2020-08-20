@@ -1,4 +1,4 @@
-@startuml diagrammeObjets1
+@startuml objets1
 
 skinparam titleBorderRoundCorner 14
 skinparam titleBorderThinckness 2
