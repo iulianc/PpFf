@@ -4,7 +4,21 @@
 
 namespace PpFf {
 
-	class Stage{};
+    enum StageType { SOURCE_STAGE, INTERMEDIATE_STAGE, COLLECTOR_STAGE };
+    
+    class Stage {
+    public:
+        bool isSource() {
+            return stageType == SOURCE_STAGE;
+        }
+
+        bool isCollector() {
+            return stageType == COLLECTOR_STAGE;
+        }
+		
+    protected:
+        StageType stageType;
+    };
 
 }
 

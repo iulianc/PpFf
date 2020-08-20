@@ -7,12 +7,14 @@
 
 namespace PpFf {
 
-    enum StageType { SOURCE_STAGE, INTERMEDIATE_STAGE, COLLECTOR_STAGE };
-
-    template< typename TOperator, StageType stageType = INTERMEDIATE_STAGE >
+    template< typename TOperator, StageType stageType_ = INTERMEDIATE_STAGE >
     class BaseStage: public Stage {
     public:
         std::vector<TOperator*> operators;
+
+        BaseStage() {
+            stageType = stageType_;
+        }
 
         ~BaseStage() {
             for (unsigned int i = 0; i <operators.size(); i++) {
@@ -92,14 +94,6 @@ namespace PpFf {
                 operators.push_back(new TOperator(taskFunc));
             }
         }
-
-        bool isCollector() {
-            return stageType == COLLECTOR_STAGE;
-        }
-		
-        bool isSource() {
-            return stageType == SOURCE_STAGE;
-        }		
     };
 }
 

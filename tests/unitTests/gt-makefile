@@ -5,7 +5,7 @@ def: run
 
 # Specify the tests path
 ROOT_TESTS 	:= umlTest.cpp testAll.cpp
-ROOT_TESTS 	:= $(wildcard *.cpp)
+#ROOT_TESTS 	:= $(wildcard *.cpp)
 
 # Specify the pipe path
 ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
