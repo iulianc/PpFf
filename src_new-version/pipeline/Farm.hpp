@@ -22,16 +22,18 @@ namespace PpFf {
 
         ~Farm() {
             for (unsigned int i = 0; i < workers.size(); i++) {
-                delete (workers[i]);
+                delete workers[i];
             }
 
             workers.clear();
         }        
 
-        void* svc(void * task) { return NULL; }   
+        void* svc(void * task) {
+            return NULL;
+        }   
 
         template< typename T >
-        void addStage(T *stage) {
+        void addStage(T* stage) {
             if (stage->isFinal()) {
                 _ff_farm->remove_collector();
             }
@@ -43,15 +45,11 @@ namespace PpFf {
             }
         } 
 
-        NodeType type(){
-            return nodeType;
-        }
-
         unsigned int nbWorkers() {
             return no_workers;
         }
 
-        void addCollector(ff_node *node) {
+        void addCollector(ff_node* node) {
             _ff_farm->add_collector(node);
         }
 
@@ -68,7 +66,7 @@ namespace PpFf {
     private:
         unsigned int no_workers;
         std::vector<Worker*> workers;
-        ff_farm *_ff_farm;
+        ff_farm* _ff_farm;
     };
 }
 

@@ -11,7 +11,7 @@ namespace PpFf {
 
     class Node : public ff_node {
     public:
-        virtual NodeType type(){
+        NodeType type() {
             return nodeType;
         }
 

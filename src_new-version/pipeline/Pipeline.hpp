@@ -21,37 +21,36 @@ namespace PpFf {
 
         ~Pipeline() {
             for (unsigned int i = 0; i < stages.size(); i++) {
-                delete (stages[i]);
+                delete stages[i];
             }
 
             for (unsigned int i = 0; i < nodes.size(); i++) {
-                delete (nodes[i]);
+                delete nodes[i];
             }
-
+            
             stages.clear();
             nodes.clear();
         }
 
-        void* svc(void * task) { return NULL; }  
+        void* svc(void * task) {
+            return NULL;
+        }  
 
-        NodeType type() { return nodeType; }
-
-        int nbWorkers() { return no_workers; }        
+        int nbWorkers() {
+            return no_workers;
+        }
 
         Node* getCurrentNode() {
-            if (nodes.size() > 0)
-                return nodes[nodes.size() - 1];
-
-            return NULL;
+            return nodes.size() > 0 ? nodes.back() : NULL;
         }
 
         template< typename T >
         void addStage(T *stage) {
             assert(stage->operators.size() == no_workers);
 
-            existeSource = existeSource || stage->isSource();
+            sourceExists |= stage->isSource();
 
-            if (!existeSource) {
+            if (!sourceExists) {
                 throw std::invalid_argument( "The pipeline must have a source" );
                 return;
             }
@@ -116,7 +115,7 @@ namespace PpFf {
         unsigned int no_workers;
         std::vector<Stage*> stages;
         std::vector<Node*> nodes;
-        bool existeSource = false;      
+        bool sourceExists = false;      
     };
 
 }

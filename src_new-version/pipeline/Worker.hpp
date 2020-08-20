@@ -16,31 +16,29 @@ namespace PpFf {
 
         ~Worker() {
             for (unsigned int i = 0; i < nodes.size(); i++) {
-                delete(nodes[i]);
+                delete nodes[i];
             }
 
             nodes.clear();
         }          
 
-        void* svc(void* task) { return NULL; }
-
-        NodeType type(){
-            return nodeType;
+        void* svc(void* task) {
+            return NULL;
         }
-        
+
         void addNode(Node* node) {
             nodes.push_back(node);
         }        
 
         ff_node* ff_node_() {
-            if (nodes.size() > 1) {
+            if (nodes.size() ==  1) {
+                return nodes[0];
+            } else {
                 ff_pipeline *pipe = new ff_pipeline();
                 for (ff_node* node: nodes) {
                     pipe->add_stage(node);
                 }
                 return pipe;
-            } else {
-                return nodes[0];
             }
         }
 
