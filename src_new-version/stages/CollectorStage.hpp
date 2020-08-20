@@ -6,25 +6,19 @@
 namespace PpFf {
 
     template< typename TOperator >
-    class CollectorStage : public BaseStage<TOperator> {
+    class CollectorStage : public BaseStage<TOperator, COLLECTOR_STAGE> {
     public:
         typedef typename TOperator::Value Value;
 
     	CollectorStage() {
-            this->isFinalStage = true;
     	}
 
         Value value() {
-            combineIntermediateResults();
-            
-            return this->operators[0]->value();
-        }
-
-    private:
-        void combineIntermediateResults() {
             for (unsigned int i = 1; i < this->operators.size(); i++) {
                 *(this->operators[0]) += *(this->operators[i]);
             }
+            
+            return this->operators[0]->value();
         }
         
     };

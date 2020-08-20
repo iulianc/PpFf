@@ -34,7 +34,7 @@ namespace PpFf {
 
         template< typename T >
         void addStage(T* stage) {
-            if (stage->isFinal()) {
+            if (stage->isCollector()) {
                 _ff_farm->remove_collector();
             }
 
