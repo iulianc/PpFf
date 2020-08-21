@@ -1,10 +1,10 @@
-@startuml objets1
+@startuml objets2
 
 skinparam titleBorderRoundCorner 14
 skinparam titleBorderThinckness 2
 skinparam titleBorderColor black
 
-title Les objets associés à la représentation du Flow suivant:\lcurrentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();
+title Les objets associés à la représentation du Flow suivant:\lcurrentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.parallel(2)\l\t.max<int>();
 
 
 hide empty members
@@ -52,7 +52,7 @@ maxStage --> "operators[0]" maxOp
 object pipe {
   class = Pipeline
   ..
-  no_workers = 1
+  no_workers = 2
   sourceExists = true
 }
 
