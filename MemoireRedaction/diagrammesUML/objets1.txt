@@ -4,7 +4,7 @@ skinparam titleBorderRoundCorner 14
 skinparam titleBorderThinckness 2
 skinparam titleBorderColor black
 
-title Les objets associes a la representation du Flow suivant:\lcurrentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();
+title Les objets associés à la représentation du Flow suivant:\lcurrentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();
 
 
 hide empty members
@@ -19,15 +19,15 @@ object currentResult {
 }
 
 object sourceStage {
- class = BaseStage<SourceOp, SOURCE_STAGE>
+ class = BaseStage<SourceOp>
  .......
- isFinalStage = false
+ stageType = SOURCE_STAGE
 }
 
 object maxStage {
   class = CollectorStage<MaxOperator<int>>
   .......
-  isFinalStage = true
+  stageType = COLLECTOR_STAGE
 }
 
 object sourceOp {
@@ -44,26 +44,35 @@ object maxOp {
   .......
 }
 
-sourceStage --> "operators" sourceOp
+sourceStage --> "operators[0]" sourceOp
 
-maxStage --> "operators" maxOp
+maxStage --> "operators[0]" maxOp
 
 
 object pipe {
-  hasSource = true
+  class = Pipeline
+  ..
+  no_workers = 1
+  sourceExists = true
 }
 
 currentResult --> pipe : implemented by >
 
 pipe --> "stages[0]" sourceStage
+pipe --> "nodes[0]" sourceStage
+
 pipe --> "stages[1]" maxStage
+pipe --> "nodes[1]" maxStage
 
-object ff_pipeline
+object ff_node_ {
+  class = ff_pipeline
+}
 
-pipe --> "ff_node_" ff_pipeline
+pipe ..> ff_node_
+note on link: "ff_node_()"
 
-ff_pipeline --> "nodes_list[0]" sourceOp
-ff_pipeline --> "nodes_list[1]" maxOp
+ff_node_ --> "nodes_list[0]" sourceOp
+ff_node_ --> "nodes_list[1]" maxOp
 
 
 @enduml
