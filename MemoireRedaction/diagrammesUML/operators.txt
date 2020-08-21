@@ -22,8 +22,6 @@ package Operators {
 }
 
 CountOperator --|> BaseOperator
-
-
 LimitOperator --|> BaseOperator
 LinesFromFileOperator --|> BaseOperator
 MapOperator --|> BaseOperator

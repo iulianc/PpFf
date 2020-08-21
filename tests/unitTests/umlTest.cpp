@@ -45,3 +45,20 @@ TEST_CASE( "objets3", "UML" ) {
 
     REQUIRE( currentResult == 27 );
 }
+
+TEST_CASE( "objets4", "UML" ) {
+    std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int expectedResult = 10;
+
+    int currentResult =
+        Flow
+        ::source<int>(elems.begin(), elems.end())
+        .parallel(2)
+        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
+        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
+        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
+        .parallel(4)
+        .max<int>();
+
+    REQUIRE( currentResult == 243 );
+}

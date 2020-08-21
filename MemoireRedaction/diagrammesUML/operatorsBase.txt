@@ -1,15 +1,25 @@
 package Operators {
 
-  class Hidden
-
-  Hidden -- BaseOperator
-  hide Hidden members
-
-  hide Hidden
-  
-
   abstract class BaseOperator {
-    svc(): void*
+    {abstract} <<virtual>> svc(): void*
     +=(): BaseOperator
   }
+
+  class CountOperator<T> {
+    svc(): void*
+    value(): T::Value
+  }
+
+  class MapOperator<T> {
+    svc(): void*
+  }
+
+  note right of CountOperator :  Etc.
+  note right of MapOperator :  Etc.
+
+  CountOperator --|> BaseOperator
+  MapOperator --|> BaseOperator
 }
+
+
+

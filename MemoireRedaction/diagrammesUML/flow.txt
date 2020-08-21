@@ -29,5 +29,8 @@ class Flow<T> {
   <K, V> groupByKey(): Map<K,V>
   <V> reduceByKey(): V
 }
+@enduml
 
+@startuml
+class Flow<T>
 @enduml
