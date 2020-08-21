@@ -54,30 +54,35 @@ namespace PpFf {
             stages.push_back(stage);
             
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
-            Node *currentNode = nodes.size() > 0 ? nodes.back() : NULL;
+            Node *lastNode = nodes.size() > 0 ? nodes.back() : NULL;
+            Farm* farm = dynamic_cast<Farm*>(lastNode);
 
-            if (!isParallel()) {
-            	if (currentNode != NULL && currentNode->type() == FARM_NODE) {
-                    Farm *farm = (Farm*) currentNode;
-                    farm->addCollector(new Empty());                    
-            	}
-                nodes.push_back(stage->operators[0]);
-            } else {
-            	Farm *farm;
-            	if (currentNode == NULL || currentNode->type() != FARM_NODE) {
+            if ( farm == NULL ) {
+                // Le dernier noeud n'est pas un Farm.
+                if (isParallel()) {
+                    // Execution parallele => on cree un farm.
                     farm = new Farm(no_workers);
                     nodes.push_back(farm);
-            	} else {
-                    farm = (Farm*) currentNode;
+                    farm->addStage(stage);
+                } else {
+                    // Execution non parallele => pas besoin de farm.
+                    nodes.push_back(stage->operators[0]);
+                }
+            } else {
+                // Le dernier noeud est deja un Farm
+                if (isParallel()) {
                     if (farm->nbWorkers() != no_workers) {
+                        // Le nombre de workers a change => nouveau farm.
                         farm->addCollector(new Empty());
                         farm = new Farm(no_workers);
                         nodes.push_back(farm);
-                    } else {
-                        // NOOP: Nombre de workers demandes = nombre de workers deja actifs.
                     }
-            	}
-                farm->addStage(stage);
+                    farm->addStage(stage);
+                } else {
+                    // Redevenu sequentiel.
+                    farm->addCollector(new Empty());                    
+                    nodes.push_back(stage->operators[0]);
+                }
             }
         }
 

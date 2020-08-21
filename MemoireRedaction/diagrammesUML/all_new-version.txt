@@ -45,7 +45,6 @@ package Pipeline {
     }
 
     abstract class Node {
-      type(): NodeType
       build_ff_node(): ff_node
     }
   }
@@ -70,13 +69,6 @@ package Pipeline {
     ff_pipeline --> "1..*\n{ordered}" ff_node
   }
 
-
-  enum NodeType {
-    BASIC_NODE
-    WORKER_NODE
-    FARM_NODE
-  }
-  
 }  
 
 Farm --|> Node

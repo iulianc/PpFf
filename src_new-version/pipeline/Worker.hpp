@@ -11,7 +11,6 @@ namespace PpFf {
     class Worker: public Node {
     public:
         Worker() {
-            nodeType = WORKER_NODE;
         }
 
         ~Worker() {

@@ -36,14 +36,11 @@ object sourceOp {
   .......
   begin = ...
   end = ...
-  nodeType = BASIC_NODE
 }
 
 object maxOp {
   class = MaxOperator<int>
   superclass = BaseOperator < Node < ff_node
-  .......
-  nodeType = BASIC_NODE
 }
 
 sourceStage --> "operators[0]" sourceOp

@@ -36,21 +36,16 @@ object sourceOp #GreenYellow {
   ......
   begin = ...
   end = ...
-  nodeType = BASIC_NODE
 }
 
 object maxOp0 #GreenYellow {
   class = MaxOperator<int>
   superclass = BaseOperator < Node < ff_node
-  ......
-  nodeType = BASIC_NODE
 }
 
 object maxOp1 #GreenYellow {
   class = MaxOperator<int>
   superclass = BaseOperator < Node < ff_node
-  ......
-  nodeType = BASIC_NODE
 }
 
 sourceStage --> "operators[0]" sourceOp
@@ -84,15 +79,11 @@ together {
 object worker0 {
   class = Worker
   superclass = Node < ff_node
-  .....
-  nodeType = WORKER_NODE
 }
 
 object worker1 {
   class = Worker
   superclass = Node < ff_node
-  .....
-  nodeType = WORKER_NODE
 }
 }
 
@@ -107,7 +98,6 @@ object farm {
   superclass = Node < ff_node
   ......
   no_workers = 2
-  nodeType = FARM_NODE
 }
 
 object ff_pipeline_ #GreenYellow {

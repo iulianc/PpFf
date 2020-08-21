@@ -13,7 +13,6 @@ namespace PpFf {
     class Farm: public Node {
     public:
         Farm(unsigned int no_workers) : no_workers(no_workers) {
-            nodeType = FARM_NODE;
             _ff_farm = new ff_farm();
             for (unsigned int i = 0 ; i < no_workers; i++) {
                 workers.push_back(new Worker());
