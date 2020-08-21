@@ -17,7 +17,7 @@ namespace PpFf {
 
         virtual void* svc(void* task) = 0;
 
-        virtual ff_node* ff_node_() {
+        virtual ff_node* build_ff_node() {
             return this;
         }
 

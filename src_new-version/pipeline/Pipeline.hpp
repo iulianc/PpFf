@@ -81,10 +81,10 @@ namespace PpFf {
             }
         }
 
-        ff_node* ff_node_() {
+        ff_node* build_ff_node() {
             ff_pipeline *pipe = new ff_pipeline();
             for (Node *node : nodes) {
-                pipe->add_stage(node->ff_node_());
+                pipe->add_stage(node->build_ff_node());
             }
 
             return pipe;
@@ -104,7 +104,7 @@ namespace PpFf {
         }        
 
         int run(bool = false) {
-            ff_pipeline *pipe = (ff_pipeline*) ff_node_();
+            ff_pipeline *pipe = (ff_pipeline*) build_ff_node();
             if (pipe->run_and_wait_end() < 0) error("running pipeline");
 
             return 1;

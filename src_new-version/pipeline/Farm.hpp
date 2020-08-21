@@ -53,10 +53,10 @@ namespace PpFf {
             _ff_farm->add_collector(node);
         }
 
-        ff_node* ff_node_() {
+        ff_node* build_ff_node() {
             std::vector<ff_node*> innerWorkers;
             for (Worker* worker: workers) {
-                innerWorkers.push_back((ff_node*) worker->ff_node_());
+                innerWorkers.push_back((ff_node*) worker->build_ff_node());
             }
             _ff_farm->add_workers(innerWorkers);
 

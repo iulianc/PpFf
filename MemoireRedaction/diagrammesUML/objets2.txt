@@ -30,7 +30,7 @@ object maxStage {
   stageType = COLLECTOR_STAGE
 }
 
-object sourceOp {
+object sourceOp #GreenYellow {
   class = SourceOperator<T, Iterator>
   superclass = BaseOperator < Node < ff_node
   ......
@@ -39,14 +39,14 @@ object sourceOp {
   nodeType = BASIC_NODE
 }
 
-object maxOp0 {
+object maxOp0 #GreenYellow {
   class = MaxOperator<int>
   superclass = BaseOperator < Node < ff_node
   ......
   nodeType = BASIC_NODE
 }
 
-object maxOp1 {
+object maxOp1 #GreenYellow {
   class = MaxOperator<int>
   superclass = BaseOperator < Node < ff_node
   ......
@@ -59,8 +59,8 @@ maxStage --> "operators[0]" maxOp0
 maxStage --> "operators[1]" maxOp1
 
 
-worker0 --> "nodes[0]" maxOp0
-worker1 --> "nodes[0]" maxOp1
+worker0 --> "workers[0]" maxOp0
+worker1 --> "workers[1]" maxOp1
 
 
 object pipe {
@@ -110,13 +110,13 @@ object farm {
   nodeType = FARM_NODE
 }
 
-object ff_pipeline_ <<ff_node_()>> {
+object ff_pipeline_ #GreenYellow {
   class = ff_pipeline
 }
 pipe ..> ff_pipeline_
-note on link: "pipe.ff_node_()"
+note on link: "pipe.build_ff_node()"
 
-object ff_farm_ <<ff_node_()>> {
+object ff_farm_ #GreenYellow {
   class = ff_farm
 }
 
@@ -124,7 +124,7 @@ ff_pipeline_ --> "nodes_list[0]" sourceOp
 ff_pipeline_ --> "nodes_list[1]" ff_farm_
 
 farm ..> ff_farm_
-note on link: "pp.ff_node_()"
+note on link: "pp.build_ff_node()"
 
 
 ff_farm_ --> maxOp0

@@ -30,7 +30,7 @@ namespace PpFf {
             nodes.push_back(node);
         }        
 
-        ff_node* ff_node_() {
+        ff_node* build_ff_node() {
             if (nodes.size() ==  1) {
                 return nodes[0];
             } else {

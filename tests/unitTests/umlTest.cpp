@@ -39,7 +39,7 @@ TEST_CASE( "objets3", "UML" ) {
         Flow
         ::source<int>(elems.begin(), elems.end())
         .parallel(2)
-        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
+        .map<int, int>(([](int *in){ *in *= 3; return in; }))
         .parallel(4)
         .max<int>();
 
@@ -54,11 +54,10 @@ TEST_CASE( "objets4", "UML" ) {
         Flow
         ::source<int>(elems.begin(), elems.end())
         .parallel(2)
-        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
-        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
-        .map<int, int>(([](int *in){ *in = *in * 3; return in; }))
+        .map<int, int>(([](int *in){ *in *= 3; return in; }))
+        .map<int, int>(([](int *in){ *in += 1; return in; }))
         .parallel(4)
         .max<int>();
 
-    REQUIRE( currentResult == 243 );
+    REQUIRE( currentResult == 28 );
 }
