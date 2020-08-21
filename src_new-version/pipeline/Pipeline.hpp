@@ -13,10 +13,9 @@ using namespace ff;
 
 namespace PpFf {
 
-    class Pipeline: public Node {
+    class Pipeline {
     public:
         Pipeline() : no_workers(1) {
-            nodeType = PIPELINE_NODE;
         }
 
         ~Pipeline() {

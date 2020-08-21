@@ -87,7 +87,6 @@ Farm --> "ff_node_" ff_farm
 Worker --> "ff_node_" ff_node
 Pipeline --> "ff_node_" ff_pipeline
 
-Pipeline --|> Node
 Farm --|> Node
 Worker --|> Node
 Worker *--> "nodes\n1..*\n{ordered}" Node

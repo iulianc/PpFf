@@ -7,7 +7,7 @@ using namespace ff;
 
 namespace PpFf {
 
-    enum NodeType { BASIC_NODE, WORKER_NODE, FARM_NODE, PIPELINE_NODE, UNDEFINED_NODE };
+    enum NodeType { BASIC_NODE, WORKER_NODE, FARM_NODE };
 
     class Node : public ff_node {
     public:
