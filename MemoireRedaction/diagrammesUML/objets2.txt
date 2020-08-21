@@ -20,33 +20,47 @@ object currentResult {
 
 object sourceStage {
  class = BaseStage<SourceOp>
- .......
+ ......
  stageType = SOURCE_STAGE
 }
 
 object maxStage {
   class = CollectorStage<MaxOperator<int>>
-  .......
+  ......
   stageType = COLLECTOR_STAGE
 }
 
 object sourceOp {
   class = SourceOperator<T, Iterator>
   superclass = BaseOperator < Node < ff_node
-  .......
+  ......
   begin = ...
   end = ...
+  nodeType = BASIC_NODE
 }
 
-object maxOp {
+object maxOp0 {
   class = MaxOperator<int>
   superclass = BaseOperator < Node < ff_node
-  .......
+  ......
+  nodeType = BASIC_NODE
+}
+
+object maxOp1 {
+  class = MaxOperator<int>
+  superclass = BaseOperator < Node < ff_node
+  ......
+  nodeType = BASIC_NODE
 }
 
 sourceStage --> "operators[0]" sourceOp
 
-maxStage --> "operators[0]" maxOp
+maxStage --> "operators[0]" maxOp0
+maxStage --> "operators[1]" maxOp1
+
+
+worker0 --> "nodes[0]" maxOp0
+worker1 --> "nodes[0]" maxOp1
 
 
 object pipe {
@@ -62,17 +76,48 @@ pipe --> "stages[0]" sourceStage
 pipe --> "nodes[0]" sourceStage
 
 pipe --> "stages[1]" maxStage
-pipe --> "nodes[1]" maxStage
+pipe --> "nodes[1]" farm
 
+'farm -- maxStage
+
+together {
+object worker0 {
+  class = Worker
+  superclass = Node < ff_node
+  .....
+  nodeType = WORKER_NODE
+}
+
+object worker1 {
+  class = Worker
+  superclass = Node < ff_node
+  .....
+  nodeType = WORKER_NODE
+}
+}
+
+farm --> "workers[0]" worker0
+
+
+farm --> "workers[1]" worker1
+
+
+object farm {
+  class = Farm
+  superclass = Node < ff_node
+  ......
+  no_workers = 2
+  nodeType = FARM_NODE
+}
+
+/'
 object ff_node_ {
   class = ff_pipeline
 }
-
 pipe ..> ff_node_
 note on link: "ff_node_()"
 
 ff_node_ --> "nodes_list[0]" sourceOp
 ff_node_ --> "nodes_list[1]" maxOp
-
-
+'/
 @enduml
