@@ -66,12 +66,12 @@ pipe --> "nodes[0]" sourceStage
 pipe --> "stages[1]" maxStage
 pipe --> "nodes[1]" maxStage
 
-object ff_node_ {
+object ff_node_ <<ff_node_()>> {
   class = ff_pipeline
 }
 
 pipe ..> ff_node_
-note on link: "ff_node_()"
+note on link: "pipe.ff_node_()"
 
 ff_node_ --> "nodes_list[0]" sourceOp
 ff_node_ --> "nodes_list[1]" maxOp

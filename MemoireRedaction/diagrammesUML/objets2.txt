@@ -110,14 +110,24 @@ object farm {
   nodeType = FARM_NODE
 }
 
-/'
-object ff_node_ {
+object ff_pipeline_ <<ff_node_()>> {
   class = ff_pipeline
 }
-pipe ..> ff_node_
-note on link: "ff_node_()"
+pipe ..> ff_pipeline_
+note on link: "pipe.ff_node_()"
 
-ff_node_ --> "nodes_list[0]" sourceOp
-ff_node_ --> "nodes_list[1]" maxOp
-'/
+object ff_farm_ <<ff_node_()>> {
+  class = ff_farm
+}
+
+ff_pipeline_ --> "nodes_list[0]" sourceOp
+ff_pipeline_ --> "nodes_list[1]" ff_farm_
+
+farm ..> ff_farm_
+note on link: "pp.ff_node_()"
+
+
+ff_farm_ --> maxOp0
+ff_farm_ --> maxOp1
+
 @enduml
