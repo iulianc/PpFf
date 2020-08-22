@@ -44,7 +44,7 @@ package Pipeline {
     class Worker {
     }
 
-    abstract class Node {
+    class Node {
       build_ff_node(): ff_node
     }
   }
@@ -77,8 +77,8 @@ Worker *--> "nodes\n1..*\n{ordered}" Node
 
 Farm *-> "workers\n1..*\n{ordered}" Worker
 
-Node -|> ff_node
-BaseOperator --|> Node
+Node --> ff_node
+BaseOperator --|> ff_node
 
 package Stages {
 
