@@ -2,20 +2,32 @@
 #define NODE_HPP
 
 #include <ff/ff.hpp>
+#include <operators/Empty.hpp>
 
 using namespace ff;
 
 namespace PpFf {
 
-    class Node : public ff_node {
+    class Node {
     public:
-        virtual void* svc(void* task) = 0;
-        
-        virtual ff_node* build_ff_node() {
-            return this;
+        Node() { 
+            _ff_node = new Empty();
         }
-    };
+        
+        Node(ff_node* node) : _ff_node(node) 
+        {}
 
+        virtual ~Node() {
+            delete _ff_node;
+        } 
+
+        virtual ff_node* build_ff_node() {
+            return _ff_node;
+        }
+
+    private:
+        ff_node* _ff_node; 
+    };
 }
 
 #endif

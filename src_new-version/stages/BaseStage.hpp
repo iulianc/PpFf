@@ -4,13 +4,14 @@
 #include <functional>
 #include <utilities/NullType.hpp>
 #include <stages/Stage.hpp>
+#include <pipeline/Node.hpp>
 
 namespace PpFf {
 
     template< typename TOperator, StageType stageType_ = INTERMEDIATE_STAGE >
     class BaseStage: public Stage {
     public:
-        std::vector<TOperator*> operators;
+        std::vector<Node*> operators;
 
         BaseStage() {
             stageType = stageType_;
@@ -27,7 +28,7 @@ namespace PpFf {
         template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator());
+                operators.push_back(new Node(new TOperator()));
             }
         }
 
@@ -35,7 +36,7 @@ namespace PpFf {
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances, std::function<Param2*(Param1*)> const& taskFunc) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(taskFunc));
+                operators.push_back(new Node(new TOperator(taskFunc)));
             }
         }
 
@@ -43,7 +44,7 @@ namespace PpFf {
         template< typename Param1, typename Param2, typename Param3 >
         void addOperator(int const& nb_instances, std::function<Param2*(Param1*)> const& taskFunc1, std::function<Param3*(Param1*)> const& taskFunc2) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(taskFunc1, taskFunc2));
+                operators.push_back(new Node(new TOperator(taskFunc1, taskFunc2)));
             }
         }
 
@@ -51,7 +52,7 @@ namespace PpFf {
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances, std::function<Param2(Param1*)> const& taskFunc) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(taskFunc));
+                operators.push_back(new Node(new TOperator(taskFunc)));
             }
         }
 
@@ -59,7 +60,7 @@ namespace PpFf {
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances, std::function<void(Param1*)> const& taskFunc) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(taskFunc));
+                operators.push_back(new Node(new TOperator(taskFunc)));
             }
         }
         
@@ -67,7 +68,7 @@ namespace PpFf {
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances, Param1 &param1, Param2 &param2) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(param1, param2));
+                operators.push_back(new Node(new TOperator(param1, param2)));
             }
         }
 
@@ -75,7 +76,7 @@ namespace PpFf {
         template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances, Param1 const& param1) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(param1));
+                operators.push_back(new Node(new TOperator(param1)));
             }
         }
 
@@ -83,7 +84,7 @@ namespace PpFf {
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances, std::function<void(Param2*, Param1*)> const& taskFunc1, std::function<void(Param2*, Param2*)> const& taskFunc2) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(taskFunc1, taskFunc2));
+                operators.push_back(new Node(new TOperator(taskFunc1, taskFunc2)));
             }
         }
 
@@ -91,7 +92,7 @@ namespace PpFf {
         template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
         void addOperator(int const& nb_instances, std::function<void(Param1*, Param1*)> taskFunc) {
             for (int i = 0; i < nb_instances; i++) {
-                operators.push_back(new TOperator(taskFunc));
+                operators.push_back(new Node(new TOperator(taskFunc)));
             }
         }
     };

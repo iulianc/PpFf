@@ -2,13 +2,12 @@
 #define BASEOPERATOR_HPP
 
 #include <ff/ff.hpp>
-#include <pipeline/Node.hpp>
 
 using namespace ff;
 
 namespace PpFf {
 
-    class BaseOperator : public Node {
+    class BaseOperator : public ff_node {
     public:
         virtual void* svc(void * task) = 0;
 

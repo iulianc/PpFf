@@ -21,21 +21,17 @@ namespace PpFf {
             nodes.clear();
         }          
 
-        void* svc(void* task) {
-            return NULL;
-        }
-
         void addNode(Node* node) {
             nodes.push_back(node);
         }        
 
         ff_node* build_ff_node() {
             if (nodes.size() ==  1) {
-                return nodes[0];
+                return nodes[0]->build_ff_node();
             } else {
                 ff_pipeline *pipe = new ff_pipeline();
-                for (ff_node* node: nodes) {
-                    pipe->add_stage(node);
+                for (Node* node: nodes) {
+                    pipe->add_stage(node->build_ff_node());
                 }
                 return pipe;
             }

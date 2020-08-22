@@ -13,7 +13,7 @@ using namespace ff;
 
 namespace PpFf {
 
-    class Pipeline {
+    class Pipeline: public Node {
     public:
         Pipeline() : no_workers(1) {
         }
@@ -30,10 +30,6 @@ namespace PpFf {
             stages.clear();
             nodes.clear();
         }
-
-        void* svc(void * task) {
-            return NULL;
-        }  
 
         int nbWorkers() {
             return no_workers;

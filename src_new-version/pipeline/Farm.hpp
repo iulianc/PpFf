@@ -27,10 +27,6 @@ namespace PpFf {
             workers.clear();
         }        
 
-        void* svc(void * task) {
-            return NULL;
-        }   
-
         template< typename T >
         void addStage(T* stage) {
             if (stage->isCollector()) {
@@ -55,7 +51,7 @@ namespace PpFf {
         ff_node* build_ff_node() {
             std::vector<ff_node*> innerWorkers;
             for (Worker* worker: workers) {
-                innerWorkers.push_back((ff_node*) worker->build_ff_node());
+                innerWorkers.push_back(worker->build_ff_node());
             }
             _ff_farm->add_workers(innerWorkers);
 

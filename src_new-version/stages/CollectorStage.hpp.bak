@@ -20,9 +20,7 @@ namespace PpFf {
 
             return ((TOperator*) (this->operators[0])->build_ff_node())->value();
         }
-        
     };
-
 }
 
 #endif
