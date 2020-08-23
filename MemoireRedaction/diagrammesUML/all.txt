@@ -24,7 +24,6 @@ skinparam classAttributeIconSize 0
 
 '!include operators.txt
 
-!include operatorsBase.txt
 
 
 package Pipeline {
@@ -79,7 +78,6 @@ Worker *--> "nodes\n1..*\n{ordered}" Node
 Farm *-> "workers\n1..*\n{ordered}" Worker
 
 Node --> ff_node
-BaseOperator --|> ff_node
 
 package Stages {
 
@@ -106,7 +104,7 @@ package Stages {
 
 BaseStage .|> Stage
 
-BaseStage --> "\noperators\n1..* {ordered}" BaseOperator 
+BaseStage --> "\noperators\n1..* {ordered}" Node
 
 CollectorStage --|> BaseStage
 
@@ -123,5 +121,8 @@ Pipeline *--> "stages\n1..*\n{ordered}" Stage
 
 
 Flow --> "pipe" Pipeline : implemented by > 
+
+
+!include operatorsBase.txt
 
 @enduml

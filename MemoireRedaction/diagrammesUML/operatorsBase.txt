@@ -1,10 +1,5 @@
 package Operators {
 
-  abstract class BaseOperator {
-    {abstract} <<virtual>> svc(): void*
-    +=(): BaseOperator
-  }
-
   class CountOperator<T> {
     svc(): void*
     value(): T::Value
@@ -17,9 +12,9 @@ package Operators {
   note right of CountOperator :  Etc.
   note right of MapOperator :  Etc.
 
-  CountOperator --|> BaseOperator
-  MapOperator --|> BaseOperator
 }
 
+CountOperator --|> ff_node
+MapOperator --|> ff_node
 
 
