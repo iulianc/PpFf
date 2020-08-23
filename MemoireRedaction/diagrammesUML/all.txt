@@ -5,7 +5,7 @@
 
 hide empty members
 
-skinparam linetype ortho
+'skinparam linetype ortho
 'skinparam groupInheritance 2
 
 ' Diagramme contenant l'ensemble de toutes les classes, pour avoir une
@@ -13,14 +13,18 @@ skinparam linetype ortho
 
 skinparam classAttributeIconSize 0
 
-!include diagrammeFlow.txt!0
+'Version avec details
+'!include flow.txt!0
+
+'Version avec juste nom de la classe
+!include flow.txt!1
 
 
-/' Inclure l'un ou l'autre pour simplifier le diagramme...
-   !include diagrammeOperators.txt
- '/
+/' Inclure l'un ou l'autre pour simplifier le diagramme...'/
 
-!include diagrammeOperatorsBase.txt
+'!include operators.txt
+
+!include operatorsBase.txt
 
 
 package Pipeline {
@@ -41,52 +45,41 @@ package Pipeline {
     }
 
     class Node {
-      type(): NodeType
+      build_ff_node(): ff_node
     }
   }
 
+
+}  
+
   package FastFlow {
-    together {
-      class ff_node {
-        run(): void
-      }
 
-      class ff_farm {
-      }
+    class ff_farm {
+    }
 
-      class ff_pipeline {
-      }
+    class ff_pipeline {
+      run(): void
+    }
+
+    class ff_node {
+      svc(): void*
     }
 
     ff_farm --|> ff_node
+    ff_farm --> "1..*\n{ordered}" ff_node
+
     ff_pipeline --|> ff_node
-    ff_farm --> "1..* {ordered}" ff_node
-    ff_pipeline --> "1..* {ordered}" ff_node
+    ff_pipeline --> "1..*\n{ordered}" ff_node
   }
 
-
-  enum NodeType {
-    BASIC_NODE
-    WORKER_NODE
-    FARM_NODE
-    PIPELINE_NODE
-    UNDEFINED_NODE
-  }
-  
-}  
-
-
-Pipeline --|> Node
 Farm --|> Node
 Worker --|> Node
-Worker *--> "ff_node_" ff_node
+Worker *--> "nodes\n1..*\n{ordered}" Node
 
-Farm *-> "1..* {ordered}" Worker
-Farm *--> "ff_node_" ff_farm
+Farm *-> "workers\n1..*\n{ordered}" Worker
 
-'NodeType "type" <- Node
-
-Node *--> "ff_node_" ff_node
+Node --> ff_node
+BaseOperator --|> ff_node
 
 package Stages {
 
@@ -95,17 +88,20 @@ package Stages {
 
   enum StageType {
     SOURCE_STAGE
-    NON_SOURCE_STAGE
+    INTERMEDIATE_STAGE
+    COLLECTOR_STAGE
   }
 
  class BaseStage<TOperator, StageType> {
    isSource(): bool
-   isFinal(): bool
+   isCollector(): bool
  }
 
   class CollectorStage<TOperator> {
     value(): TOperator::Value
   }
+
+  StageType .. BaseStage
 }
 
 BaseStage .|> Stage
@@ -114,12 +110,14 @@ BaseStage --> "\noperators\n1..* {ordered}" BaseOperator
 
 CollectorStage --|> BaseStage
 
-Pipeline *--> "source" Stage
+'Pipeline *--> "source" Node
+'note on link : source &#8712; stages 
 
-Pipeline *--> "stages 1..* {ordered}" Stage
-note on link : source &#8712; stages 
+Pipeline *--> "nodes\n1..*\n{ordered}" Node
 
-Pipeline *--> "ff_node_" ff_pipeline
+Pipeline *--> "stages\n1..*\n{ordered}" Stage
+
+
 
 Flow --> "pipe" Pipeline : implemented by > 
 
