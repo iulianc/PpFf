@@ -5,7 +5,7 @@
 
 hide empty members
 
-'skinparam linetype ortho
+skinparam linetype ortho
 'skinparam groupInheritance 2
 
 ' Diagramme contenant l'ensemble de toutes les classes, pour avoir une
@@ -110,8 +110,11 @@ BaseStage --> "\noperators\n1..* {ordered}" BaseOperator
 
 CollectorStage --|> BaseStage
 
-'Pipeline *--> "source" Node
-'note on link : source &#8712; stages 
+Pipeline --> "source\n1" BaseStage
+note left on link : source &#8712; stages 
+
+Pipeline --> "collector\n1" CollectorStage
+note on link : collector &#8712; stages 
 
 Pipeline *--> "nodes\n1..*\n{ordered}" Node
 

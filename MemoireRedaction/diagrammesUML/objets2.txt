@@ -53,6 +53,9 @@ sourceStage --> "operators[0]" sourceOp
 maxStage --> "operators[0]" maxOp0
 maxStage --> "operators[1]" maxOp1
 
+'ff_farm_ --> "nodes_list[0]" maxOp0
+'ff_farm_ --> "nodes_list[1]" maxOp1
+
 
 worker0 --> "workers[0]" maxOp0
 worker1 --> "workers[1]" maxOp1

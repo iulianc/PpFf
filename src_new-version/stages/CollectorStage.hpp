@@ -13,7 +13,7 @@ namespace PpFf {
     	CollectorStage() {
     	}
 
-        Value value() {
+        Value value_() {
             for (unsigned int i = 1; i < this->operators.size(); i++) {
                 *((TOperator*) (this->operators[0])->build_ff_node()) += *((TOperator*) (this->operators[i])->build_ff_node());
             }
