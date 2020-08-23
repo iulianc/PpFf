@@ -1,14 +1,14 @@
 #ifndef PEEKOPERATOR_HPP
 #define PEEKOPERATOR_HPP
 
+#include <ff/ff.hpp>
 #include <functional>
-#include <operators/BaseOperator.hpp>
 
 
 namespace PpFf {
 
     template < typename T >
-    class PeekOperator: public BaseOperator {
+    class PeekOperator: public ff::ff_node {
     public:
         PeekOperator(std::function< void(T*) > const& taskFunc): taskFunc(taskFunc)
         {}

@@ -1,14 +1,14 @@
 #ifndef REDUCEOPERATOR_HPP
 #define REDUCEOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
 
 
 namespace PpFf {
 
     template < typename In, typename Out >
-    class ReduceOperator: public BaseOperator {
+    class ReduceOperator: public ff::ff_node {
     public:
         typedef Out Value;
 

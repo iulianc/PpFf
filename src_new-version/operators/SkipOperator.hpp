@@ -1,14 +1,14 @@
 #ifndef SKIPOPERATOR_HPP
 #define SKIPOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 
 
 namespace PpFf {
 
     template < typename T >
-    class SkipOperator: public BaseOperator {
+    class SkipOperator: public ff::ff_node {
     public:
         SkipOperator(int n): n(n), nb(0)
         {}

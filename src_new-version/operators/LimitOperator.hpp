@@ -1,14 +1,13 @@
 #ifndef LIMITOPERATOR_HPP
 #define LIMITOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
-
 
 namespace PpFf {
 
     template < typename T >
-    class LimitOperator: public BaseOperator {
+    class LimitOperator: public ff::ff_node {
     public:
         LimitOperator(int n): n(n), nb(0)
         {}

@@ -1,14 +1,14 @@
 #ifndef ANYMACHOPERATOR_HPP
 #define ANYMACHOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 
 
 namespace PpFf{
 
     template < typename T >
-    class AnyMatchOperator: public BaseOperator {
+    class AnyMatchOperator: public ff::ff_node {
     public:
         typedef bool Value;
 

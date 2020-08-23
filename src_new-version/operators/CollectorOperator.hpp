@@ -1,14 +1,12 @@
 #ifndef COLLECTOROPERATOR_HPP
 #define COLLECTOROPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
-
 using namespace ff;
 
 namespace PpFf {
 
     template < typename T, typename TContainer >
-    class CollectorOperator: public BaseOperator {
+    class CollectorOperator: public ff_node {
     public:
         typedef TContainer Value;
 

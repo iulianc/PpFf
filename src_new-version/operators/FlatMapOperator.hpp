@@ -1,14 +1,14 @@
 #ifndef FLATMAPOPERATOR_HPP
 #define FLATMAPOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 
 
 namespace PpFf {
 
     template < typename In, typename TContainer, typename Out >
-    class FlatMapOperator: public BaseOperator {
+    class FlatMapOperator: public ff::ff_node {
 
     public:
         FlatMapOperator(std::function< TContainer*(In*) > const& taskFunc) : taskFunc(taskFunc) 

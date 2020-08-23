@@ -1,14 +1,14 @@
 #ifndef ALLMACHOPERATOR_HPP
 #define ALLMACHOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 
 
 namespace PpFf {
 
     template < typename T >
-    class AllMatchOperator: public BaseOperator {
+    class AllMatchOperator: public ff::ff_node {
     public:
         typedef bool Value;
 

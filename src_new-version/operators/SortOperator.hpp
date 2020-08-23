@@ -3,7 +3,7 @@
 
 #include <functional>
 #include <algorithm>
-#include <operators/BaseOperator.hpp>
+
 //#include <collections/Collection.hpp>
 
 using namespace ff;
@@ -11,7 +11,7 @@ using namespace ff;
 namespace PpFf {
     
     template< typename T >
-    class SortOperator: public BaseOperator {
+    class SortOperator: public ff_node {
     public:
     	typedef std::vector<T> Value;
 

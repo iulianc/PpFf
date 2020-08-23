@@ -3,17 +3,16 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-#include <operators/BaseOperator.hpp>
 
 using namespace ff;
 
 namespace PpFf {
 
     template< typename T, typename It, bool Preserve = false >
-    class SourceOperator: public BaseOperator {};
+    class SourceOperator: public ff_node {};
 
     template< typename T, typename It >
-    class SourceOperator< T, It, false >: public BaseOperator {
+    class SourceOperator< T, It, false >: public ff_node {
     public:
         SourceOperator(It &begin, It &end): begin(begin), end(end)
         {}
@@ -42,7 +41,7 @@ namespace PpFf {
 
 
     template< typename T, typename It >
-    class SourceOperator< T*, It, false >: public BaseOperator {
+    class SourceOperator< T*, It, false >: public ff_node {
     public:
         SourceOperator(It const& begin, It const& end): begin(begin), end(end)
         {}

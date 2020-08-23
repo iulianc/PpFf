@@ -32,7 +32,7 @@ object maxStage {
 
 object sourceOp #GreenYellow {
   class = SourceOperator<T, Iterator>
-  superclass = BaseOperator < ff_node
+  superclass = ff_node
   ......
   begin = ...
   end = ...
@@ -40,12 +40,12 @@ object sourceOp #GreenYellow {
 
 object maxOp1 #GreenYellow {
   class = MaxOperator<int>
-  superclass = BaseOperator < ff_node
+  superclass = ff_node
 }
 
 object maxOp0 #GreenYellow {
   class = MaxOperator<int>
-  superclass = BaseOperator < ff_node
+  superclass = ff_node
 }
 
 sourceStage --> "operators[0]" sourceOp

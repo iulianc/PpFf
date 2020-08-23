@@ -1,7 +1,6 @@
 #ifndef EMPTY_HPP
 #define EMPTY_HPP
 
-//#include <ff/node.hpp>
 #include <ff/ff.hpp>
 
 using namespace ff;

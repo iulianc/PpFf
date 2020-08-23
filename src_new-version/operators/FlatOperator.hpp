@@ -1,13 +1,13 @@
 #ifndef FLATOPERATOR_HPP
 #define FLATOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 
 namespace PpFf {
 
     template < typename TContainer, typename Out >
-    class FlatOperator: public BaseOperator {
+    class FlatOperator: public ff::ff_node {
     public:
         FlatOperator()
         {}

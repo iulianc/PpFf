@@ -1,14 +1,14 @@
 #ifndef MAXOPERATOR_HPP
 #define MAXOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
 #include <functional>
 
 namespace PpFf {
 
     template < typename T >
-    class MaxOperator: public BaseOperator {
+    class MaxOperator: public ff::ff_node {
     public:
         typedef T Value;
 

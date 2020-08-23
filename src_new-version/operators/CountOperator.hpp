@@ -1,12 +1,11 @@
 #ifndef COUNTOPERATOR_HPP
 #define COUNTOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
-
+#include <ff/ff.hpp>
 namespace PpFf {
 
     template < typename T >
-    class CountOperator: public BaseOperator {
+    class CountOperator: public ff::ff_node {
     public:
         typedef T Value;
 

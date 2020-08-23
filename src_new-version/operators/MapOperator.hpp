@@ -1,14 +1,15 @@
 #ifndef MAPOPERATOR_HPP
 #define MAPOPERATOR_HPP
 
+
+#include <ff/ff.hpp>
 #include <functional>
-#include <operators/BaseOperator.hpp>
 
 
 namespace PpFf {
 
     template < typename In, typename Out >
-    class MapOperator: public BaseOperator {
+    class MapOperator: public ff::ff_node {
     public:
         MapOperator(std::function< Out*(In*) > const& taskFunc): taskFunc(taskFunc)
         {}

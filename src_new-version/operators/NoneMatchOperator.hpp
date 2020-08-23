@@ -1,14 +1,14 @@
 #ifndef NONEMACHOPERATOR_HPP
 #define NONEMACHOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 
 
 namespace PpFf{
 
     template < typename T >
-    class NoneMatchOperator: public BaseOperator {
+    class NoneMatchOperator: public ff::ff_node {
     public:
         typedef bool Value;
 

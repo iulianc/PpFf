@@ -1,7 +1,7 @@
 #ifndef REDUCEBYKEYOPERATOR_HPP
 #define REDUCEBYKEYOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
 #include <utilities/Identity.hpp>
 #include <functional>
@@ -9,7 +9,7 @@
 namespace PpFf {
 
     template < typename In, typename K, typename V, typename MapContainer >
-    class ReduceByKeyOperator : public BaseOperator {
+    class ReduceByKeyOperator : public ff::ff_node {
     public:
         typedef MapContainer Value;
 

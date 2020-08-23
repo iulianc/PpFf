@@ -1,12 +1,12 @@
 #ifndef SUMOPERATOR_HPP
 #define SUMOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class SumOperator: public BaseOperator {
+    class SumOperator: public ff::ff_node {
     public:
         typedef T Value;
         SumOperator()

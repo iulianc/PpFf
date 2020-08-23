@@ -1,14 +1,14 @@
 #ifndef FINDOPERATOR_HPP
 #define FINDOPERATOR_HPP
 
-#include <operators/BaseOperator.hpp>
+#include <ff/ff.hpp>
 #include <functional>
 
 
 namespace PpFf {
 
     template < typename T >
-    class FindOperator: public BaseOperator {
+    class FindOperator: public ff::ff_node {
 
     public:
         FindOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc)
