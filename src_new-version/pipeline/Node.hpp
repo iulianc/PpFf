@@ -10,11 +10,7 @@ namespace PpFf {
 
     class Node {
     public:
-        Node() { 
-            _ff_node = new Empty();
-        }
-        
-        Node(ff_node* node) : _ff_node(node) 
+        Node(ff_node* node = NULL) : _ff_node(node)
         {}
 
         virtual ~Node() {
