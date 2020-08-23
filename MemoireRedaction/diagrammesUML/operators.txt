@@ -1,23 +1,22 @@
-
 package Operators {
 
-  class CountOperator {
+  class CountOperator<T> {
+    svc(): void*
+    value(): T::Value
   }
 
-  class LimitOperator {
+  class MapOperator<T> {
+    svc(): void*
   }
 
-  class MapOperator {
-  }
+  class FooOp
 
-  class LinesFromFileOperator {
-  }
+  hide FooOp
+  note right of FooOp :  Etc.
 
-  note right of CountOperator :  Etc.
 }
 
 CountOperator --|> ff_node
-LimitOperator --|> ff_node
-LinesFromFileOperator --|> ff_node
 MapOperator --|> ff_node
+
 

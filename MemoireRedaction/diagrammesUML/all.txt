@@ -20,12 +20,6 @@ skinparam classAttributeIconSize 0
 !include flow.txt!1
 
 
-/' Inclure l'un ou l'autre pour simplifier le diagramme...'/
-
-'!include operators.txt
-
-
-
 package Pipeline {
 
   class Pipeline {
@@ -123,6 +117,6 @@ Pipeline *--> "stages\n1..*\n{ordered}" Stage
 Flow --> "pipe" Pipeline : implemented by > 
 
 
-!include operatorsBase.txt
+!include operators.txt
 
 @enduml
