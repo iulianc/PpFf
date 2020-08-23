@@ -3,8 +3,6 @@
 
 #include <ff/ff.hpp>
 
-using namespace ff;
-
 namespace PpFf {
 
     class Empty: public ff::ff_node {

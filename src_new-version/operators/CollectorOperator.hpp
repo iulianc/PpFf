@@ -1,12 +1,12 @@
 #ifndef COLLECTOROPERATOR_HPP
 #define COLLECTOROPERATOR_HPP
 
-using namespace ff;
+#include <ff/ff.hpp>
 
 namespace PpFf {
 
     template < typename T, typename TContainer >
-    class CollectorOperator: public ff_node {
+    class CollectorOperator: public ff::ff_node {
     public:
         typedef TContainer Value;
 

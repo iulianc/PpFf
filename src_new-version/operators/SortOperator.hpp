@@ -3,15 +3,12 @@
 
 #include <functional>
 #include <algorithm>
-
-//#include <collections/Collection.hpp>
-
-using namespace ff;
+#include <ff/ff.hpp>
 
 namespace PpFf {
     
     template< typename T >
-    class SortOperator: public ff_node {
+    class SortOperator: public ff::ff_node {
     public:
     	typedef std::vector<T> Value;
 

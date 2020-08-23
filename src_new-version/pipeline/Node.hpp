@@ -4,25 +4,24 @@
 #include <ff/ff.hpp>
 #include <operators/Empty.hpp>
 
-using namespace ff;
 
 namespace PpFf {
 
     class Node {
     public:
-        Node(ff_node* node = NULL) : _ff_node(node)
+        Node(ff::ff_node* node = NULL) : _ff_node(node)
         {}
 
         virtual ~Node() {
             delete _ff_node;
         } 
 
-        virtual ff_node* build_ff_node() {
+        virtual ff::ff_node* build_ff_node() {
             return _ff_node;
         }
 
     private:
-        ff_node* _ff_node; 
+        ff::ff_node* _ff_node; 
     };
 }
 

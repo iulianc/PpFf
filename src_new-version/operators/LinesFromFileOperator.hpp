@@ -5,12 +5,11 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-
-using namespace ff;
+#include <ff/ff.hpp>
 
 namespace PpFf {
     
-    class LinesFromFileOperator: public ff_node {
+    class LinesFromFileOperator: public ff::ff_node {
     public:
         LinesFromFileOperator(const std::string& path) : path(path)
         {}

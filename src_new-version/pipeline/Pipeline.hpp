@@ -9,7 +9,6 @@
 #include <pipeline/Worker.hpp>
 #include <stdexcept>
 
-using namespace ff;
 
 namespace PpFf {
 
@@ -83,7 +82,7 @@ namespace PpFf {
         }
 
         ff_node* build_ff_node() {
-            ff_pipeline *pipe = new ff_pipeline();
+            ff::ff_pipeline *pipe = new ff::ff_pipeline();
             for (Node *node : nodes) {
                 pipe->add_stage(node->build_ff_node());
             }
@@ -105,7 +104,7 @@ namespace PpFf {
         }        
 
         int run(bool = false) {
-            ff_pipeline *pipe = (ff_pipeline*) build_ff_node();
+            ff::ff_pipeline *pipe = (ff::ff_pipeline*) build_ff_node();
             if (pipe->run_and_wait_end() < 0) error("running pipeline");
 
             return 1;
