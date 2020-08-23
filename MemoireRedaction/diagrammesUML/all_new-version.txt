@@ -5,7 +5,7 @@
 
 hide empty members
 
-skinparam linetype ortho
+'skinparam linetype ortho
 'skinparam groupInheritance 2
 
 ' Diagramme contenant l'ensemble de toutes les classes, pour avoir une
@@ -49,6 +49,9 @@ package Pipeline {
     }
   }
 
+
+}  
+
   package FastFlow {
 
     class ff_farm {
@@ -68,8 +71,6 @@ package Pipeline {
     ff_pipeline --|> ff_node
     ff_pipeline --> "1..*\n{ordered}" ff_node
   }
-
-}  
 
 Farm --|> Node
 Worker --|> Node
