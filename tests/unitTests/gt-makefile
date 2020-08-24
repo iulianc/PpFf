@@ -5,12 +5,12 @@ def: run
 
 # Specify the tests path
 ROOT_TESTS 	:= umlTest.cpp testAll.cpp
-ROOT_TESTS 	:= $(wildcard *.cpp)
+#ROOT_TESTS 	:= $(wildcard *.cpp)
 
 # Specify the pipe path
 ROOT_PIPE 	:= $(HOME)/ProjectMemoir/Release2/PpFf/src
 ROOT_PIPE 	:= $(HOME)/PpFf/Release2/PpFf/src
-ROOT_PIPE 	:= $(HOME)/PpFf/src_new-version
+ROOT_PIPE 	:= $(HOME)/PpFf/src
 
 # Decommenter pour compilation sur Mac OS X -- Guy T.
 TESTFILE=-DTEST_FILE=\"testdata/lorem.txt\"
