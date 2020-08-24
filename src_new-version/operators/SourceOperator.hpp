@@ -23,7 +23,7 @@ namespace PpFf {
         SourceOperator(SourceOperator&& other) noexcept: begin(std::move(other.begin)), end(std::move(other.end))
         { operatorType = SOURCE_OP; }
 
-        virtual ~SourceOperator()
+        ~SourceOperator()
         {}
 
         void* svc(void* task) {

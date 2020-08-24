@@ -25,7 +25,8 @@ namespace PpFf {
             return *this ;
         }
 
-        virtual ~SumOperator() {}
+        ~SumOperator()
+        {}
 
         void* svc(void* task) {
             sum += *((T*)task);

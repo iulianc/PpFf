@@ -28,7 +28,7 @@ namespace PpFf {
             return *this;
         }
         
-        virtual ~SortOperator()
+        ~SortOperator()
         {}
 
         void* svc(void* task) {

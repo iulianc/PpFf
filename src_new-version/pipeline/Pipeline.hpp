@@ -14,8 +14,8 @@ namespace PpFf {
 
     class Pipeline {
     public:
-        Pipeline() : no_workers(1) {
-        }
+        Pipeline() : no_workers(1)
+        {}
 
         ~Pipeline() {
             for (unsigned int i = 0; i < nodes.size(); i++) {
