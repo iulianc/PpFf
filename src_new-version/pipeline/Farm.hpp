@@ -24,15 +24,15 @@ namespace PpFf {
             workers.clear();
         }        
 
-        void addOperators(std::vector<Node*> operators) {
-            if (operators[0]->isCollector()) {
+        void addNodes(std::vector<Node*> nodes) {
+            if (nodes[0]->isCollector()) {
                 _ff_farm->remove_collector();
             }
 
-            assert(workers.size() == operators.size());
+            assert(workers.size() == nodes.size());
 
             for (unsigned int i = 0; i < workers.size(); i++){
-                workers[i]->addNode(operators[i]);
+                workers[i]->addNode(nodes[i]);
             }
         } 
 

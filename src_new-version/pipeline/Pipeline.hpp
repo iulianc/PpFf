@@ -18,11 +18,11 @@ namespace PpFf {
         {}
 
         ~Pipeline() {
-            for (unsigned int i = 0; i < nodes.size(); i++) {
-                delete nodes[i];
+            for (unsigned int i = 0; i < myNodes.size(); i++) {
+                delete myNodes[i];
             }
             
-            nodes.clear();
+            myNodes.clear();
         }
 
         int nbWorkers() {
@@ -31,29 +31,29 @@ namespace PpFf {
 
         template< typename TCollector >
         void addCollector(TCollector* collector) {
-            collector->addOperators(lastOperators);
-            collector_ = collector;
+            collector->addNodes(lastNodes);
+            myCollector = collector;
         }
 
         template< typename TCollector, typename T >
         T value() {
-            return ((TCollector*)collector_)->value();
+            return ((TCollector*)myCollector)->value();
         }
 
-        void addOperators(std::vector<Node*> operators) {
-            assert(operators.size() == no_workers);
+        void addNodes(std::vector<Node*> nodes) {
+            assert(nodes.size() == no_workers);
 
-            sourceExists |= operators[0]->isSource();
+            sourceExists |= nodes[0]->isSource();
 
             if (!sourceExists) {
                 throw std::invalid_argument( "The pipeline must have a source" );
                 return;
             }
 
-            lastOperators = operators;
+            lastNodes = nodes;
             
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
-            Node *lastNode = nodes.size() > 0 ? nodes.back() : NULL;
+            Node *lastNode = myNodes.size() > 0 ? myNodes.back() : NULL;
             Farm* farm = dynamic_cast<Farm*>(lastNode);
 
             if ( farm == NULL ) {
@@ -61,11 +61,11 @@ namespace PpFf {
                 if (isParallel()) {
                     // Execution parallele => on cree un farm.
                     farm = new Farm(no_workers);
-                    nodes.push_back(farm);
-                    farm->addOperators(operators);
+                    myNodes.push_back(farm);
+                    farm->addNodes(nodes);
                 } else {
                     // Execution non parallele => pas besoin de farm.
-                    nodes.push_back(operators[0]);
+                    myNodes.push_back(nodes[0]);
                 }
             } else {
                 // Le dernier noeud est deja un Farm
@@ -74,20 +74,20 @@ namespace PpFf {
                         // Le nombre de workers a change => nouveau farm.
                         farm->addCollector(new Empty());
                         farm = new Farm(no_workers);
-                        nodes.push_back(farm);
+                        myNodes.push_back(farm);
                     }
-                    farm->addOperators(operators);
+                    farm->addNodes(nodes);
                 } else {
                     // Redevenu sequentiel.
                     farm->addCollector(new Empty());                    
-                    nodes.push_back(operators[0]);
+                    myNodes.push_back(nodes[0]);
                 }
             }
         }
 
         ff_node* build_ff_node() {
             ff::ff_pipeline *pipe = new ff::ff_pipeline();
-            for (Node *node : nodes) {
+            for (Node *node : myNodes) {
                 pipe->add_stage(node->build_ff_node());
             }
 
@@ -116,10 +116,10 @@ namespace PpFf {
 
     private:
         unsigned int no_workers;
-        std::vector<Node*> nodes;
-        std::vector<Node*> lastOperators;
+        std::vector<Node*> myNodes;
+        std::vector<Node*> lastNodes;
         bool sourceExists = false;
-        void* collector_;
+        void* myCollector;
     };
 
 }

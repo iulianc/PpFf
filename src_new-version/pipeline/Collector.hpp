@@ -11,23 +11,21 @@ namespace PpFf {
         Collector()
         {}
 
-        void addOperators(std::vector<Node*> nodes) {
-            for (Node *node : nodes) {
-                operators.push_back(node);
-            }
+        void addNodes(std::vector<Node*> nodes) {
+            myNodes.insert(myNodes.end(), nodes.begin(), nodes.end() );
         }
         
         Value value() {
-            for (unsigned int i = 1; i < this->operators.size(); i++) {
-                *((TOperator*) operators[0]->op())
-                    += *((TOperator*) operators[i]->op());
+            for (unsigned int i = 1; i < this->myNodes.size(); i++) {
+                *((TOperator*) myNodes[0]->op())
+                    += *((TOperator*) myNodes[i]->op());
             }
 
-            return ((TOperator*) operators[0]->op())->value();
+            return ((TOperator*) myNodes[0]->op())->value();
         }
 
     private:
-        std::vector<Node*> operators;
+        std::vector<Node*> myNodes;
     };
 
 }
