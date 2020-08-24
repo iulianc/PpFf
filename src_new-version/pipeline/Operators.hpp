@@ -1,5 +1,5 @@
-#ifndef FABRICOPERATORS_HPP
-#define FABRICOPERATORS_HPP
+#ifndef OPERATORS_HPP
+#define OPERATORS_HPP
 
 #include <functional>
 #include <utilities/NullType.hpp>
@@ -8,11 +8,11 @@
 namespace PpFf {
 
     template< typename TOperator >
-    class FabricOperators {
+    class Operators {
     public:
-        //count; collect; sum; flat; sort
+        // count; collect; sum; flat; sort
         template< typename Param1 = NULL_TYPE, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances) {
+        static std::vector<Node*> create(int const& nb_instances) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator()));
@@ -21,9 +21,9 @@ namespace PpFf {
             return operators;
         }
 
-        //map; groupByKey
+        // map; groupByKey
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances, std::function<Param2*(Param1*)> const& taskFunc) {
+        static std::vector<Node*> create(int const& nb_instances, std::function<Param2*(Param1*)> const& taskFunc) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(taskFunc)));
@@ -32,9 +32,9 @@ namespace PpFf {
             return operators;
         }
 
-        //groupByKey
+        // groupByKey
         template< typename Param1, typename Param2, typename Param3 >
-        std::vector<Node*> createOperators(int const& nb_instances, std::function<Param2*(Param1*)> const& taskFunc1, std::function<Param3*(Param1*)> const& taskFunc2) {
+        static std::vector<Node*> create(int const& nb_instances, std::function<Param2*(Param1*)> const& taskFunc1, std::function<Param3*(Param1*)> const& taskFunc2) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(taskFunc1, taskFunc2)));
@@ -43,9 +43,9 @@ namespace PpFf {
             return operators;
         }
 
-        //find; anyMach; noneMach
+        // find; anyMatch; noneMatch
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances, std::function<Param2(Param1*)> const& taskFunc) {
+        static std::vector<Node*> create(int const& nb_instances, std::function<Param2(Param1*)> const& taskFunc) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(taskFunc)));
@@ -54,9 +54,9 @@ namespace PpFf {
             return operators;
         }
 
-        //peek
+        // peek
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances, std::function<void(Param1*)> const& taskFunc) {
+        static std::vector<Node*> create(int const& nb_instances, std::function<void(Param1*)> const& taskFunc) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(taskFunc)));
@@ -65,9 +65,9 @@ namespace PpFf {
             return operators;
         }
         
-        //source
+        // source
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances, Param1 &param1, Param2 &param2) {
+        static std::vector<Node*> create(int const& nb_instances, Param1 &param1, Param2 &param2) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(param1, param2)));
@@ -76,9 +76,9 @@ namespace PpFf {
             return operators;
         }
 
-        //reduce; linesFromFile; reduceByKey
+        // reduce; linesFromFile; reduceByKey
         template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances, Param1 const& param1) {
+        static std::vector<Node*> create(int const& nb_instances, Param1 const& param1) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(param1)));
@@ -87,9 +87,9 @@ namespace PpFf {
             return operators;
         }
 
-        //reduceByKey2
+        // reduceByKey2
         template< typename Param1, typename Param2, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances, std::function<void(Param2*, Param1*)> const& taskFunc1, std::function<void(Param2*, Param2*)> const& taskFunc2) {
+        static std::vector<Node*> create(int const& nb_instances, std::function<void(Param2*, Param1*)> const& taskFunc1, std::function<void(Param2*, Param2*)> const& taskFunc2) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(taskFunc1, taskFunc2)));
@@ -98,9 +98,9 @@ namespace PpFf {
             return operators;
         }
 
-        //min; max;
+        // min; max;
         template< typename Param1, typename Param2 = NULL_TYPE, typename Param3 = NULL_TYPE >
-        std::vector<Node*> createOperators(int const& nb_instances, std::function<void(Param1*, Param1*)> taskFunc) {
+        static std::vector<Node*> create(int const& nb_instances, std::function<void(Param1*, Param1*)> taskFunc) {
             std::vector<Node*> operators;
             for (int i = 0; i < nb_instances; i++) {
                 operators.push_back(new Node(new TOperator(taskFunc)));

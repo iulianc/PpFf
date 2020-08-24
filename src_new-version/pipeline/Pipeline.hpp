@@ -7,7 +7,7 @@
 #include <operators/Empty.hpp>
 #include <pipeline/Worker.hpp>
 #include <stdexcept>
-#include <stages/Collector.hpp>
+#include <pipeline/Collector.hpp>
 
 
 namespace PpFf {
@@ -30,7 +30,7 @@ namespace PpFf {
         }
 
         template< typename T >
-        void addCollector(T &collector) {
+        void addCollector(T& collector) {
             collector.addOperators(lastOperators);
         }   
 
