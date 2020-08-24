@@ -1,8 +1,8 @@
 
+#include <operators/Operator.hpp>
+#include <operators/CollectorOperator.hpp>
 #include <operators/CountOperator.hpp>
 #include <operators/SumOperator.hpp>
-#include <operators/SourceOperator.hpp>
-#include <operators/CollectorOperator.hpp>
 #include <operators/FindOperator.hpp>
 #include <operators/MapOperator.hpp>
 #include <operators/FlatOperator.hpp>
@@ -20,6 +20,7 @@
 #include <operators/NoneMatchOperator.hpp>
 #include <operators/LimitOperator.hpp>
 #include <operators/SkipOperator.hpp>
+#include <operators/SourceOperator.hpp>
 #include <operators/SortOperator.hpp>
 #include <collections/Collection.hpp>
 #include <stages/FabricOperators.hpp>
@@ -91,11 +92,11 @@ namespace PpFf {
                    template <typename ELEM, class ALLOC = std::allocator<ELEM>>
                    class TContainer >
             TContainer<T> collect() {
-            typedef CollectorOperator<T, TContainer<T>> CollectorOp;
+            typedef CollectorOperator<T, TContainer<T>> TOperator;
 
-            FabricOperators<CollectorOp> fabricOperators;
+            FabricOperators<TOperator> fabricOperators;
             pipe.addOperators(fabricOperators.createOperators(pipe.nbWorkers()));    
-            Collector<CollectorOp> collector;    
+            Collector<TOperator> collector;    
             pipe.addCollector(collector);
             pipe.run();
 

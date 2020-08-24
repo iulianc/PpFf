@@ -4,23 +4,23 @@
 #include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
 #include <functional>
-#include <operators/CollectorOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class MaxOperator: public CollectorOp {
+    class MaxOperator: public Operator {
     public:
         typedef T Value;
 
         MaxOperator(std::function< void(T*, T*) > compare): compare(compare)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         MaxOperator(const MaxOperator& other) : compare(other.compare)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         MaxOperator(MaxOperator&& other) noexcept : compare(std::move(other.compare))
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         MaxOperator& operator+=( MaxOperator& other ) {
             compare(val, other.val);

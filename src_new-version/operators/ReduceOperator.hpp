@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
-#include <operators/CollectorOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename In, typename Out >
-    class ReduceOperator: public CollectorOp {
+    class ReduceOperator: public Operator {
     public:
         typedef Out Value;
 
@@ -17,13 +17,13 @@ namespace PpFf {
         //        { reducer.accumulator = accumulator; }
 
         ReduceOperator(Reducer<In, Out> const& reducer): reducer(reducer)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         ReduceOperator(const ReduceOperator& other): reducer(other.reducer)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         ReduceOperator(ReduceOperator&& other) noexcept: reducer(std::move(other.reducer))
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         ReduceOperator& operator+=(ReduceOperator& other) {
             if (!reducer.hasCombiner) throw std::logic_error( "ReduceOperator::operator+= => There is no combiner!" );

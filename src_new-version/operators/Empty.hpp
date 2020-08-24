@@ -2,11 +2,11 @@
 #define EMPTY_HPP
 
 #include <ff/ff.hpp>
-#include <operators/IntermediateOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
-    class Empty: public IntermediateOp {
+    class Empty: public Operator {
     public:
         void* svc(void* task) {
             return task;

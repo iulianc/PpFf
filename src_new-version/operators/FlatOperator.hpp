@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-#include <operators/IntermediateOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename TContainer, typename Out >
-    class FlatOperator: public IntermediateOp {
+    class FlatOperator: public Operator {
     public:
         FlatOperator()
         {}

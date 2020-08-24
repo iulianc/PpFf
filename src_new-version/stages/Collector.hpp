@@ -16,10 +16,11 @@ namespace PpFf {
 
         Value value() {
             for (unsigned int i = 1; i < this->operators.size(); i++) {
-                *((TOperator*) (this->operators[0])->build_ff_node()) += *((TOperator*) (this->operators[i])->build_ff_node());
+                *((TOperator*) operators[0]->op())
+                    += *((TOperator*) operators[i]->op());
             }
 
-            return ((TOperator*) (this->operators[0])->build_ff_node())->value();
+            return ((TOperator*) operators[0]->op())->value();
         }
 
     private:

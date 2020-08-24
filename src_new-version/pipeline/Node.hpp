@@ -21,6 +21,10 @@ namespace PpFf {
             return _ff_node;
         }
 
+        Operator* op() {
+            return _ff_node;
+        }
+        
         bool isSource() {
             return _ff_node->isSource();
         }

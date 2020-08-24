@@ -6,20 +6,20 @@
 #include <iostream>
 #include <fstream>
 #include <ff/ff.hpp>
-#include <operators/SourceOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
     
-    class LinesFromFileOperator: public SourceOp {
+    class LinesFromFileOperator: public Operator {
     public:
         LinesFromFileOperator(const std::string& path) : path(path)
-        {}
+        { operatorType = SOURCE_OP; }
 
         LinesFromFileOperator(const LinesFromFileOperator& other) : path(other.path)
-        {}
+        { operatorType = SOURCE_OP; }
 
         LinesFromFileOperator(LinesFromFileOperator&& other) noexcept : path(std::move(other.path))
-        {}
+        { operatorType = SOURCE_OP; }
 
         ~LinesFromFileOperator()
         {}

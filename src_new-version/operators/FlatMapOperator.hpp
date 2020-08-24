@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-#include <operators/IntermediateOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename In, typename TContainer, typename Out >
-    class FlatMapOperator: public IntermediateOp {
+    class FlatMapOperator: public Operator {
 
     public:
         FlatMapOperator(std::function< TContainer*(In*) > const& taskFunc) : taskFunc(taskFunc) 

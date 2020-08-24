@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-#include <operators/IntermediateOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class SkipOperator: public IntermediateOp {
+    class SkipOperator: public Operator {
     public:
         SkipOperator(int n): n(n), nb(0)
         {}

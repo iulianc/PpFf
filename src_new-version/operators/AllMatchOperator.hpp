@@ -3,24 +3,24 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-#include <operators/CollectorOp.hpp>
+#include <operators/Operator.hpp>
 
 
 namespace PpFf {
 
     template < typename T >
-    class AllMatchOperator: public CollectorOp {
+    class AllMatchOperator: public Operator {
     public:
         typedef bool Value;
-
+        
         AllMatchOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc)
-        {}
+        { operatorType = COLLECTOR_OP; }
         
         AllMatchOperator(const AllMatchOperator& other): taskFunc(other.taskFunc)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         AllMatchOperator(AllMatchOperator&& other) noexcept: taskFunc(std::move(other.taskFunc))
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         AllMatchOperator& operator+=(const AllMatchOperator& other) {
             if (val) {

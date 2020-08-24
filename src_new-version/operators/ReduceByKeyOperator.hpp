@@ -5,29 +5,29 @@
 #include <operators/Reducer.hpp>
 #include <utilities/Identity.hpp>
 #include <functional>
-#include <operators/CollectorOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename In, typename K, typename V, typename MapContainer >
-    class ReduceByKeyOperator : public CollectorOp {
+    class ReduceByKeyOperator : public Operator {
     public:
         typedef MapContainer Value;
 
         ReduceByKeyOperator(std::function<K*(In*)> const& taskFuncOnKey, Reducer<In, V> const& reducer) :
             taskFuncOnKey(taskFuncOnKey),
             reducer(reducer)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         ReduceByKeyOperator(const ReduceByKeyOperator& other) :
             taskFuncOnKey(other.taskFuncOnKey),
             reducer(other.reducer)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         ReduceByKeyOperator(ReduceByKeyOperator&& other) noexcept :
             taskFuncOnKey(std::move(other.taskFuncOnKey)),
             reducer(std::move(other.reducer))
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         ~ReduceByKeyOperator()
         {}

@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-#include <operators/IntermediateOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class FindOperator: public IntermediateOp {
+    class FindOperator: public Operator {
 
     public:
         FindOperator(std::function< bool(T*) > const& taskFunc): taskFunc(taskFunc)

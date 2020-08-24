@@ -4,23 +4,23 @@
 #include <functional>
 #include <algorithm>
 #include <ff/ff.hpp>
-#include <operators/CollectorOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
     
     template< typename T >
-    class SortOperator: public CollectorOp {
+    class SortOperator: public Operator {
     public:
     	typedef std::vector<T> Value;
 
     	SortOperator(std::function<bool(T, T)> const& compare = std::less<T>()): compare(compare)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
     	SortOperator(SortOperator& other): compare(other.compare)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
     	SortOperator(SortOperator&& other) noexcept: compare(std::move(other.compare))
-        {}
+        { operatorType = COLLECTOR_OP; }
 
     	SortOperator& operator+=(const SortOperator& other) {
             container.insert(container.end(), other.container.begin(), other.container.end());

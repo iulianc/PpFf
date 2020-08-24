@@ -4,24 +4,24 @@
 #include <ff/ff.hpp>
 #include <functional>
 #include <ff/ff.hpp>
-#include <operators/SourceOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template< typename T, typename It, bool Preserve = false >
-    class SourceOperator: public SourceOp {};
+    class SourceOperator: public Operator {};
 
     template< typename T, typename It >
-    class SourceOperator< T, It, false >: public SourceOp {
+    class SourceOperator< T, It, false >: public Operator {
     public:
         SourceOperator(It &begin, It &end): begin(begin), end(end)
-        {}
-
+        { operatorType = SOURCE_OP; }
+        
         SourceOperator(const SourceOperator& other): begin(other.begin), end(other.end)
-        {}
+        { operatorType = SOURCE_OP; }
 
         SourceOperator(SourceOperator&& other) noexcept: begin(std::move(other.begin)), end(std::move(other.end))
-        {}
+        { operatorType = SOURCE_OP; }
 
         virtual ~SourceOperator()
         {}
@@ -41,16 +41,16 @@ namespace PpFf {
 
 
     template< typename T, typename It >
-    class SourceOperator< T*, It, false >: public SourceOp {
+    class SourceOperator< T*, It, false >: public Operator {
     public:
         SourceOperator(It const& begin, It const& end): begin(begin), end(end)
-        {}
+        { operatorType = SOURCE_OP; }
 
         SourceOperator(const SourceOperator& other): begin(other.begin), end(other.end)
-        {}
+        { operatorType = SOURCE_OP; }
 
         SourceOperator(SourceOperator&& other) noexcept: begin(std::move(other.begin)), end(std::move(other.end))
-        {}
+        { operatorType = SOURCE_OP; }
 
         ~SourceOperator()
         {}

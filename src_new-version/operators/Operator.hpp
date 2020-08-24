@@ -9,6 +9,10 @@ namespace PpFf {
 
     class Operator : public ff::ff_node {
     public:
+        Operator( OperatorType operatorType_ = INTERMEDIATE_OP ) {
+            operatorType = operatorType_;
+        }
+        
         bool isSource() {
             return operatorType == SOURCE_OP;
         }

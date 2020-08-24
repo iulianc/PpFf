@@ -4,13 +4,13 @@
 #include <ff/ff.hpp>
 #include <utilities/Identity.hpp>
 #include <functional>
-#include <operators/CollectorOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
 
     template < typename In, typename K, typename V, typename MapContainer >
-    class GroupByKeyOperator: public CollectorOp {
+    class GroupByKeyOperator: public Operator {
     public:
         typedef MapContainer Value;
 
@@ -18,19 +18,19 @@ namespace PpFf {
                            std::function< V*(In*) > const& taskFuncOnValue = identity<In,V>) : 
             taskFuncOnKey(taskFuncOnKey),
             taskFuncOnValue(taskFuncOnValue)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         GroupByKeyOperator(const GroupByKeyOperator& other) : 
             taskFuncOnKey(other.taskFuncOnKey),
             taskFuncOnValue(other.taskFuncOnValue),
             mapContainer(other.mapContainer)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         GroupByKeyOperator(GroupByKeyOperator&& other) noexcept : 
             taskFuncOnKey(std::move(other.taskFuncOnKey)),
             taskFuncOnValue(std::move(other.taskFuncOnValue)),
             mapContainer(std::move(other.mapContainer))
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         ~GroupByKeyOperator()
         {}

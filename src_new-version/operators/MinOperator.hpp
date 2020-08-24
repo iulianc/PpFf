@@ -4,23 +4,23 @@
 #include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
 #include <functional>
-#include <operators/CollectorOp.hpp>
+#include <operators/Operator.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class MinOperator: public CollectorOp {
+    class MinOperator: public Operator {
     public:
         typedef T Value;
 
         MinOperator(std::function< void(T*, T*) > compare): compare(compare)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         MinOperator(const MinOperator& other) : compare(other.compare)
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         MinOperator(MinOperator&& other) noexcept : compare(std::move(other.compare))
-        {}
+        { operatorType = COLLECTOR_OP; }
 
         MinOperator& operator+=(MinOperator& other) {
             compare(val, other.val);
