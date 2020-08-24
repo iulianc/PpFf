@@ -21,11 +21,15 @@ namespace PpFf {
         typedef typename CONT<T>::iterator iterator;
 
         Collection() {};
-        Collection(Container && container):container(std::move(container)) {};
 
-        Collection(unsigned int n) { container.resize(n); };
+        Collection(Container && container) : container(std::move(container)) {};
+        
+        Collection(unsigned int n) {
+            container.resize(n);
+        };
+
         ~Collection() {};
-
+        
         T& operator[] (unsigned int i) {
             if (i >= container.size()) {
                 throw std::out_of_range("error:operator[]");

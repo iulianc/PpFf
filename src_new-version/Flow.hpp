@@ -42,6 +42,9 @@ namespace PpFf {
 
         ~Flow() {};
 
+        ////////////////////////////////////////////////
+        // Methodes (statiques) pour creer un Flow.
+        ////////////////////////////////////////////////
         static Flow& source(const std::string& path) {
             typedef LinesFromFileOperator LinesFromFile;
 
@@ -61,49 +64,21 @@ namespace PpFf {
             return *flow;
         }
 
-        unsigned int count() {
-            typedef CountOperator<int> Count;
+
+        ////////////////////////////////////////////////
+        // Methode pour modifier le niveau de parallelisme.
+        ////////////////////////////////////////////////
+        Flow& parallel(int no_workers = 1) {
+            pipe.setNbWorkers(no_workers);
             
-            pipe.addOperators( Operators<Count>::create(pipe.nbWorkers()) );
-            pipe.addCollector( new Collector<Count>() );
-            pipe.run();
-
-            return pipe.value<Collector<Count>, int>();
-        }
-
-        template < typename T >
-        T sum() {
-            typedef SumOperator<T> Sum;
-            
-            pipe.addOperators( Operators<Sum>::create(pipe.nbWorkers()) );
-            pipe.addCollector( new Collector<Sum>() );
-            pipe.run();
-
-            return pipe.value<Collector<Sum>, T>();
-        }
-
-        template < typename T,
-                   template <typename ELEM, class ALLOC = std::allocator<ELEM>>
-                   class TContainer >
-        TContainer<T> collect() {
-            typedef CollectorOperator<T, TContainer<T>> TOperator;
-            
-            pipe.addOperators( Operators<TOperator>::create(pipe.nbWorkers()) );
-            pipe.addCollector( new Collector<TOperator>() );
-            pipe.run();
-
-            return pipe.value<Collector<TOperator>, TContainer<T>>();
-        }
-
-        template < typename In, typename Out >
-        Flow& map(std::function<Out*(In*)> const& taskFunc) {
-            typedef MapOperator<In, Out> Map;
-            
-            pipe.addOperators( Operators<Map>::create(pipe.nbWorkers(), taskFunc) );
-
             return *this;
-        }
+        };
 
+
+        ////////////////////////////////////////////////
+        // Methodes pour des traitements intermedaires, donc qui produisent un Flow.
+        ////////////////////////////////////////////////
+        
         template < typename In >
         Flow& find(std::function<bool(In*)> const& taskFunc) {
             typedef FindOperator<In> Find;
@@ -131,6 +106,24 @@ namespace PpFf {
             return *this;
         };
 
+        template < typename T >
+        Flow& limit(int n) {
+            typedef LimitOperator<T> Limit;
+            
+            pipe.addOperators( Operators<Limit>::create(pipe.nbWorkers(), n) );
+
+            return *this;
+        }
+
+        template < typename In, typename Out >
+        Flow& map(std::function<Out*(In*)> const& taskFunc) {
+            typedef MapOperator<In, Out> Map;
+            
+            pipe.addOperators( Operators<Map>::create(pipe.nbWorkers(), taskFunc) );
+
+            return *this;
+        }
+
         template < typename In >
         Flow& peek(std::function<void(In*)> const& taskFunc) {
             typedef PeekOperator<In> Peek;
@@ -138,6 +131,88 @@ namespace PpFf {
             pipe.addOperators( Operators<Peek>::create(pipe.nbWorkers(), taskFunc) );
             
             return *this;
+        }
+
+        template < typename T >
+        Flow& skip(int n) {
+            typedef SkipOperator<T> Skip;
+            
+            pipe.addOperators( Operators<Skip>::create(pipe.nbWorkers(), n) );
+            
+            return *this;
+        }
+        
+        ////////////////////////////////////////////////
+        // Methodes pour produire un resultat final booleen.
+        ////////////////////////////////////////////////
+        
+        template < typename T >
+        bool allMatch(std::function<bool(T*)> predicate) {
+            typedef AllMatchOperator<T> AllMatch;
+
+            pipe.addOperators( Operators<AllMatch>::create(pipe.nbWorkers(), predicate) );
+            pipe.addCollector( new Collector<AllMatch>() );
+            pipe.run();
+
+            return pipe.value<Collector<AllMatch>, bool>();
+        }
+
+        template < typename T >
+        bool anyMatch(std::function<bool(T*)> predicate) {
+            typedef AnyMatchOperator<T> AnyMatch;
+            
+            pipe.addOperators( Operators<AnyMatch>::create(pipe.nbWorkers(), predicate) );
+            pipe.addCollector( new Collector<AnyMatch>() );
+            pipe.run();
+
+            return pipe.value<Collector<AnyMatch>, bool>();
+        }
+
+        template < typename T >
+        bool noneMatch(std::function<bool(T*)> predicate) {
+            typedef NoneMatchOperator<T> NoneMatch;
+            
+            pipe.addOperators( Operators<NoneMatch>::create(pipe.nbWorkers(), predicate) );
+            pipe.addCollector( new Collector<NoneMatch>() );
+            pipe.run();
+
+            return pipe.value<Collector<NoneMatch>, bool>();
+        }
+
+
+        ////////////////////////////////////////////////
+        // Methodes pour produire un resultat final simple.
+        ////////////////////////////////////////////////
+        unsigned int count() {
+            typedef CountOperator<int> Count;
+            
+            pipe.addOperators( Operators<Count>::create(pipe.nbWorkers()) );
+            pipe.addCollector( new Collector<Count>() );
+            pipe.run();
+
+            return pipe.value<Collector<Count>, int>();
+        }
+
+        template < typename T >
+        T max(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a < *b) *a = *b; })) {
+            typedef MaxOperator<T> Max;
+            
+            pipe.addOperators( Operators<Max>::create(pipe.nbWorkers(), compare) );
+            pipe.addCollector( new Collector<Max>() );
+            pipe.run();
+
+            return pipe.value<Collector<Max>, T>();
+        }
+
+        template < typename T >
+        T min(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a > *b) *a = *b; })) {
+            typedef MinOperator<T> Min;
+
+            pipe.addOperators( Operators<Min>::create(pipe.nbWorkers(), compare) );    
+            pipe.addCollector( new Collector<Min>() );
+            pipe.run();
+
+            return pipe.value<Collector<Min>, T>();
         }
 
         template < typename In, typename Out = In >
@@ -163,6 +238,34 @@ namespace PpFf {
             pipe.run();
 
             return pipe.value<Collector<Reduce>, Out>();
+        }
+
+        template < typename T >
+        T sum() {
+            typedef SumOperator<T> Sum;
+            
+            pipe.addOperators( Operators<Sum>::create(pipe.nbWorkers()) );
+            pipe.addCollector( new Collector<Sum>() );
+            pipe.run();
+
+            return pipe.value<Collector<Sum>, T>();
+        }
+
+        ////////////////////////////////////////////////
+        // Methodes pour produire un resultat final plus complexe.
+        ////////////////////////////////////////////////
+
+        template < typename T,
+                   template <typename ELEM, class ALLOC = std::allocator<ELEM>>
+                   class TContainer >
+        TContainer<T> collect() {
+            typedef CollectorOperator<T, TContainer<T>> TOperator;
+            
+            pipe.addOperators( Operators<TOperator>::create(pipe.nbWorkers()) );
+            pipe.addCollector( new Collector<TOperator>() );
+            pipe.run();
+
+            return pipe.value<Collector<TOperator>, TContainer<T>>();
         }
 
         template < typename In, typename K = In, typename V = In,
@@ -194,99 +297,17 @@ namespace PpFf {
         }
 
         template < typename T >
-        T min(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a > *b) *a = *b; })) {
-            typedef MinOperator<T> Min;
-
-            pipe.addOperators( Operators<Min>::create(pipe.nbWorkers(), compare) );    
-            pipe.addCollector( new Collector<Min>() );
-            pipe.run();
-
-            return pipe.value<Collector<Min>, T>();
-        }
-
-        template < typename T >
-        T max(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a < *b) *a = *b; })) {
-            typedef MaxOperator<T> Max;
-            
-            pipe.addOperators( Operators<Max>::create(pipe.nbWorkers(), compare) );
-            pipe.addCollector( new Collector<Max>() );
-            pipe.run();
-
-            return pipe.value<Collector<Max>, T>();
-        }
-
-        template < typename T >
-        bool anyMatch(std::function<bool(T*)> predicate) {
-            typedef AnyMatchOperator<T> AnyMatch;
-            
-            pipe.addOperators( Operators<AnyMatch>::create(pipe.nbWorkers(), predicate) );
-            pipe.addCollector( new Collector<AnyMatch>() );
-            pipe.run();
-
-            return pipe.value<Collector<AnyMatch>, bool>();
-        }
-
-        template < typename T >
-        bool noneMatch(std::function<bool(T*)> predicate) {
-            typedef NoneMatchOperator<T> NoneMatch;
-            
-            pipe.addOperators( Operators<NoneMatch>::create(pipe.nbWorkers(), predicate) );
-            pipe.addCollector( new Collector<NoneMatch>() );
-            pipe.run();
-
-            return pipe.value<Collector<NoneMatch>, bool>();
-        }
-
-
-        template < typename T >
-        bool allMatch(std::function<bool(T*)> predicate) {
-            typedef AllMatchOperator<T> AllMatch;
-
-            pipe.addOperators( Operators<AllMatch>::create(pipe.nbWorkers(), predicate) );
-            pipe.addCollector( new Collector<AllMatch>() );
-            pipe.run();
-
-            return pipe.value<Collector<AllMatch>, bool>();
-        }
-
-
-        template < typename T >
-        Flow& limit(int n) {
-            typedef LimitOperator<T> Limit;
-            
-            pipe.addOperators( Operators<Limit>::create(pipe.nbWorkers(), n) );
-
-            return *this;
-        }
-
-        template < typename T >
-        Flow& skip(int n) {
-            typedef SkipOperator<T> Skip;
-            
-            pipe.addOperators( Operators<Skip>::create(pipe.nbWorkers(), n) );
-            
-            return *this;
-        }
-
-        template < typename T >
         Collection<T, std::vector, Flow> sort(std::function<bool(T, T)> const& compare = std::less<T>()) {
             typedef SortOperator<T> Sort;
+            typedef Collection<T, std::vector, Flow> TCollection;
 
             pipe.addOperators( Operators<Sort>::create(pipe.nbWorkers(), compare) );
             pipe.addCollector( new Collector<Sort>() );
             pipe.run();
 
-            Collection<T, std::vector, Flow>
-                collection(pipe.value<Collector<Sort>, Collection<T, std::vector, Flow>>());
-            return collection;
+            return TCollection(pipe.value<Collector<Sort>, TCollection>());
         }
 		
-        Flow& parallel(int no_workers = 1) {
-            pipe.setNbWorkers(no_workers);
-            
-            return *this;
-        };
-
     private:
         Pipeline pipe;
     };
