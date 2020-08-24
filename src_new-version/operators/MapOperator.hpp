@@ -4,12 +4,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-
+#include <operators/IntermediateOp.hpp>
 
 namespace PpFf {
 
     template < typename In, typename Out >
-    class MapOperator: public ff::ff_node {
+    class MapOperator: public IntermediateOp {
     public:
         MapOperator(std::function< Out*(In*) > const& taskFunc): taskFunc(taskFunc)
         {}

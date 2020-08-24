@@ -2,11 +2,12 @@
 #define SUMOPERATOR_HPP
 
 #include <ff/ff.hpp>
+#include <operators/CollectorOp.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class SumOperator: public ff::ff_node {
+    class SumOperator: public CollectorOp {
     public:
         typedef T Value;
         SumOperator()

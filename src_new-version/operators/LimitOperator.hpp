@@ -3,11 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
+#include <operators/IntermediateOp.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class LimitOperator: public ff::ff_node {
+    class LimitOperator: public IntermediateOp {
     public:
         LimitOperator(int n): n(n), nb(0)
         {}

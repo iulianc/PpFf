@@ -2,10 +2,12 @@
 #define COUNTOPERATOR_HPP
 
 #include <ff/ff.hpp>
+#include <operators/CollectorOp.hpp>
+
 namespace PpFf {
 
     template < typename T >
-    class CountOperator: public ff::ff_node {
+    class CountOperator: public CollectorOp {
     public:
         typedef T Value;
 

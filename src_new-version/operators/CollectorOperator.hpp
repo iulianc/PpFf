@@ -2,11 +2,12 @@
 #define COLLECTOROPERATOR_HPP
 
 #include <ff/ff.hpp>
+#include <operators/CollectorOp.hpp>
 
 namespace PpFf {
 
     template < typename T, typename TContainer >
-    class CollectorOperator: public ff::ff_node {
+    class CollectorOperator: public CollectorOp {
     public:
         typedef TContainer Value;
 

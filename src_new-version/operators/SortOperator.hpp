@@ -4,11 +4,12 @@
 #include <functional>
 #include <algorithm>
 #include <ff/ff.hpp>
+#include <operators/CollectorOp.hpp>
 
 namespace PpFf {
     
     template< typename T >
-    class SortOperator: public ff::ff_node {
+    class SortOperator: public CollectorOp {
     public:
     	typedef std::vector<T> Value;
 

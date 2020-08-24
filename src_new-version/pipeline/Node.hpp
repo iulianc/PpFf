@@ -3,13 +3,14 @@
 
 #include <ff/ff.hpp>
 #include <operators/Empty.hpp>
+#include <operators/Operator.hpp>
 
 
 namespace PpFf {
 
     class Node {
     public:
-        Node(ff::ff_node* node = NULL) : _ff_node(node)
+        Node(Operator* node = NULL) : _ff_node(node)
         {}
 
         virtual ~Node() {
@@ -20,8 +21,16 @@ namespace PpFf {
             return _ff_node;
         }
 
+        bool isSource() {
+            return _ff_node->isSource();
+        }
+
+        bool isCollector() {
+            return _ff_node->isCollector();
+        }        
+
     private:
-        ff::ff_node* _ff_node; 
+        Operator* _ff_node; 
     };
 }
 

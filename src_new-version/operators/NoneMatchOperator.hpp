@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
+#include <operators/CollectorOp.hpp>
 
-
-namespace PpFf{
+namespace PpFf {
 
     template < typename T >
-    class NoneMatchOperator: public ff::ff_node {
+    class NoneMatchOperator: public CollectorOp {
     public:
         typedef bool Value;
 

@@ -4,8 +4,6 @@
 #include <ff/ff.hpp>
 #include <pipeline/Node.hpp>
 #include <pipeline/Worker.hpp>
-#include <stages/BaseStage.hpp>
-
 
 namespace PpFf {
 
@@ -26,16 +24,15 @@ namespace PpFf {
             workers.clear();
         }        
 
-        template< typename T >
-        void addStage(T* stage) {
-            if (stage->isCollector()) {
+        void addOperators(std::vector<Node*> operators) {
+            if (operators[0]->isCollector()) {
                 _ff_farm->remove_collector();
             }
 
-            assert(workers.size() == stage->operators.size());
+            assert(workers.size() == operators.size());
 
             for (unsigned int i = 0; i < workers.size(); i++){
-                workers[i]->addNode(stage->operators[i]);
+                workers[i]->addNode(operators[i]);
             }
         } 
 

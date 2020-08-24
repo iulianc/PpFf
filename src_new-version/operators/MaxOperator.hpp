@@ -4,11 +4,12 @@
 #include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
 #include <functional>
+#include <operators/CollectorOp.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class MaxOperator: public ff::ff_node {
+    class MaxOperator: public CollectorOp {
     public:
         typedef T Value;
 

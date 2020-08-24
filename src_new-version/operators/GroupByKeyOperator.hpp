@@ -4,12 +4,13 @@
 #include <ff/ff.hpp>
 #include <utilities/Identity.hpp>
 #include <functional>
+#include <operators/CollectorOp.hpp>
 
 namespace PpFf {
 
 
     template < typename In, typename K, typename V, typename MapContainer >
-    class GroupByKeyOperator: public ff::ff_node {
+    class GroupByKeyOperator: public CollectorOp {
     public:
         typedef MapContainer Value;
 

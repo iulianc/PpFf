@@ -4,14 +4,15 @@
 #include <ff/ff.hpp>
 #include <functional>
 #include <ff/ff.hpp>
+#include <operators/SourceOp.hpp>
 
 namespace PpFf {
 
     template< typename T, typename It, bool Preserve = false >
-    class SourceOperator: public ff::ff_node {};
+    class SourceOperator: public SourceOp {};
 
     template< typename T, typename It >
-    class SourceOperator< T, It, false >: public ff::ff_node {
+    class SourceOperator< T, It, false >: public SourceOp {
     public:
         SourceOperator(It &begin, It &end): begin(begin), end(end)
         {}
@@ -40,7 +41,7 @@ namespace PpFf {
 
 
     template< typename T, typename It >
-    class SourceOperator< T*, It, false >: public ff::ff_node {
+    class SourceOperator< T*, It, false >: public SourceOp {
     public:
         SourceOperator(It const& begin, It const& end): begin(begin), end(end)
         {}

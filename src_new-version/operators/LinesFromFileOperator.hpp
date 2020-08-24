@@ -6,10 +6,11 @@
 #include <iostream>
 #include <fstream>
 #include <ff/ff.hpp>
+#include <operators/SourceOp.hpp>
 
 namespace PpFf {
     
-    class LinesFromFileOperator: public ff::ff_node {
+    class LinesFromFileOperator: public SourceOp {
     public:
         LinesFromFileOperator(const std::string& path) : path(path)
         {}

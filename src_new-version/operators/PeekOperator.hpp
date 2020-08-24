@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <functional>
-
+#include <operators/IntermediateOp.hpp>
 
 namespace PpFf {
 
     template < typename T >
-    class PeekOperator: public ff::ff_node {
+    class PeekOperator: public IntermediateOp {
     public:
         PeekOperator(std::function< void(T*) > const& taskFunc): taskFunc(taskFunc)
         {}

@@ -3,12 +3,13 @@
 
 #include <ff/ff.hpp>
 #include <functional>
+#include <operators/CollectorOp.hpp>
 
 
 namespace PpFf {
 
     template < typename T >
-    class AllMatchOperator: public ff::ff_node {
+    class AllMatchOperator: public CollectorOp {
     public:
         typedef bool Value;
 

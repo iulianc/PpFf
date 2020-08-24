@@ -3,11 +3,11 @@
 
 #include <ff/ff.hpp>
 #include <pipeline/Node.hpp>
-#include <stages/BaseStage.hpp>
 #include <pipeline/Farm.hpp>
 #include <operators/Empty.hpp>
 #include <pipeline/Worker.hpp>
 #include <stdexcept>
+#include <stages/Collector.hpp>
 
 
 namespace PpFf {
@@ -18,15 +18,10 @@ namespace PpFf {
         }
 
         ~Pipeline() {
-            for (unsigned int i = 0; i < stages.size(); i++) {
-                delete stages[i];
-            }
-
             for (unsigned int i = 0; i < nodes.size(); i++) {
                 delete nodes[i];
             }
             
-            stages.clear();
             nodes.clear();
         }
 
@@ -35,18 +30,21 @@ namespace PpFf {
         }
 
         template< typename T >
-        void addStage(T *stage) {
-            assert(stage->operators.size() == no_workers);
+        void addCollector(T &collector) {
+            collector.addOperators(lastOperators);
+        }   
 
-            sourceExists |= stage->isSource();
+        void addOperators(std::vector<Node*> operators) {
+            assert(operators.size() == no_workers);
+
+            sourceExists |= operators[0]->isSource();
 
             if (!sourceExists) {
                 throw std::invalid_argument( "The pipeline must have a source" );
                 return;
             }
 
-            // On ajoute le stage dans les stages locaux.
-            stages.push_back(stage);
+            lastOperators = operators;
             
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
             Node *lastNode = nodes.size() > 0 ? nodes.back() : NULL;
@@ -58,10 +56,10 @@ namespace PpFf {
                     // Execution parallele => on cree un farm.
                     farm = new Farm(no_workers);
                     nodes.push_back(farm);
-                    farm->addStage(stage);
+                    farm->addOperators(operators);
                 } else {
                     // Execution non parallele => pas besoin de farm.
-                    nodes.push_back(stage->operators[0]);
+                    nodes.push_back(operators[0]);
                 }
             } else {
                 // Le dernier noeud est deja un Farm
@@ -72,11 +70,11 @@ namespace PpFf {
                         farm = new Farm(no_workers);
                         nodes.push_back(farm);
                     }
-                    farm->addStage(stage);
+                    farm->addOperators(operators);
                 } else {
                     // Redevenu sequentiel.
                     farm->addCollector(new Empty());                    
-                    nodes.push_back(stage->operators[0]);
+                    nodes.push_back(operators[0]);
                 }
             }
         }
@@ -112,8 +110,8 @@ namespace PpFf {
 
     private:
         unsigned int no_workers;
-        std::vector<Stage*> stages;
         std::vector<Node*> nodes;
+        std::vector<Node*> lastOperators;
         bool sourceExists = false;      
     };
 

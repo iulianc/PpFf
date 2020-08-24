@@ -3,12 +3,12 @@
 
 #include <ff/ff.hpp>
 #include <operators/Reducer.hpp>
-
+#include <operators/CollectorOp.hpp>
 
 namespace PpFf {
 
     template < typename In, typename Out >
-    class ReduceOperator: public ff::ff_node {
+    class ReduceOperator: public CollectorOp {
     public:
         typedef Out Value;
 

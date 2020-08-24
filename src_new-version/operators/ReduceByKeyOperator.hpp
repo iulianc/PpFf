@@ -5,11 +5,12 @@
 #include <operators/Reducer.hpp>
 #include <utilities/Identity.hpp>
 #include <functional>
+#include <operators/CollectorOp.hpp>
 
 namespace PpFf {
 
     template < typename In, typename K, typename V, typename MapContainer >
-    class ReduceByKeyOperator : public ff::ff_node {
+    class ReduceByKeyOperator : public CollectorOp {
     public:
         typedef MapContainer Value;
 
