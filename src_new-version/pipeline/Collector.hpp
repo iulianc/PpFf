@@ -8,6 +8,9 @@ namespace PpFf {
     public:
         typedef typename TOperator::Value Value;
 
+        Collector()
+        {}
+
         void addOperators(std::vector<Node*> nodes) {
             for (Node *node : nodes) {
                 operators.push_back(node);

@@ -1,6 +1,6 @@
 # Specify the tests path: un seul test ou tous les tests!?
 ROOT_TESTS 	:= umlTest.cpp testAll.cpp
-#ROOT_TESTS 	:= $(wildcard *.cpp)
+ROOT_TESTS 	:= $(wildcard *.cpp)
 
 # Specify the final target name
 EXE 		:= testAll

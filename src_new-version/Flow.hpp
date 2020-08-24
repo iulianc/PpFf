@@ -64,24 +64,22 @@ namespace PpFf {
         unsigned int count() {
             typedef CountOperator<int> Count;
             
-            pipe.addOperators(Operators<Count>::create(pipe.nbWorkers()));    
-            Collector<Count> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<Count>::create(pipe.nbWorkers()) );
+            pipe.addCollector( new Collector<Count>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<Count>, int>();
         }
 
         template < typename T >
         T sum() {
             typedef SumOperator<T> Sum;
             
-            pipe.addOperators(Operators<Sum>::create(pipe.nbWorkers()));    
-            Collector<Sum> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<Sum>::create(pipe.nbWorkers()) );
+            pipe.addCollector( new Collector<Sum>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<Sum>, T>();
         }
 
         template < typename T,
@@ -90,19 +88,18 @@ namespace PpFf {
         TContainer<T> collect() {
             typedef CollectorOperator<T, TContainer<T>> TOperator;
             
-            pipe.addOperators(Operators<TOperator>::create(pipe.nbWorkers()));    
-            Collector<TOperator> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<TOperator>::create(pipe.nbWorkers()) );
+            pipe.addCollector( new Collector<TOperator>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<TOperator>, TContainer<T>>();
         }
 
         template < typename In, typename Out >
         Flow& map(std::function<Out*(In*)> const& taskFunc) {
             typedef MapOperator<In, Out> Map;
             
-            pipe.addOperators(Operators<Map>::create(pipe.nbWorkers(), taskFunc));
+            pipe.addOperators( Operators<Map>::create(pipe.nbWorkers(), taskFunc) );
 
             return *this;
         }
@@ -111,7 +108,7 @@ namespace PpFf {
         Flow& find(std::function<bool(In*)> const& taskFunc) {
             typedef FindOperator<In> Find;
             
-            pipe.addOperators(Operators<Find>::create(pipe.nbWorkers(), taskFunc));
+            pipe.addOperators( Operators<Find>::create(pipe.nbWorkers(), taskFunc) );
             
             return *this;
         }
@@ -120,7 +117,7 @@ namespace PpFf {
         Flow& flatMap(std::function<TContainer*(In*)> const& taskFunc) {
             typedef FlatMapOperator<In, TContainer, Out> FlatMap;
             
-            pipe.addOperators(Operators<FlatMap>::create(pipe.nbWorkers(), taskFunc));
+            pipe.addOperators( Operators<FlatMap>::create(pipe.nbWorkers(), taskFunc) );
             
             return *this;
         };
@@ -129,7 +126,7 @@ namespace PpFf {
         Flow& flatten() {
             typedef FlatOperator<In, Out> Flat;
             
-            pipe.addOperators(Operators<Flat>::create(pipe.nbWorkers()));
+            pipe.addOperators( Operators<Flat>::create(pipe.nbWorkers()) );
             
             return *this;
         };
@@ -138,7 +135,7 @@ namespace PpFf {
         Flow& peek(std::function<void(In*)> const& taskFunc) {
             typedef PeekOperator<In> Peek;
             
-            pipe.addOperators(Operators<Peek>::create(pipe.nbWorkers(), taskFunc));
+            pipe.addOperators( Operators<Peek>::create(pipe.nbWorkers(), taskFunc) );
             
             return *this;
         }
@@ -147,12 +144,11 @@ namespace PpFf {
         Out reduce(Reducer<In, Out> const& reducer) {
             typedef ReduceOperator<In, Out> Reduce;
             
-            pipe.addOperators(Operators<Reduce>::create(pipe.nbWorkers(), reducer));    
-            Collector<Reduce> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<Reduce>::create(pipe.nbWorkers(), reducer) );
+            pipe.addCollector( new Collector<Reduce>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<Reduce>, Out>();
         }
 
         template < typename In, typename Out = In >
@@ -162,12 +158,11 @@ namespace PpFf {
 
             Reducer<In, Out> reducer(initialValue, accumulator, accumulator);
             
-            pipe.addOperators(Operators<Reduce>::create(pipe.nbWorkers(), reducer));    
-            Collector<Reduce> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<Reduce>::create(pipe.nbWorkers(), reducer) );
+            pipe.addCollector( new Collector<Reduce>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<Reduce>, Out>();
         }
 
         template < typename In, typename K = In, typename V = In,
@@ -176,12 +171,13 @@ namespace PpFf {
                                std::function<V*(In*)> const& valueFunction = identity<In,V>) {
             typedef GroupByKeyOperator<In, K, V, MapType> GroupByKey;
 
-            pipe.addOperators(Operators<GroupByKey>::create(pipe.nbWorkers(), keyFunction, valueFunction));    
-            Collector<GroupByKey> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<GroupByKey>::create(pipe.nbWorkers(),
+                                                             keyFunction,
+                                                             valueFunction) );
+            pipe.addCollector( new Collector<GroupByKey>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<GroupByKey>, MapType>();
         }
 
         template < typename In, typename K = In, typename V = In,
@@ -190,60 +186,55 @@ namespace PpFf {
                             std::function<K*(In*)> const& keyFunction = identity<In,K>) {
             typedef ReduceByKeyOperator<In, K, V, MapType> ReduceByKey;
 
-            pipe.addOperators(Operators<ReduceByKey>::create(pipe.nbWorkers(), keyFunction, reducer));    
-            Collector<ReduceByKey> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<ReduceByKey>::create(pipe.nbWorkers(), keyFunction, reducer) );
+            pipe.addCollector( new Collector<ReduceByKey>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<ReduceByKey>, MapType>();
         }
 
         template < typename T >
         T min(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a > *b) *a = *b; })) {
             typedef MinOperator<T> Min;
 
-            pipe.addOperators(Operators<Min>::create(pipe.nbWorkers(), compare));    
-            Collector<Min> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<Min>::create(pipe.nbWorkers(), compare) );    
+            pipe.addCollector( new Collector<Min>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<Min>, T>();
         }
 
         template < typename T >
         T max(std::function<void(T*, T*)> compare = ([](T* a, T* b) { if (*a < *b) *a = *b; })) {
             typedef MaxOperator<T> Max;
             
-            pipe.addOperators(Operators<Max>::create(pipe.nbWorkers(), compare));    
-            Collector<Max> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<Max>::create(pipe.nbWorkers(), compare) );
+            pipe.addCollector( new Collector<Max>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<Max>, T>();
         }
 
         template < typename T >
         bool anyMatch(std::function<bool(T*)> predicate) {
             typedef AnyMatchOperator<T> AnyMatch;
             
-            pipe.addOperators(Operators<AnyMatch>::create(pipe.nbWorkers(), predicate));    
-            Collector<AnyMatch> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<AnyMatch>::create(pipe.nbWorkers(), predicate) );
+            pipe.addCollector( new Collector<AnyMatch>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<AnyMatch>, bool>();
         }
 
         template < typename T >
         bool noneMatch(std::function<bool(T*)> predicate) {
             typedef NoneMatchOperator<T> NoneMatch;
             
-            pipe.addOperators(Operators<NoneMatch>::create(pipe.nbWorkers(), predicate));    
-            Collector<NoneMatch> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<NoneMatch>::create(pipe.nbWorkers(), predicate) );
+            pipe.addCollector( new Collector<NoneMatch>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<NoneMatch>, bool>();
         }
 
 
@@ -251,12 +242,11 @@ namespace PpFf {
         bool allMatch(std::function<bool(T*)> predicate) {
             typedef AllMatchOperator<T> AllMatch;
 
-            pipe.addOperators(Operators<AllMatch>::create(pipe.nbWorkers(), predicate));    
-            Collector<AllMatch> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<AllMatch>::create(pipe.nbWorkers(), predicate) );
+            pipe.addCollector( new Collector<AllMatch>() );
             pipe.run();
 
-            return collector.value();
+            return pipe.value<Collector<AllMatch>, bool>();
         }
 
 
@@ -264,7 +254,7 @@ namespace PpFf {
         Flow& limit(int n) {
             typedef LimitOperator<T> Limit;
             
-            pipe.addOperators(Operators<Limit>::create(pipe.nbWorkers(), n));
+            pipe.addOperators( Operators<Limit>::create(pipe.nbWorkers(), n) );
 
             return *this;
         }
@@ -273,7 +263,7 @@ namespace PpFf {
         Flow& skip(int n) {
             typedef SkipOperator<T> Skip;
             
-            pipe.addOperators(Operators<Skip>::create(pipe.nbWorkers(), n));
+            pipe.addOperators( Operators<Skip>::create(pipe.nbWorkers(), n) );
             
             return *this;
         }
@@ -282,13 +272,13 @@ namespace PpFf {
         Collection<T, std::vector, Flow> sort(std::function<bool(T, T)> const& compare = std::less<T>()) {
             typedef SortOperator<T> Sort;
 
-            pipe.addOperators(Operators<Sort>::create(pipe.nbWorkers(), compare));    
-            Collector<Sort> collector;    
-            pipe.addCollector(collector);
+            pipe.addOperators( Operators<Sort>::create(pipe.nbWorkers(), compare) );
+            pipe.addCollector( new Collector<Sort>() );
             pipe.run();
 
-            Collection<T, std::vector, Flow> Collection(collector.value());
-            return Collection;
+            Collection<T, std::vector, Flow>
+                collection(pipe.value<Collector<Sort>, Collection<T, std::vector, Flow>>());
+            return collection;
         }
 		
         Flow& parallel(int no_workers = 1) {

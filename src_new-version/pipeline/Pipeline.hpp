@@ -29,10 +29,16 @@ namespace PpFf {
             return no_workers;
         }
 
-        template< typename T >
-        void addCollector(T& collector) {
-            collector.addOperators(lastOperators);
-        }   
+        template< typename TCollector >
+        void addCollector(TCollector* collector) {
+            collector->addOperators(lastOperators);
+            collector_ = collector;
+        }
+
+        template< typename TCollector, typename T >
+        T value() {
+            return ((TCollector*)collector_)->value();
+        }
 
         void addOperators(std::vector<Node*> operators) {
             assert(operators.size() == no_workers);
@@ -112,7 +118,8 @@ namespace PpFf {
         unsigned int no_workers;
         std::vector<Node*> nodes;
         std::vector<Node*> lastOperators;
-        bool sourceExists = false;      
+        bool sourceExists = false;
+        void* collector_;
     };
 
 }
