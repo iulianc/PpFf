@@ -17,8 +17,7 @@ namespace PpFf {
         
         Value value() {
             for (unsigned int i = 1; i < this->myNodes.size(); i++) {
-                *((TOperator*) myNodes[0]->op())
-                    += *((TOperator*) myNodes[i]->op());
+                *((TOperator*) myNodes[0]->op()) += *((TOperator*) myNodes[i]->op());
             }
 
             return ((TOperator*) myNodes[0]->op())->value();
