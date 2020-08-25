@@ -8,12 +8,8 @@ namespace PpFf {
     public:
         typedef typename TOperator::Value Value;
 
-        Collector()
+        Collector(std::vector<Node*> &nodes) : myNodes(nodes)
         {}
-
-        void addNodes(std::vector<Node*> nodes) {
-            myNodes.insert(myNodes.end(), nodes.begin(), nodes.end() );
-        }
         
         Value value() {
             for (unsigned int i = 1; i < this->myNodes.size(); i++) {
@@ -24,7 +20,7 @@ namespace PpFf {
         }
 
     private:
-        std::vector<Node*> myNodes;
+        std::vector<Node*> &myNodes;
     };
 
 }

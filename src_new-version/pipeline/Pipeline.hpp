@@ -29,16 +29,11 @@ namespace PpFf {
             return no_workers;
         }
 
-        template< typename TCollector >
-        void addCollector(TCollector* collector) {
-            collector->addNodes(lastNodes);
-            myCollector = collector;
-        }
-
-        template< typename TCollector, typename T >
+        template< typename TOperator, typename T >
         T value() {
-            return ((TCollector*)myCollector)->value();
-        }
+            Collector<TOperator> collector(lastNodes);
+            return collector.value();
+        }        
 
         void addNodes(std::vector<Node*> nodes) {
             assert(nodes.size() == no_workers);
@@ -50,7 +45,9 @@ namespace PpFf {
                 return;
             }
 
-            lastNodes = nodes;
+            if(nodes[0]->isCollector()){
+                lastNodes = nodes;
+            }
             
             // On l'ajoute aussi dans le pipeline ou la farm fast_flow.
             Node *lastNode = myNodes.size() > 0 ? myNodes.back() : NULL;
@@ -119,7 +116,6 @@ namespace PpFf {
         std::vector<Node*> myNodes;
         std::vector<Node*> lastNodes;
         bool sourceExists = false;
-        void* myCollector;
     };
 
 }
