@@ -1,5 +1,16 @@
 package Operators {
 
+  enum OperatorType {
+    SOURCE_OP 
+    INTERMEDIATE_OP 
+    COLLECTOR_OP
+  }
+
+  class Operator<T> {
+   isSource(): bool
+   isCollector(): bool
+  }
+
   class CountOperator<T> {
     svc(): void*
     value(): T::Value
@@ -9,14 +20,18 @@ package Operators {
     svc(): void*
   }
 
+  OperatorType .. Operator
+
   class FooOp
 
   hide FooOp
   note right of FooOp :  Etc.
-
+  
+  Node --> Operator
 }
 
-CountOperator --|> ff_node
-MapOperator --|> ff_node
+CountOperator --|> Operator
+MapOperator --|> Operator
+Operator --|> ff_node
 
 

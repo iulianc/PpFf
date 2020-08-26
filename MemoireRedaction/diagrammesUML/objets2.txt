@@ -18,17 +18,12 @@ object currentResult {
   class = Flow
 }
 
-object sourceStage {
- class = BaseStage<SourceOp>
+object node {
+ class = Node
  ......
- stageType = SOURCE_STAGE
+ operatorType = SOURCE_OP
 }
 
-object maxStage {
-  class = CollectorStage<MaxOperator<int>>
-  ......
-  stageType = COLLECTOR_STAGE
-}
 
 object sourceOp #GreenYellow {
   class = SourceOperator<T, Iterator>
@@ -36,6 +31,12 @@ object sourceOp #GreenYellow {
   ......
   begin = ...
   end = ...
+}
+
+object collector {
+  class = Collector<MaxOperator>
+  .......
+  value = compare(maxOp[])
 }
 
 object maxOp1 #GreenYellow {
@@ -48,14 +49,7 @@ object maxOp0 #GreenYellow {
   superclass = ff_node
 }
 
-sourceStage --> "operators[0]" sourceOp
-
-maxStage --> "operators[0]" maxOp0
-maxStage --> "operators[1]" maxOp1
-
-'ff_farm_ --> "nodes_list[0]" maxOp0
-'ff_farm_ --> "nodes_list[1]" maxOp1
-
+node --> sourceOp
 
 worker0 --> "workers[0]" maxOp0
 worker1 --> "workers[1]" maxOp1
@@ -66,17 +60,15 @@ object pipe {
   ..
   no_workers = 2
   sourceExists = true
+  value = collector.value
 }
 
 currentResult --> pipe : implemented by >
 
-pipe --> "stages[0]" sourceStage
-pipe --> "nodes[0]" sourceStage
-
-pipe --> "stages[1]" maxStage
+pipe --> "nodes[0]" node
 pipe --> "nodes[1]" farm
+pipe --> collector
 
-'farm -- maxStage
 
 together {
 object worker0 {
@@ -91,8 +83,6 @@ object worker1 {
 }
 
 farm --> "workers[0]" worker0
-
-
 farm --> "workers[1]" worker1
 
 
@@ -118,5 +108,8 @@ ff_pipeline_ --> "nodes_list[1]" ff_farm_
 
 ff_farm_ --> maxOp1
 ff_farm_ --> maxOp0
+
+collector --> maxOp1
+collector --> maxOp0
 
 @enduml

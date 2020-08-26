@@ -18,16 +18,22 @@ object currentResult {
   class = Flow
 }
 
-object sourceStage {
- class = BaseStage<SourceOp>
+object node0 {
+ class = Node
  .......
- stageType = SOURCE_STAGE
+ operatorType = SOURCE_OP
 }
 
-object maxStage {
-  class = CollectorStage<MaxOperator<int>>
+object node1 {
+  class = Node
   .......
-  stageType = COLLECTOR_STAGE
+  operatorType = COLLECTOR_OP
+}
+
+object collector {
+  class = Collector<MaxOperator>
+  .......
+  value = maxOp.value
 }
 
 object sourceOp {
@@ -43,9 +49,9 @@ object maxOp {
   superclass = ff_node
 }
 
-sourceStage --> "operators[0]" sourceOp
-
-maxStage --> "operators[0]" maxOp
+node0 --> sourceOp
+node1 --> maxOp
+collector --> maxOp
 
 
 object pipe {
@@ -53,25 +59,24 @@ object pipe {
   ..
   no_workers = 1
   sourceExists = true
+  value = collector.value
 }
 
 currentResult --> pipe : implemented by >
 
-pipe --> "stages[0]" sourceStage
-pipe --> "nodes[0]" sourceStage
+pipe --> "nodes[0]" node0
+pipe --> "nodes[1]" node1
+pipe --> collector
 
-pipe --> "stages[1]" maxStage
-pipe --> "nodes[1]" maxStage
-
-object ff_node_ <<when run()>> {
+object ff_pipeline_ <<when run()>> {
   class = ff_pipeline
 }
 
-pipe ..> ff_node_
+pipe ..> ff_pipeline_
 note on link: "pipe.build_ff_node_()"
 
-ff_node_ --> "nodes_list[0]" sourceOp
-ff_node_ --> "nodes_list[1]" maxOp
 
+ff_pipeline_ --> "nodes_list[0]" sourceOp
+ff_pipeline_ --> "nodes_list[1]" maxOp
 
 @enduml
