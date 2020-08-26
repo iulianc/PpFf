@@ -11,27 +11,27 @@ package Operators {
    isCollector(): bool
   }
 
+  class MapOperator<T> {
+    svc(): void*
+  }
+
   class CountOperator<T> {
     svc(): void*
     value(): T::Value
   }
 
-  class MapOperator<T> {
-    svc(): void*
-  }
+  OperatorType . Operator
 
-  OperatorType .. Operator
 
-  class FooOp
-
-  hide FooOp
-  note right of FooOp :  Etc.
+  note right of CountOperator :  Etc.
   
+  note right of MapOperator :  Etc.
+
   Node --> Operator
 }
 
-CountOperator --|> Operator
 MapOperator --|> Operator
+CountOperator --|> Operator
 Operator --|> ff_node
 
 

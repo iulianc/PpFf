@@ -23,10 +23,13 @@ skinparam classAttributeIconSize 0
 package Pipeline {
 
     class Pipeline {
+        addNodes<TOperator, TParam1>(): void
+        addNodes<TOperator, TParam1, TParam2>(): void
+        addNodes<TOperator, TParam1, TParam2, TParam3>(): void
+        ..
         nbWorkers(): int
         isParallel(): bool
         ..
-        addNodes(): void
         run(): void
         value(): TOperator::value
     }
@@ -42,10 +45,6 @@ package Pipeline {
         class Node {
             build_ff_node(): Operator
         }
-    }
-
-    class Nodes<TOperator> {
-        create(): vector<Node*>
     }
 
     class Collector<TOperator> {
@@ -88,8 +87,6 @@ package Pipeline {
 
 
     Flow --> "pipe" Pipeline : implemented by > 
-    Flow --> Nodes
-
 
     !include operators.txt
 
