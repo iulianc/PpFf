@@ -7,9 +7,7 @@ hide empty members
 'skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-
-!$avecFastFlow = 0
-'!$avecFastFlow = 1
+!$avecFastFlow = %intval(%getenv("AVEC_FF"))
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();

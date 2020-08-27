@@ -2,19 +2,28 @@
 # Makefile pour generation des diagrammes UML.
 #
 
-default: objets1 objets2 # all #objets1 all
+default: objets3 # all #objets1 all
 
 objets1:
-	java -jar ~/Software/plantuml.jar objets1.txt
-	open objets1.png
+	AVEC_FF=0 java -jar ~/Software/plantuml.jar objets1.txt
+	\mv -f objets1.png objets1-ppff.png
+	AVEC_FF=1 java -jar ~/Software/plantuml.jar objets1.txt
+	\mv -f objets1.png objets1-ff.png
+	open objets1*.png
 
 objets2:
-	java -jar ~/Software/plantuml.jar objets2.txt
-	open objets2.png
+	AVEC_FF=0 java -jar ~/Software/plantuml.jar objets2.txt
+	\mv -f objets2.png objets2-ppff.png
+	AVEC_FF=1 java -jar ~/Software/plantuml.jar objets2.txt
+	\mv -f objets2.png objets2-ff.png
+	open objets2*.png
 
 objets3:
-	java -jar ~/Software/plantuml.jar objets3.txt
-	open objets3.png
+	AVEC_FF=0 java -jar ~/Software/plantuml.jar objets3.txt
+	\mv -f objets3.png objets3-ppff.png
+	AVEC_FF=1 java -jar ~/Software/plantuml.jar objets3.txt
+	\mv -f objets3.png objets3-ff.png
+	open objets3*.png
 
 objets4:
 	java -jar ~/Software/plantuml.jar objets4.txt
@@ -35,3 +44,5 @@ flow:
 
 clean cleanall:
 	\rm -f *~ *.png
+
+# LocalWords:  Makefile

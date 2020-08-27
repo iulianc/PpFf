@@ -7,9 +7,7 @@ hide empty members
 'skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-!$avecFastFlow = 0
-!$avecFastFlow = 1
-
+!$avecFastFlow = %intval(%getenv("AVEC_FF"))
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.parallel(2)\l\t.map<int, int>(([](int *in){ *in *= 3; return in; }))\l\t.parallel(4)\l\t.max<int>();
@@ -65,6 +63,14 @@ object mapOp1 #Wheat {
 
 source --> sourceOp
 
+object collector {
+  class = Collector<MaxOperator>
+}
+
+collector -[hidden] farm1_worker0
+
+farm0 -[hidden] collector
+
 farm1_worker0 --> "[0]" maxOp0
 farm1_worker1 --> "[1]" maxOp1
 farm1_worker2 --> "[2]" maxOp2
@@ -73,6 +79,7 @@ farm1_worker3 --> "[3]" maxOp3
 farm0_worker0 --> "[0]" mapOp0
 farm0_worker1 --> "[1]" mapOp1
 
+farm0_worker0 -[hidden] farm0_worker1
 
 object pipe {
   class = Pipeline
@@ -86,7 +93,7 @@ currentResult --> pipe : implemented by >
 pipe --> "[0]" source
 pipe --> "[1]" farm0
 pipe --> "[2]" farm1
-'pipe --> collector
+pipe --> collector
 
 together {
 object farm0_worker0 {
@@ -187,11 +194,12 @@ ff_farm1 --> "[0]" maxOp0
 ff_farm1 --> "[1]" maxOp1
 ff_farm1 --> "[2]" maxOp2
 ff_farm1 --> "[3]" maxOp3
+ff_farm1 -[hidden] farm1_worker0
 
-'collector --> maxOp1
-'collector --> maxOp0
-'collector --> maxOp2
-'collector --> maxOp3
+collector --> maxOp1
+collector --> maxOp0
+collector --> maxOp2
+collector --> maxOp3
 
 !if ($avecFastFlow == 0)
 hide ff_pipeline0
