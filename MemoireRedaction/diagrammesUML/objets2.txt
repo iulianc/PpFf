@@ -90,6 +90,7 @@ object farm {
   class = Farm
   superclass = Node
   ......
+  operatorType = COLLECTOR_OP
   no_workers = 2
 }
 

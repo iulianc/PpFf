@@ -1,0 +1,233 @@
+@startuml objets4
+
+skinparam titleBorderRoundCorner 14
+skinparam titleBorderThinckness 2
+skinparam titleBorderColor black
+
+title Les objets associés à la représentation du Flow suivant:\lcurrentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.parallel(2)\l\t.map<int, int>(([](int *in){ *in *= 3; return in; }))\l\t.map<int, int>(([](int *in){ *in += 1; return in; }))\l\t.parallel(4)\l\t.max<int>();
+
+hide empty members
+
+'skinparam linetype ortho
+
+skinparam classAttributeIconSize 0
+
+
+object currentResult {
+  class = Flow
+}
+
+object node {
+ class = Node
+ ......
+ operatorType = SOURCE_OP
+}
+
+object sourceOp #GreenYellow {
+  class = SourceOperator<T, Iterator>
+  superclass = ff_node
+  ......
+  begin = ...
+  end = ...
+}
+
+' object collector {
+'   class = Collector<MaxOperator>
+'   .......
+'   value = compare(maxOp[])
+' }
+
+object maxOp0 #GreenYellow {
+  class = MaxOperator<int>
+  superclass = ff_node
+}
+
+object maxOp1 #GreenYellow {
+  class = MaxOperator<int>
+  superclass = ff_node
+}
+
+object maxOp2 #GreenYellow {
+  class = MaxOperator<int>
+  superclass = ff_node
+}
+
+object maxOp3 #GreenYellow {
+  class = MaxOperator<int>
+  superclass = ff_node
+}
+
+object farm0_mapOp0 #GreenYellow {
+  class = MapOperator<int>
+  superclass = ff_node
+}
+
+object farm0_mapOp1 #GreenYellow {
+  class = MapOperator<int>
+  superclass = ff_node
+}
+
+object farm1_mapOp0 #GreenYellow {
+  class = MapOperator<int>
+  superclass = ff_node
+}
+
+object farm1_mapOp1 #GreenYellow {
+  class = MapOperator<int>
+  superclass = ff_node
+}
+
+node --> sourceOp
+
+farm0_worker0 --> "workers[0]" farm0_mapOp0
+farm0_worker1 --> "workers[1]" farm0_mapOp1
+
+farm1_worker0 --> "workers[0]" farm1_mapOp0
+farm1_worker1 --> "workers[1]" farm1_mapOp1
+
+farm2_worker0 --> "workers[0]" maxOp0
+farm2_worker1 --> "workers[1]" maxOp1
+farm2_worker2 --> "workers[2]" maxOp2
+farm2_worker3 --> "workers[3]" maxOp3
+
+
+
+object pipe {
+  class = Pipeline
+  ..
+  no_workers = 2
+  sourceExists = true
+  value = collector.value
+}
+
+currentResult --> pipe : implemented by >
+
+pipe --> "nodes[0]" node
+pipe --> "nodes[1]" farm0
+pipe --> "nodes[2]" farm1
+pipe --> "nodes[3]" farm2
+'pipe --> collector
+
+together {
+object farm0_worker0 {
+  class = Worker
+  superclass = Node
+}
+
+object farm0_worker1 {
+  class = Worker
+  superclass = Node
+}
+}
+
+together {
+object farm1_worker0 {
+  class = Worker
+  superclass = Node
+}
+
+object farm1_worker1 {
+  class = Worker
+  superclass = Node
+}
+}
+
+together {
+object farm2_worker0 {
+  class = Worker
+  superclass = Node
+}
+
+object farm2_worker1 {
+  class = Worker
+  superclass = Node
+}
+
+object farm2_worker2 {
+  class = Worker
+  superclass = Node
+}
+
+object farm2_worker3 {
+  class = Worker
+  superclass = Node
+}
+}
+
+farm0 --> "workers[0]" farm0_worker0
+farm0 --> "workers[1]" farm0_worker1
+
+farm1 --> "workers[0]" farm1_worker0
+farm1 --> "workers[1]" farm1_worker1
+
+farm2 --> "workers[0]" farm2_worker0
+farm2 --> "workers[1]" farm2_worker1
+farm2 --> "workers[2]" farm2_worker2
+farm2 --> "workers[3]" farm2_worker3
+
+object farm0 {
+  class = Farm
+  superclass = Node
+  ......
+  operatorType = INTERMEDIATE_OP
+  no_workers = 2
+}
+
+object farm1 {
+  class = Farm
+  superclass = Node
+  ......
+  operatorType = INTERMEDIATE_OP
+  no_workers = 2
+}
+
+object farm2 {
+  class = Farm
+  superclass = Node
+  ......
+  operatorType = COLLECTOR_OP
+  no_workers = 4
+}
+
+
+
+object ff_pipeline_ #GreenYellow {
+  class = ff_pipeline
+}
+pipe ..> ff_pipeline_
+note on link: "pipe.build_ff_node()"
+
+object ff_farm0 #GreenYellow {
+  class = ff_farm
+}
+
+object ff_farm1 #GreenYellow {
+  class = ff_farm
+}
+
+object ff_farm2 #GreenYellow {
+  class = ff_farm
+}
+
+ff_pipeline_ --> "nodes_list[0]" sourceOp
+ff_pipeline_ --> "nodes_list[1]" ff_farm0
+ff_pipeline_ --> "nodes_list[1]" ff_farm1
+ff_pipeline_ --> "nodes_list[2]" ff_farm2
+
+ff_farm0 --> farm0_mapOp0
+ff_farm0 --> farm0_mapOp1
+
+ff_farm1 --> farm1_mapOp0
+ff_farm1 --> farm1_mapOp1
+
+ff_farm2 --> maxOp1
+ff_farm2 --> maxOp0
+ff_farm2 --> maxOp2
+ff_farm2 --> maxOp3
+
+' collector --> maxOp1
+' collector --> maxOp0
+' collector --> maxOp2
+' collector --> maxOp3
+
+@enduml
