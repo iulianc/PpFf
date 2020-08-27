@@ -1,0 +1,29 @@
+@startuml
+package FastFlow {
+  abstract class ff_node
+}
+@enduml
+
+
+@startuml
+package FastFlow {
+
+    class ff_farm {
+    }
+
+    class ff_pipeline {
+      run(): void
+    }
+
+    abstract class ff_node {
+      svc(): void*
+    }
+}
+
+    ff_farm --|> ff_node
+    ff_farm --> "1..*\n{ordered}" ff_node
+
+    ff_pipeline --|> ff_node
+    ff_pipeline --> "1..*\n{ordered}" ff_node
+@enduml
+

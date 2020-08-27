@@ -3,16 +3,17 @@
 skinparam titleBorderRoundCorner 14
 skinparam titleBorderThinckness 2
 skinparam titleBorderColor black
-
-title Les objets associés à la représentation du Flow suivant:\lcurrentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();
-
-
 hide empty members
-
 'skinparam linetype ortho
-
 skinparam classAttributeIconSize 0
 
+
+!$avecFastFlow = 0
+'!$avecFastFlow = 1
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 object currentResult {
   class = Flow
@@ -32,21 +33,19 @@ object node1 {
 
 object collector {
   class = Collector<MaxOperator>
-  .......
-  value = maxOp.value
 }
 
-object sourceOp {
+object sourceOp #Wheat {
   class = SourceOperator<T, Iterator>
-  superclass = ff_node
+  superclass = Operator < ff_node
   .......
   begin = ...
   end = ...
 }
 
-object maxOp {
+object maxOp #Wheat {
   class = MaxOperator<int>
-  superclass = ff_node
+  superclass = Operator < ff_node
 }
 
 node0 --> sourceOp
@@ -59,7 +58,6 @@ object pipe {
   ..
   no_workers = 1
   sourceExists = true
-  value = collector.value
 }
 
 currentResult --> pipe : implemented by >
@@ -68,15 +66,23 @@ pipe --> "nodes[0]" node0
 pipe --> "nodes[1]" node1
 pipe --> collector
 
-object ff_pipeline_ <<when run()>> {
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Les objets FastFlow associes
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+object ff_pipeline0 #Wheat {
   class = ff_pipeline
 }
 
-pipe ..> ff_pipeline_
-note on link: "pipe.build_ff_node_()"
+pipe ..> ff_pipeline0
+note on link #Tan: "pipe.build_ff_node()"
 
+ff_pipeline0 --> "nodes_list[0]" sourceOp
+ff_pipeline0 --> "nodes_list[1]" maxOp
 
-ff_pipeline_ --> "nodes_list[0]" sourceOp
-ff_pipeline_ --> "nodes_list[1]" maxOp
+!if ($avecFastFlow == 0)
+hide ff_pipeline0
+!endif
 
 @enduml
