@@ -2,7 +2,7 @@
 # Makefile pour generation des diagrammes UML.
 #
 
-default: objets3 # all #objets1 all
+default: flow-details # objets3 #objets1 all
 
 objets1:
 	AVEC_FF=0 java -jar ~/Software/plantuml.jar objets1.txt
@@ -40,6 +40,10 @@ vue:
 flow:
 	java -jar ~/Software/plantuml.jar flow.txt
 	open flow.png
+
+flow-details:
+	java -jar ~/Software/plantuml.jar flow-details.txt
+	open flow-details.png
 
 
 clean cleanall:

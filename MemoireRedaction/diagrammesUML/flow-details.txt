@@ -1,0 +1,33 @@
+@startuml flow-details
+skinparam classAttributeIconSize 0
+
+class Flow<T> {
+  ..Source..
+  {static} source() : Flow<string>
+  {static} <T, It> source() : Flow<T>
+  ..Transformation..
+  find(): Flow<T>
+  <R> flatMap(): Flow<R>
+  flatten(): Flow<T>
+  limit(): Flow<T>
+  <R> map(): Flow<R>
+  peek(): Flow<T>
+  skip(): Flow<T>
+  sort(): Flow<T>
+  ..Aggrégation (valeur simple)..
+  allMatch(): bool
+  anyMatch(): bool
+  noneMatch(): bool
+  count(): int
+  min(): T
+  max(): T
+  sum(): T
+  ..Aggrégation (collection)..
+  <V> reduce(): V
+  <Container> collect(): Container<T>
+  <K, V> groupByKey(): Map<K,V>
+  <V> reduceByKey(): V
+  ..Exécution (parallèle)..
+  parallel(): Flow<T>
+}
+@enduml
