@@ -1,49 +1,94 @@
 @startuml vueEnsemble
+
+'skinparam style strictuml
+'skinparam groupInheritance 3
+
+hide empty members
+
+skinparam linetype ortho
+'skinparam groupInheritance 2
+
+
 skinparam classAttributeIconSize 0
 
-class Flow<T> {
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Diagramme presentant l'ensemble du modele, avec ou sans details.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+!$details = 0
+
+'Versions sans (0) ou avec (1) details
+!include flow.txt!$details
+!include fastflow.txt!$details
+
+package Pipeline {
+
+    class Pipeline {
+    }
+
+    together {
+        class Farm {
+        }
+
+        class Worker {
+        }
+
+        class Node {
+        }
+    }
+
+    class Collector<TOperator> {
+    }
+}  
+
+
+    Farm --|> Node
+    Worker --|> Node
+    Worker --> "1..*" Node
+
+    Farm -> "1..*" Worker
+
+
+    Collector --> "1..*" Node
+
+
+    Pipeline --> "collector" Collector
+
+    Pipeline --> "1..*" Node
+
+
+    Flow --> "pipe" Pipeline : implemented by > 
+
+
+package Operators {
+
+  enum OperatorType {
+    SOURCE_OP 
+    INTERMEDIATE_OP 
+    COLLECTOR_OP
+  }
+
+  class Operator<T> {
+  }
+
+  class MapOperator<T> {
+  }
+
+  class CountOperator<T> {
+  }
+
+  OperatorType . Operator
+
+
+  note right of CountOperator :  Etc.
+  
+  note right of MapOperator :  Etc.
+
+  Node --> Operator
 }
 
-
-Flow --> "1" PipeManager
-
-class PipeManager {
-}
-
-PipeManager --> Pipeline
-
-PipeManager --> "0..*" Stage
-
-class Pipeline {
-}
-
-Pipeline --|> Node
-Farm --|> Node
-Worker --|> Node
-
-class Farm {
-}
-
-Farm --> "1..*" Worker
-
-class Worker {
-}
-
-class Node {
-}
-
-
-abstract class Stage {
-}
-
-BaseStage --|> Stage
-
-class BaseStage<TOperator> {
-}
-
-BaseStage --> "1..*" BaseOperator
-
-abstract class BaseOperator {
-}
+MapOperator --|> Operator
+CountOperator --|> Operator
+Operator --|> ff_node
 
 @enduml
