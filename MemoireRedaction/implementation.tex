@@ -14,13 +14,6 @@ La premi\`ere section d\'ecrit les diff\'erents éléments composant la biblioth
 
 \section{Les \'el\'ements de \TT{PpFf}}
 
-\GT{Je crois qu'il vaudrait mieux avec la première figure, qui donne
-une vrai vue d'ensemble, sans donner trop de détails.  Ensuite, dans
-les sous-sections, tu pourras donner la partie de la figure avec les
-détails, i.e., les méthodes, etc.}
-
-\IC{Maintenant, je comprends l'idée}
-
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/vueEnsemble.png}
@@ -54,28 +47,58 @@ La biblioth\`eque \TT{PpFf} est compos\'ee de plusieurs modules qui permettent d
 
 
 
-\GT{J'ai modifié le diagramme, pour raffiner la signature générique de
-certaines méthodes et \underline{aussi} pour utiliser les mêmes
-groupes de méthodes que dans le chapitre précédent --- sinon c'est
-mélangeant si deux terminologies/catégorisations différentes sont
-utilisées.  Il faudrait donc revoir la partie ci-bas pour utiliser les
-mêmes noms de groupe.}
+La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{PpFf}, l'interface avec laquelle interagit le d\'eveloppeur. La figure~\ref{Flow.fig} --- qui reprend la figure~\ref{MethodesAPI.fig} --- pr\'esente la vue d'ensemble des diverses m\'ethodes export\'ees par \TT{PpFf}. Selon le type export\'e par l'\TT{API}, les m\'ethodes sont divis\'ees en plusieurs groupes : Source, Transformation, Aggr\'egation (valeur simple ou collection) et Ex\'ecution (parallèle).
 
-\IC{J'ai révisé la description des groupes selon le nouveau diagramme.}
+\begin{itemize}
 
+\item Le premier groupe, Source, est le groupe de méthodes (statiques) qui permettent de créer un flux de donn\'ees. Ce sont es m\'ethodes qui fournissent les donn\'ees initiales pour un flux. Sans un appel \`a une telle m\'ethode, un flux ne peut pas exister. 
 
-La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{PpFf}, l'interface avec laquelle interagit le d\'eveloppeur. La figure~\ref{Flow.fig} --- qui reprend la figure~\ref{MethodesAPI.fig} --- pr\'esente la vue d'ensemble des diverses m\'ethodes export\'ees par \TT{PpFf}. Selon le type export\'e par l'\TT{API}, les m\'ethodes sont divis\'ees en plusieurs groupes : Source, Transformation, Agr\'egation et Ex\'ecution.
+\item Le deuxi\`eme groupe, Transformation, est composé des m\'ethodes qui retournent une r\'ef\'erence vers un objet \TT{Flow}. C'est ce m\'ecanisme permet d'encha\^iner les m\'ethodes de l'\TT{API}.
 
-Source est le groupe qui permet de d\'efinir un flux de donn\'ees. En g\'en\'eral ce groupe combine les m\'ethodes qui fournissent les donn\'ees au flux. Sans un appel \`a une telle m\'ethode, un flux ne peut pas exister. Le deuxi\`eme groupe du \TT{Flow}, Transformation, est le groupe qui combine les m\'ethodes qui retournent une r\'ef\'erence vers l'objet \TT{Flow}. Ce m\'ecanisme permet d'encha\^iner les m\'ethodes de l'\TT{API}. Le troisi\`eme groupe de \TT{Flow} est le groupe Agr\'egation. Selon le type de r\'esultat produit, ce groupe est-il lui-m\^eme divis\'e en deux sous-cat\'egories : valeur simple qui combine les m\'ethodes retournant une valeur (par ex., r\'esultat bool\'een ou entier) et collection qui combine les m\'ethodes retournant une collection. Dans le dernier groupe de  \TT{Flow}, on retrouve une seule m\'ethode. Cette m\'ethode modifie le comportement d'ex\'ecution du flux. Lorsqu'elle est ajout\'ee dans le  \TT{pipeline}, toutes les op\'erations suivant cette m\'ethode seront ex\'ecut\'ees en parall\`ele en utilisant les instances d'un  \TT{farm}.
+\item Le troisi\`eme groupe, Aggr\'egation, est divis\'e en deux sous-groupes, selon le type de r\'esultat produit : valeur simple --- les m\'ethodes retournant une valeur simple, habituellement un scalaire (par ex., r\'esultat bool\'een ou entier) et collection --- les m\'ethodes retournant une collection.
+
+\item Le quatrième et dernier groupe, Exécution, comporte une seule m\'ethode. Cette m\'ethode modifie le comportement d'ex\'ecution du flux. Lorsqu'elle est ajout\'ee au  \TT{pipeline}, toutes les op\'erations suivant cette m\'ethode seront ex\'ecut\'ees en parall\`ele, en utilisant les instances d'un  \TT{farm}.
 
 L'\TT{API} de \TT{PpFf} permet d'appliquer plusieurs op\'erations les unes à la suite des autres sur une collection de donn\'ees. Ceci est possible en encha\^inant les m\'ethodes (\emph{method chaining}). Les m\'ethodes de l'\TT{API} peuvent \^etre enchain\'ees tant qu'elles retournent une r\'ef\'erence \`a \TT{Flow}. Lorsqu'une m\'ethode retourne une valeur, une valeur simple ou une collection, le traitement est alors ex\'ecut\'e. 
 
+\end{itemize}
+
+
+
+
+
+\begin{lstlisting}[
+label={source.c++},
+language=c++,
+gobble=4,
+caption={Extraits (squelette) de la classe \TT{Flow} avec la variable d'instance \TT{pipe} et le code de la m\'ethode statique \TT{soure}.},
+frame=single,
+float]
+    class Flow {
+
+    public:
+        static Flow& source(const std::string& path) {
+            typedef LinesFromFileOperator LinesFromFile;
+
+            Flow* flow = new Flow();
+            flow->pipe.addNodes<LinesFromFile>(1, path);
+
+            return *flow;
+        }
+
+        // ... Autres methodes....
+        // ... Voir autres listings pour des exemples...
+
+    private:
+        Pipeline pipe;
+    };
+\end{lstlisting}
 
 \begin{lstlisting}[
 label={count.c++},
 language=c++,
 gobble=7,
-caption={Le code de la m\'ethode \TT{count} de la classe \TT{Flow} de \TT{PpFf}.},
+caption={Le code de la m\'ethode \TT{count} de la classe \TT{Flow}.},
 frame=single,
 float]
         unsigned int count() {
@@ -95,18 +118,22 @@ puis ajouter "gobble" si le code est trop indenté, pour le coller plus
 
 \IC{Je n'ai pas compris. Est-ce que je dois ajouter toutes les méthodes de Flow ?}
 
+\GT{Non, je voulais simplement dire que tu pouvais fournir le code
+complet pour la méthode \TT{count}: l'extrait que tu avais présenté
+n'avait que 2-3 lignes de moins que la méthode complète. Donc, pour si peu de lignes, aussi bien présenté toute la méthode.}
 
-\GT{Puisque tu parles de mise en oeuvre, je crois que tu dois
-distinguer entre le flux --- l'objet Flow --- et le pipeline qui met
-en oeuvre ce flux, comme indiqué dans le diagramme donnant la vue
-d'ensemble --- "implemented by".}
+\GT{Par contre, avec cette méthode, tu présentes une méthode du groupe
+Aggrégation. Peut-être serait-il bien de  présenter aussi le code pour
+une méthode du groupe Source (LinesFromFile?) et une méthode du groupe
+Transformation (map?)?   En les présentant  dans le même ordre  que tu
+présentes les groupes?!  J'ai ajouté le premier...}
 
-\IC{Merci pour cet explication. Dans ma description, j'ai vu Flow comme étant l'API et Pipeline comme le flux.}
 
-L'\TT{API} de \TT{PpFf} est mise en œuvre par le module \TT{Pipeline}. Ce dernier s'occupe de la cr\'eation et l'ex\'ecution du flux. Le listing~\ref{count.c++} pr\'esente le code de la m\'ethode \TT{count} de l'\TT{API}. L'attribut \TT{pipe} d'un objet \TT{Flow} est une instance de la classe \TT{Pipeline}, objet qui cr\'ee et ajoute les op\'erateurs de type \TT{Count} dans le pipeline associé au flux en appelant la m\'ethode \TT{addNodes}. Une fois les n\oe{}uds ajoutés, puisqu'il s'agit d'une méthode qui produit un résultat qui n'est pas un \TT{Flow}, le traitement associé au pipeline \TT{pipe} est ex\'ecut\'e en appelant la m\'ethode \TT{run}. Puis on obtient et retourne la valeur de type entier (\TT{int}, sp\'ecifi\'e dans le deuxi\`eme param\`etre générique de la m\'ethode \TT{value}) produit par l'exécution du pipeline.
+
+L'\TT{API} de \TT{PpFf} est mise en œuvre par le module \TT{Pipeline}. Ce dernier s'occupe de la cr\'eation et de l'ex\'ecution du flux. Le listing~\ref{count.c++} pr\'esente le code de la m\'ethode \TT{count} de l'\TT{API}. L'attribut \TT{pipe} d'un objet \TT{Flow} est une instance de la classe \TT{Pipeline}, objet qui cr\'ee et ajoute les op\'erateurs de type \TT{Count} dans le pipeline associé au flux en appelant la m\'ethode \TT{addNodes}. Une fois les n\oe{}uds ajoutés, puisqu'il s'agit d'une méthode qui produit un résultat qui n'est pas un \TT{Flow}, le traitement associé au pipeline \TT{pipe} est ex\'ecut\'e en appelant la m\'ethode \TT{run}. Puis, on obtient et on retourne la valeur de type entier (\TT{int}, sp\'ecifi\'e dans le deuxi\`eme param\`etre générique de la m\'ethode \TT{value}) produit par l'exécution du pipeline.
 
 \subsection{Pipeline}
-\subsection{Operateurs}
+\subsection{Opérateurs}
 
 
 \section{Impl\'ementation de \TT{PpFf} avec \TT{FastFlow} : un exemple}
