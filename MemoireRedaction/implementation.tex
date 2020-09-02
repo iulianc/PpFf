@@ -51,7 +51,7 @@ La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{P
 
 \begin{itemize}
 
-\item Le premier groupe, Source, est le groupe de méthodes (statiques) qui permettent de créer un flux de donn\'ees. Ce sont es m\'ethodes qui fournissent les donn\'ees initiales pour un flux. Sans un appel \`a une telle m\'ethode, un flux ne peut pas exister. 
+\item Le premier groupe, Source, est le groupe de méthodes (statiques) qui permettent de créer un flux de donn\'ees. Ce sont des m\'ethodes qui fournissent les donn\'ees initiales pour un flux. Sans un appel \`a une telle m\'ethode, un flux ne peut pas exister. 
 
 \item Le deuxi\`eme groupe, Transformation, est composé des m\'ethodes qui retournent une r\'ef\'erence vers un objet \TT{Flow}. C'est ce m\'ecanisme permet d'encha\^iner les m\'ethodes de l'\TT{API}.
 
@@ -94,11 +94,30 @@ float]
     };
 \end{lstlisting}
 
+
+\begin{lstlisting}[
+label={map.c++},
+language=c++,
+gobble=7,
+caption={Le code de la m\'ethode \TT{map}, m\'ethode qui fait partie du groupe \TT{Transformation} de la classe \TT{Flow}.},
+frame=single,
+float]
+        template < typename In, typename Out >
+        Flow& map(std::function<Out*(In*)> const& taskFunc) {
+            typedef MapOperator<In, Out> Map;
+            
+            pipe.addNodes<Map>(pipe.nbWorkers(), taskFunc);
+
+            return *this;
+        }
+\end{lstlisting}
+
+
 \begin{lstlisting}[
 label={count.c++},
 language=c++,
 gobble=7,
-caption={Le code de la m\'ethode \TT{count} de la classe \TT{Flow}.},
+caption={Le code de la m\'ethode \TT{count}, m\'ethode qui fait partie du groupe \TT{Aggr\'egation} de la classe \TT{Flow}.},
 frame=single,
 float]
         unsigned int count() {
@@ -128,9 +147,12 @@ une méthode du groupe Source (LinesFromFile?) et une méthode du groupe
 Transformation (map?)?   En les présentant  dans le même ordre  que tu
 présentes les groupes?!  J'ai ajouté le premier...}
 
+\IC{Bonne idée. On a maintenant une présentation complète de l’API.}
 
 
-L'\TT{API} de \TT{PpFf} est mise en œuvre par le module \TT{Pipeline}. Ce dernier s'occupe de la cr\'eation et de l'ex\'ecution du flux. Le listing~\ref{count.c++} pr\'esente le code de la m\'ethode \TT{count} de l'\TT{API}. L'attribut \TT{pipe} d'un objet \TT{Flow} est une instance de la classe \TT{Pipeline}, objet qui cr\'ee et ajoute les op\'erateurs de type \TT{Count} dans le pipeline associé au flux en appelant la m\'ethode \TT{addNodes}. Une fois les n\oe{}uds ajoutés, puisqu'il s'agit d'une méthode qui produit un résultat qui n'est pas un \TT{Flow}, le traitement associé au pipeline \TT{pipe} est ex\'ecut\'e en appelant la m\'ethode \TT{run}. Puis, on obtient et on retourne la valeur de type entier (\TT{int}, sp\'ecifi\'e dans le deuxi\`eme param\`etre générique de la m\'ethode \TT{value}) produit par l'exécution du pipeline.
+L'\TT{API} de \TT{PpFf} est mise en œuvre par le module \TT{Pipeline}. Ce dernier s'occupe de la cr\'eation et de l'ex\'ecution du flux. Les listings~\ref{source.c++},~\ref{map.c++} et~\ref{count.c++} pr\'esentent le code de trois m\'ethodes de l'\TT{API} appartenant \`a trois groupes diff\'erents: \TT{Source}, \TT{Transformation} et \TT{Aggrégation}. L'attribut \TT{pipe} de chaque m\'ethode est une instance de la classe \TT{Pipeline}, objet qui cr\'ee et ajoute les op\'erateurs dans le pipeline associ\'e au flux en appelant la m\'ethode \TT{addNodes}. 
+
+La m\'ethode statique \TT{source} de listing~\ref{source.c++} est la premi\`ere m\'ethode ajout\'ee au flux de traitement. Cette m\'ethode a un double r\^ole : elle cr\'ee et fournit les donn\'ees initiales au flux de donn\'ees. Le listing~\ref{map.c++} pr\'esente la m\'ethode \TT{map}, m\'ethode qui appartienne au groupe \TT{Transformation}. Les deux m\'ethodes \TT{source} et \TT{map}, retournent une r\'ef\'erence vers un objet \TT{Flow}. La troisi\`eme m\'ethode, \TT{count}, appartenant au groupe \TT{Aggr\'egation}, est une m\'ethode qui produit une valeur de type enti\`ere en comptant les \'el\'ements du flux. Cette valeur est obtenue en ex\'ecutant le traitement du flux. Ce traitement associ\'e au pipeline \TT{pipe} est ex\'ecut\'e en appelant la m\'ethode \TT{run}. Puis, on obtient et on retourne le r\'esultat de type entier (\TT{int}, sp\'ecifi\'e dans le deuxi\`eme param\`etre générique de la m\'ethode \TT{value}) produit par l'exécution du pipeline.
 
 \subsection{Pipeline}
 \subsection{Opérateurs}
