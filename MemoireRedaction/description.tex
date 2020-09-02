@@ -19,7 +19,7 @@ Ce chapitre pr\'esente l'API de la biblioth\`eque \ppff,  c'est-\`a-dire, l'inte
 %
 Le principal type exporté par l'API est le type \TT{Flow}, qui permet de définir un \emph{flux de données} (Sect.~\ref{flow.sect}).
 %
-Ensuite, sur la base du type de fonctionnalit\'e export\'ee, l'API se divise en quatre cat\'egories :  \TT{Source} (Sect.~\ref{source.sect}), \TT{Transformation} (Sect.~\ref{transformation.sect}),  \TT{Aggregation} (Sect.~\ref{aggregation.sect}) et \TT{Execution} (Sect.~\ref{execution.sect}). Quant \`a la cat\'egorie \TT{Aggregation}, elle est elle-m\^eme divis\'ee deux sous-cat\'egories, selon le type de r\'esultat produit~: valeur simple (par ex., r\'esultat bool\'een ou entier) ou collection.
+Ensuite, sur la base du type de fonctionnalit\'e export\'ee, l'API se divise en quatre cat\'egories :  \TT{Source} (Sect.~\ref{source.sect}), \TT{Transformation} (Sect.~\ref{transformation.sect}),  \TT{Agrégation} (Sect.~\ref{agregation.sect}) et \TT{Execution} (Sect.~\ref{execution.sect}). Quant \`a la cat\'egorie \TT{Agrégation}, elle est elle-m\^eme divis\'ee deux sous-cat\'egories, selon le type de r\'esultat produit~: valeur simple (par ex., r\'esultat bool\'een ou entier) ou collection.
 
 L'objectif de notre API \'etait d'obtenir une API semblable \`a celle des \TT{Stream}s de \TT{Java}~8, bas\'ee sur le cha\^inage de m\'ethodes, donc la construction d'une séquence de traitements dans un style qui ressemble \`a un \TT{pipeline}.
 
@@ -178,9 +178,9 @@ Une op\'eration courante consiste \`a s\'electionner les \'el\'ements d'un ensem
 Un exemple qui illustre l'utilisation de la m\'ethode \TT{find} est pr\'esent\'e dans le listing~\ref{mapExample2.c++}~: l'appel \`a la m\'ethode \TT{find}  s\'electionne uniquement les employ\'es du flux dont le salaire est sup\'erieur \`a 1~000 \$.
 
 
-\section{Cat\'egorie \TT{Aggregation}}
+\section{Cat\'egorie \TT{Agrégation}}
 
-\label{aggregation.sect}
+\label{agregation.sect}
 
 La derni\`ere \'etape dans le traitement d'un flux est la collecte des \'el\'ements pour produire le r\'esultat. Les m\'ethodes fournies par l'API de la biblioth\`eque \ppff\ offrent quatre fonctionnalit\'es principales: 
 

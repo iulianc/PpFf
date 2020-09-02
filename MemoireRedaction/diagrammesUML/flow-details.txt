@@ -14,7 +14,7 @@ class Flow<T> {
   peek(): Flow<T>
   skip(): Flow<T>
   sort(): Flow<T>
-  ..Aggrégation (valeur simple)..
+  ..Agrégation (valeur simple)..
   allMatch(): bool
   anyMatch(): bool
   noneMatch(): bool
@@ -22,7 +22,7 @@ class Flow<T> {
   min(): T
   max(): T
   sum(): T
-  ..Aggrégation (collection)..
+  ..Agrégation (collection)..
   <V> reduce(): V
   <Container> collect(): Container<T>
   <K, V> groupByKey(): Map<K,V>

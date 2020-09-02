@@ -27,7 +27,7 @@ class Flow<T> {
   parallel(): Flow<T>
   skip(): Flow<T>
   sort(): Flow<T>
-  ..Aggrégateurs..
+  ..Agrégation..
   <V> reduce(): V
   <Container> collect(): Container<T>
   <K, V> groupByKey(): Map<K,V>

@@ -47,7 +47,7 @@ La biblioth\`eque \TT{PpFf} est compos\'ee de plusieurs modules qui permettent d
 
 
 
-La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{PpFf}, l'interface avec laquelle interagit le d\'eveloppeur. La figure~\ref{Flow.fig} --- qui reprend la figure~\ref{MethodesAPI.fig} --- pr\'esente la vue d'ensemble des diverses m\'ethodes export\'ees par \TT{PpFf}. Selon le type export\'e par l'\TT{API}, les m\'ethodes sont divis\'ees en plusieurs groupes : Source, Transformation, Aggr\'egation (valeur simple ou collection) et Ex\'ecution (parallèle).
+La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{PpFf}, l'interface avec laquelle interagit le d\'eveloppeur. La figure~\ref{Flow.fig} --- qui reprend la figure~\ref{MethodesAPI.fig} --- pr\'esente la vue d'ensemble des diverses m\'ethodes export\'ees par \TT{PpFf}. Selon le type export\'e par l'\TT{API}, les m\'ethodes sont divis\'ees en plusieurs groupes : Source, Transformation, Agr\'egation (valeur simple ou collection) et Ex\'ecution (parallèle).
 
 \begin{itemize}
 
@@ -55,7 +55,7 @@ La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{P
 
 \item Le deuxi\`eme groupe, Transformation, est composé des m\'ethodes qui retournent une r\'ef\'erence vers un objet \TT{Flow}. C'est ce m\'ecanisme permet d'encha\^iner les m\'ethodes de l'\TT{API}.
 
-\item Le troisi\`eme groupe, Aggr\'egation, est divis\'e en deux sous-groupes, selon le type de r\'esultat produit : valeur simple --- les m\'ethodes retournant une valeur simple, habituellement un scalaire (par ex., r\'esultat bool\'een ou entier) et collection --- les m\'ethodes retournant une collection.
+\item Le troisi\`eme groupe, Agr\'egation, est divis\'e en deux sous-groupes, selon le type de r\'esultat produit : valeur simple --- les m\'ethodes retournant une valeur simple, habituellement un scalaire (par ex., r\'esultat bool\'een ou entier) et collection --- les m\'ethodes retournant une collection.
 
 \item Le quatrième et dernier groupe, Exécution, comporte une seule m\'ethode. Cette m\'ethode modifie le comportement d'ex\'ecution du flux. Lorsqu'elle est ajout\'ee au  \TT{pipeline}, toutes les op\'erations suivant cette m\'ethode seront ex\'ecut\'ees en parall\`ele, en utilisant les instances d'un  \TT{farm}.
 
@@ -123,7 +123,7 @@ complet pour la méthode \TT{count}: l'extrait que tu avais présenté
 n'avait que 2-3 lignes de moins que la méthode complète. Donc, pour si peu de lignes, aussi bien présenté toute la méthode.}
 
 \GT{Par contre, avec cette méthode, tu présentes une méthode du groupe
-Aggrégation. Peut-être serait-il bien de  présenter aussi le code pour
+Agrégation. Peut-être serait-il bien de  présenter aussi le code pour
 une méthode du groupe Source (LinesFromFile?) et une méthode du groupe
 Transformation (map?)?   En les présentant  dans le même ordre  que tu
 présentes les groupes?!  J'ai ajouté le premier...}
