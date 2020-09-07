@@ -25,8 +25,16 @@ typedef std::vector<std::string> Words;
 
 #include "auxiliary-functions.hpp"
 
+std::string* id( std::string* s ) {
+    return s;
+}
+
 int main(int argc, char* argv[]) {
-    std::string inputFile = argc >= 3 ? argv[2] : DEFAULT_INPUT_FILE;
+    std::vector<std::string> elems =
+        {
+         "abc",
+         "def"
+        };
     
     Reducer<std::string, int> reducer(0, 
                                       [](int count, std::string s) {
@@ -36,12 +44,19 @@ int main(int argc, char* argv[]) {
                                                     << std::endl;
                                           return count + 1;
                                       },
-                                      std::plus<int>() );
+                                      []( int x, int y ) {
+                                          std::cout << x << " " << y << std::endl;
+                                          return x + y;
+                                      }
+                                      );
 
     std::unordered_map<std::string, int> currentResult = 
         Flow
-        ::source(inputFile)
-        .flatMap<std::string, Words, std::string>(splitInWords)			
+        ::source<std::string>(elems.begin(), elems.end())
+        // Avec id: ok
+        //.map<std::string, std::string>( id )
+        // Avec toLowercaseLetters: Segmentation fault!
+        .map<std::string, std::string>( toLowercaseLetters )
         .reduceByKey<std::string, std::string, int>(reducer);  
     return 0;
 }
