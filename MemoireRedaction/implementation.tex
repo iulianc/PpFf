@@ -17,7 +17,7 @@ La premi\`ere section d\'ecrit les diff\'erents éléments composant la biblioth
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/vueEnsemble.png}
-      \caption{Les principaux éléments (classes) de \TT{PpFf}.}
+      \caption{Les principaux éléments (classes et paquetages) de \TT{PpFf}.}
        \label{All.fig}
 \end{figure}
 
@@ -42,7 +42,7 @@ La biblioth\`eque \TT{PpFf} est compos\'ee de plusieurs modules qui permettent d
 \begin{figure}
 \centering
      \includegraphics[width=0.5\textwidth]{Figures/flow-details.png}
-      \caption{Les diff\'erentes m\'ethodes export\'ees par l'API de \TT{PpFf}.}
+      \caption{Les m\'ethodes export\'ees par l'API de \TT{PpFf}.}
        \label{Flow.fig}
 \end{figure}
 
@@ -69,7 +69,7 @@ L'\TT{API} de \TT{PpFf} permet d'appliquer plusieurs op\'erations les unes à la
 label={source.c++},
 language=c++,
 gobble=4,
-caption={Extraits (squelette) de la classe \TT{Flow} avec la variable d'instance \TT{pipe} et le code de la m\'ethode statique \TT{soure}.},
+caption={Des extraits (squelette) de la classe \TT{Flow} avec la variable d'instance \TT{pipe} et le code de la m\'ethode statique \TT{soure}.},
 frame=single,
 float]
     class Flow {
@@ -136,19 +136,11 @@ valeur qui indique le nombre d'\'el\'ements du flux. Plus exactement, cette vale
 \begin{figure}
 \centering
          \includegraphics[width=0.8\textwidth]{Figures/pipeline.png}
-      \caption{Le diagramme UML d\'etaill\'e de \TT{Pipeline}.}
+      \caption{Un diagramme UML des éléments pour un \TT{Pipeline} de \ppff.}
        \label{pipeline.fig}
 \end{figure}
 
 \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\'eque \TT{FastFlow}. Plus précisément, \TT{PpFf} construit tout d'abord une repr\'esentation interm\'ediaire, puis g\'en\`ere ensuite un graphe de n\oe{}uds \TT{FastFlow}. Toutes les classes n\'ecessaires pour construire une telle structure interm\'ediaire sont group\'ees dans le module \TT{Pipeline}, tel qu'illustr\'e dans le diagramme de classes de la figure~\ref{pipeline.fig}.
-
-\GT{Il faudrait que dans cette figure 3.3., la partie Opertors soit
-dissimulée --- donc avec juste la classe Operator et le package
-Operators -- et ce pour ainsi mieux mettre l'accent sur le package
-Pipeline. Sinon, 3.3 et 3.4 sont trop semblables, avec presque autant
-de détails dans l'une et l'autre figure.}
-
-\IC{Ça a l'air beaucoup mieux.}
 
 La classe principale de ce module, la classe avec le m\^eme nom que le module, est la classe \TT{Pipeline}. Une instance de cette classe repr\'esente une cha\^ine de traitement. Plus pr\'ecis\'ement, \TT{Pipeline} est l'impl\'ementation du flux \TT{Flow} d\'ecrit dans la sous-section~\ref{flow.chap}. Un objet \TT{Pipeline} est compos\'e d'une ou plusieurs instances de la classe \TT{Node}. Un \TT{Node} peut \^etre un \TT{Pipeline}, un \TT{Worker} ou un \TT{Farm}. Les classes \TT{Worker} et \TT{Farm} sont utilis\'ees pour cr\'eer les instances parall\`eles d'un \TT{farm} — voir plus bas. Les instances \TT{Node} sont ajout\'ees au flux en appelant la m\'ethode \TT{addNodes} de la classe \TT{Pipeline}. En fonction de type de parall\'elisme (de flux, Sect.~\ref{ParallelismeDuFlux.sect} ou de donn\'ees, Sect.~\ref{ParallelismeDeDonnees.sect}), un objet \TT{Pipeline} peut \^etre compos\'e d'instances de \TT{Node} ou  de \TT{Farm}. Lorsqu'une instance de \TT{Farm} est ajout\'ee au {pipeline}, le flux est divis\'e en sous-flux --- appel\'es les instances parall\`eles d'un \TT{farm} --- où chaque sous-flux est une instance de la classe \TT{Worker}. Un objet \TT{Worker} peut, \`a son tour, \^etre un objet \TT{Node} ou un objet \TT{Pipeline}.
 
@@ -158,25 +150,42 @@ Le r\'esultat du traitement est retourn\'e au \TT{Pipeline} par l'intermédiare 
 
 
 
-\subsection{Opérateurs}
+\subsection{Operators}
 
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/operators-details.png}
-      \caption{Le diagramme UML d\'etaill\'e de \TT{Operators}.}
+      \caption{Un diagramme UML des \TT{Operators} de \ppff.}
        \label{operators.fig}
 \end{figure}
 
 
-Dans la terminologie de \TT{PpFf}, chaque m\'ethode expos\'ee par son interface repr\'esente une op\'eration et chaque op\'eration est impl\'ement\'ee par un op\'erateur. Plus pr\'ecisément, les op\'erateurs repr\'esentent les \'etapes dans la chaine de traitement de donn\'ees. D\'ecrit dans la figure~\ref{operators.fig}, les op\'erateurs h\'erite de la classe de base, \TT{Operator}. Ils peuvent \^etre class\'es en trois cat\'egories : source, interm\'ediaire et collecteur.
+Dans la terminologie de \TT{PpFf}, chaque m\'ethode expos\'ee par l'interface de \ppff\ repr\'esente une op\'eration et chaque op\'eration est impl\'ement\'ee par un op\'erateur, un objet provenant d'une sous-classe de la classe \TT{Operator}. Plus pr\'ecisément, les op\'erateurs repr\'esentent les \'etapes dans la chaine de traitement de donn\'ees. Tel qu'illustré dans la figure~\ref{operators.fig}, les classes pour les divers op\'erateurs h\'eritent de la classe de base, \TT{Operator}.
+%
+\GT{Il faut indiquer clairement que juste 2 sous-classes sont
+indiquées, les autres étant implicites, via les <<Etc.>>.  Sinon, ce
+n'est pas clair qu'il y a un grand nombre de telles
+sous-classes. Peut-être, dans le texte simplement donner la liste de
+ces sous-classes, lorsque tu présentes les trois catégories?}
 
-Un \TT{pipeline} est compos\'e d'un op\'erateur source, de z\'ero ou plusieurs op\'erateurs interm\'ediaires et d'un op\'erateur collecteur. L'op\'erateur source est le premier op\'erateur ajout\'e dans le flux. Sans un tele op\'erateur le traitement ne peut avoir lieu.
 
-Les op\'erateurs interm\'ediaires tels que \TT{find} ou \TT{map} sont des op\'erateurs sans \'etat. Autrement dit, l'\'etat du traitement n'est pas conserv\'e. Ce qui est important, c'est que les op\'erateurs interm\'ediaires n'effectuent aucun traitement tant qu'un op\'erateur collecteur n'est pas ajout\'e au \TT{pipeline}. 
+\GT{Je crois préférable d'éviter le terme <<être classés>>, parce que
+ça sera mélangeant avec la notion de classe d'objets.}
 
-L'op\'erateur collecteur, l'op\'erateur avec \'etat, est le dernier op\'erateur ajout\'e au \TT{pipeline}. L'ajout de cet op\'erateur entra\^ine l'ex\'ecution du traitement. La valeur r\'esultante du traitement est conserv\'ee en interne par chaque op\'erateur. C'est cette valeur qui va \^etre retourn\'ee au \TT{Pipeline}.
 
-La fonctionnalit\'e sp\'ecifique \`a chaque op\'eration de \TT{pipeline} est impl\'ement\'ee par la m\'ethode \TT{svc} de chaque op\'erateur. Comme on peut le voir dans la figure~\ref{operators.fig}, un \TT{Operator} h\'erite de la classe abstraite \TT{ff\_node} de \TT{FastFlow}. De cette fa\c {c}on, chaque op\'erateur surcharge la m\'ethode \TT{svc} qui est appel\'ee automatiquement au moment de l'ex\'ecution du flux. Cela nous permet d'ajouter la fonctionnalit\'e d\'esir\'ee au corps de cette m\'ethode. 
+Ces divers opérateurs peuvent \^etre regroupés en trois cat\'egories : source, interm\'ediaire et collecteur.
+
+Un \TT{pipeline} est compos\'e d'un op\'erateur source, de z\'ero ou plusieurs op\'erateurs interm\'ediaires et d'un op\'erateur collecteur. L'op\'erateur source est le premier op\'erateur ajout\'e dans le flux~; sans un tel op\'erateur, aucun traitement ne peut avoir lieu puisqu'il n'y aurait pas de données à traiter.
+
+Les op\'erateurs interm\'ediaires, tels que \TT{find} ou \TT{map}, sont des op\'erateurs sans \'etat. Autrement dit, chaque élément du flux est traité de façon indépendante. Autre point important~: les op\'erateurs interm\'ediaires n'effectuent aucun traitement tant qu'un op\'erateur collecteur n'est pas ajout\'e au \TT{pipeline}. 
+
+\GT{Je crois que de parler de <<sans état>> vs.\ <<avec état>> avait
+porté à confusion un des évaluateurs, non? Je crois que tu peux
+décrire les différentes sortes sans parler d'état.}
+
+L'op\'erateur collecteur est le dernier op\'erateur ajout\'e au \TT{pipeline}. L'ajout de cet op\'erateur entra\^ine l'ex\'ecution du traitement spécifié par les opérateurs du pipeline. La valeur r\'esultante du traitement est conserv\'ee en interne par chaque op\'erateur collecteur. C'est cette valeur qui va \^etre retourn\'ee au \TT{Pipeline} par un appel à \TT{value()}.
+
+La fonctionnalit\'e sp\'ecifique \`a chaque op\'eration du \TT{pipeline} est impl\'ement\'ee par la m\'ethode \TT{svc} de chaque op\'erateur. Comme on peut le voir dans la figure~\ref{operators.fig}, un \TT{Operator} h\'erite de la classe \TT{ff\_node} de \TT{FastFlow}. De cette fa\c {c}on, lorsque le graphe FastFlow est exécuté, c'est la méthode \TT{svc} de chaque op\'erateur qui est appel\'ee. C'est ce qui permet de spécifier la fonctionnalit\'e spécifique à chaque opérateur 
 
 
 
@@ -215,14 +224,8 @@ Un flux compos\'e de $n$ {étapes}, o\`u la $i^{\grave e}$ étape ex\'ecute une 
 
 \begin{figure}
 
-\GT{Même remarque que ci-bas: L'utilisation des $S_i$ n'est pas
-vraiment utile, ne fait que rendre ça plus complexe. Donc, supprime
-les $S_i$ de la figure!}
-
-\IC{$S_i$ vienne de l'ancien stage. Bonne observation.}
-
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/ParallelismeDuFlux.png}
+     \includegraphics[width=0.9\textwidth]{Figures/ParallelismeDuFlux.png}
       \caption[Une repr\'esentation graphique du parall\'elisme de flux en \ppff.]{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees de fa\c{c}on parall\`ele dans diff\'erents fils d'ex\'ecution représentés par $W_1, W_2, \ldots, W_n$ ($W$ pour \emph{$W$orker}).}
        \label{ParallelismeDuFlux.fig}
 \end{figure}
@@ -251,14 +254,8 @@ Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee
 
 \begin{figure}
 
-\GT{Je suggère que dans cette figure, tu supprime les $S_1$, etc. Ça
-n'apporte rien aux explications, au contraire, ça rend cela plus
-compliqué: opération, worker, étape....}
-
-\IC{J'ai supprimé les $S_i$}
-
 \centering
-     \includegraphics[width=1.0\textwidth]{Figures/DataParallelisme.png}
+     \includegraphics[width=0.9\textwidth]{Figures/DataParallelisme.png}
       \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees en \ppff.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. La m\^eme op\'eration~$O$ est ex\'ecut\'ee par les $n$ travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur $E$ ($E$\emph{mitter}) puis les divers r\'esultats sont combin\'es par le collecteur $C$ ($C$\emph{ollector}).}
        \label{DataParallelisme.fig}
 \end{figure}
