@@ -21,13 +21,11 @@ TEST_CASE( "AvecSection", "ReduceOperator" ) {
     Reducer<int, int> reducer(0, std::plus<int>{}, std::plus<int>{});
 
     SECTION( "Une section") {
-        std::cout << "Creation du flow" << std::endl; 
         int currentResult =
             Flow
             ::source<int>(elems.begin(), elems.end())
             .reduce<int, int>(reducer);
         
-        std::cout << "Appel au REQUIRE" << std::endl; 
         REQUIRE(currentResult == expectedResult);
     }
 }

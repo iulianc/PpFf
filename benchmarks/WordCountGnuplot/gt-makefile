@@ -1,6 +1,6 @@
 .IGNORE:
 
-_def: run_bogue
+_def: run_cpp
 
 
 def: run_cpp_merged run_cpp
