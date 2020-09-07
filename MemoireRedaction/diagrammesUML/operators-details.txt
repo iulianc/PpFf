@@ -1,0 +1,35 @@
+@startuml operators-details
+
+'skinparam style strictuml
+'skinparam groupInheritance 3
+
+hide empty members
+
+skinparam linetype ortho
+'skinparam groupInheritance 2
+
+
+skinparam classAttributeIconSize 0
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Diagramme presentant l'ensemble du modele, avec ou sans details.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+!$details = 0
+
+'Versions sans (0) ou avec (1) details
+!include fastflow.txt!$details
+
+package Pipeline {
+    class Node {
+    }
+
+}  
+
+!include operators.txt
+
+  Node --> Operator
+  Node -[hidden]- CountOperator
+  Node -[hidden]- MapOperator
+
+@enduml

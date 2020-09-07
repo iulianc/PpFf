@@ -21,18 +21,18 @@ package Operators {
     value(): T::Value
   }
 
-  OperatorType . Operator
+  Operator . OperatorType
 
 
   note right of CountOperator :  Etc.
   
-  note right of CountOperator :  isCollector()
-  
   note right of MapOperator :  Etc.
 
-  note right of MapOperator :  not isCollector()
+  note left of CountOperator :  isCollector()
+  
+  note left of MapOperator :  not isCollector()
 
-  Node --> Operator
+
 }
 
 MapOperator --|> Operator
