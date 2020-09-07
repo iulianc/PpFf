@@ -21,8 +21,8 @@ namespace PpFf {
         
         // Forme la plus generale, avec les trois elements.
         Reducer(Out initialValue, 
-                std::function<Out(Out, In)> const accumulator,
-                std::function<Out(Out, Out)> const combiner):
+                std::function<Out(Out, In)> const& accumulator,
+                std::function<Out(Out, Out)> const& combiner):
             initialValue(initialValue), 
             hasInitialValue(true),
             accumulator(accumulator), 
@@ -31,19 +31,19 @@ namespace PpFf {
         {}
 
         Reducer(Out initialValue, 
-                std::function<Out(Out, In)> const accumulator):
+                std::function<Out(Out, In)> const& accumulator):
             initialValue(initialValue), 
             hasInitialValue(true),
             accumulator(accumulator)
         {}
 
-        Reducer(std::function<Out(Out, In)> const accumulator):
+        Reducer(std::function<Out(Out, In)> const& accumulator):
             hasInitialValue(false),
             accumulator(accumulator)
         {}
 
-        Reducer(std::function<Out(Out, In)> const accumulator,
-                std::function<Out(Out, Out)> const combiner):
+        Reducer(std::function<Out(Out, In)> const& accumulator,
+                std::function<Out(Out, Out)> const& combiner):
             hasInitialValue(false),
             accumulator(accumulator), 
             combiner(combiner), 
