@@ -176,6 +176,8 @@ Le r\'esultat du traitement est retourn\'e au \TT{Pipeline} par l'intermédiare 
 \end{figure}
 
 
+La figure~\ref{operators.fig}...
+
 
 
 
@@ -199,9 +201,10 @@ L'objectif de cette section est de d\'ecrire la façon dont ces deux formes de p
 
 Le parall\'elisme de flux consiste \`a ex\'ecuter plusieurs \'etapes d'un traitement s\'equentiel en parall\`ele en leur faisant traiter des donn\'ees diff\'erentes. Les donn\'ees se succ\`edent ainsi les unes aux autres dans les diff\'erentes \'etapes.
 
-Dans \TT{PpFf}, une \emph{\'etape} est cr\'e\'ee lorsqu'une m\'ethode de l'interface de \TT{PpFf} est ajout\'ee au \emph{pipeline} par le cha\^inage de m\'ethodes.
+Dans \TT{PpFf}, une {\'etape} est cr\'e\'ee lorsqu'une m\'ethode de l'interface de \TT{PpFf} est ajout\'ee au \emph{pipeline} par le cha\^inage de m\'ethodes.
 %
-Le traitement effectu\'e dans une \emph{\'etape} \`a un instant donn\'e peut d\'ependre, ou non, des traitements effectu\'es par ce m\^eme \emph{\'etape} pour les donn\'ees pr\'ec\'edentes --- un \'etat interne peut donc \^etre conserv\'e. 
+% GT: La phrase suivante ne me semble pas juste, ou à tout le moins pas claire sans explications additionnelles.  Donc, on va simplement l'omettre.
+% Le traitement effectu\'e dans une \emph{\'etape} \`a un instant donn\'e peut d\'ependre, ou non, des traitements effectu\'es par ce m\^eme \emph{\'etape} pour les donn\'ees pr\'ec\'edentes --- un \'etat interne peut donc \^etre conserv\'e. 
 %
 \`A noter que ce type de parall\'elisme est appliqu\'e par d\'efaut dans notre biblioth\`eque. 
 %
@@ -209,7 +212,7 @@ Ce fonctionnement permet de parall\'eliser des traitements avec des d\'ependance
 
 \goodbreak
 \begin{samepage}
-Un flux compos\'e de $n$ \emph{stages} $S_1, S_2, \ldots, S_n$ o\`u le \emph{stage} $S_i$ ex\'ecute une op\'eration $O_i$ peut \^etre exprim\'e sous la forme d'une composition s\'equentielle d'op\'erations sur les \'el\'ements d'entr\'ee comme suit, o\`u $O(x)$ repr\'esente le traitement global d'un \'el\'ement $x$ du flux~: 
+Un flux compos\'e de $n$ {étapes}, o\`u la $i^{\grave e}$ étape ex\'ecute une op\'eration $O_i$, peut \^etre vu sous la forme d'une composition s\'equentielle d'op\'erations sur les \'el\'ements d'entr\'ee comme suit, o\`u $O(x)$ repr\'esente le traitement global d'un des \'el\'ements $x$ du flux de données~: 
 %
 \[
 	O(x) = O_n( \ldots (O_k( \ldots O_1(x)) \ldots ) \ldots ));
@@ -218,15 +221,20 @@ Un flux compos\'e de $n$ \emph{stages} $S_1, S_2, \ldots, S_n$ o\`u le \emph{sta
 
 
 \begin{figure}
+
+\GT{Même remarque que ci-bas: L'utilisation des $S_i$ n'est pas
+vraiment utile, ne fait que rendre ça plus complexe. Donc, supprime
+les $S_i$ de la figure!}
+
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/ParallelismeDuFlux.pdf}
-      \caption[Une repr\'esentation graphique du parall\'elisme de flux en \ppff.]{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$ \emph{stages} $S_1, S_2, \ldots, S_n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees de fa\c{c}on parall\`ele dans diff\'erents fils d'ex\'ecution $W_1, W_2, \ldots, W_n$ ($W$ pour \emph{$W$orker}).}
+      \caption[Une repr\'esentation graphique du parall\'elisme de flux en \ppff.]{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees de fa\c{c}on parall\`ele dans diff\'erents fils d'ex\'ecution représentés par $W_1, W_2, \ldots, W_n$ ($W$ pour \emph{$W$orker}).}
        \label{ParallelismeDuFlux.fig}
 \end{figure}
 
 
-Si on note par $W_i$ le fil d'ex\'ecution (\emph{thread}) associ\'e au \emph{stage} $S_i$, alors
-le parall\'elisme de flux du pipeline peut \^etre repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique $O_i$. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux dans un tel pipeline. Signalons que cette solution n'acc\'el\`ere pas le calcul d'un seul \'el\'ement; par contre, elle am\'eliore \emph{le d\'ebit de sortie}.
+Si on note par $W_i$ le fil d'ex\'ecution (\emph{thread}) associ\'e à la $i^{\grave e}$ {étape}, alors
+le parall\'elisme de flux du pipeline peut \^etre repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique $O_i$. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux dans un tel pipeline. Signalons que cette approche n'acc\'el\`ere pas le calcul d'un \'el\'ement donné du flux, qui doit parcourir toutes les étapes; par contre, elle peut am\'eliorer \emph{le d\'ebit de sortie} si les opérations $O_i$ sont complexes.
 
 \subsection{Parall\'elisme de donn\'ees}
 \label{ParallelismeDeDonnees.sect}
@@ -236,7 +244,7 @@ Le parall\'elisme de donn\'ees impl\'ement\'e dans \TT{PpFf}  consiste \`a r\'ep
 Dans notre impl\'ementation de \PpFf, le parall\'elisme de donn\'ees est mis en \oe{}uvre avec les \emph{Task Farm} de \TT{FastFlow}.
 
 
-D\'ecrit \`a la section~\ref{farm.sect}, un \emph{Task Farm} est compos\'ee de trois entit\'es : un \emph{Emitter}, plusieurs instances de travailleurs (\emph{workers}) et un \emph{Collector}. Par d\'efaut, dans \PpFf{}, les \'el\'ements sont r\'epartis par un \emph{Emitter} aux divers travailleurs selon une politique \emph{round robin}.%
+D\'ecrit \`a la section~\ref{farm.sect}, un \emph{Task Farm} est compos\'ee de trois entit\'es : un \emph{Emitter}, plusieurs instances de travailleurs (\emph{workers}), et un \emph{Collector}. Par d\'efaut, dans \PpFf{}, les \'el\'ements sont r\'epartis par un \emph{Emitter} aux divers travailleurs selon une politique \emph{round robin}.%
 %
 \footnote{Politique \emph{round robin}~: approche d'ordonnancement pour r\'epartir la charge du travail entre des \emph{threads}, avec une file d'attente circulaire. Cf.~\url{https://fr.wikipedia.org/wiki/Round-robin_(informatique)}.} 
 %
@@ -247,15 +255,20 @@ Dans \TT{FastFlow} un \emph{Task Farm} est cr\'e\'e en instanciant la classe \TT
 Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee selon le principe \emph{FIFO}. La collection de plusieurs r\'esultats \`a l'aide de cette approche r\'esulte dans un flux sans ordre sur ses \'el\'ements. En effet, le \emph{Collector} transmet les \'el\'ements au flux de sortie dans l'ordre d'arriv\'ee. \'Etant donn\'e que plusieurs flux ind\'ependants sont impliqu\'es, cet ordre ne peut pas \^etre pr\'ed\'etermin\'e. Si le respect d'un  ordre sp\'ecifique est requis, l'utilisateur de l'API peut ajouter une op\'eration qui produit cet ordre. Par exemple, la m\'ethode \TT{sort} de l'API (cf.~l'annexe~\ref{methodes-api.ann}), effectue le tri des \'el\'ements du flux selon l'ordre sp\'ecifi\'e par la fonction \TT{compare} envoy\'e en param\`etre.
 
 \begin{figure}
+
+\GT{Je suggère que dans cette figure, tu supprime les $S_1$, etc. Ça
+n'apporte rien aux explications, au contraire, ça rend cela plus
+compliqué: opération, worker, étape....}
+
 \centering
      \includegraphics[width=1.0\textwidth]{Figures/DataParallelisme.pdf}
-      \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees en \ppff.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. La m\^eme op\'eration~$O$ est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Le traitement associ\'e est repr\'esent\'e par le \emph{stage} $S_i$. Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur $E$ ($E$\emph{mitter}) puis les divers r\'esultats sont combin\'es par le collecteur $C$ ($C$\emph{ollector}).}
+      \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees en \ppff.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. La m\^eme op\'eration~$O$ est ex\'ecut\'ee par les $n$ travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur $E$ ($E$\emph{mitter}) puis les divers r\'esultats sont combin\'es par le collecteur $C$ ($C$\emph{ollector}).}
        \label{DataParallelisme.fig}
 \end{figure}
 
 
 L'impl\'ementation parall\`ele de ce mod\`ele peut \^etre
-exprim\'ee sous la forme d'un ensemble de $n$ travailleurs $W_1, W_2,\ldots, W_n$ qui
+exprim\'ee sous la forme d'un ensemble de~$n$ travailleurs $W_1, W_2,\ldots, W_n$ qui
 appliquent une op\'eration $O$ sur les divers \'el\'ements~$X = \{x_1, \ldots, x_k\}$ apparaissant dans
 le flux d'entr\'ee pour produire en sortie un ensemble d'\'el\'ements~$Y = \{y_1, \ldots, y_k\}$, o\`u $y_i = O(x_i)$.
 %
@@ -265,11 +278,9 @@ ind\'etermin\'ee, qui d\'epend notamment de la vitesse de traitement
 de chaque $x_i$.
 %
 
-La figure~\ref{DataParallelisme.fig} montre une repr\'esentation graphique du parall\'elisme de donn\'ees, o\`u la m\^eme op\'eration est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$. 
+La figure~\ref{DataParallelisme.fig} montre une repr\'esentation graphique du parall\'elisme de donn\'ees, o\`u la m\^eme op\'eration $O$ est ex\'ecut\'ee par les travailleurs $W_1, W_2,\ldots, W_n$. 
 
 Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a utiliser pour l'ex\'ecution parall\`ele. Si ce param\`etre n'est pas sp\'ecifi\'e, un seul travailleur est activ\'e. Permettre ainsi d'augmenter le nombre de travailleurs fait en sorte qu'on peut augmenter le d\'ebit du traitement des donn\'ees si appropri\'e, c'est-\`a-dire, augmenter le nombre de donn\'ees qui peuvent \^etre trait\'ees en un temps donn\'e si le nombre de c\oe{}urs ou processeurs le permet.
-
-
 
 
 
