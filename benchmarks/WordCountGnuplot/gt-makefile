@@ -1,6 +1,6 @@
 .IGNORE:
 
-_def: run_bash
+_def: run_bogue
 
 
 def: run_cpp_merged run_cpp
@@ -69,6 +69,10 @@ OPTFLAGS	=  -O3 -finline-functions -DNDEBUG
 compile: $(EXE)
 
 run: run_cpp run_java #run_seq
+
+run_bogue: Bogue
+	@echo "*** Execution programme Bogue++ *** "
+	@./Bogue 2 testdata/10Words.txt 1
 
 run_cpp: WordCount
 	@echo "*** Execution C++ *** "
@@ -139,6 +143,9 @@ run_java_warmup: WordCount.class
 
 WordCount: WordCount.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCount.o $(LDLIBS) -o WordCount
+
+Bogue: Bogue.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) Bogue.o $(LDLIBS) -o Bogue
 
 WordCountMerged: WordCountMerged.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountMerged.o $(LDLIBS) -o WordCountMerged

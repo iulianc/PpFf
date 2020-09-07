@@ -3,3 +3,4 @@
 *.class
 /.vs/Git_PpFf/v16
 /.vs
+tests/unitTests/testAll
