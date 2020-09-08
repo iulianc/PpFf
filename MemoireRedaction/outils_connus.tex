@@ -53,7 +53,7 @@ Les \TT{RDD}s sont conçus pour \^etre partitionn\'es, donc r\'epartis sur diff\
 \TT{Spark} traite un flux incr\'emental de donn\'ees \`a l'aide du mod\`ele \emph{Discretized Streams} --- \TT{D-stream}s.   
 %
 Ce mod\`ele est une autre abstraction introduite en \TT{Spark}. 
-% Il s'agit essentiellement d'un flux de RDD dont les \'el\'ements sont les donn\'ees re\c cues par flux en entr\'ee pour le traitement par lots.
+% Il s'agit essentiellement d'un flux de RDD dont les \'el\'ements sont les donn\'ees re\c{c}ues par flux en entr\'ee pour le traitement par lots.
 % %
 \TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
 
@@ -585,7 +585,7 @@ Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement du flux 
 
 \subsection{SkePU} 
 
-\TT{SkePU}~\citep{skePuReferenceEnLigne} est une biblioth\`eque \TT{C++} con\c {c}ue pour les syst\`emes parall\`eles h\'et\'erog\`enes. Elle propose un ensemble de squelettes algorithmiques pour sp\'ecifier les t\^aches parall\`eles sur des syst\`emes \emph{multi-GPU} utilisant \TT{CUDA} ou \TT{OpenCL}.
+\TT{SkePU}~\citep{skePuReferenceEnLigne} est une biblioth\`eque \TT{C++} con\c{c}ue pour les syst\`emes parall\`eles h\'et\'erog\`enes. Elle propose un ensemble de squelettes algorithmiques pour sp\'ecifier les t\^aches parall\`eles sur des syst\`emes \emph{multi-GPU} utilisant \TT{CUDA} ou \TT{OpenCL}.
 
 \TT{SkePU} fournit sept fonctions squelettes \`a usage g\'en\'eral pour traiter les donn\'ees en parall\`ele : \TT{Map}, \TT{Reduce}, \TT{MapReduce}, \TT{MapArray}, \TT{MapOverlap}, \TT{Scan} et \TT{Generate}. Ces fonctions sont impl\'ementées pour diff\'erents types de processeurs et plates-formes, y compris des processeurs s\'equentiels et multicœurs en utilisant \TT{OpenMP}, \TT{OpenCL} et \TT{CUDA} pour l'ex\'ecution mono et \emph{multi-GPU}.
 
@@ -593,7 +593,7 @@ Dans \TT{SkePU}, les donn\'ees sur lesquelles les fonctions opèrent sont conser
 
 
 
-\TT{SkePU} donne aux d\'eveloppeurs la possibilit\'e de d\'efinir leurs propres op\'erateurs. Cela est r\'ealis\'e via des \emph{user functions}, lesquelles sont des op\'erateurs utilis\'es pour instancier et initialiser une fonction squelette. Il y a deux fa\c {c}ons de d\'efinir une \emph{user fonction} : par une fonction \emph{template} ou par une expression lambda. Une fonction \emph{template} est toujours pr\'ef\'erable car elle pourrait ensuite \^etre partag\'ee entre des instances.
+\TT{SkePU} donne aux d\'eveloppeurs la possibilit\'e de d\'efinir leurs propres op\'erateurs. Cela est r\'ealis\'e via des \emph{user functions}, lesquelles sont des op\'erateurs utilis\'es pour instancier et initialiser une fonction squelette. Il y a deux fa\c{c}ons de d\'efinir une \emph{user fonction} : par une fonction \emph{template} ou par une expression lambda. Une fonction \emph{template} est toujours pr\'ef\'erable car elle pourrait ensuite \^etre partag\'ee entre des instances.
 
 
-Malgr\'e le fait que \TT{SkePU} supporte une large gamme de squelettes algorithmiques en cachant les d\'etails du parall\'elisme, de la communication et de la synchronisation, cela reste une biblioth\`eque de bas niveau de traitement de flux de donn\'ees. Par rapport \`a \TT{PpFf}, dans \TT{SkePU} les fonctions sont d\'eclar\'ees de fa\c {c}on imp\'erative. \TT{PpFf} propose une mani\`ere plus simple de d\'efinir les traitement via le cha\^inage de m\'ethodes. De plus, \TT{PpFf} offre de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations les plus utilis\'ees de traitement de flux.
+Malgr\'e le fait que \TT{SkePU} supporte une large gamme de squelettes algorithmiques en cachant les d\'etails du parall\'elisme, de la communication et de la synchronisation, cela reste une biblioth\`eque de bas niveau de traitement de flux de donn\'ees. Par rapport \`a \TT{PpFf}, dans \TT{SkePU} les fonctions sont d\'eclar\'ees de fa\c{c}on imp\'erative. \TT{PpFf} propose une mani\`ere plus simple de d\'efinir les traitement via le cha\^inage de m\'ethodes. De plus, \TT{PpFf} offre de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations les plus utilis\'ees de traitement de flux.

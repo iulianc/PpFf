@@ -13,19 +13,20 @@
 # été supprimés, assurant ainsi que latexdiff fonctionne correctement.
 #
 
+VERSION=Version2019
 
 sed  's/^\\include{appendice/%\\include}appendice/' memoire.tex > mem.tex
 perl LatexDiff/latexpand.pl mem.tex > flat.tex
 \rm -f mem.tex
 
-echo "cd VersionAComparer"
-cd VersionAComparer
+echo "cd ${VERSION}"
+cd ${VERSION}
 sed  's/^\\include{appendice/%\\include}appendice/' memoire.tex > mem.tex
 perl ../LatexDiff/latexpand.pl mem.tex > flat.tex
 \rm -f mem.tex
 cd ..
 
-echo "latexdiff -c LatexDiff/ld.cfg VersionAComparer/flat.tex flat.tex >diff.tex"
-latexdiff -c LatexDiff/ld.cfg VersionAComparer/flat.tex flat.tex > diff.tex
+echo "latexdiff -c LatexDiff/ld.cfg ${VERSION}/flat.tex flat.tex >diff.tex"
+latexdiff -c LatexDiff/ld.cfg ${VERSION}/flat.tex flat.tex > diff.tex
 
 pdflatex diff
