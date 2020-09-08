@@ -65,7 +65,7 @@ package Pipeline {
 
     note as N2
     context Pipeline
-    inv: collector.nodes U {source} <size:20>&#8838;</size> nodes
+    inv:  {source} <size:20>&#8746;</size> collector.nodes <size:20>&#8838;</size> nodes
     end note
 
     N2 .[hidden] Farm
@@ -85,7 +85,7 @@ package Pipeline {
     Pipeline --> "collector" Collector
     
 
-    Pipeline --> "1..*" Node
+    Pipeline --> "2..*" Node
     Pipeline --> "source" Node
 
 
