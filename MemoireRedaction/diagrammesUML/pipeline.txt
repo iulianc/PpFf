@@ -1,0 +1,107 @@
+@startuml pipeline
+
+'skinparam style strictuml
+'skinparam groupInheritance 3
+
+hide empty members
+
+skinparam linetype ortho
+'skinparam groupInheritance 2
+
+
+skinparam classAttributeIconSize 0
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Diagramme presentant l'ensemble du modele, avec ou sans details.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+!$details = 0
+'!$details = 1
+
+'Versions sans (0) ou avec (1) details
+!include flow.txt!$details
+!include fastflow.txt!$details
+
+note as N1
+Toutes les collections
+de cardinalité 1..*
+sont {ordered}
+end note
+
+
+
+package Pipeline {
+
+    class Pipeline {
+        addNodes<TOperator, TParam1>(): void
+        addNodes<TOperator, TParam1, TParam2>(): void
+        addNodes<TOperator, TParam1, TParam2, TParam3>(): void
+        ..
+        nbWorkers(): int
+        isParallel(): bool
+        ..
+        run(): void
+        <TOperator, T> value(): TOperator::value
+    }
+
+        class Node {
+            build_ff_node(): Operator
+            isSource(): bool
+            isCollector(): bool
+        }
+
+    together {
+        class Farm {
+        }
+
+        class Worker {
+        }
+
+    }
+
+    class Collector<TOperator> {
+        value(): TOperator::Value
+    }
+
+    note as N2
+    context Pipeline
+    inv: collector.nodes U {source} <size:20>&#8838;</size> nodes
+    end note
+
+    N2 .[hidden] Farm
+}  
+
+
+    Node <|-- Farm
+    Node <|-- Worker
+    Worker --> "1..*" Node
+
+
+    Farm -> "1..*" Worker
+
+    Collector --> "1..*" Node
+
+
+    Pipeline --> "collector" Collector
+    
+
+    Pipeline --> "1..*" Node
+    Pipeline --> "source" Node
+
+
+    Flow --> "pipe" Pipeline : implemented by > 
+
+
+package Operators {
+
+  class Operator<T> {
+  }
+
+}
+
+Operator --|> ff_node
+
+Node --> Operator
+
+
+@enduml
