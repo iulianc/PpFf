@@ -13,7 +13,6 @@ class Flow<T> {
   <R> map(): Flow<R>
   peek(): Flow<T>
   skip(): Flow<T>
-  sort(): Flow<T>
   ..Agrégation (valeur simple)..
   allMatch(): bool
   anyMatch(): bool
@@ -27,6 +26,7 @@ class Flow<T> {
   <Container> collect(): Container<T>
   <K, V> groupByKey(): Map<K,V>
   <V> reduceByKey(): V
+  sort(): Vector<T>
   ..Exécution (parallèle)..
   parallel(): Flow<T>
 }
