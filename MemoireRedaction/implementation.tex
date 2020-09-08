@@ -162,29 +162,18 @@ Le r\'esultat du traitement est retourn\'e au \TT{Pipeline} par l'intermédiare 
 
 Dans la terminologie de \TT{PpFf}, chaque m\'ethode expos\'ee par l'interface de \ppff\ repr\'esente une op\'eration et chaque op\'eration est impl\'ement\'ee par un op\'erateur, un objet provenant d'une sous-classe de la classe \TT{Operator}. Plus pr\'ecisément, les op\'erateurs repr\'esentent les \'etapes dans la chaine de traitement de donn\'ees. Tel qu'illustré dans la figure~\ref{operators.fig}, les classes pour les divers op\'erateurs h\'eritent de la classe de base, \TT{Operator}. 
 %
-Sur cette figure, seules les deux sous-classes, \TT{MapOperator} et \TT{CountOperator}, sont indiqu\'ees, les autres \'etant implicites, via le <<Etc.>>.
+Notons que sur cette figure, pour alléger le diagramme, seules deux sous-classes, \TT{MapOperator} et \TT{CountOperator}, ont été indiqu\'ees, les autres \'etant implicites, via le <<Etc.>>.
 %
-\GT{Il faut indiquer clairement que juste 2 sous-classes sont
-indiquées, les autres étant implicites, via les <<Etc.>>.  Sinon, ce
-n'est pas clair qu'il y a un grand nombre de telles
-sous-classes. Peut-être, dans le texte simplement donner la liste de
-ces sous-classes, lorsque tu présentes les trois catégories?}
 
-\IC{Bonne remarque. J'ai ajouté cela. J'ai également énuméré les noms de sous-classes lors de la description des trois catégories.}
+Ces divers opérateurs peuvent \^etre regroupés en trois cat\'egories : \emph{source}, \emph{interm\'ediaire} et \emph{collecteur}.
+%
+Un objet \TT{Pipeline} complet est compos\'e d'un op\'erateur source, de z\'ero ou plusieurs op\'erateurs interm\'ediaires et d'un op\'erateur collecteur. 
 
-Ces divers opérateurs peuvent \^etre regroupés en trois cat\'egories : source, interm\'ediaire et collecteur.
+L'op\'erateur source est le premier op\'erateur ajout\'e dans le flux~; sans un tel op\'erateur, aucun traitement ne peut avoir lieu puisqu'il n'y aurait pas de données à traiter. Les deux op\'erateurs qui font partie de ce groupe sont \TT{SourceOperator} et \TT{LinesFromFileOperator}.
 
-Un \TT{pipeline} est compos\'e d'un op\'erateur source, de z\'ero ou plusieurs op\'erateurs interm\'ediaires et d'un op\'erateur collecteur. L'op\'erateur source est le premier op\'erateur ajout\'e dans le flux~; sans un tel op\'erateur, aucun traitement ne peut avoir lieu puisqu'il n'y aurait pas de données à traiter. Les deux op\'erateurs qui font partie de ce groupe sont : \TT{SourceOperator} et \TT{LinesFromFileOperator}.
+Les op\'erateurs interm\'ediaires, tels que \TT{FindOperator}, \TT{FlatMapOperator}, \TT{FlatOperator}, \TT{LimitOperator}, \TT{MapOperator}, \TT{PeekOperator} ou \TT{SkipOperator}, sont des op\'erateurs qui traitent chaque \'el\'ement du flux de fa\c{c}on ind\'ependante. Autre point important~: les op\'erateurs interm\'ediaires n'effectuent aucun traitement tant qu'un op\'erateur collecteur n'est pas ajout\'e au \TT{pipeline}. 
 
-Les op\'erateurs interm\'ediaires, tels que \TT{FindOperator}, \TT{FlatMapOperator}, \TT{FlatOperator}, \TT{LimitOperator}, \TT{MapOperator}, \TT{PeekOperator} ou \TT{SkipOperator}, sont les op\'erateurs qui traitent chaque \'el\'ement du flux de fa\c {c}on ind\'ependante. Autre point important~: les op\'erateurs interm\'ediaires n'effectuent aucun traitement tant qu'un op\'erateur collecteur n'est pas ajout\'e au \TT{pipeline}. 
-
-\GT{Je crois que de parler de <<sans état>> vs.\ <<avec état>> avait
-porté à confusion un des évaluateurs, non? Je crois que tu peux
-décrire les différentes sortes sans parler d'état.}
-
-\IC{J'ai modifié la description des opérateurs intermédiaires.}
-
-Le plus nombreux groupe d'op\'erateurs est le groupe collecteur. Ce groupe r\'eunisse les op\'erateurs suivants : \TT{AllMatchOperator}, \TT{AnyMatchOperator}, \TT{NoneMatchOperator}, \TT{GroupByKeyOperator}, \TT{MaxOperator}, \TT{MinOperator}, \TT{ReduceOperator}, \TT{CollectorOperator}, \TT{SumOperator}, \TT{CountOperator}, \TT{ReduceByKeyOperator} et \TT{SortOperator}. Un tel op\'erateur est le dernier op\'erateur ajout\'e au \TT{pipeline}. L'ajout de cet op\'erateur entra\^ine l'ex\'ecution du traitement spécifié par les opérateurs du pipeline. La valeur r\'esultante du traitement est conserv\'ee en interne par chaque op\'erateur collecteur. C'est cette valeur qui va \^etre retourn\'ee au \TT{Pipeline} par un appel à \TT{value()}.
+Le plus nombreux groupe d'op\'erateurs est celui des collecteurs, qui réunit les op\'erateurs suivants : \TT{AllMatchOperator}, \TT{AnyMatchOperator}, \TT{NoneMatchOperator}, \TT{GroupByKeyOperator}, \TT{MaxOperator}, \TT{MinOperator}, \TT{ReduceOperator}, \TT{CollectorOperator}, \TT{SumOperator}, \TT{CountOperator}, \TT{ReduceByKeyOperator} et \TT{SortOperator}. Un op\'erateur de type collecteur est toujours le dernier ajout\'e au \TT{pipeline}. L'ajout de cet op\'erateur entra\^ine l'ex\'ecution du traitement spécifié par les opérateurs du pipeline. La valeur r\'esultante du traitement est conserv\'ee en interne par chaque op\'erateur collecteur. C'est cette valeur qui va \^etre retourn\'ee au \TT{Pipeline} par un appel à \TT{value()}.
 
 La fonctionnalit\'e sp\'ecifique \`a chaque op\'eration du \TT{pipeline} est impl\'ement\'ee par la m\'ethode \TT{svc} de chaque op\'erateur. Comme on peut le voir dans la figure~\ref{operators.fig}, un \TT{Operator} h\'erite de la classe \TT{ff\_node} de \TT{FastFlow}. De cette fa\c {c}on, lorsque le graphe FastFlow est exécuté, c'est la méthode \TT{svc} de chaque op\'erateur qui est appel\'ee. C'est ce qui permet de spécifier la fonctionnalit\'e spécifique à chaque opérateur 
 
