@@ -1,6 +1,8 @@
 ################################################################
 # Les divers programmmes et commandes pour les executer.
 ################################################################
+TURING = 'turing.hpc.uqam.ca'
+
 Program.define( "Seq", "./#{PGM}Seq" )
 
 Program.define( 'Java-', "java -cp . #{PGM} 10" )  # Seq. sans warmup
@@ -79,7 +81,7 @@ Experience.define( 1,
                 )
 
 Experience.define( 2,
-                   machines: ['c34581', 'java', 'japet'],
+                   machines: ['c34581', 'java', 'japet', TURING],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf-4']
@@ -199,4 +201,11 @@ Experience.define( 3003,
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
+                )
+
+Experience.define( 3004,
+                   machines: [TURING],
+                   nb_items: DONNEES_IC,
+                   nb_repetitions: NB_REPETITIONS_IC,
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-4', 'FastFlow-4']
                 )
