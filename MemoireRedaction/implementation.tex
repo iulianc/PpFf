@@ -269,19 +269,27 @@ Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a util
 
 
 
-\section{Impl\'ementation de \TT{PpFf} avec \TT{FastFlow} : un exemple}
-
-Cette section d\'ecrit le mod\`ele d'ex\'ecution de \TT{PpFf} \`a l'aide du code source de trois petits exemples. L\'eg\`erement diff\'erents, les exemples montrent \`a l'aide de diagrammes les \'etapes de cr\'eation et d'exécution du flux ainsi que la relation entre les deux biblioth\`eques \TT{PpFf} et \TT{FastFlow}.
+\section{Impl\'ementation de \TT{PpFf} avec \TT{FastFlow} : quelques exemples}
 
 
-\subsection{Exemple1} 
+\GT{On ne peut pas dire que tu décris la création et l'exécution, car
+dans ce cas il faudrait que tu utilises des diagrammes de séquence et
+non pas des diagrammes de classes. Ces derniers diagrames permettent
+de montrer la structure, statique, des classes. L'aspect dynamique ici
+n'est illustrée que par le fait qu'il y a deux versions de chaque
+diagramme: avant vs.\ après l'appel à \TT{build\_ff\_node()}.}
+
+Cette section d\'ecrit le mod\`ele d'ex\'ecution de \TT{PpFf} via \TT{FastFlow} \`a l'aide du code source de trois petits exemples. Ces exemples illustrent, \`a l'aide de diagrammes de classes, la structure de la représentation intermédiaire et la relation entre cette représentation intermédiaire et le graphe \TT{FastFlow} associé.
+
+
+\subsection{Exemple~1} 
 
 
 \begin{lstlisting}[
 label={objets1.c++},
 language=c++,
 gobble=4,
-caption={Le code source d'un petit exemple qui trouve le maximum d'une collection de données.},
+caption={Le code source d'un flux pour trouver le maximum d'une collection de données.},
 frame=single,
 float]
     std::vector<int> elems = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -292,68 +300,88 @@ float]
         .max<int>();
 \end{lstlisting}
 
-Illustr\'ee dans le listing~\ref{objets1.c++}, le premier exemple analys\'e ne comporte que deux op\'erations :
+Illustr\'e dans le listing~\ref{objets1.c++}, le premier exemple analys\'e ne comporte que deux op\'erations :
 
 \begin{itemize}
-\item \TT{source}, qui g\'en\`ere un flux s\'equentiel de nombres entiers \`a partir d'un conteneur.
-\item \TT{max}, qui trouve le nombre maximum d'\'el\'ements du conteneur. 
+\item \TT{source}, la méthode (statique) qui g\'en\`ere un flux s\'equentiel de nombres entiers \`a partir d'un conteneur (en \TT{vector}); 
+\item \TT{max}, la méthode (d'instance) qui trouve l'\'el\'ement maximum du flux. 
+
+
+\GT{Ne pas confondre: nombre maximum d'éléments vs.\ l'élément maximum~;)} 
+
 \end{itemize}
 
 
+\GT{J'ai réduit la taille, pour que les deux apparaissent sur la même page! Faire de même avec figure~2, si c'est possible, pas trop petit.}
+
 \begin{figure}
 \centering
-         \includegraphics[width=1.0\textwidth]{Figures/objets1-ppff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf}.}
+         \includegraphics[width=0.66\textwidth]{Figures/objets1-ppff.png}
+      \caption{La structure interm\'ediaire \TT{PpFf} pour l'exemple~1.}
        \label{objets1-ppff.fig}
 \end{figure}
 
 
-\TT{PpFf} construit tout d'abord une repr\'esentation interm\'ediaire, puis g\'en\`ere ensuite un graphe de n\oe{}uds \TT{FastFlow}. La repr\'esentation interm\'ediaire, illustr\'ee dans la figure~\ref{objets1-ppff.fig}, est compos\'ee des objets du type \TT{Pipeline} et \TT{Node}. Le premier objet cr\'e\'e est \TT{pipe}, une instance de la classe \TT{Pipeline}. Au fur et \`a mesure que les m\'ethodes sont enchain\'ees dans le \TT{Flow}, \TT{PpFf} construit la structure en ajoutant au \TT{Pipeline} des instances du type \TT{Node}. On peut observer que pour les deux m\'ethodes enchain\'ees dans \TT{Flow}, deux instances du type \TT{Node} sont ajout\'ees au \TT{Pipeline} : \TT{node0} et \TT{node1}. 
-
-Selon la m\'ethode choisie par l'utilisateur, chaque \TT{Node} garde une r\'ef\'erence \`a une instance du type \TT{Operator}. Dans notre cas, les deux objets \TT{Operator} sont \TT{sourceOp}, une instance de la classe \TT{SourceOperator} et \TT{maxOp} une instance de la classe \TT{MaxOperator}. 
-
-
 \begin{figure}
 \centering
-         \includegraphics[width=1.0\textwidth]{Figures/objets1-ff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow appropri\'e.}
+         \includegraphics[width=0.66\textwidth]{Figures/objets1-ff.png}
+      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow associé pour l'exemple~1.}
        \label{objets1-ff.fig}
 \end{figure}
+
+\TT{PpFf} construit tout d'abord une repr\'esentation interm\'ediaire, puis g\'en\`ere ensuite un graphe de n\oe{}uds \TT{FastFlow}. La repr\'esentation interm\'ediaire, illustr\'ee dans la figure~\ref{objets1-ppff.fig}, est compos\'ee d'objets de type \TT{Pipeline} et \TT{Node}. Le premier objet cr\'e\'e est \TT{pipe}, une instance de la classe \TT{Pipeline}. Au fur et \`a mesure que les m\'ethodes sont enchain\'ees dans le \TT{Flow}, \TT{PpFf} construit la structure en ajoutant au \TT{Pipeline} des instances de type \TT{Node}. On peut observer que pour les deux m\'ethodes enchain\'ees dans \TT{Flow}, deux instances du type \TT{Node} sont ajout\'ees au \TT{Pipeline} : \TT{node0} et \TT{node1}. 
+
+Selon l'opération indiquée, chaque \TT{Node} garde une r\'ef\'erence \`a une instance de la classe \TT{Operator}. Dans notre cas, les deux objets \TT{Operator} sont \TT{sourceOp}, une instance de la classe \TT{SourceOperator}, et \TT{maxOp}, une instance de la classe \TT{MaxOperator}. 
+
+
+
+\GT{Ci-bas: il faut que tu indiques plus explicitement que la création
+du graphe se fait via \TT{build\_ff\_node} et rappeler qu'ensuite c'est
+l'opération \TT{run\_and\_wait\_end()} de FastFlow qui est lancée.}
  
-\'Etant donn\'e que le dernier op\'erateur de \TT{Pipeline}, \TT{maxOp}, est un op\'erateur de type collecteur, cela lancera la construction du graph \TT{FastFlow} appropri\'e. Illustr\'e dans la figure~\ref{objets1-ff.fig}, la structure \TT{FastFlow} est cr\'e\'ee en parcourant chaque \TT{Node} de la structure interm\'ediaire. On peut observer que \TT{pipe} g\'en\`ere un objet \TT{ff\_pipeline} et les deux instances \TT{Node} retournent les deux op\'erateurs : \TT{sourceOp} et \TT{maxOp} qui sont d'objets de type \TT{ff\_node}, une classe de \TT{FastFlow}. La nouvelle structure ainsi cr\'e\'ee, sera ex\'ecut\'ee automatiquement et le r\'esultat du traitement, dans ce particulaire cas, le nombre maximum d'\'el\'ements d'un conteneur, est retourn\'e au \TT{Pipeline} par l'interm\'ediaire d'objet \TT{collector}. 
+\'Etant donn\'e que le dernier op\'erateur du {pipeline}, \TT{maxOp}, est un op\'erateur de type collecteur, cela lance la construction du graph \TT{FastFlow} appropri\'e. Illustr\'ee dans la figure~\ref{objets1-ff.fig}, la structure \TT{FastFlow} est cr\'e\'ee en parcourant chaque \TT{Node} de la structure interm\'ediaire. On peut observer que \TT{pipe} g\'en\`ere un objet \TT{ff\_pipeline} et que les deux instances de \TT{Node} retournent les op\'erateurs associés, \TT{sourceOp} et \TT{maxOp}, qui sont d'objets de type \TT{ff\_node}, une classe de \TT{FastFlow}. La structure ainsi cr\'e\'ee sera ex\'ecut\'ee automatiquement en appelant la méthode \TT{run\_and\_wait\_end()} de FastFlow, et le r\'esultat du traitement, dans ce cas l'élément maximum, sera retourn\'e au \TT{Pipeline} par l'interm\'ediaire de l'objet \TT{collector}. 
 
  
-\subsection{Exemple2}
+\subsection{Exemple~2}
+
+
+\GT{Pour l'exemple 2, tu dois insister surtout sur l'aspect du
+parallel et du farm.}
 
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/objets2-ppff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf}.}
+      \caption{La structure interm\'ediaire \TT{PpFf} pour l'exemple~2.}
        \label{objets2-ppff.fig}
 \end{figure}
 
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/objets2-ff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow appropri\'e.}
+      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow associ\'e pour l'exemple~2.}
        \label{objets2-ff.fig}
 \end{figure}
 
 Les figures~\ref{objets2-ppff.fig} et~\ref{objets2-ff.fig} ...
 
-\subsection{Exemple3}
+\subsection{Exemple~3}
+
+\GT{Pour l'exemple 3, tu peux \^etre plus bref et ne mentionner le
+fait que tu illustres le cas où deux séries de farm on un nombre de
+travailleurs distincts.}
+
 
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/objets3-ppff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf}.}
+      \caption{La structure interm\'ediaire \TT{PpFf} pour l'exemple~3.}
        \label{objets3-ppff.fig}
 \end{figure}
 
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/objets3-ff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow appropri\'e.}
+      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow associ\'e pour l'exemple~3.}
        \label{objets3-ff.fig}
 \end{figure}
 
