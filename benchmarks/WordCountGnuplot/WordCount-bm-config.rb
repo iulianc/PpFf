@@ -2,11 +2,15 @@
 #   suivantes: 10, 131, 377, 3805, 7610, 78792, 167941, 281307,
 #   482636, 752856, 1639684, 2137758, 2614743, 5293812, 10587624
 
+TURING = 'turing.hpc.uqam.ca'
+
+
 # NOTE: Les elements qui doivent etre utilises dans run_bms.rb sont
 # definis ci-bas sous forme de CONSTANTES -- sinon, elles ne
 # semblaient pas visibles.
 
 NB_REPETITIONS = 40
+
 
 ################################################################
 # Les divers programmmes et commandes pour les executer.
@@ -88,10 +92,17 @@ Experience.define( 1,
                 )
 
 Experience.define( 2,
-                   machines: ['c34581', 'java'],
+                   machines: ['c34581', 'java', TURING],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf-4']
+                )
+
+Experience.define( 2000,
+                   machines: [TURING],
+                   nb_items: beaucoup_de_donnees,
+                   nb_repetitions: 20,
+                   programs: ['PpFf-4', 'PpFf-5', 'PpFf-6']
                 )
 
 Experience.define( 3,
@@ -290,6 +301,12 @@ Experience.define( 3003,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
+Experience.define( 3004,
+                   machines: [TURING],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['Seq', 'Java+', 'Java*', 'PpFf-4', 'FastFlow-4']
+                )
 
 #  Version emplace_back et al.
 Experience.define( 4001,
