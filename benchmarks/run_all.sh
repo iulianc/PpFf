@@ -1,5 +1,5 @@
 #!
-if [[ $HOST == 'java' ]]; then
+if [[ $HOST == 'java.ens.uqam.ca' ]]; then
     EXP=3001
 elif [[ $HOST == 'japet' ]]; then
     if [[ $(ruby --version) =~ jruby ]]; then

@@ -2,6 +2,7 @@
 # Les divers programmmes et commandes pour les executer.
 ################################################################
 TURING = 'turing.hpc.uqam.ca'
+JAVA = 'java.ens.uqam.ca'
 
 Program.define( "Seq", "./#{PGM}Seq" )
 
@@ -74,21 +75,21 @@ Experience.define( 0,
 # par groupe.
 ####################################################
 Experience.define( 1,
-                   machines: ['c34581', 'java', 'japet'],
+                   machines: ['c34581', JAVA, 'japet'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['Java+', 'Java-', 'Java*']
                 )
 
 Experience.define( 2,
-                   machines: ['c34581', 'java', 'japet', TURING],
+                   machines: ['c34581', JAVA, 'japet', TURING],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf-4']
+                   programs: ['PpFf-4', 'PpFf-5', 'PpFf-6']
                 )
 
 Experience.define( 3,
-                   machines: ['c34581', 'java', 'japet'],
+                   machines: ['c34581', JAVA, 'japet'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 20,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3', 'FastFlow-4']
@@ -125,7 +126,7 @@ Experience.define( 401, # Avec nouveaux javac/java et g++
                 )
 
 Experience.define( 7,
-                   machines: ['java', 'japet'],
+                   machines: [JAVA, 'japet'],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-4', 'FastFlow-4']
@@ -146,7 +147,7 @@ NB_REPETITIONS_IC = 40
 DONNEES_IC = beaucoup_de_donnees
 
 Experience.define( 1001,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java*', 'PpFf-4', 'FastFlow-4']
@@ -168,7 +169,7 @@ Experience.define( 1003,
 
 
 Experience.define( 2001,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
                    programs: ['Seq', 'Java*', 'PpFf-4', 'PpFf*-4', 'PpFf*-6', 'PpFf*-8']
@@ -183,10 +184,10 @@ Experience.define( 2003,
                 )
 
 Experience.define( 3001,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES_IC,
                    nb_repetitions: NB_REPETITIONS_IC,
-                   programs: ['Seq', 'Java', 'Java*', 'PpFf-4', 'FastFlow-4']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-5', 'FastFlow-4']
                  )
 
 Experience.define( 3002,

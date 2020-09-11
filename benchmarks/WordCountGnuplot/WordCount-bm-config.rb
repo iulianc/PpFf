@@ -3,6 +3,7 @@
 #   482636, 752856, 1639684, 2137758, 2614743, 5293812, 10587624
 
 TURING = 'turing.hpc.uqam.ca'
+JAVA = 'java.ens.uqam.ca'
 
 
 # NOTE: Les elements qui doivent etre utilises dans run_bms.rb sont
@@ -85,17 +86,17 @@ Experience.define( 0,
 # par groupe.
 ####################################################
 Experience.define( 1,
-                   machines: ['c34581', 'java', 'japet'],
+                   machines: ['c34581', JAVA, 'japet'],
                    nb_items: donnees_preliminaires,
                    nb_repetitions: 10,
                    programs: ['Java+', 'Java-', 'Java*']
                 )
 
 Experience.define( 2,
-                   machines: ['c34581', 'java', TURING],
+                   machines: ['c34581', JAVA, TURING],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-3', 'PpFf-4']
+                   programs: ['PpFf-4', 'PpFf-5']
                 )
 
 Experience.define( 2000,
@@ -106,7 +107,7 @@ Experience.define( 2000,
                 )
 
 Experience.define( 3,
-                   machines: ['c34581', 'java'],
+                   machines: ['c34581', JAVA],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 20,
                    programs: ['FastFlow-1', 'FastFlow-2', 'FastFlow-3']
@@ -128,7 +129,7 @@ Experience.define( 22,
                 )
 
 Experience.define( 23,
-                   machines: ['c34581', 'java'],
+                   machines: ['c34581', JAVA],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 40,
                    programs: ['PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2', 'PpFfMerged-3']
@@ -180,21 +181,21 @@ Experience.define( 401, # Avec nouveaux javac/java et g++
                 )
 
 Experience.define( 5,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 500,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 51,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 30,
                    programs: ['Java+', 'Java*', 'PpFf-1', 'PpFf-2', 'FastFlow-2', 'FastFlow-1']
@@ -218,21 +219,21 @@ Experience.define( 600,
 DONNEES = beaucoup_de_donnees
 
 Experience.define( 1001,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 10010,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-2', 'FastFlow-2']
                 )
 
 Experience.define( 10011,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'FastFlow-2']
@@ -260,14 +261,14 @@ Experience.define( 1003,
                 )
 
 Experience.define( 2001,
-                   machines: ['java', 'MacOS'],
+                   machines: [JAVA, 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'PpFfMerged-4']
                    )
 
 Experience.define( 20010,
-                   machines: ['java', 'MacOS'],
+                   machines: [JAVA, 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java*', 'PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2']
@@ -281,10 +282,10 @@ Experience.define( 2003,
                    )
 
 Experience.define( 3001,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Seq', 'Java', 'Java*', 'PpFf-3', 'FastFlow-2']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-4', 'FastFlow-3']
                 )
 
 Experience.define( 3002,
@@ -298,7 +299,7 @@ Experience.define( 3003,
                    machines: ['MacOS', 'c34581'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Seq', 'Java', 'Java*', 'PpFf-2', 'FastFlow-2']
+                   programs: ['Seq', 'Java', 'Java*', 'PpFf-4', 'FastFlow-4']
                 )
 
 Experience.define( 3004,
@@ -310,7 +311,7 @@ Experience.define( 3004,
 
 #  Version emplace_back et al.
 Experience.define( 4001,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['Seq', 'Java', 'Java*', 'PpFf-3', 'FastFlow-2']
@@ -334,7 +335,7 @@ Experience.define( 4003,
 
 # VERSIONS MERGED avec emplace_back et al.
 Experience.define( 5001,
-                   machines: ['java'],
+                   machines: [JAVA],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
                    programs: ['PpFf-2', 'PpFf-3', 'PpFfMerged-2', 'PpFfMerged-3', 'PpFfMerged-4']
