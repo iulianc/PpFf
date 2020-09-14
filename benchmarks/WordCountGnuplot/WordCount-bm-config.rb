@@ -12,7 +12,6 @@ JAVA = 'java.ens.uqam.ca'
 
 NB_REPETITIONS = 40
 
-
 ################################################################
 # Les divers programmmes et commandes pour les executer.
 ################################################################
@@ -29,6 +28,10 @@ end
 
 [*1..9].each do |k|
   Program.define( "PpFfMerged-#{k}", "./#{PGM}Merged #{k}" )
+end
+
+[*1..9].each do |k|
+  Program.define( "PpFfSplitted-#{k}", "./#{PGM}Splitted #{k}" )
 end
 
 [*1..9].each do |k|
@@ -264,7 +267,7 @@ Experience.define( 2001,
                    machines: [JAVA, 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Seq', 'Java+', 'Java*', 'PpFf-2', 'PpFfMerged-4']
+                   programs: ['Java*', 'PpFf-2', 'PpFfSplitted-2', 'PpFfMerged-4']
                    )
 
 Experience.define( 20010,
@@ -278,7 +281,7 @@ Experience.define( 2003,
                    machines: ['c34581', 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Seq', 'Java', 'Java*', 'PpFf-1', 'PpFfMerged-2']
+                   programs: ['Java*', 'PpFf-2', 'PpFfSplitted-2', 'PpFfMerged-4']
                    )
 
 Experience.define( 3001,

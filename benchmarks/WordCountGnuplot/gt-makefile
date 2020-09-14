@@ -1,9 +1,6 @@
 .IGNORE:
 
-_def: run_bogue
-
-
-def: run_cpp_merged run_cpp
+def: run_cpp_splitted #run_cpp_merged run_cpp
 
 run_all: run_cpp_merged run_cpp run_ff run_seq run_java
 
@@ -35,7 +32,7 @@ ATTENDUS="attendus-78792.txt"
 ########################################################
 
 # Specify the final target name
-EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged
+EXE 		:= WordCount WordCount.class WordCountFastFlow WordCountFastFlowSansType WordCountSeq WordCountMerged WordCountSplitted
 
 # Specify the tests path
 ROOT_TESTS 	:= $(wildcard *.cpp)
@@ -84,6 +81,12 @@ run_bash:
 	@echo "*** Execution bash++ *** "
 	cat  $(TEST_FILE) | word-count.sh > obtenus-bash.txt
 	diff obtenus-bash.txt $(ATTENDUS)
+
+run_cpp_splitted: WordCountSplitted
+	@echo "*** Execution C++ Splitted *** "
+	@./WordCountSplitted 4 $(TEST_FILE) 1 | sort > obtenus-cpp.txt
+	diff obtenus-cpp.txt $(ATTENDUS)
+	@./WordCountSplitted 4 $(TEST_FILE) 0
 
 run_cpp_merged: WordCountMerged
 	@echo "*** Execution C++ Merged *** "
@@ -149,6 +152,9 @@ Bogue: Bogue.o
 
 WordCountMerged: WordCountMerged.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountMerged.o $(LDLIBS) -o WordCountMerged
+
+WordCountSplitted: WordCountSplitted.o
+		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSplitted.o $(LDLIBS) -o WordCountSplitted
 
 WordCountSeq: WordCountSeq.o
 		  $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) WordCountSeq.o $(LDLIBS) -o WordCountSeq
