@@ -6,7 +6,8 @@ FICHIERS = [
             'experiences.tex',
             'appendice-wordcount.tex',
             'appendice-stockprice.tex',
-            'appendice-java.tex'
+            'appendice-java.tex',
+            'appendice-ppff-merged.tex',
            ]
 
 SCRIPT_TMP = 'gen-g.sh'

@@ -281,14 +281,7 @@ Experience.define( 2003,
                    machines: ['c34581', 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Java*', 'PpFf-4', 'PpFf_s-4', 'PpFf_f-4']
-                   )
-
-Experience.define( 20030,
-                   machines: ['c34581', 'MacOS'],
-                   nb_items: DONNEES,
-                   nb_repetitions: NB_REPETITIONS,
-                   programs: ['Java*', 'PpFf-2', 'PpFf_s-2', 'PpFf_f-2']
+                   programs: ['PpFf-2', 'PpFf_s-2', 'PpFf_f-2']
                    )
 
 Experience.define( 3001,
