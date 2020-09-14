@@ -295,7 +295,7 @@ Experience.define( 20031,
                    machines: ['c34581', 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Seq', 'PpFf-1', 'PpFf_s-1', 'PpFf_f-1']
+                   programs: ['PpFf-1', 'PpFf_s-1', 'PpFf_f-1']
                    )
 
 Experience.define( 3001,
