@@ -274,7 +274,7 @@ Il est possible de sp\'ecifier en param\`etre le nombre de travailleurs \`a util
 Cette section d\'ecrit le mod\`ele d'ex\'ecution de \TT{PpFf} via \TT{FastFlow} \`a l'aide du code source de trois petits exemples. Ces exemples illustrent, \`a l'aide de diagrammes de classes, la structure de la représentation intermédiaire et la relation entre cette représentation intermédiaire et le graphe \TT{FastFlow} associé.
 
 
-\subsection{Exemple~1} 
+\subsection{Exemple~1~: Un flux simple avec uniquement une source et un collecteur} 
 
 
 \begin{lstlisting}[
@@ -299,16 +299,17 @@ Illustr\'e dans le listing~\ref{objets1.c++}, le premier exemple analys\'e ne co
 \item \TT{max}, la méthode (d'instance) qui trouve l'\'el\'ement maximum du flux. 
 
 
-\GT{Ne pas confondre: nombre maximum d'éléments vs.\ l'élément maximum~;)} 
-
-\IC{Mon Dieu! Le sens de l'expression change complètement.}
-
 \end{itemize}
 
 
-\GT{J'ai réduit la taille, pour que les deux apparaissent sur la même page! Faire de même avec figure~2, si c'est possible, pas trop petit.}
+\GT{Je crois qu'il serait bon d'indiquer quelque part, dans le texte
+ou dans le caption, pourquoi il y a une différence au niveau des
+couleurs des objets: p\^ale = objet PpFf seulement, foncé = objet
+FastFlow.  Probablement préférable dans le texte, lors de la
+présentation de la figure 3.8, en soulignant que cette distinction au
+niveau des couleurs se retrouve aussi dans les autres exemples.}
 
-\IC{J'ai fait la même chose avec les figures~2, mais elles ne veulent pas apparaître sur une seule page.}
+
 
 \begin{figure}
 \centering
@@ -330,17 +331,10 @@ Illustr\'e dans le listing~\ref{objets1.c++}, le premier exemple analys\'e ne co
 Selon l'opération indiquée, chaque \TT{Node} garde une r\'ef\'erence \`a une instance de la classe \TT{Operator}. Dans notre cas, les deux objets \TT{Operator} sont \TT{sourceOp}, une instance de la classe \TT{SourceOperator}, et \TT{maxOp}, une instance de la classe \TT{MaxOperator}. 
 
 
-
-\GT{Ci-bas: il faut que tu indiques plus explicitement que la création
-du graphe se fait via \TT{build\_ff\_node} et rappeler qu'ensuite c'est
-l'opération \TT{run\_and\_wait\_end()} de FastFlow qui est lancée.}
-
-\IC{J'ai indiqué la méthode buil\_ff\_node.}
- 
-\'Etant donn\'e que le dernier op\'erateur du {pipeline}, \TT{maxOp}, est un op\'erateur de type collecteur, cela lance la construction du graph \TT{FastFlow} appropri\'e via la m\'ethode \TT{build\_ff\_node}. Illustr\'ee dans la figure~\ref{objets1-ff.fig}, la structure \TT{FastFlow} est cr\'e\'ee en parcourant chaque \TT{Node} de la structure interm\'ediaire. On peut observer que \TT{pipe} g\'en\`ere un objet \TT{ff\_pipeline} et que les deux instances de \TT{Node} retournent les op\'erateurs associés, \TT{sourceOp} et \TT{maxOp}, qui sont d'objets de type \TT{ff\_node}, une classe de \TT{FastFlow}. La structure ainsi cr\'e\'ee sera ex\'ecut\'ee automatiquement en appelant la méthode \TT{run\_and\_wait\_end()} de FastFlow, et le r\'esultat du traitement, dans ce cas l'élément maximum, sera retourn\'e au \TT{Pipeline} par l'interm\'ediaire de l'objet \TT{collector}. 
+\'Etant donn\'e que le dernier op\'erateur du {pipeline}, \TT{maxOp}, est un op\'erateur de type collecteur, cela lance la construction du graphe \TT{FastFlow} associ\'e via la m\'ethode \TT{build\_ff\_node}. Illustr\'ee dans la figure~\ref{objets1-ff.fig}, la structure \TT{FastFlow} est cr\'e\'ee en parcourant chaque \TT{Node} de la structure interm\'ediaire. On peut observer que \TT{pipe} g\'en\`ere un objet \TT{ff\_pipeline} et que les deux instances de \TT{Node} retournent les op\'erateurs associés, \TT{sourceOp} et \TT{maxOp}, qui sont d'objets de type \TT{ff\_node}, la classe de base d'un graphe \TT{FastFlow}. La structure ainsi cr\'e\'ee sera ex\'ecut\'ee automatiquement en appelant la méthode \TT{run\_and\_wait\_end()} de FastFlow, et le r\'esultat du traitement, dans ce cas l'élément maximum, sera retourn\'e au \TT{Pipeline} par l'interm\'ediaire de l'objet \TT{collector}. 
 
  
-\subsection{Exemple~2}
+\subsection{Exemple~2~: Un flux simple avec parallélisme de données}
 
 \begin{lstlisting}[
 label={objets2.c++},
@@ -360,28 +354,40 @@ float]
 
 
 
-Le deuxi\`eme exemple \'etudi\'e, analyse le fonctionnement parall\`ele en utilisant les instances parall\`eles d'un \TT{farm}. Le code source est montr\'e dans le listing~\ref{objets2.c++}. Par rapport au premier exemple, il y a une op\'eration de plus. L'op\'eration introduite dans le flux par cha\^inage de la m\'ethode \TT{parallel(2)}, indique de r\'epartir les \'el\'ements du flux entre deux (2) instances parall\`eles d'un \TT{farm}. Cette op\'eration cr\'ee et ajoute une instance du type \TT{Farm} au \TT{Pipeline}. Ceci peut \^etre observ\'e dans la structure interm\'ediaire cr\'e\'ee par \TT{PpFf} et illustr\'ee dans la figure~\ref{objets2-ppff.fig}.
+Le deuxi\`eme exemple illustre le fonctionnement d'un flux avec parallélisme de données, donc utilisant les instances parall\`eles d'un \TT{farm}. Le code source pour cet exemple est présenté dans le listing~\ref{objets2.c++}. Par rapport au premier exemple, il y a une seule op\'eration de plus, introduite dans le flux par le cha\^inage de la m\'ethode \TT{parallel(2)}, qui indique de r\'epartir les \'el\'ements du flux entre deux (2) travailleurs (\emph{threads}). Plus précisément, cette op\'eration cr\'ee et ajoute une instance du type \TT{Farm} au \TT{Pipeline}. Ceci peut \^etre observ\'e dans la structure interm\'ediaire cr\'e\'ee par \TT{PpFf} et illustr\'ee dans la figure~\ref{objets2-ppff.fig}.
+
+
 
 \begin{figure}
 \centering
-         \includegraphics[width=0.66\textwidth]{Figures/objets2-ppff.png}
+         \includegraphics[width=0.6\textwidth]{Figures/objets2-ppff.png}
       \caption{La structure interm\'ediaire \TT{PpFf} pour l'exemple~2.}
        \label{objets2-ppff.fig}
 \end{figure}
 
 \begin{figure}
 \centering
-         \includegraphics[width=0.66\textwidth]{Figures/objets2-ff.png}
+         \includegraphics[width=0.6\textwidth]{Figures/objets2-ff.png}
       \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow associ\'e pour l'exemple~2.}
        \label{objets2-ff.fig}
+
 \end{figure}
 
-On rappelle que, lorsqu'une instance de \TT{Farm} est ajout\'ee au \TT{pipeline}, le flux est divis\'e en sous-flux --- appel\'es les instances parall\`eles d'un \TT{farm} --- o\`u chaque sous-flux est une instance de la classe \TT{Worker}. Dans notre cas les deux sous-flux sont représent\'es dans la figure~\ref{objets2-ppff.fig} par les instances \TT{worker0} et \TT{worker1} o\`u chacune de ces instances garde une r\'ef\'erence \`a un objet du type \TT{MaxOperator}. 
-
-On a vu dans l'exemple~1 que, lorsqu'un op\'erateur de type collecteur, \TT{maxOp} dans notre cas, est ajout\'e au \TT{Pipeline}, lancera la construction du graphe \TT{FastFlow} appropri\'e via la m\'ethode \TT{build\_ff\_node}. Illustr\'ee dans la figure~\ref{objets2-ff.fig}, le graph ainsi g\'en\'er\'e est compos\'e des objets \TT{ff\_pipeline}, \TT{ff\_node} et \TT{ff\_farm} correspondant aux instances de \TT{PpFf} \TT{pipe} (classe \TT{Pipeline}), \TT{sourceOp} (classe \TT{Node}) et \TT{farm} (classe \TT{Farm}). La nouvelle structure cr\'e\'ee sera ex\'ecut\'ee automatiquement en appelant la m\'ethode \TT{run\_and\_wait\_end()} de \TT{FastFlow}. Par rapport \`a l'exemple~1, l'instance de \TT{Farm} divise le flux en deux sous-flux et le maximum de chaque sous-flux r\'esultant est combin\'e par l'objet \TT{collector}. Ceci peut \^etre observ\'e dans la figure~\ref{objets2-ff.fig} o\`u le \TT{collector} garde une r\'ef\'erence aux deux op\'erateurs, \TT{maxOp1} et \TT{maxOp2}, qui d\'eterminent le maximum pour chaque sous-flux.   
 
 
-\subsection{Exemple~3}
+On rappelle que lorsqu'une instance de \TT{Farm} est ajout\'ee au {pipeline}, le flux est divis\'e en sous-flux --- appel\'es les instances parall\`eles d'un \TT{farm} --- o\`u chaque sous-flux est une instance de la classe \TT{Worker}. Dans notre exemple, les deux sous-flux sont représent\'es dans la figure~\ref{objets2-ppff.fig} par les instances \TT{worker0} et \TT{worker1}, o\`u chacune de ces instances garde une r\'ef\'erence \`a un objet du type \TT{MaxOperator}. 
+
+On a vu dans l'exemple~1 que lorsqu'un op\'erateur de type collecteur, \TT{maxOp} dans notre cas, est ajout\'e au {pipeline}, ceci lance la construction du graphe \TT{FastFlow} associ\'e via la m\'ethode \TT{build\_ff\_node}. Illustr\'ee dans la figure~\ref{objets2-ff.fig}, le graphe ainsi g\'en\'er\'e est compos\'e des objets \TT{ff\_pipeline}, \TT{ff\_node} et \TT{ff\_farm} correspondant aux instances de \TT{PpFf} \TT{pipe} (classe \TT{Pipeline}), \TT{sourceOp} (classe \TT{Node}) et \TT{farm} (classe \TT{Farm}). La nouvelle structure cr\'e\'ee sera ex\'ecut\'ee en appelant la m\'ethode \TT{run\_and\_wait\_end()} de \TT{FastFlow}. Par rapport \`a l'exemple~1, l'instance de \TT{Farm} divise le flux en deux sous-flux et les maximums produits par les sous-flux sont ensuite combin\'es par l'objet \TT{collector}. Ceci est illustr\'e dans la figure~\ref{objets2-ff.fig}, o\`u le \TT{collector} garde une r\'ef\'erence aux deux op\'erateurs, \TT{maxOp1} et \TT{maxOp2}, qui d\'eterminent le maximum pour chaque sous-flux.
+
+
+\GT{Ci-haut: je crois qu'il faudrait rappeler que la combinaison des
+résultats par le collector se fait par l'intermédiaire de l'opérateur
+"+=()", lequel est appelé par la méthode value(). Peut-être
+faudrait-il même présenter le code de la méthode value() de la classe
+Collector?}
+
+
+\subsection{Exemple~3~: Un flux avec une transformation et avec deux niveaux de parallélisme de données}
 
 
 \begin{lstlisting}[
@@ -402,7 +408,8 @@ float]
         .max<int>();
 \end{lstlisting}
 
-Le dernier exemple \'etudi\'e analyse le fonctionnement parall\`ele en utilisant deux s\'eries de \TT{farm}. Le code source est montr\'e dans le listing~\ref{objets3.c++}. Les deux s\'eries de \TT{farm} sont introduites dans le flux en encha\^inant la m\'ethode \TT{parallel}, l'une avec l'argument~2 et l'autre avec l'argument~4, indiquant que les \'el\'ements du flux sont r\'epartis entre deux (2) et quatre (4) instances parall\`eles d'un \TT{farm}. Par rapport au exemple~2, une autre m\'ethode a \'et\'e ajout\'ee au flux. La m\'ethode \TT{map}, une m\'ethode d'instance, multiplie chaque \'el\'ement du flux avec la valeur 3.
+Le dernier exemple illustre le fonctionnement du parallélisme de données en utilisant deux s\'eries de \TT{farm}. Le code source est présenté dans le listing~\ref{objets3.c++}. Les deux s\'eries de \TT{farm} sont introduites dans le flux en encha\^inant des appels à la m\'ethode \TT{parallel()}, l'un avec l'argument~2, l'autre avec~4, indiquant que les \'el\'ements du flux doivent être r\'epartis entre deux (2) et quatre (4) travailleurs (\emph{threads}). Par rapport à l'exemple~2, une autre opération de transformation a aussi \'et\'e ajout\'ee au flux, \TT{map}, ici qui multiplie chaque \'el\'ement du flux par la valeur 3.
+
 
 
 \begin{figure}
@@ -420,7 +427,8 @@ Le dernier exemple \'etudi\'e analyse le fonctionnement parall\`ele en utilisant
 \end{figure}
 
 
-La structure interm\'ediaire cr\'e\'ee par \TT{PpFf}, figure~\ref{objets2-ppff.fig}, contienne deux instances du type \TT{Farm}, \TT{farm0} et \TT{farm1}. On rappelle que, toutes les op\'erations suivantes \`a la m\'ethode \TT{parallel} (l'instance \TT{Farm} de \TT{PpFf}) sont ex\'ecut\'ees en parall\`ele dans des sous-flux distincts. Dans notre cas, les op\'erations introduites par les m\'ethodes \TT{map} et \TT{max} seront ex\'ecut\'ees en parall\`ele dans diff\'erentes sous-flux --- instances du type \TT{Worker}. Ceci peut \^etre observ\'e dans la figure~\ref{objets3-ppff.fig} o\`u chaque \TT{Worker} de l'objet \TT{farm0} garde une r\'ef\'erence \`a un objet du type \TT{MapOperator} et chaque \TT{Worker} de l'objet \TT{farm1} garde une r\'ef\'erence \`a un objet du type \TT{MaxOperator}. 
 
-Comme dans les deux autres exemples, le graph \TT{FastFlow} sera ex\'ecut\'e automatiquement apr\'es qu'il est construit via la m\'ethode \TT{build\_ff\_node}, m\'ethode appel\'ee lors de l'ajout d'un op\'erateur du type collecteur dans le flux. Ce graphe est montr\'e dans la figure~\ref{objets3-ff.fig}. Le r\'esultat final, l'\'el\'ement maximum du flux, est d\'etermin\'e par l'objet \TT{collector} en combinat les r\'esultats partiels de chacun de quatre sous-flux de l'objet \TT{farm1}.  
+La structure interm\'ediaire cr\'e\'ee par \TT{PpFf}, figure~\ref{objets2-ppff.fig}, contient deux instances du type \TT{Farm}, \TT{farm0} et \TT{farm1}. On rappelle que toutes les op\'erations suivant la m\'ethode \TT{parallel}sont ex\'ecut\'ees en parall\`ele dans des sous-flux distincts. Dans notre cas, les op\'erations introduites par les m\'ethodes \TT{map} et \TT{max} seront ex\'ecut\'ees en parall\`ele sur diff\'erents sous-flux, par des instances du type \TT{Worker}. Ceci est illustré dans la figure~\ref{objets3-ppff.fig} o\`u chaque \TT{Worker} de l'objet \TT{farm0} garde une r\'ef\'erence \`a un objet de type \TT{MapOperator} et chaque \TT{Worker} de l'objet \TT{farm1} garde une r\'ef\'erence \`a un objet de type \TT{MaxOperator}. 
+
+Comme dans les deux autres exemples, le graphe \TT{FastFlow} est ex\'ecut\'e apr\'es qu'il est construit via la m\'ethode \TT{build\_ff\_node}. Ce graphe est illustré dans la figure~\ref{objets3-ff.fig}. Le r\'esultat final, l'\'el\'ement maximum du flux, est d\'etermin\'e par l'objet \TT{collector} en combinant les r\'esultats partiels de chacun de quatre sous-flux de l'objet \TT{farm1}.
 
