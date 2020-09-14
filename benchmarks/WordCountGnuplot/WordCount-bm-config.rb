@@ -27,11 +27,11 @@ Program.define( 'Java*', "java -cp . #{PGM} 21" )  # Par. avec warmup
 end
 
 [*1..9].each do |k|
-  Program.define( "PpFfMerged-#{k}", "./#{PGM}Merged #{k}" )
+  Program.define( "PpFf_f-#{k}", "./#{PGM}Merged #{k}" )
 end
 
 [*1..9].each do |k|
-  Program.define( "PpFfSplitted-#{k}", "./#{PGM}Splitted #{k}" )
+  Program.define( "PpFf_s-#{k}", "./#{PGM}Splitted #{k}" )
 end
 
 [*1..9].each do |k|
@@ -128,14 +128,14 @@ Experience.define( 11,
 Experience.define( 22,
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 10,
-                   programs: ['PpFf-2', 'PpFfMerged-2', 'PpFfMerged-4']
+                   programs: ['PpFf-2', 'PpFf_f-2', 'PpFf_f-4']
                 )
 
 Experience.define( 23,
                    machines: ['c34581', JAVA],
                    nb_items: beaucoup_de_donnees,
                    nb_repetitions: 40,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2', 'PpFfMerged-3']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf_f-1', 'PpFf_f-2', 'PpFf_f-3']
                 )
 
 # Sur japet, les experiences 2 et 3 donnent les meilleurs resultats
@@ -267,21 +267,28 @@ Experience.define( 2001,
                    machines: [JAVA, 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Java*', 'PpFf-2', 'PpFfSplitted-2', 'PpFfMerged-4']
+                   programs: ['Java*', 'PpFf-2', 'PpFf_f-2', 'PpFf_s-2']
                    )
 
 Experience.define( 20010,
                    machines: [JAVA, 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Seq', 'Java*', 'PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2']
+                   programs: ['Seq', 'Java*', 'PpFf-1', 'PpFf-2', 'PpFf_f-1', 'PpFf_f-2']
                    )
 
 Experience.define( 2003,
                    machines: ['c34581', 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['Java*', 'PpFf-2', 'PpFfSplitted-2', 'PpFfMerged-4']
+                   programs: ['Java*', 'PpFf-4', 'PpFf_s-4', 'PpFf_f-4']
+                   )
+
+Experience.define( 20030,
+                   machines: ['c34581', 'MacOS'],
+                   nb_items: DONNEES,
+                   nb_repetitions: NB_REPETITIONS,
+                   programs: ['Java*', 'PpFf-2', 'PpFf_s-2', 'PpFf_f-2']
                    )
 
 Experience.define( 3001,
@@ -341,19 +348,19 @@ Experience.define( 5001,
                    machines: [JAVA],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['PpFf-2', 'PpFf-3', 'PpFfMerged-2', 'PpFfMerged-3', 'PpFfMerged-4']
+                   programs: ['PpFf-2', 'PpFf-3', 'PpFf_f-2', 'PpFf_f-3', 'PpFf_f-4']
                 )
 
 Experience.define( 5002,
                    machines: ['japet'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['PpFf-8', 'PpFf-9', 'PpFfMerged-8', 'PpFfMerged-9']
+                   programs: ['PpFf-8', 'PpFf-9', 'PpFf_f-8', 'PpFf_f-9']
                 )
 
 Experience.define( 5003,
                    machines: ['MacOS', 'c34581'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFfMerged-1', 'PpFfMerged-2', 'PpFfMerged-3']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf_f-1', 'PpFf_f-2', 'PpFf_f-3']
                 )
