@@ -148,7 +148,7 @@ Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moy
 \item acc. max = temps max séq. / temps min par.
 \end{itemize}
 
-\section{Analyse de l'application \TT{WordCount}}
+\section{Expériences avec l'application \TT{WordCount}}
 \label{wordcount.sect}
 
 
@@ -275,7 +275,7 @@ laisse ici, juste au cas.}
 } % END HIDDEN
 
 
-\section{Analyse de l'application \TT{StockPrice}}
+\section{Expériences avec l'application \TT{StockPrice}}
 \label{stockprice.sect}
 
 Dans le monde informatique actuel, les institutions financi\`eres produisent d'\'enormes quantit\'es d'informations, par ex., des informations sur les march\'es boursiers. Un probl\`eme important qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees afin de produire des informations utiles sur le comportement du march\'e, notamment pour prendre des d\'ecisions d'investissement. Cette section pr\'esente une application qui calcule le prix maximum pour diverses actions d'un marché boursier. Des extraits des programmes utilis\'es pour les exp\'erimentations pour \TT{StockPrice} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-stockprice.ann}.
@@ -396,17 +396,17 @@ En examinant les temps d'ex\'ecution sur les trois machines, on peut constater q
 
 \`A partir des m\^emes s\'eries d'exp\'eriences, nous avons aussi calcul\'e les d\'ebits, soit le nombre de transactions trait\'ees par seconde. Dans la figure~\ref{StockPrice-debits.fig}, on trouve les d\'ebits moyens, indiqués par les valeurs qui composent la courbe sur le graphe, ainsi que des petites barres verticales qui indiquent la dispersion de débits mesurés~; comme pour \TT{WordCount}, cet intervalle indique la moyenne $\pm$ deux fois l'écart-type. Un point int\'eressant, qui peut \^etre observ\'e dans les graphes de d\'ebits, est que la dispersion du d\'ebit pour \TT{Java} est plus grande que celle de \TT{PpFf}. Cela d\'emontre que \TT{PpFf} semble plus stable que \TT{Java}. 
 
-\section{Discussion des résultats et limites de \ppff}
-\label{limitesppff.sect}
+\section{Autres expériences avec l'application \TT{WordCount}~: Utilisation de \TT{parallel} et nombre de \emph{threads}} 
+\label{autres-experiences-wordcount.sect}
 
 On a vu dans la plupart des exp\'eriences effectu\'ees dans ce chapitre que notre biblioth\`eque \TT{PpFf} est moins performante que \TT{Java}. Cela est d\^u \`a la gestion de \emph{threads} qui diff\`ere entre les deux programmes. Dans cette section, nous montrerons que \TT{PpFf} reste une biblioth\`eque assez performante en expliquant le fonctionnement et la gestion de \emph{threads} de \TT{PpFf}. 
 
 La cr\'eation d'un \emph{thread} est une opération co\^uteuse. La surcharge varie selon les plates-formes, mais la cr\'eation d'un \emph{thread} requiert toujours l'exécution d'un grand nombre d'instructions additionnelles. Si le traitement effectué par un \emph{thread} est trop petit, il devient inutile d'avoir ce \emph{thread} puisque les surcoûts peuvent être aussi grands que le traitement lui-même. Donc, afin d'amortir les co\^uts li\'es \`a la cr\'eation d'un \emph{thread}, il faut avoir suffisamment de travail à faire faire par le \emph{thread} pour que cela en vaille la peine.
 
-Les exp\'eriences présentées dans cette section vont d\'emontrer que la charge de travail d'opérateurs de \TT{PpFf} influence le r\'esultat de l'ex\'ecution.
+Les exp\'eriences présentées dans cette section vont d\'emontrer que la charge de travail associée à un opérateur influence fortement le temps d'ex\'ecution, et que s'il est trop petit, les performances parallèles diminuent.
 
 
-\subsection{Description des applications}
+\subsection{Description de trois variantes de \TT{WordCount}}
 
 \GT{Ci-bas: il ne faut pas compter parallel dans les étapes du
 pipeline, car cela ne fait pas vraiment de travail. J'ai modifié en
@@ -433,7 +433,7 @@ Note~: Dans tous les cas, l'appel à \TT{source} est immédiatement suivi d'un a
 La version \TT{WordCount} est cr\'e\'ee \`a partir de la version \TT{WordCountSplitted} en fusionnant les appels aux m\'ethodes \TT{map} et \TT{flatten}, qui sont remplac\'es par un appel à \TT{flatMap}.
 
 Finalement, 
-la version \TT{WordCountMerged} est cr\'e\'ee \`a partir de \TT{WordCount} en fusionnant les appels aux m\'ethodes \TT{flatMap} et \TT{map}. Plus précisément, ces deux étapes sont fusionn\'ees en combinant en une seule fonction l'argument fourni à \TT{flatMap} et celui fourni à \TT{map}. Donc, comme on peut le noter dans l'annexe~\ref{appendice-code-wordcount-f.ann}, les fonctions \TT{splitInWords} et \TT{toLowercaseLetters} (pass\'ees en argument à \TT{flatMap} et \TT{map}) sont remplac\'ees par la fonction \TT{splitInLowerCaseWords} (passé en argument au \TT{flatMap} de \TT{WordCountMerged}).
+la version \TT{WordCountMerged} est cr\'e\'ee \`a partir de \TT{WordCount} en fusionnant les appels aux m\'ethodes \TT{flatMap} et \TT{map}. Plus précisément, ces deux étapes sont fusionn\'ees en combinant en une seule fonction l'argument fourni à \TT{flatMap} et celui fourni à \TT{map}. Donc, comme on peut le noter dans l'annexe~\ref{appendice-code-wordcount-f.ann}, les fonctions \TT{splitInWords} et \TT{toLowercaseLetters} (pass\'ees en argument à \TT{flatMap} et \TT{map}) sont remplac\'ees par la fonction \TT{splitInLowerCaseWords} (passée en argument au \TT{flatMap} de \TT{WordCountMerged}).
 
 \newcommand{\TO}{$\rightarrow$}
 
@@ -466,22 +466,17 @@ indique le temps d'exécution, en millisecondes.}
 \label{WordCount-merged-splitted-temps.fig}
 \end{figure}
 
-Nous allons maintenant \'evaluer les trois versions de \TT{WordCount} en examinant les temps d'ex\'ecution sur la machine \M3. Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Dans la premi\`ere s\'erie, nous avons utilis\'e deux instances parall\`eles d'un \emph{farm} et dans la deuxi\`eme seulement une instance.  Les r\'esultats sont présentés dans la figure~\ref{WordCount-merged-splitted-temps.fig}. Les trois versions de programmes, \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged}, sont identifiées sur les graphes par \ppffs, \ppff\ et \ppfff\ suivi d'un suffixe entier, qui repr\'esente le nombre d'instances parall\`eles d'un \emph{farm}. Par exemple \ppffs\TT{-2} repr\'esente la version du programme \TT{WordCountSplitted} qui utilise deux instances parall\`eles d'un \emph{farm}.
+Nous allons maintenant \'evaluer les trois versions de \TT{WordCount} en examinant les temps d'ex\'ecution sur la machine \M3. Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Dans la premi\`ere s\'erie, nous avons utilis\'e deux instances parall\`eles d'un \emph{farm} et dans la deuxi\`eme seulement une instance.  Les r\'esultats sont présentés dans la figure~\ref{WordCount-merged-splitted-temps.fig}. Les trois versions de \TT{WordCount} (\TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged}) sont identifiées sur les graphes par \ppffs, \ppff\ et \ppffm\ suivi d'un suffixe entier, qui repr\'esente le nombre d'instances parall\`eles d'un \emph{farm}. Par exemple, \ppffs\TT{-2} repr\'esente la version du programme \TT{WordCountSplitted} qui utilise deux instances parall\`eles d'un \emph{farm} (\TT{parallel(2)}).
 
-On rappelle que, dans \TT{PpFf}, chaque op\'eration ajout\'ee dans le flux du traitement s'ex\'ecute sur un \emph{thread} diff\'erent (parallélisme de flux). Le traitement peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm} (parallélisme de données), instances qui sont cr\'e\'ees en encha\^inant la m\'ethode \TT{parallel}. La valeur enti\`ere pass\'ee en argument de cette m\'ethode sp\'ecifie le nombre d'instances parall\`eles d'un \emph{farm} entre lesquelles sont r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, si la valeur de l'argument est 1, les versions \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged} sont ex\'ecut\'ees en utilisant repsectivement cinq, quatre et trois \emph{threads}, correspondant aux op\'erations (étages) du pipeline de traitement. Par contre, si la valeur pass\'ee en argument \`a  \TT{parallel} est~2, le flux est divis\'e en deux sous-flux et chaque op\'eration du pipeline après la m\'ethode \TT{parallel} est ex\'ecut\'ee sur un \emph{thread} diff\'erent pour chaque sous-flux. Par exemple, \TT{WordCountSplitted} avec \TT{parallel(2)} est ex\'ecut\'ee en utilisant 9 \emph{threads}, un \emph{thread} correspondant \`a la m\'ethode \TT{source} et les autres 8 \emph{threads} correspondant aux 4 op\'erations qui suivent, qui sont toutes ex\'ecut\'ees sur deux instances parall\`eles d'un \emph{farm}.
+On rappelle que, dans \TT{PpFf}, chaque op\'eration ajout\'ee dans le pipeline de traitement d'un flux s'ex\'ecute sur un \emph{thread} diff\'erent (parallélisme de flux). Le traitement peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm} (parallélisme de données), instances qui sont cr\'e\'ees en encha\^inant la m\'ethode \TT{parallel}. La valeur enti\`ere pass\'ee en argument de cette m\'ethode sp\'ecifie le nombre d'instances parall\`eles d'un \emph{farm} entre lesquelles sont r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, si la valeur de l'argument est 1, les versions \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged} sont ex\'ecut\'ees en utilisant repsectivement cinq, quatre et trois \emph{threads}, correspondant aux op\'erations (étages) de leur pipeline de traitement. Par contre, si la valeur pass\'ee en argument \`a  \TT{parallel} est~2, le flux est divis\'e en deux sous-flux et chaque op\'eration du pipeline après la m\'ethode \TT{parallel} est ex\'ecut\'ee sur un \emph{thread} diff\'erent pour chaque sous-flux. Par exemple, \TT{WordCountSplitted} avec \TT{parallel(2)} est ex\'ecut\'ee en utilisant 9 \emph{threads}, un \emph{thread} correspondant \`a la m\'ethode \TT{source} et les autres 8 \emph{threads} correspondant aux 4 op\'erations qui suivent, qui sont toutes ex\'ecut\'ees sur deux instances parall\`eles d'un \emph{farm}.
 
-En comparant les temps d'ex\'ecution pour les trois versions de \TT{WordCount} pour la premi\`ere s\'erie d'exp\'eriences, avec \TT{parallel(2)}, on constate que \TT{WordCountMerged} est plus performant que les deux autres. Pour le m\^eme travail \`a ex\'ecuter, \TT{WordCountMerged} utilise seulement trois op\'erations par rapport \`a la version \TT{WordCount} qui utilise quatre et cinq pour la version \TT{WordCountSplitted}. Comme chaque op\'eration est ex\'ecut\'ee sur un \emph{thread} diff\'erent pour chaque sous-flux cr\'e\'e, \TT{WordCountMerged} utilise moins de \emph{threads} pour la m\^eme tache \`a accomplir, et donc les co\^uts introduits par la cr\'eation des \emph{threads} sont moins importants. Cela peut \^etre observ\'e sur le graphe o\`u, pour une valeur maximale de mots \`a traiter, \TT{WordCountMerged} obtient un meilleur temps d'ex\'ecution que \TT{WordCount} de 0.5s et de plus de 1s que \TT{WordCountSplitted}. 
+En comparant les temps d'ex\'ecution pour les trois versions de \TT{WordCount} pour la premi\`ere s\'erie d'exp\'eriences, avec \TT{parallel(2)}, on constate que \TT{WordCountMerged} est plus performant que les deux autres. Pour le m\^eme travail \`a ex\'ecuter, \TT{WordCountMerged} utilise seulement trois op\'erations par rapport aux versions \TT{WordCount} et \TT{WordCountSplitted} qui utilisent quatre et cinq opérations. Comme chaque op\'eration est ex\'ecut\'ee sur un \emph{thread} diff\'erent \emph{pour chaque sous-flux cr\'e\'e}, \TT{WordCountMerged} utilise moins de \emph{threads} pour la m\^eme tache \`a accomplir, et donc les co\^uts introduits par la cr\'eation des \emph{threads} sont moins importants. Cela peut \^etre observ\'e sur le graphe o\`u, pour une valeur maximale de mots \`a traiter, \TT{WordCountMerged} obtient un meilleur temps d'ex\'ecution que \TT{WordCount} de 0.5s et de plus de 1s que \TT{WordCountSplitted}. 
 
-Un effet semblable peut \^etre observ\'e sur la deuxi\`eme s\'erie d'exp\'eriences, avec \TT{parallel(1)}. Dans ce cas, la diff\'erence entre les temps d'ex\'ecution entre les trois versions de programmes est beaucoup plus petite. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. La version \TT{WordCountMerged} est ex\'ecut\'ee en utilisant trois \emph{threads}, quatre et cinq \emph{threads} pour les versions \TT{WordCount} et \TT{WordCountSplitted}. Ainsi, les co\^uts introduits par la cr\'eation de \emph{threads} entre les trois versions sont beaucoup moins importants par rapport \`a la premi\`ere s\'erie d'exp\'erimentations. 
-
-
+Un effet semblable peut \^etre observ\'e pour la deuxi\`eme s\'erie d'exp\'eriences, avec \TT{parallel(1)}. Dans ce cas, les diff\'erences de temps d'ex\'ecution entre les trois versions de programmes sont beaucoup plus petites. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. La version \TT{WordCountMerged} est ex\'ecut\'ee en utilisant trois \emph{threads}, par opposition à quatre et cinq \emph{threads} pour \TT{WordCount} et \TT{WordCountSplitted}. Ainsi, les co\^uts introduits par la cr\'eation de \emph{threads} entre les trois versions sont beaucoup moins importants par rapport \`a la premi\`ere s\'erie d'exp\'erimentations. 
 
 
 
-
-
-
-
+\HIDDEN{
 
 \begin{figure}
 \grapheH{WordCount-temps-java-5001-40-15}
@@ -511,8 +506,6 @@ indique le debits, en millirs de mots traités par second.}
 \end{figure}
 
 
-\HIDDEN{
-
 \hrule
 \begin{figure}
 \grapheH{WordCount-temps-turing-3004-40}
@@ -532,3 +525,15 @@ indique le debits, en millirs de mots traités par second.}
 \label{graphes-turing-sp.fig}
 \end{figure}
 } % END HIDDEN
+
+
+
+\section{Discussion des résultats et limites de \ppff}
+\label{limitesppff.sect}
+
+\GT{Maintenant, il faut conclure avec des idées plus générales, par
+exemple, en tirant des conclusions des dernières séries
+d'expérimentations. Du genre: la décomposition en étages est
+importante et utile, mais il faut s'assurer que le travail fait par un
+étage soit assez gros, sinon les surcoûts du parallélisme deviennent
+trop grands.}
