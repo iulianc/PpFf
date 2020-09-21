@@ -405,6 +405,65 @@ En examinant les temps d'ex\'ecution sur les trois machines, on peut constater q
 \section{Discussion des résultats et limites de \ppff}
 \label{limitesppff.sect}
 
+On a vu dans la plupart des exp\'eriences effectu\'ees dans ce chapitre que notre biblioth\`eque \TT{PpFf} est moins performante que \TT{Java}. Cela est d\^u \`a la gestion de \emph{threads} diff\`erent entre les deux programmes. Dans cette section, nous montrerons que \TT{PpFf} reste une biblioth\`eque assez performante en expliquant le fonctionnement et la gestion de \emph{threads} de \TT{PpFf}. 
+
+La cr\'eation d'un \emph{thread} est co\^uteuse. La surcharge varie selon les plates-formes, mais la cr\'eation de \emph{threads} prend du temps, ce qui introduit une latence dans le traitement des demandes. Si le traitement est trop petit, il est presque inutile de cr\'eer un \emph{thread} pour ex\'ecuter la demande. Afin d'amortir les co\^uts li\'es \`a la cr\'eation du \emph{thread}, il faut avoir suffisamment de travail pour que cela en vaille la peine.
+
+Les exp\'eriences ex\'ecut\'ees dans cette section, vont d\'emontrer que la charge de travail d'opérateurs de \TT{PpFf} influence le r\'esultat de l'ex\'ecution.
+
+
+\subsection{Description des applications}
+
+L'application choisie pour ces exp\'eriences est l'application \TT{WordCount}, d\'ecrite dans la section~\ref{descriptionWordCount.sect}. Afin de montrer la gestion de \emph{threads}, trois versions de \TT{WordCount} ont \'et\'e cr\'e\'ees : \TT{WordCountSplited} avec six op\'erations, \TT{WordCount} avec cinq op\'erations et \TT{WordCountMerged} avec seulement quatre op\'erations. On doit pr\'eciser que le r\'esultat obtenu en ex\'ecutant les trois versions de \TT{WordCount} est identique. Des extraits de code utilis\'es pour la construction de trois versions sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount-sf.ann}. 
+
+Les six op\'erations de l'application \TT{WordCountSplitted} sont les suivantes :
+
+\begin{itemize}
+\item \TT{source}, la m\'ethode (statique) qui permet d'extraire et retourner un flux avec les lignes du fichier sp\'ecifi\'e en argument \`a la m\'ethode source.
+\item \TT{parallel}, la m\'ethode qui permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads}
+\item \TT{map}, la m\'ethode qui d\'ecompose chaque ligne en une collection de mots	
+\item \TT{flatten}, la m\'ethode qui d\'ecompose une collection de mots en mots individuels	
+\item \TT{map}, la m\'ethode qui transforme chacun des mots en rempla\c{c}ant les lettres majuscules d'un mot en lettres minuscules			
+\item \TT{reduceByKey}, la m\'ethode qui regroupe les mots similaires ensemble et compte le nombre d'occurrences de chaque mot.
+\end{itemize}
+
+La version \TT{WordCount} est cr\'e\'ee \`a partir de la version \TT{WordCountSplitted} en fusionnant deux m\'ethodes. Les deux m\'ethodes, \TT{map} et \TT{flatten}, sont remplac\'ees par la m\'ethode \TT{flatMap}.
+ 
+La derni\`ere version test\'ee, \TT{WordCountMerged} est cr\'e\'e \`a partir de la version \TT{WordCount} en fusionnant les m\'ethodes \TT{flatMap} et \TT{map}. D\'ecrites dans l'annexe~\ref{methodes-api.ann} les deux m\'ethodes appliquent une fonction sur chaque \'el\'ement du flux. Par cons\'equent, les deux m\'ethodes peuvent \^etre fusionn\'ees en fusionnant les fonctions appliqu\'ees \`a chaque \'el\'ement du flux. On peut observer dans l'annexe~\ref{appendice-code-wordcount-f.ann} que les deux fonctions, \TT{splitInWords} et \TT{toLowercaseLetters}, pass\'ees en param\`etre aux m\'ethodes \TT{flatMap} et \TT{map} de la version \TT{WordCount} sont remplac\'ees par la fonction \TT{splitInLowerCaseWords}, fonction pass\'ee en param\`etre \`a la m\'ethode \TT{flatMap} de la version \TT{WordCountMerge}.
+
+
+
+\subsection{Mesures obtenues et analyse des r\'esultats}
+
+
+\begin{figure}
+\grapheH{WordCount-temps-c34581-2003-40}
+
+\grapheH{WordCount-temps-c34581-20031-40}
+
+\caption[Les temps d'exécution des programmes pour \TT{WordCount}
+sur la machine \M3.]{Les temps d'exécution des
+programmes pour \TT{WordCount} sur la machine \M3. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
+indique le temps d'exécution, en millisecondes.}
+\label{WordCount-merged-splitted-temps.fig}
+\end{figure}
+
+Dans cette section, nous \'evaluons les trois versions de l'application \TT{WordCount} en examinant les temps d'ex\'ecution sur la machine \M3. Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Dans la premi\`ere s\'erie on a utilis\'e deux instances parall\`eles d'un \emph{farm} et dans la deuxi\`eme seulement une.  Les r\'esultats d'exp\'eriences sont illustr\'es dans la figure~\ref{WordCount-merged-splitted-temps.fig}. Les trois versions de programmes, \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged} sont marqu\'es sur les graphes par \TT{PpFfs}, \TT{PpFf} et \TT{PpFff}. Le suffixe entier dans les indicateurs repr\'esente le nombre d'instances parall\`eles d'un \emph{farm}. Par exemple \TT{PpFfs-2} repr\'esente la version du programme \TT{WordCountSplitted} qui utilise deux instances parall\`eles d'un \emph{farm}.
+
+On rappelle que, dans \TT{PpFf}, chaque op\'eration ajout\'ee dans le flux du traitement s'ex\'ecute sur un \emph{thread} diff\'rent. Ce traitement peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}, instances qui sont cr\'e\'ees en encha\^inant la m\'ethode \TT{parallel}. La valeur enti\`ere pass\'ee en argument de cette m\'ethode permet de sp\'ecifier le nombre d'instances parall\`eles d'un \emph{farm} entre lesquelles seront r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, si la valeur de l'argument est 1, les versions \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged}~\ref{appendice-code-wordcount-sf.ann} sont ex\'ecut\'ees en utilisant cinq, quatre et trois \emph{threads} correspondant aux op\'erations ajout\'ees dans le flux du traitement. Si la valeur pass\'ee en argument \`a la m\'ethode \TT{parallel} est \'egale \`a 2, le flux est divis\'e en deux sous-flux et chaque op\'eration ajout\'ee dans le flux suivant la m\'ethode \TT{parallel} est ex\'ecut\'ee sur un \emph{thread} diff\'erent pour chaque sous-flux ainsi cr\'e\'e. Par exemple, la version \TT{WordCountSplitted} est ex\'ecut\'ee en utilisant 9 \emph{threads}, un \emph{thread} correspondant \`a la m\'ethode \TT{source} et les autres 8 \emph{threads} correspondant aux 4 op\'erations introduites par les 4 m\'ethodes suivantes la m\'ethode \TT{parallel(2)} qui sont ex\'ecut\'ees sur deux instances parall\`eles d'un \emph{farm}.
+
+En comparant les temps d'ex\'ecution entre les trois versions de \TT{WordCount} pour la premi\`ere s\'erie d'exp\'eriences en utilisant deux instances parall\`eles d'un \emph{farm}, on constate que, la version \TT{WordCountMerged} est plus performante que les autres deux. Pour le m\^eme travail \`a ex\'ecut\'e, \TT{WordCountMerged} utilise seulement trois op\'erations par rapport \`a la version \TT{WordCount} qui utilise quatre et cinq pour la version \TT{WordCountSplitted}. Comme chaque op\'eration est ex\'ecut\'ee sur un \emph{thread} diff\'erent pour chaque sous-flux cr\'e\'e, \TT{WordCountMerged} utilise moins de \emph{threads} pour la m\^eme tache \`a accomplir, et donc les co\^uts introduits par la cr\'eation des \emph{threads} sont moins importants. Cela peut \^etre observ\'e sur le graph o\`u, pour une valeur maximale de mots \`a trait\'e, \TT{WordCountMerged} obtient un meilleur temps d'ex\'ecution que \TT{WordCount} de 0.5s et de plus de 1s que \TT{WordCountSplitted}. 
+
+Le m\^eme effet peut \^etre observ\'e sur la deuxi\`eme s\'erie d'exp\'erinces en utilisant une seule instance parall\`ele d'un \emph{farm}. Dans ce cas, la diff\'erence entre les temps d'ex\'ecution entre les trois versions de programmes est beaucoup plus petite. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. La version \TT{WordCountMerged} est ex\'ecut\'ee en utilisant trois \emph{threads}, quatre et cinq \emph{threads} pour les versions \TT{WordCount} et \TT{WordCountSplitted}. Ainsi, les co\^uts introduits par la cr\'eation de \emph{threads} entre les trois versions sont beaucoup moins importants par rapport \`a la premi\`ere s\'erie d'exp\'erimentations. 
+
+
+
+
+
+
+
+
+
 
 \begin{figure}
 \grapheH{WordCount-temps-java-5001-40-15}
