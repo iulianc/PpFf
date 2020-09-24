@@ -2,7 +2,7 @@
 \label{appendice-code-wordcount-sf.ann}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Fonctions auxiliaires communes aux programmes}
+\section{Fonctions auxiliaires utilisées par les programmes}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
@@ -11,12 +11,14 @@ Words* splitInWords(std::string* line) {
     size_t start = 0, next_letter;
     while ( start < line->length() ) {
         for ( next_letter = start;
-              next_letter < line->length() && !isalpha(line->at(next_letter));
+              next_letter < line->length()
+                && !isalpha(line->at(next_letter));
               next_letter++ )
             {};
         if ( next_letter >= line->length() ) break;
         for ( start = next_letter + 1;
-              start < line->length() && isalpha(line->at(start)); start++ )
+              start < line->length()
+                && isalpha(line->at(start)); start++ )
             {};
         std::string word = line->substr(next_letter, start - next_letter); 
         words->push_back( word );
@@ -25,6 +27,7 @@ Words* splitInWords(std::string* line) {
     return words;
 }
 
+
 std::string* toLowercaseLetters(std::string* data) {
     std::for_each( data->begin(),
                    data->end(),
@@ -60,11 +63,9 @@ Words* splitInLowerCaseWords(std::string* line) {
 \label{appendice-code-wordcount-s.ann}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
-	// ...
-    auto begin = std::chrono::high_resolution_clock::now();
-
     Reducer<std::string, int> reducer(0, 
-                                      [](int count, std::string _) { return count + 1; },
+                                      [](int count, std::string _)
+                                        { return count + 1; },
                                       std::plus<int>{} );
 
     std::unordered_map<std::string, int> currentResult = 
@@ -75,11 +76,6 @@ Words* splitInLowerCaseWords(std::string* line) {
         .flatten<Words, std::string>()			
         .map<std::string, std::string>(toLowercaseLetters)			
         .reduceByKey<std::string, std::string, int>(reducer);  
-
-    auto end = std::chrono::high_resolution_clock::now();
-    long duration_ms = 
-        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-	// ...
 \end{lstlisting}
 
 \newpage
@@ -87,14 +83,10 @@ Words* splitInLowerCaseWords(std::string* line) {
 \section{Programme \TT{WordCount.cpp}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
-    // ...
-    auto begin = std::chrono::high_resolution_clock::now();
-
-    Reducer<std::string, int> reducer(
-             0, 
-             [](int count, std::string _) { return count + 1; },
-             std::plus<int>{}
-           );
+    Reducer<std::string, int> reducer(0, 
+                                      [](int count, std::string _)
+                                        { return count + 1; },
+                                      std::plus<int>{} );
 
     std::unordered_map<std::string, int> currentResult = 
         Flow
@@ -103,11 +95,6 @@ Words* splitInLowerCaseWords(std::string* line) {
         .flatMap<std::string, Words, std::string>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
         .reduceByKey<std::string, std::string, int>(reducer);  
-
-    auto end = std::chrono::high_resolution_clock::now();
-    long duration_ms = 
-        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-    // ...
 \end{lstlisting}
 
 \newpage
@@ -115,12 +102,10 @@ Words* splitInLowerCaseWords(std::string* line) {
 \section{Programme \TT{WordCountMerged.cpp}}
 \label{appendice-code-wordcount-f.ann}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
-	// ...
-    auto begin = std::chrono::high_resolution_clock::now();
-
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
     Reducer<std::string, int> reducer(0, 
-                                      [](int count, std::string _) { return count + 1; },
+                                      [](int count, std::string _)
+                                        { return count + 1; },
                                       std::plus<int>{} );
 
     std::unordered_map<std::string, int> currentResult = 
@@ -129,9 +114,4 @@ Words* splitInLowerCaseWords(std::string* line) {
         .parallel(farmParallelism)
         .flatMap<std::string, Words, std::string>(splitInLowerCaseWords)
         .reduceByKey<std::string, std::string, int>(reducer);  
-
-    auto end = std::chrono::high_resolution_clock::now();
-    long duration_ms = 
-        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
-	// ...
 \end{lstlisting}
