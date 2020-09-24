@@ -468,6 +468,10 @@ En comparant les temps d'ex\'ecution pour les trois versions de \TT{WordCount} p
 
 Un effet semblable peut \^etre observ\'e pour la deuxi\`eme s\'erie d'exp\'eriences, avec \TT{parallel(1)}. Dans ce cas, les diff\'erences de temps d'ex\'ecution entre les trois versions de programmes sont beaucoup plus petites. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. La version \TT{WordCountMerged} est ex\'ecut\'ee en utilisant trois \emph{threads}, par opposition à quatre et cinq \emph{threads} pour \TT{WordCount} et \TT{WordCountSplitted}. Ainsi, les co\^uts introduits par la cr\'eation de \emph{threads} entre les trois versions sont beaucoup moins importants par rapport \`a la premi\`ere s\'erie d'exp\'erimentations. 
 
+\GT{Je crois qu'il serait bien de souligner que, quand même, les
+versions \ppff\TT{-2} et \ppffm\TT{-2} sont quand même plus rapides
+que les versions avec \TT{-1}. Peut-être indiquer explicitement (entre
+parenthèses) les temps moyens d'exécution.}
 
 
 \HIDDEN{
