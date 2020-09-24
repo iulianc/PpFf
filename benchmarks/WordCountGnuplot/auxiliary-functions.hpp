@@ -24,7 +24,7 @@ std::string* toLowercaseLetters(std::string* data) {
     return data;
 }
 
-const int GRAIN = 1000;
+const int GRAIN = 100;
 
 char tolower_(char c) {
     if ( ('A' <= c) && (c <= 'Z')) {
