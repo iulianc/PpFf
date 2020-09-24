@@ -1,0 +1,137 @@
+\chapter{Extraits des programmes utilisés pour les expérimentations pour les trois versions de \TT{WordCount}}
+\label{appendice-code-wordcount-sf.ann}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fonctions auxiliaires communes aux programmes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+Words* splitInWords(std::string* line) {
+    Words* words = new Words();
+    size_t start = 0, next_letter;
+    while ( start < line->length() ) {
+        for ( next_letter = start;
+              next_letter < line->length() && !isalpha(line->at(next_letter));
+              next_letter++ )
+            {};
+        if ( next_letter >= line->length() ) break;
+        for ( start = next_letter + 1;
+              start < line->length() && isalpha(line->at(start)); start++ )
+            {};
+        std::string word = line->substr(next_letter, start - next_letter); 
+        words->push_back( word );
+    };
+
+    return words;
+}
+
+std::string* toLowercaseLetters(std::string* data) {
+    std::for_each( data->begin(),
+                   data->end(),
+                   [](char& c) { c = ::tolower(c); } );
+
+    return data;
+}
+
+Words* splitInLowerCaseWords(std::string* line) {
+    Words* words = new Words();
+    size_t start = 0, next_letter;
+    while ( start < line->length() ) {
+        for ( next_letter = start;
+              next_letter < line->length() && !isalpha(line->at(next_letter));
+              next_letter++ )
+            {};
+        if ( next_letter >= line->length() ) break;
+        for ( start = next_letter + 1;
+              start < line->length() && isalpha(line->at(start)); start++ )
+            {};
+        words->emplace_back( *line, next_letter, start - next_letter );
+        toLowercaseLetters(&words->back());
+    };
+
+    return words;
+}
+\end{lstlisting}
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{WordCountSplitted.cpp}}
+\label{appendice-code-wordcount-s.ann}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
+	// ...
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    Reducer<std::string, int> reducer(0, 
+                                      [](int count, std::string _) { return count + 1; },
+                                      std::plus<int>{} );
+
+    std::unordered_map<std::string, int> currentResult = 
+        Flow
+        ::source(inputFile)
+        .parallel(farmParallelism)
+        .map<std::string, Words>(splitInWords)			
+        .flatten<Words, std::string>()			
+        .map<std::string, std::string>(toLowercaseLetters)			
+        .reduceByKey<std::string, std::string, int>(reducer);  
+
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+	// ...
+\end{lstlisting}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{WordCount.cpp}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
+    // ...
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    Reducer<std::string, int> reducer(
+             0, 
+             [](int count, std::string _) { return count + 1; },
+             std::plus<int>{}
+           );
+
+    std::unordered_map<std::string, int> currentResult = 
+        Flow
+        ::source(inputFile)
+        .parallel(farmParallelism)
+        .flatMap<std::string, Words, std::string>(splitInWords)			
+        .map<std::string, std::string>(toLowercaseLetters)			
+        .reduceByKey<std::string, std::string, int>(reducer);  
+
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+    // ...
+\end{lstlisting}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Programme \TT{WordCountMerged.cpp}}
+\label{appendice-code-wordcount-f.ann}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
+	// ...
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    Reducer<std::string, int> reducer(0, 
+                                      [](int count, std::string _) { return count + 1; },
+                                      std::plus<int>{} );
+
+    std::unordered_map<std::string, int> currentResult = 
+        Flow
+        ::source(inputFile)
+        .parallel(farmParallelism)
+        .flatMap<std::string, Words, std::string>(splitInLowerCaseWords)
+        .reduceByKey<std::string, std::string, int>(reducer);  
+
+    auto end = std::chrono::high_resolution_clock::now();
+    long duration_ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+	// ...
+\end{lstlisting}
