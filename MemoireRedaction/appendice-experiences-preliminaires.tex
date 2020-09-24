@@ -1,7 +1,7 @@
-\chapter{Extrait du script de configuration des expériences pour \TT{WordCount} et La description (semi-)formelle d'un \TT{Reducer} et d'un \TT{GroupByKey}}
+\chapter{Extrait du script de configuration des expériences pour \TT{WordCount}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Extrait du script de configuration des expériences pour \TT{WordCount}}
+%\section{Extrait du script de configuration des expériences pour \TT{WordCount}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{ExperiencesPreliminairesWordCount.ann}
 
@@ -16,118 +16,10 @@ les versions du programme \`a ex\'ecuter.
 
 \pagebreak
 
-\lstinputlisting[language=ruby,caption={Extrait d'un fichier de
+\lstinputlisting[language=ruby,caption={Un extrait d'un fichier de
 configuration pour les exp\'eriences pour les programmes
 \TT{WordCount*.*}~: fichier \TT{WordCount-bm-config.rb} .}]{WordCount-bm-config.rb}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{La description (semi-)formelle d'un \TT{Reducer}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\label{DescriptionFormelleReducer.ann}
-
-
-Soit les \'el\'ements suivants~: 
-
-\begin{itemize}
-
-\item $T$ et $R$ des types de donn\'ees;
-
-\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
-\in T~(i=0, \ldots, k)$;
-
-Soit $S_0, \ldots, S_n$ une partition de $S$;
-
-\item Soit $v_0\in R$;
-
-\item Soit $acc: R\times T \rightarrow R$;
-
-\item Soit $comb: R\times R \rightarrow R$;
-
-
-\end{itemize}
-
-Soit $red$ un \TT{Reducer} avec les attributs $v_0, acc, comb$.
-
-Alors $S$\TT{.reduce($red$)}
-
-
-\begin{lstlisting}[language=haskell,escapechar=\!]
-S.reduce( Reducer v0 acc comb )
-  = foldr comb r!${}_0$! [r!${}_1$!, ..., r!${}_{k-1}$!]
-    where
-      [S!${}_0$!, S!${}_1$!, ..., S!${}_{k-1}$!] = splitIntoSubstreams S k
-      [r!${}_0$!, r!${}_1$!, ..., r!${}_{k-1}$!] = [foldr acc v0 S!${}_i$! | i <- [0, !$\ldots$!, k-1]]
-
-
-foldr f a []     = a
-foldr f a (x:xs) = f x (foldr f a xs)
-\end{lstlisting}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{La description (semi-)formelle d'un \TT{GroupByKey}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\label{DescriptionFormelleGroupByKey.ann}
-
-
-D\'enotons comme suit un \emph{map} $M$ qui associe la cl\'e $c_i$ \`a
-la valeur $v_i$, pour $i=0, \ldots, n$~:%
-%
-\footnote{Dans du code C++, un tel \emph{map} serait repr\'esent\'e
-comme suit~: $\{\{c_0, v_0\}, \ldots, \{c_n, v_n\}\}$}
-%
-\begin{itemize}
-\item $M = \{ c_i \mapsto v_i~\vert~0 \leq i \leq n \}$
-\end{itemize}
-
-Soit alors les \'el\'ements suivants~: 
-\begin{itemize}
-\item $T$, un type de donn\'ees;
-
-\item $S = [s_0, s_1, \ldots, s_k]$, un flux de donn\'ees, o\`u $s_i
-\in T~(i=0, \ldots, k)$;
-
-\item $fc: T \rightarrow C$, une fonction sur  $T$ qui produit une
-<<cl\'e>> de type $C$;
-
-\item $fv: T \rightarrow V$, une fonction sur $T$ qui retourne une
-<<valeur>> de type $V$;
-
-
-\end{itemize}
-
-
-Le r\'esultat d'un appel pour le flux $S$ de la m\'ethode
-\TT{groupByKey} avec deux arguments peut alors \^etre d\'ecrit comme
-suit~:
-%
-\begin{itemize}
-\item $S.\TT{groupByKey}(fc, fv) = \{ c \mapsto vals(c, S)~\vert~c \in
-cles(S)\}$
-
-\item[] O\`u
-\begin{itemize}
-\item $cles(S) = \{ fc(s_i)~\vert~s_i \in S \}$
-\item $vals(c, S) = \{ fv(s_i)~\vert~ s_i\in S \wedge fc(s_i) = c\}$
-\end{itemize}
-
-\end{itemize}
-
-
-\bigskip
-
-
-Quant \`a la m\'ethode $\TT{groupByKey}$ avec un seul argument, elle est
-\'equivalente \`a celle avec deux arguments, mais o\`u le deuxi\`eme est simplement la fonction $id$entit\'e:
-%
-\begin{itemize}
-\item $S.\TT{groupByKey}(fc) = S.\TT{groupByKey}(fc, id)$
-\begin{Items}
-\item[] O\`u $id(x) = x$
-\end{Items}
-\end{itemize}
 
 
 

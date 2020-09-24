@@ -96,7 +96,7 @@ un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performanc
 
 Dans toutes nos exp\'eriences, les programmes \TT{Java} comparés avec \ppff\ ont donc \'et\'e pr\'echauff\'es en lan\c{c}ant une proc\'edure de pr\'echauffage avant de mesurer le temps pour la portion de code pertinente. Cette proc\'edure de pr\'echauffage a consisté à faire un traitement préalable d'une \emph{fraction} des données, traitement utilisant toutes les m\'ethodes utilis\'ees par la suite.
 
-\subsection{Temps mesurés}
+\subsection{Mesures des temps d'exécution}
  
 Il faut noter que le temps mesur\'e dans toutes les exp\'eriences \emph{exclut le lancement du programme}. La mesure du temps se fait de l'int\'erieur du programme m\^eme, une fois celui-ci lanc\'e. Lorsque le traitement est termin\'e, le temps est \'emis en sortie du programme sur \TT{stdout}. Donc, le temps n'est pas mesur\'e avec la commande <<\TT{time}>>. Notamment, dans le cas de \TT{Java}, le temps mesuré exclut donc le temps de lancement de la machine virtuelle. De plus, les quantit\'es de donn\'ees utilis\'ees dans les exp\'eriences ont \'et\'e choisies de sorte que les temps d'ex\'ecution soient d'au moins 200 millisecondes.
 
@@ -283,7 +283,7 @@ Dans le monde informatique actuel, les institutions financi\`eres produisent d'\
 
 L'application \TT{StockPrice} calcule le prix d'une action en utilisant le modèle \emph{Black-Scholes}~\citep{macbeth1979empirical}. Ce mod\`ele d'\'evaluation est utilis\'e pour d\'eterminer le prix juste ou la valeur th\'eorique d'une option d'achat ou de vente, et ce en fonction de six variables telles que la valeur de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, la volatilit\'e du prix de l'action, la dur\'ee et le type d'option. 
 
-\begin{lstlisting}[float,label={StockPrice-code.listing},gobble=4,basicstyle=\ttfamily\footnotesize,language=c++,caption={Extrait du code de \TT{StockPrice.cpp} (version \ppff).},frame=single]
+\begin{lstlisting}[float,label={StockPrice-code.listing},gobble=4,basicstyle=\ttfamily\footnotesize,language=c++,caption={Un extrait du code de \TT{StockPrice.cpp} (version \ppff).},frame=single]
     Reducer<StockAndPrice, double>
        reducer(0.0, 
                [](double maxPrice, StockAndPrice sp) {
