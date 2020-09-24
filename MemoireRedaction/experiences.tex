@@ -136,13 +136,9 @@ On calcule ensuite la moyenne et l'écart-type. Dans un graphe comme celui de la
 de la figure~\grapheref{WordCount-temps-java-11-20}). Plus précisément, la barre verticale indique un intervalle de 2 écart-types, donc un intervalle qui contient approximativement \emph{95~\% des temps mesurés}.
 
 
-\GT{Ci-bas. Je crois qu'il serait aussi bon d'inclure \TT{Java} = version séquentielle avec warm-up. À voir!!}
+Chaque s\'erie d'exp\'eriences finales inclut les versions s\'equentielles pour les programmes compar\'es des deux biblioth\`eques. Identifi\'ees sur les graphes par \TT{Seq} pour la version s\'equentielle de \TT{PpFf} et par \TT{Java} pour la version s\'equentielle avec warm-up de \TT{Java}, ces versions utilisent les m\^emes fonctions auxiliaires que les versions parall\`eles, mais s'ex\'ecutent de fa\c{c}on strictement s\'equentielle. Ces programmes s\'equentiels ont aussi \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, nous avons utilis\'e l'acc\'el\'eration \emph{absolue}. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseurs avec un programme s\'equentiel, performant, qui r\'esout le m\^eme probl\`eme. 
 
-\IC{J'ai aussi mentionné la version séquentielle de Java.}
-
-Chaque s\'erie d'exp\'eriences finales inclut les versions s\'equentielles pour les programmes compar\'es des deux biblioth\`eques. Identifi\'ees sur les graphes par \TT{Seq} la version s\'equentielle de \TT{PpFf} et \TT{Java} la version s\'equentielle avec warm-up de \TT{Java}, ces versions utilisent les m\^emes fonctions auxiliaires que les versions parall\`eles, mais s'ex\'ecutent de fa\c{c}on s\'equentielle. Ces programmes s\'equentiels ont aussi \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, nous avons utilis\'e l'acc\'el\'eration \emph{absolue}. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseurs avec le meilleur programme s\'equentiel qui r\'esout le m\^eme probl\`eme. 
-
-Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moyenne a été calculée, ainsi deux autres valeurs donnant un intervalle pour la valeur minimale et maximale de l'acc\'el\'eration. Repr\'esent\'ees aussi par des petites barres verticales dans les graphes des sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, ces valeurs ainsi que l'accélération moyenne sont calcul\'ees comme suit~: 
+Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moyenne a été calculée, ainsi que deux autres valeurs donnant un intervalle pour la valeur minimale et maximale de l'acc\'el\'eration. Repr\'esent\'ees aussi par des petites barres verticales dans les graphes des sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, ces valeurs ainsi que l'accélération moyenne sont calcul\'ees comme suit~: 
 
 \begin{itemize}
 \item acc. moyenne  =  temps moyen séq. / temps moyen par.
@@ -529,20 +525,33 @@ indique le debits, en millirs de mots traités par second.}
 \section{Discussion des résultats et limites de \ppff}
 \label{limitesppff.sect}
 
-\GT{Maintenant, il faut conclure avec des idées plus générales, par
-exemple, en tirant des conclusions des dernières séries
-d'expérimentations. Du genre: la décomposition en étages est
-importante et utile, mais il faut s'assurer que le travail fait par un
-étage soit assez gros, sinon les surcoûts du parallélisme deviennent
-trop grands.}
+\GT{Il faut réserver le termer <<tester>> pour du code qui vérifie le
+<<bon fonctionnement>> (résultats corrects) d'un programme.}
 
-\IC{J’ai ajouté quelques mots pour résumer le chapitre 4.}
+Dans ce chapitre, plusieurs exp\'eriences ont \'et\'e présentées dans le but d'évaluer les performances de \TT{PpFf}. Dans la premi\`ere partie de ce chapitre, deux applications utilisant la bibliothèque \TT{PpFf} ont \'et\'e compar\'e avec des programmes Java \'equivalents utilisant les \TT{Streams} introduits en Java 8. Diverses unit\'es de mesures --– temps d'ex\'ecution, d\'ebit et acc\'elération --- ont servi comme r\'ef\'erence pour comparer ces programmes. Les r\'esultats de la plupart des exp\'eriences ont montr\'e que \TT{Java} se comporte mieux que \TT{PpFf}.
+%
+\GT{Tant qu'à être dans un résumé/rappel, tu devrais aussi indiquer que, d'un autre coté, des comparaisons ont aussi été faites avec FastFlow, et ont montré que les surcoûts introduits par Ppff étaient peu élevés!}
 
-Dans ce chapitre plusieurs exp\'eriences ont \'et\'e men\'ees pour tester les performances de \TT{PpFf}. Dans la premi\`ere partie de ce chapitre deux applications utilisant la bibliothèque \TT{PpFf} ont \'et\'e compar\'e avec des programmes Java \'equivalentes utilisant les \TT{Streams} introduits en Java 8.0. Les valeurs pour les unit\'es de mesures – le temps d'ex\'ecution, le d\'ebit et l'acc\'elération - ont servi comme r\'ef\'erence pour comparer ces programmes. Les r\'esultats de la plupart des exp\'eriences ont montr\'e que \TT{Java} se comporte mieux que \TT{PpFf}.
 
-Dans la derni\`ere section de ce chapitre, la section~\ref{autres-experiences-wordcount.sect}, d'autres exp\'eriences ont \'et\'e men\'ees pour comparer les diff\'erentes versions du programme \TT{WordCount}, versions cr\'e\'ees enti\`erement \`a l'aide de la biblioth\`eque \TT{PpFf}. Ces exp\'eriences ont montr\'e que \TT{PpFf} reste une biblioth\`eque assez efficace.
+\GT{Ci-bas: il faut faire attention aux affirmations faites dans une
+telle conclusion, surtout avec les deux autres évaluateurs
+semble-t-il~:( Donc, il ne m'apparait pas clair en quoi les
+expériences de la dernière section montrent que la bibliothèque est
+efficace, puisque ces expériences ne comparent ni avec des versions
+Java, ni avec des versions séquentielles. J'ai donc supprimé la
+dernière phrase et je l'ai remplacé par une phrase qui me semble mieux
+décrire ce qui a été démontré par ces expériences.}
 
-Un programme cr\'e\'e en utilisant la biblioth\`eque \TT{PpFf} peut \^etre d\'ecompos\'e en diff\'erents \'etages (\'etapes), \'etages qui repr\'esentent les op\'erations dans la cha\^ine de traitement de la biblioth\`eque. Con\c{c}u dans un style fonctionnel, \TT{PpFf} permet de d\'ecomposer un programme en tr\`es fines t\^aches. La taille de cette t\^ache ou la granularit\'e qui repr\'esente le travail dans un \'etage influence fortement les temps d'ex\'ecution de l'application. Les r\'esultats des exp\'eriences de la section~\ref{autres-experiences-wordcount.sect} ont montr\'e que si la granularit\'e est fine, l'application est moins performante. 
+Dans la derni\`ere section de ce chapitre (Sect.~\ref{autres-experiences-wordcount.sect}), d'autres exp\'eriences ont \'et\'e men\'ees pour comparer diff\'erentes versions du programme \TT{WordCount}, versions cr\'e\'ees enti\`erement \`a l'aide de la biblioth\`eque \TT{PpFf}.
+%
+% Ces exp\'eriences ont montr\'e que \TT{PpFf} reste une biblioth\`eque assez efficace.
+%
+Ces expériences nous ont montré que lorsqu'un trop grand nombre de
+\emph{threads} sont créés, le programme devient moins efficace.
 
-La d\'ecomposition en \'etages est importante et utile, mais il faut s'assurer que le travail fait par un \'etage soit assez gros, sinon les surco\^uts du parall\'elisme deviennent trop grands.
+Un programme cr\'e\'e en utilisant la biblioth\`eque \TT{PpFf} peut \^etre d\'ecompos\'e en diff\'erents \'etages (\'etapes), \'etages qui repr\'esentent les op\'erations à effectuer dans la cha\^ine de traitement d'un flux. Con\c{c}u dans un style fonctionnel, \TT{PpFf} permet de d\'ecomposer un programme en tr\`es fines t\^aches. Or, la taille d'une telle t\^ache --- sa granularit\'e --- qui repr\'esente le travail dans un \'etage, influence fortement les temps d'ex\'ecution du programme. Les r\'esultats des exp\'eriences de la section~\ref{autres-experiences-wordcount.sect} ont montr\'e que si la granularit\'e est trop fine et qu'il y a trop de \emph{threads}, le programme résultant sera moins performant. 
+
+Donc, la d\'ecomposition en \'etages est importante et utile, mais il faut s'assurer que le travail fait par un \'etage soit assez gros, sinon les surco\^uts du parall\'elisme deviennent trop grands.
+%
+Nous reviendrons sur cette question dans la conclusion, dans la partie sur les travaux futurs.
 
