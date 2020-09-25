@@ -306,7 +306,7 @@ Experience.define( 2004,
                    machines: ['c34581', 'MacOS'],
                    nb_items: DONNEES,
                    nb_repetitions: NB_REPETITIONS,
-                   programs: ['PpFf-1', 'PpFf-2', 'PpFf_c-1', 'PpFf_c-2']
+                   programs: ['PpFf-1', 'PpFf-2', 'PpFf-4', 'PpFf_c-1', 'PpFf_c-2', 'PpFf_c-4']
                    )
 
 Experience.define( 3001,
