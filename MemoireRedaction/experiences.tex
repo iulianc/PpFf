@@ -466,12 +466,17 @@ On rappelle que, dans \TT{PpFf}, chaque op\'eration ajout\'ee dans le pipeline d
 
 En comparant les temps d'ex\'ecution pour les trois versions de \TT{WordCount} pour la premi\`ere s\'erie d'exp\'eriences, avec \TT{parallel(2)}, on constate que \TT{WordCountMerged} est plus performant que les deux autres. Pour le m\^eme travail \`a ex\'ecuter, \TT{WordCountMerged} utilise seulement trois op\'erations par rapport aux versions \TT{WordCount} et \TT{WordCountSplitted} qui utilisent quatre et cinq opérations. Comme chaque op\'eration est ex\'ecut\'ee sur un \emph{thread} diff\'erent \emph{pour chaque sous-flux cr\'e\'e}, \TT{WordCountMerged} utilise moins de \emph{threads} pour la m\^eme tache \`a accomplir, et donc les co\^uts introduits par la cr\'eation des \emph{threads} sont moins importants. Cela peut \^etre observ\'e sur le graphe o\`u, pour une valeur maximale de mots \`a traiter, \TT{WordCountMerged} obtient un meilleur temps d'ex\'ecution que \TT{WordCount} de 0.5s et de plus de 1s que \TT{WordCountSplitted}. 
 
-Un effet semblable peut \^etre observ\'e pour la deuxi\`eme s\'erie d'exp\'eriences, avec \TT{parallel(1)}. Dans ce cas, les diff\'erences de temps d'ex\'ecution entre les trois versions de programmes sont beaucoup plus petites. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. La version \TT{WordCountMerged} est ex\'ecut\'ee en utilisant trois \emph{threads}, par opposition à quatre et cinq \emph{threads} pour \TT{WordCount} et \TT{WordCountSplitted}. Ainsi, les co\^uts introduits par la cr\'eation de \emph{threads} entre les trois versions sont beaucoup moins importants par rapport \`a la premi\`ere s\'erie d'exp\'erimentations. 
+Un effet semblable peut \^etre observ\'e pour la deuxi\`eme s\'erie d'exp\'eriences, avec \TT{parallel(1)}. Dans ce cas, les diff\'erences de temps d'ex\'ecution entre les trois versions de programmes sont beaucoup plus petites. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. Par exemple la version \TT{WordCount} ex\'ecut\'ee en utilisant quatre threads (4419.6 ms) est plus rapide avec seulement 100 ms que la version \TT{WordCountSplitted} qui utilise cinq threads (4526.6 ms). 
 
 \GT{Je crois qu'il serait bien de souligner que, quand même, les
 versions \ppff\TT{-2} et \ppffm\TT{-2} sont quand même plus rapides
 que les versions avec \TT{-1}. Peut-être indiquer explicitement (entre
 parenthèses) les temps moyens d'exécution.}
+
+\IC{En ajoutant les temps d'exécution, j'ai constaté que pour la série de expériences parallel(1), WordCountMerged est moins performante que les deux autre versions WordCount et WordCountSplitted. J'ai modifié le texte en concéquence.}
+
+Malgr\'e cette faiblesse, le parall\'elisme dans \TT{PpFf} est tr\`es important. Cela peut \^etre constat\'e si on compare les temps moyens d'ex\'ecution pour la m\^eme s\'erie d'exp\'eriences, \TT{parallel(1)}, entre la version \TT{WordCountMerged} et les deux autres versions. En utilisant trois \emph{threads}, la version \TT{WordCountMerged} avec un temps d'ex\'ecution de 4569.6 ms est moins performant que les versions \TT{WordCount} (4 \emph{threads}) et \TT{WordCountSplitted} (5 \emph{threads}). Cet effet est plus \'evident si on compare les temps d'ex\'ecution entre les deux s\'eries des exp\'eriences. Les versions \ppffs\TT{-2} (3730.5 ms), \ppff\TT{-2} (3079.8 ms) et \ppffm\TT{-2} (2479.9 ms) sont plus rapides que les versions \ppffs\TT{-1} (4526.6 ms), \ppff\TT{-1} (4419.6 ms) et \ppffm\TT{-1} (4569.6 ms).
+
 
 
 \HIDDEN{
@@ -529,12 +534,14 @@ indique le debits, en millirs de mots traités par second.}
 \section{Discussion des résultats et limites de \ppff}
 \label{limitesppff.sect}
 
-\GT{Il faut réserver le termer <<tester>> pour du code qui vérifie le
-<<bon fonctionnement>> (résultats corrects) d'un programme.}
-
-Dans ce chapitre, plusieurs exp\'eriences ont \'et\'e présentées dans le but d'évaluer les performances de \TT{PpFf}. Dans la premi\`ere partie de ce chapitre, deux applications utilisant la bibliothèque \TT{PpFf} ont \'et\'e compar\'e avec des programmes Java \'equivalents utilisant les \TT{Streams} introduits en Java 8. Diverses unit\'es de mesures --– temps d'ex\'ecution, d\'ebit et acc\'elération --- ont servi comme r\'ef\'erence pour comparer ces programmes. Les r\'esultats de la plupart des exp\'eriences ont montr\'e que \TT{Java} se comporte mieux que \TT{PpFf}.
+Dans ce chapitre, plusieurs exp\'eriences ont \'et\'e présentées dans le but d'évaluer les performances de \TT{PpFf}. Dans la premi\`ere partie de ce chapitre, deux applications utilisant la bibliothèque \TT{PpFf} ont \'et\'e compar\'e avec des programmes Java \'equivalents utilisant les \TT{Streams} introduits en Java 8. Diverses unit\'es de mesures --– temps d'ex\'ecution, d\'ebit et acc\'elération --- ont servi comme r\'ef\'erence pour comparer ces programmes. Les r\'esultats de la plupart des exp\'eriences ont montr\'e que \TT{Java} se comporte mieux que \TT{PpFf}. 
 %
+D'autres exp\'eriences ont aussi \'et\'e fait pour comparer \TT{PpFf} avec \TT{FastFlow}. Le r\'esultat de ces exp\'eriences a montr\'e que les surco\^uts introduits par \TT{PpFf} sont peu \'elev\'es.
+
+
 \GT{Tant qu'à être dans un résumé/rappel, tu devrais aussi indiquer que, d'un autre coté, des comparaisons ont aussi été faites avec FastFlow, et ont montré que les surcoûts introduits par Ppff étaient peu élevés!}
+
+\IC{J'ai indiqué la comparaison entre PpFf et FastFlow.}
 
 
 \GT{Ci-bas: il faut faire attention aux affirmations faites dans une
@@ -545,6 +552,8 @@ efficace, puisque ces expériences ne comparent ni avec des versions
 Java, ni avec des versions séquentielles. J'ai donc supprimé la
 dernière phrase et je l'ai remplacé par une phrase qui me semble mieux
 décrire ce qui a été démontré par ces expériences.}
+
+\IC{Bonne observation.}
 
 Dans la derni\`ere section de ce chapitre (Sect.~\ref{autres-experiences-wordcount.sect}), d'autres exp\'eriences ont \'et\'e men\'ees pour comparer diff\'erentes versions du programme \TT{WordCount}, versions cr\'e\'ees enti\`erement \`a l'aide de la biblioth\`eque \TT{PpFf}.
 %
