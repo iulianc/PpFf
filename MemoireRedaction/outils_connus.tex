@@ -266,8 +266,8 @@ float]
 public static void main(String[] args) throws IOException {
   // Le texte a analyser, sous forme d'une chaine.
   String text = "Lorem ipsum dolor sit amet, consectetur \n" +
-                " adipiscing elit. Lorem ipsum dolor sit amet, consectetur \n" +
-                " adipiscing elit. Lorem ipsum dolor sit amet.";
+     " adipiscing elit. Lorem ipsum dolor sit amet, consectetur \n" +
+     " adipiscing elit. Lorem ipsum dolor sit amet.";
 
   // Le texte a analyser decompose en une liste de lignes.
   ArrayList<String> lines = 
@@ -418,8 +418,7 @@ Un \emph{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow
 caption={Le code source \TT{FastFlow} d'une application pour compter le nombre d'occurrences de mots.},
 label={wordcountFastFlow},
 frame=single,
-float,
-numbers=left
+float
 ]
  std::string DEFAULT_INPUT_FILE = "Words.txt";
  
@@ -458,7 +457,7 @@ numbers=left
  };
 \end{lstlisting}
  
-\begin{lstlisting}[language=c++, frame=single,float,numbers=left,firstnumber=35]
+\begin{lstlisting}[language=c++, frame=single,float]
  struct flatStage: ff_node {
     std::string delimiter = " ";
     void* svc(void* task) {
@@ -480,7 +479,7 @@ numbers=left
  };
 \end{lstlisting}
  
-\begin{lstlisting}[language=c++, frame=single, float, numbers=left,firstnumber=54]
+\begin{lstlisting}[language=c++, frame=single, float,label={addStage.listing}]
  int main(int argc, char *argv[]) {
      std::unordered_map<std::string, int> result;
      std::string inputFile = DEFAULT_INPUT_FILE;
@@ -505,7 +504,7 @@ numbers=left
 
 Cette section pr\'esente un exemple d'un programme r\'ealis\'e en \TT{FastFlow}. Illustr\'e dans le listing~\ref{wordcountFastFlow}, ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. 
 
-Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \TT{n} diff\'erents \TT{stages}; ensuite leurs r\'ef\'erences sont transmises dans le bon ordre au {pipeline}. Dans l'exemple du listing~\ref{wordcountFastFlow}, les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots --- lignes 66 \`a 69.  Les quatre op\'erations r\'ealisent les fonctions suivantes :
+Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \TT{n} diff\'erents \TT{stages}; ensuite leurs r\'ef\'erences sont transmises dans le bon ordre au {pipeline}. Dans l'exemple du listing~\ref{wordcountFastFlow}, les \TT{stages} sont repr\'esent\'es par les op\'erations du programme de d\'ecompte du nombre de mots --- les quatre lignes avec les appels \TT{ffp.add\_stage(\ldots)} (p.~\pageref{addStage.listing}).  Les quatre op\'erations r\'ealisent les fonctions suivantes :
 
 \begin{itemize}
     \item \TT{linesFromFile}, qui renvoie un flux s\'equentiel de lignes \`a partir du fichier. Le fichier est identifi\'e par le param\`etre \TT{inputFile} fourni en argument.
