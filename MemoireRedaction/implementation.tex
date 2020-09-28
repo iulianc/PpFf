@@ -3,13 +3,13 @@
 \label{implementation.chap}
 
 
-Ce chapitre décrit la fa\c{c}on dont \TT{PpFf} est impl\'ement\'e. 
+Ce chapitre décrit la fa\c{c}on dont \TT{PpFf} est mis en \oe{}uvre.
 %
 De fa\c{c}on g\'en\'erale, la mise en \oe{}uvre utilise la biblioth\`eque \TT{FastFlow}, et ce en h\'eritant et \'etendant plusieurs de ses classes.
 
 Ce chapitre est divis\'e en trois sections.
 %
-La premi\`ere section d\'ecrit les diff\'erents éléments composant la biblioth\`eque \TT{PpFf}. La deuxi\`eme section examine comment la parall\'elisation du flux est r\'ealis\'ee. La derni\`ere section pr\'esente quelques exemples d\'ecrivant comment un programme \PpFf{} est compil\'e et ex\'ecut\'e.
+La premi\`ere section d\'ecrit les diff\'erents éléments composant la biblioth\`eque \TT{PpFf}. La deuxi\`eme section examine comment la parall\'elisation du flux est r\'ealis\'ee. La derni\`ere section pr\'esente quelques exemples d\'ecrivant comment un programme \PpFf{} est compil\'e en un graphe \TT{FastFlow} et ex\'ecut\'e.
 
 
 \section{Les \'el\'ements de \TT{PpFf}}
@@ -21,13 +21,13 @@ La premi\`ere section d\'ecrit les diff\'erents éléments composant la biblioth
        \label{All.fig}
 \end{figure}
 
-La biblioth\`eque \TT{PpFf} est compos\'ee de plusieurs modules qui permettent de g\'erer les flux de traitement de donn\'ees. Une vue d'ensemble de ces modules est illustr\'ee dans la figure~\ref{All.fig}.
+La biblioth\`eque \TT{PpFf} est compos\'ee de plusieurs éléments qui permettent de g\'erer les flux de traitement de donn\'ees. Une vue d'ensemble de ces éléments est illustr\'ee dans la figure~\ref{All.fig}.
 
 \begin{itemize}
 
 \item Le point d'entr\'ee de \ppff\ est la classe \TT{Flow}, avec laquelle interagissent les d\'eveloppeurs pour cr\'eer des flux de traitement. Toutes les op\'erations de traitement d'un flux de \TT{PpFf} sont li\'ees aux m\'ethodes expos\'ees par cette classe. 
 
-\item Le c\oe{}ur de la mise en \oe{}uvre de \TT{PpFf} est le module \TT{Pipeline}. La cr\'eation et l'ex\'ecution d'un flux sont g\'er\'ees par celui-ci, qui construit tout d'abord une représentation intermédaire, et qui génère ensuite un graphe de n\oe{}uds FastFlow.
+\item Le c\oe{}ur de la mise en \oe{}uvre de \TT{PpFf} est le module \TT{Pipeline}. La cr\'eation et l'ex\'ecution d'un flux sont g\'er\'ees par celui-ci, qui construit tout d'abord une représentation intermédaire, et qui génère ensuite un graphe de n\oe{}uds \TT{FastFlow}.
 
 \item  Le module \TT{Operators} regroupe tous les op\'erateurs d\'efinis dans \TT{PpFf}. Expos\'es \`a l'utilisateur par le biais de l'\TT{API} de \TT{PpFf}, ces op\'erateurs permettent de traiter les donn\'ees de diverses façons.
 
@@ -48,7 +48,7 @@ La biblioth\`eque \TT{PpFf} est compos\'ee de plusieurs modules qui permettent d
 
 
 
-La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{PpFf}, l'interface avec laquelle interagit le d\'eveloppeur. La figure~\ref{Flow.fig} --- qui reprend la figure~\ref{MethodesAPI.fig} --- pr\'esente les diverses m\'ethodes export\'ees par \TT{PpFf}. Selon le type du résultat export\'e par l'\TT{API}, les m\'ethodes sont divis\'ees en plusieurs groupes : Source, Transformation, Agr\'egation (valeur simple ou collection) et Ex\'ecution (parallèle).
+La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{PpFf}, l'interface avec laquelle interagit le d\'eveloppeur. La figure~\ref{Flow.fig} --- qui reprend la figure du chapitre précédent (Fig.~\ref{MethodesAPI.fig}) --- pr\'esente les diverses m\'ethodes export\'ees par \TT{PpFf}. Selon le type du résultat export\'e par l'\TT{API}, les m\'ethodes sont divis\'ees en plusieurs groupes : Source, Transformation, Agr\'egation (valeur simple ou collection) et Ex\'ecution (parallèle).
 
 \begin{itemize}
 
@@ -56,13 +56,14 @@ La classe \TT{Flow} est celle qui définit l'\TT{API} de la biblioth\`eque \TT{P
 
 \item Le deuxi\`eme groupe, Transformation, est composé des m\'ethodes qui retournent une r\'ef\'erence vers un objet \TT{Flow}. C'est ce m\'ecanisme permet d'encha\^iner les m\'ethodes de l'\TT{API}.
 
-\item Le troisi\`eme groupe, Agr\'egation, est divis\'e en deux sous-groupes, selon le type de r\'esultat produit : valeur simple --- les m\'ethodes retournant une valeur simple, habituellement un scalaire (par ex., r\'esultat bool\'een ou entier) et collection --- les m\'ethodes retournant une collection.
+\item Le troisi\`eme groupe, Agr\'egation, est divis\'e en deux sous-groupes, selon le type de r\'esultat produit : valeur simple --- les m\'ethodes retournant une valeur simple, habituellement un scalaire (par ex., r\'esultat bool\'een ou entier) --- et collection --- les m\'ethodes retournant une collection.
 
 \item Le quatrième et dernier groupe, Exécution, comporte une seule m\'ethode. Cette m\'ethode modifie le comportement d'ex\'ecution du flux. Lorsqu'elle est ajout\'ee au  \TT{pipeline}, toutes les op\'erations suivant cette m\'ethode seront ex\'ecut\'ees en parall\`ele, en utilisant les instances d'un  \TT{farm}.
 
-L'\TT{API} de \TT{PpFf} permet d'appliquer plusieurs op\'erations les unes à la suite des autres sur une collection de donn\'ees. Ceci est possible en encha\^inant les m\'ethodes (\emph{method chaining}). Les m\'ethodes de l'\TT{API} peuvent \^etre enchain\'ees tant qu'elles retournent une r\'ef\'erence \`a \TT{Flow}. Lorsqu'une m\'ethode retourne une valeur, une valeur simple ou une collection, le traitement est alors ex\'ecut\'e. 
-
 \end{itemize}
+
+L'\TT{API} de \TT{PpFf} permet d'appliquer plusieurs op\'erations les unes à la suite des autres sur une collection de donn\'ees. Ceci est possible en encha\^inant les m\'ethodes (\emph{method chaining}). Les m\'ethodes de l'\TT{API} peuvent \^etre enchain\'ees tant qu'elles retournent une r\'ef\'erence \`a \TT{Flow}. Lorsqu'une m\'ethode retourne une valeur, valeur simple ou collection, le traitement est alors ex\'ecut\'e. 
+
 
 
 \begin{lstlisting}[
@@ -123,13 +124,13 @@ float]
 \end{lstlisting}
 
 
-L'\TT{API} de \TT{PpFf} est mise en œuvre par le module \TT{Pipeline}. Ce dernier s'occupe de la cr\'eation et de l'ex\'ecution du flux. Les listings~\ref{source.c++},~\ref{map.c++} et~\ref{count.c++} pr\'esentent le code de trois m\'ethodes de l'\TT{API} appartenant \`a trois groupes diff\'erents: \TT{Source}, \TT{Transformation} et \TT{Agrégation}. L'attribut \TT{pipe} utilisée dans chaque m\'ethode est une instance de la classe \TT{Pipeline}, objet qui cr\'ee et ajoute les op\'erateurs dans le pipeline associ\'e au flux en appelant la m\'ethode \TT{addNodes} --- voir ci-bas. 
+Le c\oe{}ur de la mise en œuvre de \TT{PpFf} est le module \TT{Pipeline}. Ce dernier s'occupe de la cr\'eation et de l'ex\'ecution du flux. Les listings~\ref{source.c++},~\ref{map.c++} et~\ref{count.c++} pr\'esentent le code de trois m\'ethodes de l'\TT{API} appartenant \`a trois groupes diff\'erents: \TT{Source}, \TT{Transformation} et \TT{Agrégation}. L'attribut \TT{pipe} utilisée dans chaque m\'ethode est une instance de la classe \TT{Pipeline}, objet qui cr\'ee et ajoute les op\'erateurs dans le pipeline associ\'e au flux en appelant la m\'ethode \TT{addNodes} --- voir ci-bas. 
 
 Une m\'ethode statique \TT{source}, comme dans le listing~\ref{source.c++}, est toujours la premi\`ere m\'ethode appelée, pour créer le flux de traitement. Cette m\'ethode a un double r\^ole : elle cr\'ee un objet \TT{Flow} puis fournit les donn\'ees initiales du flux de donn\'ees. Le listing~\ref{map.c++} pr\'esente la m\'ethode \TT{map}, qui appartient au groupe \TT{Transformation}, et qui ne fait qu'ajouter une série de n\oe{}uds au pipeline de traitement. Ces deux m\'ethodes, \TT{source} et \TT{map}, retournent un objet \TT{Flow}, ce qui permet le chainage de méthodes. La troisi\`eme m\'ethode, \TT{count}, qui appartient au groupe \TT{Agr\'egation}, retourne une valeur enti\`ere
 ---
 \TT{int}, tel que sp\'ecifi\'e dans le deuxi\`eme param\`etre générique de la m\'ethode \TT{pipe.value()}
 ---
-valeur qui indique le nombre d'\'el\'ements du flux. Plus exactement, cette valeur est obtenue (avec \TT{value()}) après avoir ex\'ecuté le traitement associé au flux, ce qui se fait avec la m\'ethode \TT{pipe.run()}.
+valeur qui indique le nombre d'\'el\'ements du flux. Plus exactement, cette valeur est obtenue (avec \TT{value()}) après avoir ex\'ecuté le traitement associé au flux, ce qui sef ait avec la m\'ethode \TT{pipe.run()}.
 
 \subsection{Pipeline}
 
@@ -142,9 +143,9 @@ valeur qui indique le nombre d'\'el\'ements du flux. Plus exactement, cette vale
 
 \TT{PpFf} est impl\'ement\'e au-dessus de la biblioth\'eque \TT{FastFlow}. Plus précisément, \TT{PpFf} construit tout d'abord une repr\'esentation interm\'ediaire, puis g\'en\`ere ensuite un graphe de n\oe{}uds \TT{FastFlow}. Toutes les classes n\'ecessaires pour construire une telle structure interm\'ediaire sont group\'ees dans le module \TT{Pipeline}, tel qu'illustr\'e dans le diagramme de classes de la figure~\ref{pipeline.fig}.
 
-La classe principale de ce module, la classe avec le m\^eme nom que le module, est la classe \TT{Pipeline}. Une instance de cette classe repr\'esente une cha\^ine de traitement. Plus pr\'ecis\'ement, \TT{Pipeline} est l'impl\'ementation du flux \TT{Flow} d\'ecrit dans la sous-section~\ref{flow.chap}. Un objet \TT{Pipeline} est compos\'e d'une ou plusieurs instances de la classe \TT{Node}. Un \TT{Node} peut \^etre un \TT{Pipeline}, un \TT{Worker} ou un \TT{Farm}. Les classes \TT{Worker} et \TT{Farm} sont utilis\'ees pour cr\'eer les instances parall\`eles d'un \TT{farm} — voir plus bas. Les instances \TT{Node} sont ajout\'ees au flux en appelant la m\'ethode \TT{addNodes} de la classe \TT{Pipeline}. En fonction de type de parall\'elisme (de flux, Sect.~\ref{ParallelismeDuFlux.sect} ou de donn\'ees, Sect.~\ref{ParallelismeDeDonnees.sect}), un objet \TT{Pipeline} peut \^etre compos\'e d'instances de \TT{Node} ou  de \TT{Farm}. Lorsqu'une instance de \TT{Farm} est ajout\'ee au {pipeline}, le flux est divis\'e en sous-flux --- appel\'es les instances parall\`eles d'un \TT{farm} --- où chaque sous-flux est une instance de la classe \TT{Worker}. Un objet \TT{Worker} peut, \`a son tour, \^etre un objet \TT{Node} ou un objet \TT{Pipeline}.
+La classe principale de ce module, la classe avec le m\^eme nom que le module, est la classe \TT{Pipeline}. Une instance de cette classe repr\'esente une cha\^ine de traitement. Plus pr\'ecis\'ement, \TT{Pipeline} est l'impl\'ementation du flux \TT{Flow} d\'ecrit dans la sous-section~\ref{flow.chap}. Un objet \TT{Pipeline} est compos\'e d'une ou plusieurs instances de la classe \TT{Node}. Un \TT{Node} peut \^etre un \TT{Pipeline}, un \TT{Worker} ou un \TT{Farm}. Les classes \TT{Worker} et \TT{Farm} sont utilis\'ees pour cr\'eer les instances parall\`eles d'un \TT{farm} — voir plus bas. Les instances \TT{Node} sont ajout\'ees au flux en appelant la m\'ethode \TT{addNodes} de la classe \TT{Pipeline}. En fonction du type de parall\'elisme (de flux, Sect.~\ref{ParallelismeDuFlux.sect}, ou de donn\'ees, Sect.~\ref{ParallelismeDeDonnees.sect}), un objet \TT{Pipeline} peut \^etre compos\'e d'instances de \TT{Node} ou  de \TT{Farm}. Lorsqu'une instance de \TT{Farm} est ajout\'ee au {pipeline}, le flux est divis\'e en sous-flux --- appel\'es les instances parall\`eles d'un \TT{farm} --- où chaque sous-flux est une instance de la classe \TT{Worker}. Un objet \TT{Worker} peut, \`a son tour, \^etre un objet \TT{Node} ou un objet \TT{Pipeline}.
 
-La structure ainsi cr\'e\'ee sera parcourue lorsque le dernier \TT{Node} ajout\'e au \TT{pipeline} est un collecteur (identifi\'e \`a l'aide de la m\'ethode \TT{isCollector} de cette classe). L'ex\'ecution du \TT{pipeline} –-- fait par l'appel de la m\'ethode \TT{run} --- implique des appels \`a la m\'ethode \TT{build\_ff\_node()} de chaque \TT{Node} de la structure intermédiaire pour construire le graphe \TT{FastFlow} appropri\'e. Ce dernier, compos\'e des objets de type \TT{ff\_pipeline}, \TT{ff\_node} et \TT{ff\_farm} correspondant aux objets \TT{Pipeline}, \TT{Node} et \TT{Farm} de \TT{PpFf}, est ex\'ecut\'e directement à l'aide de la méthode appropriée d'un pipeline FastFlow (\TT{run\_and\_wait\_end()}).
+La structure ainsi cr\'e\'ee sera parcourue lorsque le dernier \TT{Node} ajout\'e au \TT{pipeline} est un collecteur (identifi\'e \`a l'aide de la m\'ethode \TT{isCollector} de cette classe). L'ex\'ecution du \TT{pipeline} --- fait par l'appel de la m\'ethode \TT{run} --- implique des appels \`a la m\'ethode \TT{build\_ff\_node()} de chaque \TT{Node} de la structure intermédiaire pour construire le graphe \TT{FastFlow} appropri\'e. Ce dernier, compos\'e d'objets de type \TT{ff\_pipeline}, \TT{ff\_node} et \TT{ff\_farm} correspondant aux objets \TT{Pipeline}, \TT{Node} et \TT{Farm} de \TT{PpFf}, est ex\'ecut\'e directement à l'aide de la méthode appropriée d'un pipeline \TT{FastFlow} (\TT{run\_and\_wait\_end()}).
 
 Le r\'esultat du traitement est retourn\'e au \TT{Pipeline} par l'intermédiare de la méthode \TT{value()} de l'objet \TT{Collector}. Si le traitement se fait en parallèle en utilisant les instances d'un \TT{farm}, l'objet \TT{Collector} du pipeline combine les r\'esultats partiels obtenus de chacun des sous-flux.
 
@@ -162,7 +163,7 @@ Le r\'esultat du traitement est retourn\'e au \TT{Pipeline} par l'intermédiare 
 
 Dans la terminologie de \TT{PpFf}, chaque m\'ethode expos\'ee par l'interface de \ppff\ repr\'esente une op\'eration et chaque op\'eration est impl\'ement\'ee par un op\'erateur, un objet provenant d'une sous-classe de la classe \TT{Operator}. Plus pr\'ecisément, les op\'erateurs repr\'esentent les \'etapes dans la chaine de traitement de donn\'ees. Tel qu'illustré dans la figure~\ref{operators.fig}, les classes pour les divers op\'erateurs h\'eritent de la classe de base, \TT{Operator}. 
 %
-Notons que sur cette figure, pour alléger le diagramme, seules deux sous-classes, \TT{MapOperator} et \TT{CountOperator}, ont été indiqu\'ees, les autres \'etant implicites, via le <<Etc.>>.
+Notons que sur cette figure, pour alléger le diagramme, seules deux sous-classes, \TT{MapOperator} et \TT{CountOperator}, ont été indiqu\'ees, les autres \'etant implicites via les <<Etc.>>.
 %
 
 Ces divers opérateurs peuvent \^etre regroupés en trois cat\'egories : \emph{source}, \emph{interm\'ediaire} et \emph{collecteur}.
@@ -173,9 +174,9 @@ L'op\'erateur source est le premier op\'erateur ajout\'e dans le flux~; sans un 
 
 Les op\'erateurs interm\'ediaires, tels que \TT{FindOperator}, \TT{FlatMapOperator}, \TT{FlatOperator}, \TT{LimitOperator}, \TT{MapOperator}, \TT{PeekOperator} ou \TT{SkipOperator}, sont des op\'erateurs qui traitent chaque \'el\'ement du flux de fa\c{c}on ind\'ependante. Autre point important~: les op\'erateurs interm\'ediaires n'effectuent aucun traitement tant qu'un op\'erateur collecteur n'est pas ajout\'e au \TT{pipeline}. 
 
-Le plus nombreux groupe d'op\'erateurs est celui des collecteurs, qui réunit les op\'erateurs suivants : \TT{AllMatchOperator}, \TT{AnyMatchOperator}, \TT{NoneMatchOperator}, \TT{GroupByKeyOperator}, \TT{MaxOperator}, \TT{MinOperator}, \TT{ReduceOperator}, \TT{CollectorOperator}, \TT{SumOperator}, \TT{CountOperator}, \TT{ReduceByKeyOperator} et \TT{SortOperator}. Un op\'erateur de type collecteur est toujours le dernier ajout\'e au \TT{pipeline}. L'ajout de cet op\'erateur entra\^ine l'ex\'ecution du traitement spécifié par les opérateurs du pipeline. La valeur r\'esultante du traitement est conserv\'ee en interne par chaque op\'erateur collecteur. C'est cette valeur qui va \^etre retourn\'ee au \TT{Pipeline} par un appel à \TT{value()}.
+Le plus nombreux groupe d'op\'erateurs est celui des collecteurs, qui réunit les op\'erateurs suivants : \TT{AllMatchOperator}, \TT{AnyMatchOperator}, \TT{NoneMatchOperator}, \TT{GroupBy\-KeyOperator}, \TT{MaxOperator}, \TT{MinOperator}, \TT{ReduceOperator}, \TT{CollectorOperator}, \TT{Sum\-Operator}, \TT{CountOperator}, \TT{ReduceByKeyOperator} et \TT{SortOperator}. Un op\'erateur de type collecteur est toujours le dernier ajout\'e au \TT{pipeline}. L'ajout de cet op\'erateur entra\^ine la création du graphe \TT{FastFlow} et l'ex\'ecution du traitement spécifié par les opérateurs du pipeline. La valeur r\'esultante du traitement est conserv\'ee en interne par chaque op\'erateur collecteur. C'est cette valeur qui va \^etre retourn\'ee au \TT{Pipeline} par un appel à \TT{value()}.
 
-La fonctionnalit\'e sp\'ecifique \`a chaque op\'eration du \TT{pipeline} est impl\'ement\'ee par la m\'ethode \TT{svc} de chaque op\'erateur. Comme on peut le voir dans la figure~\ref{operators.fig}, un \TT{Operator} h\'erite de la classe \TT{ff\_node} de \TT{FastFlow}. De cette fa\c{c}on, lorsque le graphe FastFlow est exécuté, c'est la méthode \TT{svc} de chaque op\'erateur qui est appel\'ee. C'est ce qui permet de spécifier la fonctionnalit\'e spécifique à chaque opérateur 
+La fonctionnalit\'e sp\'ecifique \`a chaque op\'eration du \TT{pipeline} est impl\'ement\'ee par la m\'ethode \TT{svc} de chaque op\'erateur. Comme on peut le voir dans la figure~\ref{operators.fig}, un \TT{Operator} h\'erite de la classe \TT{ff\_node} de \TT{FastFlow}. De cette fa\c{c}on, lorsque le graphe \TT{FastFlow} est exécuté, c'est la méthode \TT{svc} de chaque op\'erateur qui est appel\'ee. C'est ce qui permet de spécifier la fonctionnalit\'e spécifique à chaque opérateur 
 
 
 
@@ -195,8 +196,8 @@ L'objectif de cette section est de d\'ecrire la façon dont ces deux formes de p
 \label{ParallelismeDuFlux.sect}
 
 Le parall\'elisme de flux consiste \`a ex\'ecuter plusieurs \'etapes d'un traitement s\'equentiel en parall\`ele en leur faisant traiter des donn\'ees diff\'erentes. Les donn\'ees se succ\`edent ainsi les unes aux autres dans les diff\'erentes \'etapes.
-
-Dans \TT{PpFf}, une {\'etape} est cr\'e\'ee lorsqu'une m\'ethode de l'interface de \TT{PpFf} est ajout\'ee au \emph{pipeline} par le cha\^inage de m\'ethodes.
+%
+Dans \TT{PpFf}, une {\'etape} est cr\'e\'ee lorsqu'une m\'ethode de l'interface de \TT{PpFf} est ajout\'ee au {pipeline} par le cha\^inage de m\'ethodes.
 
 \`A noter que ce type de parall\'elisme est appliqu\'e par d\'efaut dans notre biblioth\`eque. 
 %
@@ -222,12 +223,12 @@ Un flux compos\'e de $n$ {étapes}, o\`u la $i^{\grave e}$ étape ex\'ecute une 
 
 
 Si on note par $W_i$ le fil d'ex\'ecution (\emph{thread}) associ\'e à la $i^{\grave e}$ {étape}, alors
-le parall\'elisme de flux du pipeline peut \^etre repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique $O_i$. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux dans un tel pipeline. Signalons que cette approche n'acc\'el\`ere pas le calcul d'un \'el\'ement donné du flux, qui doit parcourir toutes les étapes; par contre, elle peut am\'eliorer \emph{le d\'ebit de sortie} si les opérations $O_i$ sont complexes.
+le parall\'elisme de flux du pipeline peut \^etre repr\'esent\'e par un graphe lin\'eaire de $n$ travailleurs. Chaque travailleur correspond \`a une op\'eration sp\'ecifique $O_i$. La figure~\ref{ParallelismeDuFlux.fig} montre la repr\'esentation graphique du parall\'elisme de flux dans un tel pipeline. Signalons que cette approche n'acc\'el\`ere pas le calcul d'un \'el\'ement donné du flux, qui doit parcourir toutes les étapes; par contre, elle peut am\'eliorer \emph{le d\'ebit de sortie}.
 
 \subsection{Parall\'elisme de donn\'ees}
 \label{ParallelismeDeDonnees.sect}
 
-Le parall\'elisme de donn\'ees impl\'ement\'e dans \TT{PpFf}  consiste \`a r\'epliquer une op\'eration sur un ensemble de travailleurs identiques. Autrement dit, il vise \`a effectuer un traitement identique sur un ensemble de donn\'ees ind\'ependantes les unes des autres. 
+Le parall\'elisme de donn\'ees impl\'ement\'e dans \TT{PpFf}  consiste \`a r\'epliquer une op\'eration donnée (ou un pipeline d'opérations) sur un ensemble de travailleurs identiques. Autrement dit, il vise \`a effectuer un traitement identique sur un ensemble de donn\'ees ind\'ependantes les unes des autres. 
 %
 Dans notre impl\'ementation de \PpFf, le parall\'elisme de donn\'ees est mis en \oe{}uvre avec les \emph{Task Farm} de \TT{FastFlow}.
 
@@ -238,9 +239,9 @@ D\'ecrit \`a la section~\ref{farm.sect}, un \emph{Task Farm} est compos\'ee de t
 %
 Les travailleurs re\c{c}oivent les \'el\'ements d'entr\'ee et appliquent sur chacun l'op\'eration sp\'ecifi\'ee au pr\'ealable par l'utilisateur. Les r\'esultats sont ensuite envoy\'es vers le \emph{Collector} charg\'e de les collecter --- i.e., de les combiner --- puis de les transmettre sur le flux de sortie.
 
-Dans \TT{FastFlow} un \emph{Task Farm} est cr\'e\'e en instanciant la classe \TT{ff\_farm}. Cette classe correspond \`a la classe \TT{Farm} du module \TT{Pipeline}. Lorsqu'une instance de \TT{Farm} est ajout\'ee au \emph{pipeline}, le flux est divis\'e en sous-flux --- appel\'es les instances parall\`eles d'un \TT{farm}. Ceci est possible en utilisant la m\'ethode \TT{parallel} de l'API de \TT{PpFf}. Le nombre de sous-flux ainsi cr\'e\'es d\'epend de la valeur sp\'ecifi\'ee en param\`etre pour cette m\'ethode.  
+Dans \TT{FastFlow} un \emph{Task Farm} est cr\'e\'e en instanciant la classe \TT{ff\_farm}. Cette classe correspond \`a la classe \TT{Farm} du module \TT{Pipeline}. Lorsqu'une instance de \TT{Farm} est ajout\'ee au {pipeline}, le flux est divis\'e en sous-flux --- appel\'es les instances parall\`eles d'un \TT{farm}. Ceci est possible en utilisant la m\'ethode \TT{parallel} de l'API de \TT{PpFf}. Le nombre de sous-flux ainsi cr\'e\'es d\'epend de la valeur sp\'ecifi\'ee en param\`etre pour cette m\'ethode.  
 
-Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee selon le principe \emph{FIFO}. La collection de plusieurs r\'esultats \`a l'aide de cette approche r\'esulte dans un flux sans ordre sur ses \'el\'ements. En effet, le \emph{Collector} transmet les \'el\'ements au flux de sortie dans l'ordre d'arriv\'ee. \'Etant donn\'e que plusieurs flux ind\'ependants sont impliqu\'es, cet ordre ne peut pas \^etre pr\'ed\'etermin\'e. Si le respect d'un  ordre sp\'ecifique est requis, l'utilisateur de l'API peut ajouter une op\'eration qui produit cet ordre. Par exemple, la m\'ethode \TT{sort} de l'API (cf.~l'annexe~\ref{methodes-api.ann}), effectue le tri des \'el\'ements du flux selon l'ordre sp\'ecifi\'e par la fonction \TT{compare} envoy\'e en param\`etre.
+Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee selon le principe \emph{FIFO}. La collection de plusieurs r\'esultats \`a l'aide de cette approche r\'esulte dans un flux sans ordre sur ses \'el\'ements. En effet, le \emph{Collector} transmet les \'el\'ements au flux de sortie dans l'ordre d'arriv\'ee. \'Etant donn\'e que plusieurs flux ind\'ependants sont impliqu\'es, cet ordre ne peut pas \^etre pr\'ed\'etermin\'e. Si le respect d'un  ordre sp\'ecifique est requis, l'utilisateur peut ajouter une op\'eration qui produit cet ordre. Par exemple, la m\'ethode \TT{sort} de l'API (cf.~l'annexe~\ref{methodes-api.ann}), effectue le tri des \'el\'ements du flux selon l'ordre sp\'ecifi\'e par la fonction \TT{compare} envoy\'e en param\`etre.
 
 \begin{figure}
 
@@ -314,7 +315,7 @@ Illustr\'e dans le listing~\ref{objets1.c++}, le premier exemple analys\'e ne co
 \begin{figure}
 \centering
          \includegraphics[width=0.66\textwidth]{Figures/objets1-ff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow associé pour l'exemple~1.}
+      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe \TT{FastFlow} associé pour l'exemple~1.}
        \label{objets1-ff.fig}
 \end{figure}
 
@@ -324,11 +325,11 @@ Selon l'opération indiquée, chaque \TT{Node} garde une r\'ef\'erence \`a une i
 
 
 
-\'Etant donn\'e que le dernier op\'erateur du {pipeline}, \TT{maxOp}, est un op\'erateur de type collecteur, cela lance la construction du graphe \TT{FastFlow} associ\'e via la m\'ethode \TT{build\_ff\_node()}. Illustr\'ee dans la figure~\ref{objets1-ff.fig}, la structure \TT{FastFlow} est cr\'e\'ee en parcourant chaque \TT{Node} de la structure interm\'ediaire. 
+Puisque le dernier op\'erateur du {pipeline}, \TT{maxOp}, est un op\'erateur de type collecteur, cela lance la construction du graphe \TT{FastFlow} associ\'e via la m\'ethode \TT{build\_ff\_node()}. Illustr\'ee dans la figure~\ref{objets1-ff.fig}, la structure \TT{FastFlow} est cr\'e\'ee en parcourant chaque \TT{Node} de la structure interm\'ediaire. 
 %
-Les objets composant la structure interm\'ediaire se distinguent de ceux composant le graphe \TT{FastFlow} par une couleur diff\'erente~: p\^ale pour les objets \TT{PpFf} et fonc\'e pour les objets \TT{FastFlow}. Soulignons que cette même distinction au niveau des couleurs se retrouve aussi dans les autres exemples. 
+Notons que les objets composant la structure interm\'ediaire se distinguent de ceux composant le graphe \TT{FastFlow} par une couleur diff\'erente~: p\^ale pour les objets \TT{PpFf} et fonc\'e pour les objets qui font partie du graphe \TT{FastFlow} final. Soulignons aussi que cette même distinction au niveau des couleurs se retrouve aussi dans les autres exemples. 
 
-Toujours dans la figure~\ref{objets1-ff.fig}, on peut noter que l'appel à \TT{build\_ff\_node()} pour l'objet \TT{pipe} g\'en\`ere un objet \TT{ff\_pipeline}, un objet FastFlow, et que les deux instances de \TT{Node} retournent les op\'erateurs associés, \TT{sourceOp} et \TT{maxOp}, qui sont d'objets de type \TT{ff\_node}, la classe de base d'un graphe \TT{FastFlow}. La structure ainsi cr\'e\'ee sera ex\'ecut\'ee automatiquement en appelant la méthode \TT{run\_and\_wait\_end()} de FastFlow, et le r\'esultat du traitement, dans ce cas l'élément maximum, sera retourn\'e au \TT{Pipeline} par l'interm\'ediaire de l'objet \TT{collector}. 
+Toujours dans la figure~\ref{objets1-ff.fig}, on peut noter que l'appel à \TT{build\_ff\_node()} pour l'objet \TT{pipe} g\'en\`ere un objet \TT{ff\_pipeline}, un objet \TT{FastFlow}, et que les deux instances de \TT{Node} retournent les op\'erateurs associés, \TT{sourceOp} et \TT{maxOp}, qui sont des objets de type \TT{ff\_node}, la classe de base d'un graphe \TT{FastFlow}. La structure ainsi cr\'e\'ee sera ex\'ecut\'ee en appelant la méthode \TT{run\_and\_wait\_end()} de \TT{FastFlow}, et le r\'esultat du traitement, dans ce cas l'élément maximum, sera retourn\'e au \TT{Pipeline} par l'interm\'ediaire de l'objet \TT{collector}. 
 
  
 \subsection{Exemple~2~: Un flux simple avec parallélisme de données}
@@ -354,21 +355,19 @@ float]
 Le deuxi\`eme exemple illustre le fonctionnement d'un flux avec parallélisme de données, donc utilisant les instances parall\`eles d'un \TT{farm}. Le code source pour cet exemple est présenté dans le listing~\ref{objets2.c++}. Par rapport au premier exemple, il y a une seule op\'eration de plus, introduite dans le flux par le cha\^inage de la m\'ethode \TT{parallel(2)}, qui indique de r\'epartir les \'el\'ements du flux entre deux (2) travailleurs (\emph{threads}). Plus précisément, cette op\'eration cr\'ee et ajoute une instance du type \TT{Farm} au \TT{Pipeline}. Ceci peut \^etre observ\'e dans la structure interm\'ediaire cr\'e\'ee par \TT{PpFf} et illustr\'ee dans la figure~\ref{objets2-ppff.fig}.
 
 
-
 \begin{figure}
 \centering
          \includegraphics[width=0.6\textwidth]{Figures/objets2-ppff.png}
       \caption{La structure interm\'ediaire \TT{PpFf} pour l'exemple~2.}
        \label{objets2-ppff.fig}
-\end{figure}
 
-\begin{figure}
 \centering
          \includegraphics[width=0.6\textwidth]{Figures/objets2-ff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow associ\'e pour l'exemple~2.}
+      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe \TT{FastFlow} associ\'e pour l'exemple~2.}
        \label{objets2-ff.fig}
 
 \end{figure}
+
 
 
 
@@ -405,7 +404,7 @@ float]
 
 On a vu dans l'exemple~1 que lorsqu'un op\'erateur de type collecteur, \TT{maxOp} dans notre cas, est ajout\'e au {pipeline}, ceci lance la construction du graphe \TT{FastFlow} associ\'e via la m\'ethode \TT{build\_ff\_node()}. Illustr\'ee dans la figure~\ref{objets2-ff.fig}, le graphe ainsi g\'en\'er\'e est compos\'e des objets \TT{ff\_pipeline}, \TT{ff\_node} et \TT{ff\_farm} correspondant aux instances de \TT{PpFf} \TT{pipe} (classe \TT{Pipeline}), \TT{sourceOp} (classe \TT{Node}) et \TT{farm} (classe \TT{Farm}). La nouvelle structure cr\'e\'ee sera ex\'ecut\'ee en appelant la m\'ethode \TT{run\_and\_wait\_end()} de \TT{FastFlow}. 
 
-Une différence par rapport \`a l'exemple~1 est que l'instance de \TT{Farm} divise le flux en deux sous-flux et les maximums produits par les sous-flux sont ensuite combin\'es par l'objet \TT{collector}. Ceci est illustr\'e dans la figure~\ref{objets2-ff.fig}, o\`u le \TT{collector} garde une r\'ef\'erence aux deux op\'erateurs, \TT{maxOp1} et \TT{maxOp2}, qui d\'eterminent le maximum pour chaque sous-flux. La combinaison des r\'esultats par le \TT{collector} se fait par l'interm\'ediaire de l'opérateur~<<\TT{+=()}>>. Le code source pour la classe \TT{Collector} est pr\'esent\'e dans le listing~\ref{Collector.c++}. Lorsque la m\'ethode \TT{value()} de cette classe est appel\'ee, les valeurs associées aux op\'erateurs, une pour chaque sous-flux, sont combin\'ees avec l'opérateur \TT{+=()} associé à ce type d'opérateur, et le r\'esultat final (conservé alors dans le n\oe{}ud 0, \TT{myNodes[0]}) est retourn\'e.
+Une différence par rapport \`a l'exemple~1 est que l'instance de \TT{Farm} divise le flux en deux sous-flux et les maximums produits par les sous-flux sont ensuite combin\'es par l'objet \TT{collector}. Ceci est illustr\'e dans la figure~\ref{objets2-ff.fig}, o\`u le \TT{collector} garde une r\'ef\'erence aux deux op\'erateurs, \TT{maxOp1} et \TT{maxOp2}, qui d\'eterminent le maximum pour chaque sous-flux. La combinaison des r\'esultats par le \TT{collector} se fait par l'interm\'ediaire de l'opérateur~\TT{+=()}. Le code source pour la classe \TT{Collector} est pr\'esent\'e dans le listing~\ref{Collector.c++}. Lorsque la m\'ethode \TT{value()} de cette classe est appel\'ee, les valeurs associées aux op\'erateurs, une pour chaque sous-flux, sont combin\'ees avec l'opérateur \TT{+=()} associé à ce type d'opérateur, et le r\'esultat final (conservé alors dans le n\oe{}ud 0, \TT{myNodes[0]}) est retourn\'e.
 
 
 
@@ -445,7 +444,7 @@ Le dernier exemple illustre le fonctionnement du parallélisme de données en ut
 \begin{figure}
 \centering
          \includegraphics[width=1.0\textwidth]{Figures/objets3-ff.png}
-      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe FastFlow associ\'e pour l'exemple~3.}
+      \caption{La structure interm\'ediaire \TT{PpFf} et le graphe \TT{FastFlow} associ\'e pour l'exemple~3.}
        \label{objets3-ff.fig}
 \end{figure}
 
