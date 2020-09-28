@@ -8,7 +8,7 @@ La programmation parall\`ele devient de plus en plus une n\'ecessit\'e avec l'ap
 
 Il existe de nombreuses approches et de nombreux langages de programmation parall\`ele.
 %
-Le paradigme de programmation parall\`ele \emph{par flux de donn\'ees} offre une approche prometteuse pour la programmation de syst\`emes multicœurs. C'est cette approche que nous allons bri\`evement d\'ecrire avant de pr\'esenter trois langages existants qui mettent en \oe{}uvre cette approche.
+Le paradigme de programmation parall\`ele \emph{par flux de donn\'ees} offre une approche prometteuse pour la programmation de syst\`emes multicœurs. C'est cette approche que nous allons bri\`evement d\'ecrire avant de pr\'esenter quelques langages existants qui mettent en \oe{}uvre cette approche.
 
 \section{Parall\'elisme de flux de donn\'ees}
 
@@ -21,7 +21,9 @@ Un tel traitement en pipeline peut aussi \^etre utilis\'e pour des collections \
 
 
 Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisi de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
-
+%
+\GT{Il faut aussi mentionner les nouveaux éléments que tu as ajoutés
+sur d'autres bibliothèques en C++.}
 
 \section{Apache Spark}
 
@@ -65,7 +67,7 @@ Ce mod\`ele est une autre abstraction introduite en \TT{Spark}.
 basicstyle=\footnotesize\tt,
 label={wordCountSpark},
 language=java,
-caption={[Un segment de code \TT{Spark/Java} pour compter le nombre d'occurrences de mots.]Un segment de code \TT{Spark/Java} pour compter le nombre d'occurrences de mots. Exemple provenant du site Web pour \TT{Apache Spark} (\url{https://spark.apache.org/examples.html}).},
+caption={[Un segment de code \TT{Spark/Java} pour compter le nombre d'occurrences de mots.]Un segment de code \TT{Spark/Java} pour compter le nombre d'occurrences de mots. Exemple provenant du site Web pour \TT{Apache Spark} {\footnotesize(\url{https://spark.apache.org/examples.html})}.},
 frame=single,
 escapechar=\!,
 float]
@@ -161,9 +163,9 @@ float]
 
 Le concept d'expression lambda n'est pas nouveau. Il est utilis\'e depuis longtemps dans les langages de programmation fonctionnelle tels que \TT{Lisp}~\citep{Steele84} ou \TT{Haskell}~\citep{HudakWad90,hutton2016programming}.
 %
-Les expressions lambda rendent le code plus concis et, dans le cas de \TT{Java}, l'\'etendent avec des concepts de langages de programmation fonctionnelle. 
+Les expressions lambda rendent le code plus concis et, dans le cas de \TT{Java}, permettent de l'\'etendre avec des concepts de langages de programmation fonctionnelle. 
 
-Plus sp\'ecifiquement, en \TT{Java}, ce concept est li\'e \`a celui d'interface fonctionnelle. Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listing~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{Thread th}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
+Plus sp\'ecifiquement, en \TT{Java}, le concept d'expression lambda est li\'e \`a celui d'interface fonctionnelle (\emph{functional interface}). Une expression lambda peut \^etre sp\'ecifi\'ee \`a la place d'une valeur dont le type est une interface fonctionnelle. Par exemple, le listing~\ref{lambdaAsFonctionalInterface} montre un exemple o\`u un \TT{Thread th}, d\'eclar\'e en utilisant la syntaxe de classe anonyme, peut \^etre \'ecrit plus facilement avec une expression lambda.
 
 Dans une expression lambda, lors de la compilation, les types des arguments peuvent \^etre automatiquement d\'etermin\'es par le compilateur. Cette fonctionnalit\'e permet de passer des m\'ethodes comme arguments plut\^ot que de construire un objet d'une classe sp\'ecifique. Ceci permet \`a un programmeur de construire facilement des pipelines d'op\'erations fonctionnelles.
 
@@ -175,7 +177,7 @@ Dans une expression lambda, lors de la compilation, les types des arguments peuv
 label={comparisonInternVsExtern},
 language=java,
 gobble=4,
-caption={[Un exemple comparant it\'eration externe et interne.]Un exemple comparant une it\'eration externe et interne. Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les divers \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<\TT{J}>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{Stream} --- produit par l'appel <<\TT{myList.stream()}>> --- qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les diverses op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
+caption={[Un exemple comparant it\'eration externe et interne.]Un exemple comparant une it\'eration externe et interne. Dans le cas de l'it\'eration externe, le d\'eveloppeur d\'efinit une boucle explicite pour traiter les \'el\'ements de la collection.  Le traitement appliqu\'e \`a chaque \'el\'ement consiste \`a convertir la cha\^ine en lettres majuscules si elle d\'ebute par la lettre <<\TT{J}>>. Le m\^eme traitement est appliqu\'e dans le cas de l'it\'eration interne. Par contre, dans ce cas, c'est le \TT{Stream} --- produit par l'appel \TT{myList.stream()} --- qui contr\^ole le processus d'it\'eration~; l'usager  indique simplement les op\'erations \`a effectuer, en les chainant les unes \`a la suite des autres.},
 frame=single,
 float]
     List<String> myList =
@@ -292,7 +294,7 @@ public static void main(String[] args) throws IOException {
 }
 !\vspace{-1cm}!
 !\hrule!
-!\underline{R\'esultat de l'ex\'ecution:}!
+!\framebox{R\'esultat de l'ex\'ecution:}!
   'dolor' => 3
   'lorem' => 3
   'amet' => 3
@@ -517,17 +519,21 @@ Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \T
     
 \end{itemize}
 
-\section{Autres biblioth\`eques C++}    
+\section{Autres biblioth\`eques C++}
+
+Nous présentons ici quelques autres bibliothèque C++ de traitement de flux de données.
+
+
 \subsection{RaftLib} 
-\TT{RaftLib}~\citep{beard2017raftlib} est une plus r\'ecente biblioth\`eque \emph{C++} con\c{c}ue pour traiter des flux de donn\'ees. \'Ecrit \`a l'aide de templates, \TT{RaftLib} vise \`a parall\'eliser de mani\`ere transparente une application, tout en minimisant la refactorisation du code h\'erit\'e. Comme \TT{FastFlow}, il fournit aux programmeurs un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees. Les programmes r\'esultants sont capables de fonctionner sur des plates-formes multi-cœurs avec m\'emoires partag\'ees ainsi que sur des plates-formes avec m\'emoires distribu\'ees.
+\TT{RaftLib}~\citep{beard2017raftlib} est une plus r\'ecente biblioth\`eque \TT{C++} con\c{c}ue pour traiter des flux de donn\'ees. \'Ecrit \`a l'aide de templates, \TT{RaftLib} vise \`a parall\'eliser de mani\`ere transparente une application, tout en minimisant le réusinage du code h\'erit\'e. Comme \TT{FastFlow}, il fournit aux programmeurs un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees. Les programmes r\'esultants sont capables de fonctionner sur des plates-formes multi-cœurs avec m\'emoires partag\'ees ainsi que sur des plates-formes avec m\'emoires distribu\'ees.
 
 
 %\gt{À moins que tu en dises beaucoup plus, pas besoin il me semble d'avoir des sous-sections.}
 
 %\subsubsection*{Conception}
-\TT{RaftLib} construit le flux de traitement sous forme d'un graphe en connectant des nœuds à des ports. Les nœuds, appel\'es noyaux de calcul, sont des classes \emph{C++} qui \'etendent la classe \TT{raft::kernel}. Dans le constructeur de cette classe sont d\'efinis les ports. Les ports sont d'entrée ou sortie pour chaque noyau de calcul. Chacun de ces noyaux impl\'emente une m\'ethode d'ex\'ecution o\`u des op\'erations de traitement sont effectu\'ees. Le graphe est construit dans la m\'ethode \TT{main} o\`u les noyaux d\'eclar\'es sont li\'es en connectant des ports \`a l'aide d'op\'erateurs de liaison. 
+\TT{RaftLib} construit le flux de traitement sous forme d'un graphe en connectant des nœuds à des ports. Les nœuds, appel\'es noyaux de calcul, sont des classes \TT{C++} qui \'etendent la classe \TT{raft::kernel}. Dans le constructeur de cette classe sont d\'efinis les ports. Les ports sont d'entrée ou de sortie pour chaque noyau de calcul. Chacun de ces noyaux impl\'emente une m\'ethode d'ex\'ecution o\`u des op\'erations de traitement sont effectu\'ees. Le graphe est construit dans la m\'ethode \TT{main} o\`u les noyaux d\'eclar\'es sont li\'es en connectant des ports \`a l'aide d'op\'erateurs de liaison. 
 
-La communication entre les noyaux s'effectue via des files de type \TT{FIFO} (\emph{First-In, First-Out}), et les donn\'ees envoy\'ees dans le flux sont assurées d'arriver dans l'ordre. Les donn\'ees entrent dans le nœud via le port d'entr\'ee d\'efinie dans chaque classe de noyau de calcul. Une fois les donn\'ees trait\'ees, elles sont envoy\'ees \`a la sortie via le port de sortie d\'efinie dans la m\^eme classe.  Les files sont réalisées \`a l'aide de diff\'erents types de tampons tels que la m\'emoire partag\'ee ou la m\'emoire dynamique (\emph{heap memory}). L'\`etat du traitement est conserv\'e en interne par chaque noyau de calcul, mais il n'est pas conserv\'e entre les noyaux. Cela permet une parall\'elisation beaucoup plus simplifi\'ee.
+La communication entre les noyaux s'effectue via des files de type \TT{FIFO} (\emph{First-In, First-Out}), et les donn\'ees envoy\'ees dans le flux sont assurées d'arriver dans l'ordre. Les donn\'ees entrent dans le nœud via le port d'entr\'ee d\'efini dans chaque classe de noyau de calcul. Une fois les donn\'ees trait\'ees, elles sont envoy\'ees \`a la sortie via le port de sortie d\'efini dans la m\^eme classe.  Les files sont réalisées \`a l'aide de diff\'erents types de tampons tels que m\'emoire partag\'ee et dynamique (\emph{heap memory}). L'\`etat du traitement est conserv\'e en interne par chaque noyau de calcul, mais il n'est pas conserv\'e entre les noyaux. Cela permet une parall\'elisation beaucoup plus simplifi\'ee.
 
 
 %\subsubsection*{Acc\`es aux donn\'ees}
@@ -542,7 +548,7 @@ Dans \TT{RaftLib}, il existe plusieurs options pour \'echanger les donn\'ees ent
 % tu dois utiliser \TT{$\backslash$citep}. Et il faut mettre un espace
 % insécable <<\~{}>> juste avant.}
 
-Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les m\'ethodes sans copie (\emph{zero copy}) et les m\'ethodes avec copie~\citep{accessingDataInRaftLib}. \emph{Zero copy} signifie que les donn\'ees ne sont pas d\'eplac\'ees du noyau vers le contexte de l'application, ce qui \'elimine les copies inutiles des donn\'ees. Les m\'ethodes avec copie peuvent \^etre plus rapides pour les transferts de petite taille tels que les donn\'ees de type primitif.
+Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les m\'ethodes sans copie (\emph{zero copy}) et les m\'ethodes avec copie~\citep{accessingDataInRaftLib}. \emph{Zero copy} signifie que les donn\'ees ne sont pas d\'eplac\'ees du noyau vers le contexte de l'application, ce qui \'elimine les copies inutiles des donn\'ees. Les m\'ethodes avec copie peuvent \^etre plus rapides pour les transferts de petite taille, par exemple, les donn\'ees de type primitif.
 %
 
 % \gt{Petit rappel: on utilise $\backslash$emph pour les termes en
@@ -551,7 +557,7 @@ Il existe deux types de m\'ethodes d'envoi et de r\'eception des donn\'ees : les
 
 Les deux biblioth\`eques, \TT{RaftLib} et \TT{PpFf}, ont plusieurs caract\'eristiques en commun. Elles sont \'ecrites en utilisant les \emph{templates} de \TT{C++} avec une parall\'elisation automatique. Les divers nœuds d'un flux pour \TT{RaftLib} et \TT{PpFf} s'ex\'ecutent dans des \emph{threads} diff\'erents. Dans ce contexte, \TT{PpFf} permet plus de flexibilit\'e en utilisant aussi le parall\'elisme introduit par les instances parall\`eles d'un \TT{farm}. 
 
-M\^eme si les deux biblioth\`eques ont plusieurs caract\'eristiques en commun, leur conception est diff\'erente. Tandis que \TT{RaftLib} a \'et\'e conçu pour prendre en charge le traitement des flux par lot et distribu\'e sur des plates-formes h\'et\'erog\`enes, \TT{PpFf} a \'et\'e conçu pour traiter des donn\'ees de flux incr\'emental, mais aussi des collections en lot. Et avec son style fonctionnel, \TT{PpFf} vise la simplicit\'e et l'efficacit\'e en utilisant le cha\^inage de m\'ethodes et les expressions \TT{lambda}.
+M\^eme si les deux biblioth\`eques ont plusieurs caract\'eristiques en commun, leur conception est diff\'erente. Tandis que \TT{RaftLib} a \'et\'e conçue pour prendre en charge le traitement des flux par lot et distribu\'e sur des plates-formes h\'et\'erog\`enes, \TT{PpFf} a \'et\'e conçue pour traiter des donn\'ees de flux incr\'emental, mais aussi des collections en lot. Et avec son style fonctionnel, \TT{PpFf} vise la simplicit\'e et l'efficacit\'e en utilisant le cha\^inage de m\'ethodes et les expressions {lambda}.
 
 
 
@@ -572,9 +578,9 @@ Le mod\`ele de programmation \TT{StarPU} est un mod\`ele bas\'e sur les t\^aches
 
 Un programme \TT{StarPU} est \'ecrit sous forme de graphe de t\^aches, chaque t\^ache travaillant sur un ensemble de donn\'ees. Le programmeur doit sp\'ecifier pour chaque t\^ache les donn\'ees d'entr\'ee et de sortie, cr\'eant ainsi des d\'ependances entre les t\^aches. De cette fa\c{c}on, une application \TT{StarPU} g\'en\`ere un graphe des t\^aches au moment de l'ex\'ecution. Les t\^aches sont asynchrones, et donc soumettre une t\^ache \`a \TT{StarPU} est une op\'eration non bloquante. Comme tout autre syst\`eme, \TT{StarPU} introduit des co\^uts pour g\'erer les t\^aches. Ces co\^uts peuvent \^etre importants si la quantit\'e de travail \`a effectuer n'est pas assez grande.
 
-La partie calcul d'une t\^ache est appel\'ee \emph{codelet}. En effet, dans \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut ensuite \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes, telles que \TT{CUDA} ou \TT{OpenCL}.
+La partie calcul d'une t\^ache est appel\'ee \emph{codelet}. Donc, dans \TT{StarPU}, l'ex\'ecution d'une t\^ache consiste \`a appliquer un \emph{codelet} sur une structure de donn\'ees. Un \emph{codelet} peut ensuite \^etre impl\'ement\'e sur des architectures h\'et\'erog\`enes, telles que \TT{CUDA} ou \TT{OpenCL}.
 
-Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement du flux est  simplifi\'e par l'utilisation du chainage de m\'ethodes fonctionnelles. Chaque m\'ethode effectu\'e un traitement sp\'ecifique sur le flux. De plus, dans \TT{PpFf}, l'équivalent d'un \emph{codelet} \TT{StarPU} peut \^etre d\'efini lors de la d\'eclaration du flux de traitement, \`a l'aide d'expressions \emph{lambda}. Avec moins de code, les expressions \emph{lambda} facilitent la compr\'ehension de la partie de traitement du flux.
+Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement du flux est  simplifi\'e par l'utilisation du chainage de m\'ethodes fonctionnelles. Chaque m\'ethode effectue un traitement sp\'ecifique sur le flux. De plus, dans \TT{PpFf}, l'équivalent d'un \emph{codelet} \TT{StarPU} peut \^etre d\'efini lors de la d\'eclaration du flux de traitement, \`a l'aide d'expressions {lambda}. Avec moins de code, les expressions {lambda} facilitent la compr\'ehension de la partie de traitement du flux.
 
 
 
@@ -592,7 +598,7 @@ Dans \TT{SkePU}, les donn\'ees sur lesquelles les fonctions opèrent sont conser
 
 
 
-\TT{SkePU} donne aux d\'eveloppeurs la possibilit\'e de d\'efinir leurs propres op\'erateurs. Cela est r\'ealis\'e via des \emph{user functions}, lesquelles sont des op\'erateurs utilis\'es pour instancier et initialiser une fonction squelette. Il y a deux fa\c{c}ons de d\'efinir une \emph{user fonction} : par une fonction \emph{template} ou par une expression lambda. Une fonction \emph{template} est toujours pr\'ef\'erable car elle pourrait ensuite \^etre partag\'ee entre des instances.
+\TT{SkePU} donne aux d\'eveloppeurs la possibilit\'e de d\'efinir leurs propres op\'erateurs. Cela est r\'ealis\'e via des \emph{user functions}, lesquelles sont des op\'erateurs utilis\'es pour instancier et initialiser une fonction squelette. Il y a deux fa\c{c}ons de d\'efinir une \emph{user function} : par une fonction \emph{template} ou par une expression lambda. Une fonction \emph{template} est toujours pr\'ef\'erable car elle pourrait ensuite \^etre partag\'ee entre des instances.
 
 
 Malgr\'e le fait que \TT{SkePU} supporte une large gamme de squelettes algorithmiques en cachant les d\'etails du parall\'elisme, de la communication et de la synchronisation, cela reste une biblioth\`eque de bas niveau de traitement de flux de donn\'ees. Par rapport \`a \TT{PpFf}, dans \TT{SkePU} les fonctions sont d\'eclar\'ees de fa\c{c}on imp\'erative. \TT{PpFf} propose une mani\`ere plus simple de d\'efinir les traitement via le cha\^inage de m\'ethodes. De plus, \TT{PpFf} offre de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations les plus utilis\'ees de traitement de flux.
