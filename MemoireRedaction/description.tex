@@ -8,16 +8,18 @@
 
 \begin{figure}
 \centering
-     \includegraphics[height=18cm, width=10cm]{Figures/flow-details.png}
+     \includegraphics[scale=1.2]{Figures/flow-details.png}
       \caption{Les diff\'erentes m\'ethodes export\'ees par l'{API} de \ppff,
      regroup\'ees selon leur type de fonctionnalit\'e.}
        \label{MethodesAPI.fig}
 \end{figure}
 
 
-Ce chapitre pr\'esente l'API de la biblioth\`eque \ppff,  c'est-\`a-dire, l'interface avec laquelle interagit le d\'eveloppeur. La conception de l'API de \ppff{} permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e des m\'ecanismes concurrents utilis\'es. La figure~\ref{MethodesAPI.fig} pr\'esente une vue d'ensemble des diverses m\'ethodes export\'ees par \ppff.
+Ce chapitre pr\'esente l'API de la biblioth\`eque \ppff,  c'est-\`a-dire, l'interface avec laquelle interagit le d\'eveloppeur. La conception de l'API de \ppff{} permet aux utilisateurs de tirer parti de la simplicit\'e d'utilisation tout en cachant la complexit\'e des m\'ecanismes concurrents utilis\'es. La figure~\ref{MethodesAPI.fig} pr\'esente une vue d'ensemble des diverses m\'ethodes export\'ees par \ppff, exprimée à l'aide d'un diagramme de classes UML.%
 %
-Le principal type exporté par l'API est le type \TT{Flow}, qui permet de définir un \emph{flux de données} (Sect.~\ref{flow.sect}).
+\footnote{Tous les diagrammes de classes UML présentés dans ce mémoire ont été produits à l'aide de \TT{PlantUML}, un outil qui permet de spécifier un diagramme UML \emph{de fa\c{c}on textuelle} et qui génère ensuite, de façon automatique, le graphique correspondant, ici en format \TT{png}~: \url{https://plantuml.com/}.} 
+%
+Le type principal exporté par l'API est le type \TT{Flow}, qui permet de définir un \emph{flux de données} (Sect.~\ref{flow.sect}).
 %
 Ensuite, sur la base du type de fonctionnalit\'e export\'ee, l'API se divise en quatre cat\'egories :  \TT{Source} (Sect.~\ref{source.sect}), \TT{Transformation} (Sect.~\ref{transformation.sect}),  \TT{Agrégation} (Sect.~\ref{agregation.sect}) et \TT{Execution} (Sect.~\ref{execution.sect}). Quant \`a la cat\'egorie \TT{Agrégation}, elle est elle-m\^eme divis\'ee deux sous-cat\'egories, selon le type de r\'esultat produit~: valeur simple (par ex., r\'esultat bool\'een ou entier) ou collection.
 
@@ -26,7 +28,7 @@ L'objectif de notre API \'etait d'obtenir une API semblable \`a celle des \TT{St
 
 Le chapitre pr\'esente \'egalement le code source d'un exemple, \TT{WordCount}, pour illustrer l'utilisation de l'API et l'effet des principales m\'ethodes --- un exemple semblable à celui présenté dans l'article ayant popularisé l'approche \TT{MapReduce}~\citep{DeanGhe04}.
 
-La biblioth\`eque \PpFf{} est impl\'ement\'ee au-dessus de la biblioth\`eque \TT{FastFlow}, impl\'ementation qui sera d\'ecrite au prochain chapitre.
+La biblioth\`eque \PpFf{} est mise en \oe{}uvre au-dessus de la biblioth\`eque \TT{FastFlow}, mise en \oe{}uvre qui sera d\'ecrite au prochain chapitre.
 
 
 
@@ -41,8 +43,6 @@ language=c++,
 caption={Des extraits du code source de l'application \TT{WordCount} qui compte le nombre d'occurrences des mots dans un texte.},
 frame=single,
 float]
-    // ...
-
     // Un conteneur pour les mots d'une ligne.
     typedef std::vector<std::string> Words;
 
@@ -61,16 +61,10 @@ float]
         .flatMap<std::string, Words, std::string>(splitInWords)			
         .map<std::string, std::string>(toLowercaseLetters)			
         .reduceByKey<std::string, std::string, int>(reducer); 
-
-    // ...
 \end{lstlisting}
 
-L'application \TT{WordCount} pr\'esent\'ee dans ce chapitre sera utilisée pour illustrer le fonctionnement de \TT{PpFf}. Des extraits du code source de l'application sont présentés dans le listing~\ref{wordcount.c++}. L'application compte le nombre d'occurrences des mots dans un fichier texte. Cette application est compos\'ee en combinant plusieurs op\'erations.
+L'application \TT{WordCount} pr\'esent\'ee dans ce chapitre sera utilisée pour illustrer le fonctionnement de \TT{PpFf}. Des extraits du code source de l'application sont présentés dans le listing~\ref{wordcount.c++}. L'application compte le nombre d'occurrences des mots dans un fichier texte. Cette application est compos\'ee en combinant plusieurs op\'erations, qui forment le pipeline de traitement~:  
 
-
-
-\goodbreak
-Les op\'erations d\'efinissant le pipeline sont les suivantes :
 \begin{itemize}
 
 \item  La premi\`ere op\'eration d'un pipeline sert \`a d\'efinir la \emph{source} du flux de donn\'ees. Ici, la source est
@@ -81,7 +75,7 @@ flux avec les lignes du fichier. Le fichier est sp\'ecifi\'e par un nom de fichi
 \TT{source}.
 
 
-\item L'appel \`a \TT{parallel(4)} permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads} --- ici, quatre (4) \emph{threads} --- et donc d'ex\'ecuter les \'etapes qui suivent en parall\`ele. 
+\item L'appel \`a \TT{parallel(4)} permet de r\'epartir les \'el\'ements du flux entre divers \emph{threads} --- ici, quatre (4) instances de \emph{farm} --- et donc d'ex\'ecuter les \'etapes qui suivent en parall\`ele. 
 
 
 
@@ -110,9 +104,9 @@ Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant s
 
 \label{source.sect}
 
-La sp\'ecification de la source de donn\'ees est la premi\`ere m\'ethode utilis\'es pour cr\'eer un flux. Plus pr\'ecis\'ement, l'API fournit deux m\'ethodes {\bf statiques} pour cr\'eer un \TT{Flux} \`a partir de diverses sources, telles que des collections ou des fichiers de donn\'ees. Des travaux futurs pourraient \'etendre l'interface pour prendre en charge plus des sources de donn\'ees.
+La sp\'ecification de la source de donn\'ees est la premi\`ere m\'ethode utilis\'ee pour cr\'eer un flux. Plus pr\'ecis\'ement, l'API fournit deux m\'ethodes {\bf statiques} pour cr\'eer un \TT{Flux} \`a partir de diverses sources, soit des collections ou des fichiers de donn\'ees. Des travaux futurs pourraient \'etendre l'interface pour prendre en charge plus des sources de donn\'ees.
 
-Les signatures pour les deux m\'ethodes sont donn\'ees dans l'annexe~\ref{methodes-api.ann}. Tandis que la premi\`ere m\'ethode, \TT{source(path)}, produit les donn\'ees d'un flux \`a partir du contenu (les lignes) d'un fichier texte, la deuxi\`eme m\'ethode, \TT{source(begin\_iterator, end\_iterator)}, produit les donn\'ees d'un flux \`a partir des \'el\'ements d'un conteneur STL.
+Les signatures pour les deux m\'ethodes sont donn\'ees dans l'annexe~\ref{methodes-api.ann}. Tandis que la premi\`ere m\'ethode, \TT{source(path)}, produit les donn\'ees d'un flux \`a partir du contenu (les lignes) d'un fichier texte, la deuxi\`eme, \TT{source(begin\_iterator, end\_iterator)}, produit les donn\'ees d'un flux \`a partir des \'el\'ements d'un conteneur STL.
 
 \begin{lstlisting}[
 label={mapExample.c++},
@@ -135,7 +129,7 @@ Les deux m\'ethodes pour sp\'ecifier la source d'un flux sont illustr\'ees, resp
 
 \label{transformation.sect}
 
-Cette section d\'ecrit plus en d\'etail les principales op\'erations de la cat\'egorie \TT{Transformation}. Ces op\'erations permettent d'exprimer des requ\^etes de traitement de donn\'ees complexes telles que le filtrage et le mappage. L'annexe~\ref{methodes-api.ann} présente les signatures détaillées de ces méthodes. 
+Cette section d\'ecrit plus en d\'etail les principales op\'erations de la cat\'egorie \TT{Transformation}. Ces op\'erations permettent d'exprimer des requ\^etes de traitement de donn\'ees complexes telles que le filtrage et le <<mappage>>. L'annexe~\ref{methodes-api.ann} présente les signatures détaillées de ces méthodes. 
 
 
 \subsection{M\'ethode \TT{map}}
@@ -160,12 +154,12 @@ std::vector<std::string> result =
 
 La m\'ethode \TT{map} est utilis\'ee pour transformer une collection d'objets en une autre collection d'objets en appliquant une fonction --- typiquement une expression lambda --- sur chacun des objets. Par exemple, dans le listing~\ref{mapExample.c++}, l'expression lambda pass\'ee en param\`etre \`a la m\'ethode \TT{map} multiplie par 3 chaque \'el\'ement re\c{c}u. Le r\'esultat renvoy\'e par cette expression lambda est un pointeur. \PpFf{} s'appuie sur le mod\`ele de programmation de \TT{FastFlow}, tel que d\'ecrit dans le prochain chapitre. Ce mod\`ele est bas\'e sur le d\'ecouplage des donn\'ees et de la synchronisation, et o\`u seuls des pointeurs vers les donn\'ees sont transmis plut\^ot que les donn\'ees elles-m\^emes.
 %
-Une autre utilisation typique de la méthode \TT{map} consiste \`a s\'electionner une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
+Une autre utilisation typique de la méthode \TT{map} consiste \`a obtenir une information de chacun des objets d'une collection. Par exemple, le listing~\ref{mapExample2.c++} montre un exemple o\`u la méthode \TT{map} permet d'obtenir les noms des divers employ\'es d'une collection. 
 
 
 \subsection{M\'ethodes \TT{flatten} et \TT{flatMap}}
 
-Les m\'ethodes \TT{flatten} et \TT{flatMap} ont pour r\^ole d'aplanir un flux multiniveau. Alors que la m\'ethode \TT{flatten} cr\'ee un flux unique \`a partir du contenu des divers conteneurs, la m\'ethode \TT{flatMap} cr\'ee un flux unique \`a partir du contenu des divers conteneurs interm\'ediaires r\'esultant de l'application d'une fonction fournie en argument et appliquée \`a chaque \'el\'ement du flux. Notons que cette derni\`ere m\'ethode (\TT{flatMap}) correspond en fait à une op\'eration \TT{map} suivie immédiatement d'une opération \TT{flatten}. Les signatures pour ces deux m\'ethodes sont donn\'ees dans l'annexe~\ref{methodes-api.ann}.
+Les m\'ethodes \TT{flatten} et \TT{flatMap} ont pour r\^ole d'aplanir un flux multiniveau. Alors que la m\'ethode \TT{flatten} cr\'ee un flux unique \`a partir du contenu des divers conteneurs, la m\'ethode \TT{flatMap} cr\'ee un flux unique \`a partir du contenu des divers conteneurs interm\'ediaires r\'esultant de l'application d'une fonction fournie en argument et appliquée \`a chaque \'el\'ement du flux. Notons que cette derni\`ere m\'ethode (\TT{flatMap}) correspond en fait à une op\'eration \TT{map} suivie immédiatement d'une opération \TT{flatten}. Les signatures détaillées pour ces deux m\'ethodes sont donn\'ees dans l'annexe~\ref{methodes-api.ann}.
 
 % Le type du flux avant d'appliquer les deux m\'ethodes est \TT{In} alors que \TT{Out} est le type du flux apr\`es le traitement des \'el\'ements du flux. 
 
@@ -205,8 +199,6 @@ L'exemple fourni dans le listing~\ref{mapExample2.c++} montre l'utilisation de l
 
 \subsection{R\'eduction des \'el\'ements d'un flux en une seule valeur}
 
-Une r\'eduction
-consiste \`a combiner les \'el\'ements d'un flux en un seul r\'esultat \emph{qui n'est pas un flux}. La m\'ethode \TT{max}  est l'une des m\'ethodes offertes par l'{API} de \TT{PpFf} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. 
 
 \begin{lstlisting}[
 label={olderEmployeeExample.c++},
@@ -223,13 +215,15 @@ float]
 \end{lstlisting}
 
 
-
+Une r\'eduction
+consiste \`a combiner les \'el\'ements d'un flux en un seul r\'esultat \emph{qui n'est pas un flux}. La m\'ethode \TT{max}  est l'une des m\'ethodes offertes par l'{API} de \TT{PpFf} qui illustre ce type de fonctionnalit\'e. Cette m\'ethode prend un comparateur en argument pour comparer les \'el\'ements du flux. 
+%
 Le listing~\ref{olderEmployeeExample.c++} montre un exemple o\`u les \'el\'ements de type \TT{Employee} d'un flux sont compar\'es afin de trouver l'employ\'e le plus \^ag\'e.
 
 
 De façon similaire \`a la m\'ethode \TT{max}, l’API de \TT{PpFf} fournit aussi la m\'ethode \TT{min}, utilis\'ee pour trouver l'\'el\'ement minimum d'un flux. Ceci est fait en utilisant le comparateur re\c{c}u comme argument pour comparer les \'el\'ements du flux.
 
-L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \`a une seule valeur. Les plus utilis\'ees sont \TT{count} et \TT{sum} En utilisant la m\'ethode \TT{count}, on peut obtenir le nombre d'\'el\'ements d'un flux. Dans le cas de la m\'ethode \TT{sum}, on peut additionner les \'el\'ements d'un flux. Une autre m\'ethode plus g\'en\'erale fournie par l'{API} de \TT{PpFf} est \TT{reduce}, qui \emph{combine} les \'el\'ements d'un flux en utilisant un \TT{Reducer}, notion pr\'esent\'ee dans la section suivante.
+L'{API} fournit d'autres m\'ethodes qui r\'eduisent les \'el\'ements d'un flux \`a une seule valeur. Parmi les plus simples on trouve \TT{count} et \TT{sum}. En utilisant \TT{count}, on obtient le nombre d'\'el\'ements d'un flux, alors qu'en utilisant \TT{sum}, on additionne les \'el\'ements d'un flux. Une autre m\'ethode plus g\'en\'erale fournie par l'{API} de \TT{PpFf} est \TT{reduce}, qui \emph{combine} les \'el\'ements d'un flux en utilisant un \TT{Reducer}, notion pr\'esent\'ee dans la section suivante.
 
 
 \subsection{Classe \TT{Reducer}}
@@ -248,7 +242,7 @@ La m\'ethode \TT{reduce} est l'une des m\'ethodes les plus complexes de l'API. A
 \item R\'eduire les \'el\'ements d'une collection en parall\`ele \`a partir d'une valeur initiale fournie par l'utilisateur.
 \end{itemize}
 
-Pour impl\'ementer tous ces cas nous aurions d\^u surcharger la m\'ethode  \TT{reduce} plusieurs fois. Dans le but de garder un API simple \`a utiliser, nous avons introduit la classe  \TT{Reducer}. Cette classe est d'autant plus utile que sa fonctionnalit\'e est r\'eutilis\'ee dans d'autres m\'ethodes de l'API --- voir la section~\ref{reduceByKey.sect}
+Pour impl\'ementer tous ces cas nous aurions d\^u surcharger la m\'ethode  \TT{reduce} plusieurs fois. Dans le but de garder une API simple \`a utiliser, nous avons introduit la classe  \TT{Reducer}. Cette classe est d'autant plus utile que sa fonctionnalit\'e est r\'eutilis\'ee dans d'autres m\'ethodes de l'API --- voir la section~\ref{reduceByKey.sect}
 
 
 \begin{lstlisting}[
@@ -281,7 +275,7 @@ Un \TT{Reducer} peut être construit avec une valeur initiale, une fonction \TT{
 %
 \footnote{Notons que si la valeur initiale n'est pas spécifiée, alors
 c'est le premier élément du flux qui est utilisée pour initialiser
-l'accumulateur, et donc le flux doit contenir au moins un élément pour
+l'accumulateur, et donc le flux doit contenir \emph{au moins un élément} pour
 qu'un résultat puisse être produit.}
 %
 Les constructeurs de \TT{Reducer} permettent de fournir la fonctionnalit\'e de la m\'ethode \TT{reduce} en couvrant les quatre cas distincts mentionn\'es au d\'ebut de la section.
@@ -365,7 +359,7 @@ float]
 
 
 
-Il existe des situations o\`u la fonction \TT{accumulator} est identique avec la fonction \TT{combiner}, par exemple, celui illustr\'e dans le listing~\ref{sumElementsCollectionWithReducerParallel.c++}. L'API de \TT{PpFf} fournit une surcharge de la m\'ethode \TT{reduce} pour pouvoir omettre la fonction \TT{combiner} m\^eme si l'ex\'ecution est en parall\`ele. Le listing~\ref{sumElementsCollectionParallelWithoutCombiner.c++} montre l'exemple du listing~\ref{sumElementsCollectionWithReducerParallel.c++}, mais r\'e\'ecrit en omettant la fonction \TT{combiner}. 
+Il existe des situations o\`u la fonction \TT{accumulator} est identique à la fonction \TT{combiner}, par exemple, celui illustr\'e dans le listing~\ref{sumElementsCollectionWithReducerParallel.c++}. L'API de \TT{PpFf} fournit une surcharge de la m\'ethode \TT{reduce} pour pouvoir omettre la fonction \TT{combiner} m\^eme si l'ex\'ecution est en parall\`ele. Le listing~\ref{sumElementsCollectionParallelWithoutCombiner.c++} montre l'exemple du listing~\ref{sumElementsCollectionWithReducerParallel.c++}, mais r\'e\'ecrit en omettant la fonction \TT{combiner}. 
 
 
 
@@ -516,7 +510,7 @@ Le listing~\ref{reduceByKeyExample.c++} montre un exemple o\`u une telle fonctio
 
 La m\'ethode \TT{reduceByKey} conserve les \'el\'ements dans un conteneur de type cl\'e--valeur --- donc un dictionnaire (\TT{map}). La cl\'e de chaque \'el\'ement du flux est cherch\'ee dans le conteneur. Si la cl\'e n'est pas trouv\'ee, une nouvelle paire cl\'e--valeur est ajout\'ee. Si la cl\'e est trouv\'ee, la fonction de r\'eduction est appliqu\'ee sur l'\'el\'ement du flux et sa valeur associ\'ee dans le conteneur. L'op\'eration de r\'eduction --- un objet \TT{Reducer} (section~\ref{reducer.sect})  --- est sp\'ecifi\'ee par l'argument de la m\'ethode \TT{reduceByKey}. Dans le cas particulier de l'exemple fourni dans le listing~\ref{reduceByKeyExample.c++}, l'op\'eration a pour r\^ole de compter le nombre d'employ\'es ayant le m\^eme \^age. Le r\'esultat retourn\'e par la m\'ethode \TT{reduceByKey} est un map de type cl\'e--valeur~: la cl\'e repr\'esente l'\^age d'employ\'es et la valeur associ\'ee repr\'esente le nombre d'employ\'es qui ont l'\^age indiqu\'e par la cl\'e.
 
-La m\'ethode \TT{reduceByKey} est une op\'eration avec une mise en \oe{}uvre complexe, encore plus lorsqu'elle est utilis\'ee en parall\`ele. Toutefois, la biblioth\`eque \TT{PpFf} cache cette complexit\'e, et donc il est tout à fait possible et intéressant d'utiliser \TT{reduceByKey} en parall\`ele, et dans ce cas le temps d'ex\'ecution diminue consid\'erablement.
+La m\'ethode \TT{reduceByKey} est une op\'eration avec une mise en \oe{}uvre complexe, encore plus lorsqu'elle est utilis\'ee en parall\`ele. Toutefois, la biblioth\`eque \TT{PpFf} cache cette complexit\'e, et donc il est tout à fait possible et intéressant d'utiliser \TT{reduceByKey} en parall\`ele, et dans ce cas le temps d'ex\'ecution peut être réduit --- sous certaines conditions que nous examinerons au chapitre~\ref{experiences.chap}.
 
 
 Lorsque le flux est trait\'e en parall\`ele, il est divis\`e en sous-flux. Chaque instance cr\'ee et manipule son propre \emph{container}, son propre \emph{map}, donc sans interf\'erence avec les \emph{threads} qui traitent les autres sous-flux. Puis, lors de la combinaison des r\'esultats des sous-flux, ces divers \emph{containers/maps} sont fusionn\'es les uns avec les autres dans le \emph{thread} principal.
@@ -531,7 +525,7 @@ Dans \TT{PpFf}, par d\'efaut, chaque nœud ajout\'e dans le flux du traitement s
 
 La méthode \TT{parallel} reçoit un argument entier.
 %
-La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`eles d'un \emph{farm} entre lesquels seront r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, dans le listing~\ref{wordcount.c++}, l'appel \`a la m\'ethode \TT{parallel(4)} indique de r\'epartir les \'el\'ements du flux entre quatre (4) instances parall\`eles d'un \emph{farm}.
+La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`eles d'un \emph{farm} entre lesquelles seront r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, dans le listing~\ref{wordcount.c++}, l'appel \`a la m\'ethode \TT{parallel(4)} indique de r\'epartir les \'el\'ements du flux entre quatre (4) instances parall\`eles d'un \emph{farm}.
 
 
 \section{Expressivit\'e de \TT{PpFf} par rapport à \TT{FastFlow}}
@@ -644,7 +638,7 @@ float]
             [](Student* s) { return &(s->departement); } );        
 \end{lstlisting}
 
-Avec \TT{PpFf}, ce probl\`eme peut \^etre r\'esolu plus simplement en utilisant le chainage de m\'ethodes et des expressions \emph{lambda}. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing~\ref{GroupByDepStudentsAverage.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais r\'e\'ecrit avec \TT{PpFf}. On peut noter que le code est plus facile \`a comprendre. Les op\'erations sont définies \`a la cr\'eation du flux. De plus, le nombre de lignes de code utilis\'e dans la version \TT{PpFf} est consid\'erablement r\'eduit comparatif \`a \TT{FastFlow}. 
+Avec \TT{PpFf}, ce probl\`eme peut \^etre r\'esolu plus simplement en utilisant le chainage de m\'ethodes et des expressions \emph{lambda}. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing~\ref{GroupByDepStudentsAverage.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais r\'e\'ecrit avec \TT{PpFf}. On peut noter que le code est plus facile \`a comprendre. Les op\'erations sont définies \`a la cr\'eation du flux. De plus, le nombre de lignes de code utilis\'e dans la version \TT{PpFf} est consid\'erablement r\'eduit comparativement \`a \TT{FastFlow}. 
 
 Le principal avantage de l'utilisation du chainage de m\'ethodes est donc que le code est plus lisible, et les op\'erations à exécuter sont pass\'ees au flux sous forme de blocs d'instructions, et ce avec des expressions \emph{lambda}.
 %
@@ -660,7 +654,7 @@ L'utilisation d'expressions \emph{lambda} permet, entre autres, de
 facilement changer le traitement effectué par une opération d'un
 pipeline.
 %
-Par exemple, prenons l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++} o\`u on a sélectionné les \'etudiants boursiers ayant une moyenne de \TT{A}. Que se passe-t-il si on veut plutôt sélectionner les \'etudiants qui habitent dans une certaine ville? Dans \TT{FastFlow}, une solution serait d'impl\'ementer une nouvelle sorte de nœud et d'utiliser ce n\oe{}ud dans la cr\'eation d'un flux. 
+Par exemple, prenons l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++} o\`u on sélectionne les \'etudiants boursiers ayant une moyenne de \TT{A}. Que se passe-t-il si on veut plutôt sélectionner les \'etudiants qui habitent dans une certaine ville? Dans \TT{FastFlow}, une solution serait d'impl\'ementer une nouvelle sorte de nœud et d'utiliser ce n\oe{}ud dans la cr\'eation d'un flux. 
 %
 Il est un peu ennuyeux d'avoir \`a \'ecrire beaucoup de code pour des fonctionnalit\'es simples lorsqu'elles ne sont peut-\^etre utilis\'ees qu'une ou deux fois. Id\'ealement, on souhaite minimiser les efforts de d\'eveloppeurs et offrir des op\'erations simples \`a mettre en œuvre.
 
@@ -678,7 +672,7 @@ Ici, il suffirait donc de modifier l'appel à \TT{find} comme suit lors de la cr
 
 \subsection*{Traitement en parall\`ele}
 
-De nos jours, tous les nouveaux ordinateurs sont des ordinateurs multicœurs. Au lieu d'un seul processeur, ils en disposent de plusieurs. Les deux biblioth\`eques, \TT{FastFlow} et \TT{PpFf}, peuvent am\'eliorer le traitement des grandes collections de donn\'ees si les ressources d'une telle machine peuvent être exploitées. 
+De nos jours, tous les nouveaux ordinateurs sont des ordinateurs multicœurs. Au lieu d'un seul processeur, ils en disposent de plusieurs. Les deux biblioth\`eques, \TT{FastFlow} et \TT{PpFf}, peuvent am\'eliorer le traitement des grandes collections de donn\'ees si les ressources d'une telle machine peuvent être exploitées efficacement. 
 
 \begin{lstlisting}[
 label={GroupByDepStudentsAverageParallelFF.c++},
@@ -713,7 +707,7 @@ float]
            [](Student* s) { return &(s->departement); } );
 \end{lstlisting}
 
-Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), mais réécrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{NB\_WORKERS} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de travailleurs (sous-flux) \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplicit\'e d'utilisation de cette méthode de \TT{PpFf}.
+Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), mais réécrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{NB\_WORKERS} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de sous-flux \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplicit\'e d'utilisation de cette méthode de \TT{PpFf}.
 
 
 
