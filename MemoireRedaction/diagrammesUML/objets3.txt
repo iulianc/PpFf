@@ -10,7 +10,7 @@ skinparam classAttributeIconSize 0
 !$avecFastFlow = %intval(%getenv("AVEC_FF"))
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.parallel(2)\l\t.map<int, int>(([](int *in){ *in *= 3; return in; }))\l\t.parallel(4)\l\t.max<int>();
+'title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.parallel(2)\l\t.map<int, int>(([](int *in){ *in *= 3; return in; }))\l\t.parallel(4)\l\t.max<int>();
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 object currentResult {

@@ -2,7 +2,7 @@
 # Makefile pour generation des diagrammes UML.
 #
 
-default: pipeline
+default: objets3
 
 objets1:
 	AVEC_FF=0 java -jar ~/Software/plantuml.jar objets1.txt

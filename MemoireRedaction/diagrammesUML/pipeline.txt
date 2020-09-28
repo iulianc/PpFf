@@ -103,5 +103,5 @@ Operator --|> ff_node
 
 Node --> Operator
 
-
+Farm -[hidden]-> Operators
 @enduml

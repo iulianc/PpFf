@@ -91,4 +91,9 @@ MapOperator --|> Operator
 CountOperator --|> Operator
 Operator --|> ff_node
 
+
+
+Node -[hidden]-> Operators
+
+
 @enduml
