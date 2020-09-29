@@ -32,39 +32,19 @@ import static java.util.stream.Collectors.toMap;
  * @author iciobanu & Guy Tremblay
  */
 
-class ReduceByKey implements Consumer<String> {
-    @SuppressWarnings("unchecked")
-        private Map<String,Integer> map = (Map) new HashMap();
-    
-    public void accept( String s ) {
-        map.put(s, map.getOrDefault(s, 0) + 1);
-    }
-    
-    public void combine( ReduceByKey other ) {
-        for ( Map.Entry<String,Integer> entry : other.map.entrySet() ) {
-            Integer value = map.getOrDefault(entry.getKey(), 0);
-            map.put( entry.getKey(), value + entry.getValue() );
-        } 
-    }
-
-    public Map<String,Integer> toMap() {
-        return map;
-    }
-}
-
 class Student {
     public String name;
-    public String departement;
+    public String department;
     public String average;
     
-    Student( String name, String departement, String average ) {
+    Student( String name, String department, String average ) {
         this.name = name;
-        this.departement = departement;
+        this.department = department;
         this.average = average;
     }
 
     public String toString() {
-        return name + " [" + departement + "]: " + average;
+        return name + " [" + department + "]: " + average;
     }
 }
 
@@ -87,7 +67,7 @@ public class StudentsExample {
             .stream()
             .parallel()
             .filter( s -> s.average == "A" )
-            .collect( Collectors.groupingBy( s -> s.departement ) );
+            .collect( Collectors.groupingBy( s -> s.department ) );
         
         studentsByDept
             .entrySet()
