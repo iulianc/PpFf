@@ -44,7 +44,7 @@ StudentsExample.class: StudentsExample.java
 	javac StudentsExample.java
 
 clean: 
-	\rm -f *.class
+	\rm -f *.class StudentsExample
 	\rm -f *.o *~
 
 cleanx cleanall cleanxtra: clean

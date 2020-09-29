@@ -636,16 +636,17 @@ Les listings~\ref{FastFlowOperationsToGroupStudentsByDep.c++}~a) et \ref{GroupBy
 \begin{lstlisting}[
 label={GroupByDepStudentsAverage.c++},
 language=c++,
-caption={[Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement.]Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement.\ExtraitTestUnitaire},
+caption={[Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement.]Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement. Le type \TT{auto} a été utilisé pour les paramètres des expressions lambda, pour rendre le code plus succinct.\ExtraitTestUnitaire},
 frame=single,
 float]
     // Resultat du traitement.
     Students_by_Dept result = 
         Flow
         ::source<Student>(students.begin(), students.end())
-        .find<Student>( [](Student *s) { return s->average == "A"; } )
+        .find<Student>(
+            [](auto s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
-            [](Student* s) { return &(s->department); } );        
+            [](auto s) { return &(s->department); } );        
 \end{lstlisting}
 
 Avec \TT{PpFf}, ce probl\`eme peut \^etre r\'esolu plus simplement en utilisant le chainage de m\'ethodes et des expressions \emph{lambda}. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing~\ref{GroupByDepStudentsAverage.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais r\'e\'ecrit avec \TT{PpFf}. On peut noter que le code est plus facile \`a comprendre. Les op\'erations sont définies \`a la cr\'eation du flux. De plus, le nombre de lignes de code utilis\'e dans la version \TT{PpFf} est consid\'erablement r\'eduit comparativement \`a \TT{FastFlow}. 
@@ -675,7 +676,7 @@ Ici, il suffirait donc de modifier l'appel à \TT{find} comme suit lors de la cr
 {
 \begin{lstlisting}[language=c++]
 		.find<Student>( 
-			[](Student *s) { s->city_address == "Montreal"; } )
+			[](auto s) { s->city_address == "Montreal"; } )
 \end{lstlisting}
 }
 
@@ -711,10 +712,11 @@ float]
     Students_by_Dept result = 
         Flow
         ::source<Student>(students.begin(), students.end())
-        .parallel(PAR_LEVEL) // Ajout simple d'un appel a parallel
-        .find<Student>( [](Student *s) { return s->average == "A"; } )
+        .parallel(PAR_LEVEL) // Ajout d'un appel a parallel
+        .find<Student>(
+           [](auto s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
-           [](Student* s) { return &(s->department); } );
+           [](auto s) { return &(s->department); } );
 \end{lstlisting}
 
 Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), mais réécrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{PAR\_LEVEL} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de sous-flux \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplicit\'e d'utilisation de cette méthode de \TT{PpFf}.

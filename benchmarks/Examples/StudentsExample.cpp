@@ -55,7 +55,8 @@ int main(int argc, char* argv[]) {
     Students_by_Dept result =
         Flow
         ::source<Student>(students.begin(), students.end())
-        .find<Student>( [](auto s) { return s->average == "A"; } )
+        .find<Student>(
+           [](auto s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
            [](auto s) { return &(s->department); } );
 
