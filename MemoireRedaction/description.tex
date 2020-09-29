@@ -575,17 +575,17 @@ float]
 		}
 	};
 	// Operation de regroupement des etudiants par departement.
-	struct groupByDepartement : ff_node_t<Student, void> {
+	struct groupByDepartment : ff_node_t<Student, void> {
 		Students_by_Dept& container;
-		groupByDepartement(Students_by_Dept& container) :
+		groupByDepartment(Students_by_Dept& container) :
 									container(container){}
 		void* svc(Student* task) {
-			auto mapIt = container.find(task->departement);
+			auto mapIt = container.find(task->department);
 			if (mapIt != container.end()) {
 				mapIt->second.push_back(*task);
 			} else {
 				Students students = {*task};
-				container[task->departement] = students;
+				container[task->department] = students;
 			}
 			return GO_ON;		
 		}
@@ -607,7 +607,7 @@ float]
 	// Creation du pipeline.
 	ff_Pipe<> ffp( new source(students),
 				   new findStudentsAverage,
-				   new groupByDepartement(result) );        
+				   new groupByDepartment(result) );        
 
 \end{lstlisting}
 
@@ -619,13 +619,13 @@ Par exemple, supposons que dans une universit\'e, on doit identifier les \'etudi
 \begin{samepage}
 Supposons aussi qu'on ait les types auxiliaires suivants~:
 \begin{lstlisting}[language=c++]
-    // Nom d'un departement.
+    // Nom d'un department.
     typedef std::string Dept;
     
-    // Conteneur pour les etudiants d'un meme departement.
+    // Conteneur pour les etudiants d'un meme department.
     typedef std::vector<Student> Students;
 
-    // Conteneur pour regrouper les etudiants par departement.
+    // Conteneur pour regrouper les etudiants par department.
     typedef std::unordered_map<Dept, Students> Students_by_Dept; 
 \end{lstlisting}
 \end{samepage}
@@ -645,7 +645,7 @@ float]
         ::source<Student>(students.begin(), students.end())
         .find<Student>( [](Student *s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
-            [](Student* s) { return &(s->departement); } );        
+            [](Student* s) { return &(s->department); } );        
 \end{lstlisting}
 
 Avec \TT{PpFf}, ce probl\`eme peut \^etre r\'esolu plus simplement en utilisant le chainage de m\'ethodes et des expressions \emph{lambda}. \TT{PpFf} propose de nombreuses m\'ethodes pr\'ed\'efinies pour les op\'erations de traitement de flux les plus utilis\'ees. Le listing~\ref{GroupByDepStudentsAverage.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}, mais r\'e\'ecrit avec \TT{PpFf}. On peut noter que le code est plus facile \`a comprendre. Les op\'erations sont définies \`a la cr\'eation du flux. De plus, le nombre de lignes de code utilis\'e dans la version \TT{PpFf} est consid\'erablement r\'eduit comparativement \`a \TT{FastFlow}. 
@@ -699,7 +699,7 @@ float]
 	Students_by_Dept result;
 	ff_Pipe<> ffp( new source(students),
 				   new ff_farm(workers),
-				   new groupByDepartement(result) );     
+				   new groupByDepartment(result) );     
 \end{lstlisting}
 
 \begin{lstlisting}[
@@ -714,7 +714,7 @@ float]
         .parallel(PAR_LEVEL) // Ajout simple d'un appel a parallel
         .find<Student>( [](Student *s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
-           [](Student* s) { return &(s->departement); } );
+           [](Student* s) { return &(s->department); } );
 \end{lstlisting}
 
 Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), mais réécrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{PAR\_LEVEL} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de sous-flux \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplicit\'e d'utilisation de cette méthode de \TT{PpFf}.
