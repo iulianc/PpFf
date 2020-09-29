@@ -1,5 +1,5 @@
 
-\chapter{Exp\'erimentations~: Comparaisons de \ppff\ avec Java et FastFlow}
+\chapter{Évaluation des performances~: Comparaisons de \ppff\ avec Java et FastFlow}
 \label{experiences.chap}
 
 Ce chapitre pr\'esente une \'evaluation exp\'erimentale de la biblioth\`eque \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele, plus sp\'ecifiquement avec \TT{Java} et \TT{FastFlow}.
@@ -9,13 +9,13 @@ Dans les sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, nous pr\'esento
 % GT: Cette remarque, si je me souviens bien, avait été mal perçue par un des évaluateurs,
 % donc il me semble préférable de l'omettre.
 %
-alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}). Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos exp\'erimentations ont \'et\'e effectu\'ees.
+alors que la section~\ref{stockprice.sect} pr\'esente une application permettant de calculer des statistiques sur les prix d'indices boursiers --- un exemple typique de traitement de flux en ligne (\emph{online data processing}). Mais tout d'abord, nous pr\'esentons la fa\c{c}on dont nos exp\'eriences ont \'et\'e effectu\'ees.
 
 %Finalement, la section~\ref{coutsPpFf.sect} pr\'esente une application permettant de d\'eterminer les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} --- un \emph{micro benchmark} consistant en un pipeline avec un seul op\'erateur. 
 
 
 
-\section{M\'ethode utilis\'ee pour les exp\'erimentations}
+\section{M\'ethode utilis\'ee pour les exp\'eriences}
 \label{usedMethodsForBenchmarks.chap}
 
 \subsection{Caractéristiques des machines et compilateurs utilisés}
@@ -55,7 +55,7 @@ Chaque syst\`eme informatique a des caract\'eristiques propres. Quelques-uns des
    & 8.3.0
 \\\hline
 \end{tabular}
-\caption[Les caract\'eristiques des machines utilis\'ees dans nos exp\'eriences.]{Les caract\'eristiques des machines utilis\'ees dans nos exp\'eriences. Le tableau d\'ecrit pour chaque machine le syst\`eme d'exploitation utilis\'e, le type de la machine (mono- ou multi-usager), le nombre de coeurs (physiques vs.\ logiques) et les versions des compilateurs utilis\'es dans nos exp\'eriences.}
+\caption[Les caract\'eristiques des machines utilis\'ees dans les exp\'eriences.]{Les caract\'eristiques des machines utilis\'ees dans les exp\'eriences. Le tableau d\'ecrit pour chaque machine le syst\`eme d'exploitation utilis\'e, le type de la machine (mono- ou multi-usager), le nombre de coeurs (physiques vs.\ logiques) et les versions des compilateurs utilis\'es dans les exp\'eriences.}
 \label{machines.table}
 \end{table}
 
@@ -153,7 +153,7 @@ Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moy
 
 \subsection{Description de l'application \TT{WordCount}}
 
-Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Des extraits des programmes utilis\'es pour les exp\'erimentations pour \TT{WordCount} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount.ann}.
+Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Des extraits des programmes utilis\'es pour les exp\'eriences pour \TT{WordCount} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount.ann}.
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
@@ -276,7 +276,7 @@ laisse ici, juste au cas.}
 \section{Expériences avec l'application \TT{StockPrice}}
 \label{stockprice.sect}
 
-Dans le monde informatique actuel, les institutions financi\`eres produisent d'\'enormes quantit\'es d'informations, par ex., des informations sur les march\'es boursiers. Un probl\`eme important qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees afin de produire des informations utiles sur le comportement du march\'e, notamment pour prendre des d\'ecisions d'investissement. Cette section pr\'esente une application qui calcule le prix maximum pour diverses actions d'un marché boursier. Des extraits des programmes utilis\'es pour les exp\'erimentations pour \TT{StockPrice} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-stockprice.ann}.
+Dans le monde informatique actuel, les institutions financi\`eres produisent d'\'enormes quantit\'es d'informations, par ex., des informations sur les march\'es boursiers. Un probl\`eme important qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees afin de produire des informations utiles sur le comportement du march\'e, notamment pour prendre des d\'ecisions d'investissement. Cette section pr\'esente une application qui calcule le prix maximum pour diverses actions d'un marché boursier. Des extraits des programmes utilis\'es pour les exp\'eriences pour \TT{StockPrice} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-stockprice.ann}.
 
 
 \subsection{Description de l'application}
