@@ -1,5 +1,5 @@
 
-\chapter{Évaluation des performances~: Comparaisons de \ppff\ avec Java et FastFlow}
+\chapter{Évaluation des performances~: Comparaisons de \ppff\ avec \TT{Java} et \TT{FastFlow}}
 \label{experiences.chap}
 
 Ce chapitre pr\'esente une \'evaluation exp\'erimentale de la biblioth\`eque \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele, plus sp\'ecifiquement avec \TT{Java} et \TT{FastFlow}.
@@ -21,6 +21,12 @@ alors que la section~\ref{stockprice.sect} pr\'esente une application permettant
 \subsection{Caractéristiques des machines et compilateurs utilisés}
 
 Chaque syst\`eme informatique a des caract\'eristiques propres. Quelques-uns des facteurs qui influencent les performances d'un tel syst\`eme sont le type de processeur, le nombre de processeurs ou de c\oe{}urs, et la vitesse des processeurs. 
+
+
+\GT{Pour la machine java (\M1, n'est-ce pas?), il faut mettre à jour
+les caractéristiques, car les résultats qui sont présentés sont pour
+les expériences réalisées après l'installation de la nouvelle version
+de java.labunix.uqam.ca, différente de l'ancienne.}
 
 
 \newcommand{\LARGEUR}{3cm}
@@ -62,7 +68,7 @@ Chaque syst\`eme informatique a des caract\'eristiques propres. Quelques-uns des
 
 Afin d'avoir des r\'esultats plus représentatifs, nous avons conduit nos exp\'eriences sur trois machines diff\'erentes. Le tableau~\ref{machines.table} montre les caract\'eristiques de ces machines. Les machines \M1 et \M2 sont des machines multi-usagers, tandis que la machine \M3 est une machine mono-usager sur laquelle les exp\'eriences ont \'et\/e roul\'ees sans interf\'erence.
 %
-Soulignons que \M2 est très peu utilisée et que nous étions toujours
+Soulignons que \M2 est peu utilisée et que nous étions toujours
 le seul usager lorsque les expériences ont été menées. Quant aux
 expériences sur \M1, le serveur \TT{labunix} le plus utilisé, elles
 ont été lancées durant la nuit --- par une commande <<\TT{at 3:00AM
@@ -81,18 +87,18 @@ C'est la version parallèle avec \emph{warmup} et \emph{JIT} qui a \'et\'e utili
 %
 \footnote{Initialement, des expériences préliminaires ont aussi été
 effectuées en désactivant complètement le JIT. Toutefois, les temps
-d'exécutions étaient alors tellement longs que cette variante a été
-ignorée.}
+d'exécutions étaient alors tellement longs que cette variante a
+rapidement été laissée de côté.}
 
 
-L'effet de pr\'echauffage (\emph{warmup} en anglais) est g\'en\'eralement d\^u au chargement des classes et \`a l'interpr\'etation du \emph{bytecode} au d\'emarrage du programme plutôt qu'à l'exécution directe d'instructions machines. Lorsqu'une nouvelle application d\'emarre, toutes les classes requises sont charg\'ees en m\'emoire par le mod\`ele de chargement paresseux (\emph{lazy loading} en anglais). Un tel mod\`ele est couramment utilis\'e pour reporter l'initialisation d'un objet jusqu'au moment o\`u il est n\'ecessaire.
+L'effet de pr\'echauffage (\emph{warmup}) est g\'en\'eralement d\^u au chargement des classes et \`a l'interpr\'etation du \emph{bytecode} au d\'emarrage du programme plutôt qu'à l'exécution directe d'instructions machines. Lorsqu'une nouvelle application d\'emarre, toutes les classes requises sont charg\'ees en m\'emoire par le mod\`ele de chargement paresseux (\emph{lazy loading}). Un tel mod\`ele est couramment utilis\'e pour reporter l'initialisation d'un objet jusqu'au moment o\`u il est n\'ecessaire.
 %
 \label{jitDescription.sect}
 %
 Il y a aussi l'effet de la compilation 
 \emph{JIT}~\citep{cramer1997compiling} (\emph{Just-In-Time compiler}),
 %
-un composant de l'environnement d'ex\'ecution Java qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du \emph{bytecode} en langage machine a un impact positif significatif sur la vitesse d'ex\'ecution une fois que le code machine s'exécute directement.
+un composant de l'environnement d'ex\'ecution \TT{Java} qui am\'eliore les performances des applications en compilant le \emph{bytecode} de la machine virtuelle en code machine \emph{au moment de l'ex\'ecution}. Le \emph{bytecode} est l'ensemble des instructions de la \emph{JVM} (\emph{Java Virtual Machine}) qui permet aux applications d'\^etre ex\'ecut\'ees sur plusieurs plates-formes. La conversion du \emph{bytecode} en langage machine a un impact positif significatif sur la vitesse d'ex\'ecution une fois que le code machine s'exécute directement.
 
 Dans toutes nos exp\'eriences, les programmes \TT{Java} comparés avec \ppff\ ont donc \'et\'e pr\'echauff\'es en lan\c{c}ant une proc\'edure de pr\'echauffage avant de mesurer le temps pour la portion de code pertinente. Cette proc\'edure de pr\'echauffage a consisté à faire un traitement préalable d'une \emph{fraction} des données, traitement utilisant toutes les m\'ethodes utilis\'ees par la suite.
 
@@ -103,15 +109,17 @@ Il faut noter que le temps mesur\'e dans toutes les exp\'eriences \emph{exclut l
 
 \subsection{Exemples d'expériences préliminaires}
 
-\graphe{WordCount-temps-java-11-20}{Temps Java}
+\graphe{WordCount-temps-java-11-20}{Java}
 
-\graphe{WordCount-temps-java-2-10}{Temps PpFf}
+\graphe{WordCount-temps-java-2-10}{PpFf}
 %\graphe{WordCount-log-temps-java-2-10}{Temps PpFf (log)}
 
 Afin de montrer les \'etapes des diverses exp\'eriences qui ont conduit aux r\'esultats finaux, l'annexe~\ref{ExperiencesPreliminairesWordCount.ann} pr\'esente un extrait d'un fichier de configuration \TT{WordCount-bm-config.rb}, utilis\'e pour l'ex\'ecution des expériences, alors que les figures~\grapheref{WordCount-temps-java-11-20} et~\grapheref{WordCount-temps-java-2-10} présentent quelques-uns des r\'esultats préliminaires obtenus.
 
-Cr\'e\'e par mon directeur de recherche, ce script permet de configurer les expériences \`a ex\'ecuter. Dans ce fichier on peut sp\'ecifier tous les param\`etres dont on a besoin : la machine pour laquelle est définie l'expérience, les quantités de donn\'ees, le nombre de r\'ep\'etitions, et les programmes \`a ex\'ecuter. Les donn\'ees sont regroup\'ees par taille en diverses cat\'egories, les plus importantes étant \TT{donnees\_preliminaires}, \TT{pas\_mal\_de\_donnees} et \TT{beaucoup\_de\_donnees}. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser pour chacun des programmes. 
+Cr\'e\'e par mon directeur de recherche, un script de configuration permet de décrire les expériences \`a ex\'ecuter pour une application donnée, dans notre exemple, pour \TT{WordCount}. Dans ce fichier, pour chaque expérience, on peut sp\'ecifier tous les param\`etres requis : la ou les machines sur laquelle est définie l'expérience, la quantité de donn\'ees à traiter, le nombre de r\'ep\'etitions (pour le calcul de la moyenne), et les divers programmes \`a ex\'ecuter et comparer. 
 
+Les quantités de donn\'ees à traiter sont regroup\'ees en diverses cat\'egories, les plus importantes étant \TT{donnees\_preliminaires}, \TT{pas\_mal\_de\_donnees} et \TT{beaucoup\_de\_donnees}. Les deux premi\`eres cat\'egories ont servi pour d\'eterminer les meilleures versions \`a utiliser pour chacun des programmes (expériences préliminaires). 
+%
 Par exemple, les graphes des figures~\grapheref{WordCount-temps-java-11-20} et~\grapheref{WordCount-temps-java-2-10} montrent les temps d'ex\'ecution pour \TT{WordCount} sur la machine \M1 pour le programme \TT{WordCount.java} (expérience no.~11) et pour le programme \TT{WordCount.cpp}, donc version \TT{PpFf} (expériences no.~2). Les temps sont en millisecondes (ms), obtenus en prenant la moyenne de 20 ou 10 ex\'ecutions, selon le cas.
 %
 Pour la version \TT{Java}, quatre séries de mesures ont été
@@ -123,20 +131,20 @@ Pour la version \ppff, trois  s\'eries de mesures ont \'et\'e effectu\'ees : \TT
 
 
 
-L'objectif de ces mesures pr\'eliminaires est de d\'eterminer la valeur qui semble la meilleure pour les temps d'ex\'ecution. On peut observer que le temps d'ex\'ecution pour \TT{PpFf-3} est beaucoup plus grand que les deux autres (figure~\grapheref{WordCount-temps-java-2-10}).
+L'objectif de ces mesures pr\'eliminaires était de d\'eterminer la valeur qui semble la meilleure pour les temps d'ex\'ecution. On peut observer que le temps d'ex\'ecution pour \TT{PpFf-3} est beaucoup plus grand que les deux autres (figure~\grapheref{WordCount-temps-java-2-10}).
 %
-Pour mieux distinguer les performances entre deux ou plusieurs versions, une échelle logarithmique peut aussi être utilis\'ee. 
+(Pour mieux distinguer les performances entre deux ou plusieurs versions, une échelle logarithmique peut aussi être utilis\'ee, lorsque nécessaire.)
 %
-Pour la machine \M1, \TT{PpFf-2} est donc la version qui sera compar\'ee aux autres programmes lors des expériences finales. Ces expériences comparent donc les meilleures versions entre elles, en utilisant de plus grandes quantit\'es de donn\'ees et avec un plus grand nombre de r\'ep\'etitions, soit 40.
+Pour la machine \M1, \TT{PpFf-2} est donc la version qui sera compar\'ee aux autres programmes lors des expériences finales. Ces expériences finales comparent donc les meilleures versions entre elles, en utilisant de plus grandes quantit\'es de donn\'ees et avec un plus grand nombre de r\'ep\'etitions, soit 40.
 
 
 Le nombre de r\'ep\'etitions indique combien de fois chaque programme est exécuté et son temps mesuré.
 %
 On calcule ensuite la moyenne et l'écart-type. Dans un graphe comme celui de la figure~\grapheref{WordCount-temps-java-11-20}, les moyennes sont repr\'esent\'ees par les valeurs qui composent la courbe sur le graphe et les dispersions par des petits barres verticales (par ex., voir les valeurs pour \TT{Java+}
-de la figure~\grapheref{WordCount-temps-java-11-20}). Plus précisément, la barre verticale indique un intervalle de 2 écart-types, donc un intervalle qui contient approximativement \emph{95~\% des temps mesurés}.
+de la figure~\grapheref{WordCount-temps-java-11-20}). Plus précisément, la barre verticale indique un intervalle de deux (2) écart-types, donc un intervalle qui contient approximativement \emph{95~\% des temps mesurés}.
 
 
-Chaque s\'erie d'exp\'eriences finales inclut les versions s\'equentielles pour les programmes compar\'es des deux biblioth\`eques. Identifi\'ees sur les graphes par \TT{Seq} pour la version s\'equentielle de \TT{PpFf} et par \TT{Java} pour la version s\'equentielle avec warm-up de \TT{Java}, ces versions utilisent les m\^emes fonctions auxiliaires que les versions parall\`eles, mais s'ex\'ecutent de fa\c{c}on strictement s\'equentielle. Ces programmes s\'equentiels ont aussi \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, nous avons utilis\'e l'acc\'el\'eration \emph{absolue}. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseurs avec un programme s\'equentiel, performant, qui r\'esout le m\^eme probl\`eme. 
+Chaque s\'erie d'exp\'eriences finales inclut les versions s\'equentielles pour les programmes compar\'es des deux biblioth\`eques. Identifi\'ees sur les graphes par \TT{Seq} pour la version s\'equentielle de \TT{PpFf} et par \TT{Java} pour la version s\'equentielle avec \emph{warm-up} de \TT{Java}, ces versions utilisent les m\^emes fonctions auxiliaires que les versions parall\`eles, mais s'ex\'ecutent de fa\c{c}on strictement s\'equentielle. Ces programmes s\'equentiels ont aussi \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, nous avons utilis\'e l'acc\'el\'eration \emph{absolue}. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseurs avec un programme s\'equentiel, performant, qui r\'esout le m\^eme probl\`eme. 
 
 Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moyenne a été calculée, ainsi que deux autres valeurs donnant un intervalle pour la valeur minimale et maximale de l'acc\'el\'eration. Repr\'esent\'ees aussi par des petites barres verticales dans les graphes des sections~\ref{wordcount.sect} et~\ref{stockprice.sect}, ces valeurs ainsi que l'accélération moyenne sont calcul\'ees comme suit~: 
 
@@ -153,7 +161,7 @@ Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moy
 
 \subsection{Description de l'application \TT{WordCount}}
 
-Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application simple qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Des extraits des programmes utilis\'es pour les exp\'eriences pour \TT{WordCount} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount.ann}.
+Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Des extraits des programmes utilis\'es pour les exp\'eriences pour \TT{WordCount} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount.ann}.
 
 \subsection{Mesures obtenues et analyse des r\'esultats}
 
@@ -211,37 +219,43 @@ traités. L'axe des $y$ indique l'accélération absolue par rapport à
 \end{figure}
 
 
-Dans cette section, nous \'evaluons l'application \TT{WordCount} en examinant le temps d'ex\'ecution, le d\'edit et l'acc\'el\'eration sur les trois machines : \M1, \M2 et \M3. Tel que d\'ecrit dans la section~\ref{usedMethodsForBenchmarks.chap}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiquée dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Deux instances parall\`eles d'un \emph{farm} ont \'et\'e utilis\'es sur la machine \M1, huit sur la machine \M2 et seulement une sur la machine \M3. Le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}, par exemple \TT{PpFf-2} utilise deux instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqué sur chaque graphe par \TT{Seq}, utilisant  les m\^emes fonctions auxiliaires que \TT{PpFf} et \TT{FastFlow}.
+Dans cette section, nous \'evaluons l'application \TT{WordCount} en examinant le temps d'ex\'ecution, le d\'edit et l'acc\'el\'eration sur les trois machines : \M1, \M2 et \M3. Tel que d\'ecrit dans la section~\ref{usedMethodsForBenchmarks.chap}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiquée dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Par exemple, pour \TT{PpFf}, quatre instances parall\`eles d'un \emph{farm} ont \'et\'e utilis\'es sur la machine \M1, neuf sur la machine \M2 et deux sur la machine \M3. Le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}, par exemple \TT{PpFf-4} utilise quatre instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqué sur chaque graphe par \TT{Seq}, utilisant  les m\^emes fonctions auxiliaires que \TT{PpFf} et \TT{FastFlow}.
 
-Les valeurs pour les unit\'es de mesures -- le temps d'ex\'ecution, le d\'ebit et l'acc\'el\'eration qui ont servi comme r\'ef\'erence pour comparer les trois programmes -- sont indiqu\'ees sur l'axe des~$y$ de chaque graphe, alors que le nombre de mots trait\'es est indiqu\'e sur l'axe des~$x$. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees --— un fichier sur disque --— contient un nombre croissant de mots. Ces nombres de mots varient de 752~856 \`a 10~185~035. Les r\'esultats finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit : 
+Les valeurs pour les unit\'es de mesures --- le temps d'ex\'ecution, le d\'ebit et l'acc\'el\'eration qui ont servi comme r\'ef\'erence pour comparer les trois programmes --- sont indiqu\'ees sur l'axe des~$y$ de chaque graphe, alors que le nombre de mots trait\'es est indiqu\'e sur l'axe des~$x$. Afin de conna\^itre l'impact de la quantit\'e de donn\'ees \`a traiter, les exp\'eriences ont \'et\'e men\'ees en utilisant plusieurs ensembles de donn\'ees. Chaque ensemble de donn\'ees --— un fichier sur disque --— contient un nombre croissant de mots. Ces nombres de mots varient de 752~856 \`a 10~185~035. Les r\'esultats finaux sont des moyennes pour 40~r\'ep\'etitions. Ils sont pr\'esent\'es comme suit : 
 
 
 
 \begin{itemize}
 
-\item La figure~\ref{WordCount-temps.fig} pr\'esente les temps
+\item Figure~\ref{WordCount-temps.fig}~: les temps
 d'ex\'ecution sur les machines \M1, \M2 et \M3.
 
-\item La figure~\ref{WordCount-debits.fig} pr\'esente les débits sur
-les machines \M1, \M2 et \M3.
+\item Figure~\ref{WordCount-debits.fig}~: les débits sur \M1, \M2 et \M3.
 
-\item La figure~\ref{WordCount-accs.fig} pr\'esente les accélérations
+\item Figure~\ref{WordCount-accs.fig}~: les accélérations
 par rapport à la version \TT{Seq}entielle
-sur les machines \M1, \M2 et \M3.
+sur \M1, \M2 et \M3.
 \end{itemize}
 
 
 Il faut pr\'eciser que pour \TT{WordCount}, le r\'esultat n'est pas tri\'e. Du point de vue de la parall\'elisation, le tri est plut\^ot lie \'a l'algorithme de tri et non \`a la parall\'elisation. Pour toutes les versions, c'est un \emph{dictionnaire} qui est produit --- \TT{unordered\_map} en \TT{C++}, \TT{HashMap} en \TT{Java} --- et la mesure du temps d'exécution se termine une fois le \emph{dictionnaire} construit.
 
-En comparant les temps d'ex\'ecution entre \TT{PpFf} et \TT{Java}, on constate que, pour les machines \M1 et \M3, \TT{Java} est plus performant que \TT{PpFf}. La gestion de \emph{threads} entre les deux programmes diff\`ere. \TT{PpFf} ex\'ecute chaque op\'eration d'un \TT{pipeline} sur un \emph{thread} diff\'erent. Par exemple, les cinq op\'erations de \TT{WordCount} --- \TT{source}, \TT{flatMap}, \TT{map}, \TT{find} et \TT{reduceByKey} --- s'ex\'ecutent sur cinq \emph{threads} diff\'erents. Par contre, \TT{Java} g\`ere la cr\'eation de \emph{threads} par l'interm\'ediaire du \emph{framework} \TT{fork/join}. D\'ecrit dans le chapitre~\ref{outils_connus.chap}, le \emph{framework} divise une t\^ache en plus petites sous-t\^aches ind\'ependantes, et ce r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees. Ce m\'ecanisme permet \`a \TT{Java} d'\^etre plus efficace que \TT{PpFf--1} sur les machines \M1 et \M3. \TT{PpFf} est plus rapide que \TT{Java} sur la machine \M2. La figure~\ref{WordCount-debits.fig}, machine \M2, montre cet aspect. Par rapport aux machines \M1 et \M3, \M2 dispose de plusieurs processeurs. Cela a permis d'augmenter le nombre d'instances parall\`eles d'un \emph{farm} dans le programme \TT{PpFf} en arrivant \`a huit et en cons\'equence \TT{PpFf} est plus performant que \TT{Java}. 
+
+\GT{Il faudrait vérifier à nouveau si le texte ci-bas, qui dit quand
+PpFF est plus/moins rapide que Java/FastFlow, est toujours correct par
+rapport aux nouveaux résultats.}
+
+En comparant les temps d'ex\'ecution entre \TT{PpFf} et \TT{Java}, on constate que, pour les machines \M1 et \M3, \TT{Java} est plus performant que \TT{PpFf}. La gestion de \emph{threads} entre les deux programmes diff\`ere. \TT{PpFf} ex\'ecute chaque op\'eration d'un \TT{pipeline} sur un \emph{thread} diff\'erent. Par exemple, les cinq op\'erations de \TT{WordCount} --- \TT{source}, \TT{flatMap}, \TT{map}, \TT{find} et \TT{reduceByKey} --- s'ex\'ecutent sur cinq \emph{threads} diff\'erents. Par contre, \TT{Java} g\`ere la cr\'eation de \emph{threads} par l'interm\'ediaire du \emph{framework} \TT{fork/join}. D\'ecrit dans le chapitre~\ref{outils_connus.chap}, le \emph{framework} divise une t\^ache en plus petites sous-t\^aches ind\'ependantes, et ce r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees, et ce de façon efficace grâce à une approche de \emph{work stealing}~\citep{FrigoLeiRan98}. Ce m\'ecanisme permet \`a \TT{Java} d'\^etre plus efficace que \TT{PpFf} sur les machines \M1 et \M3. \TT{PpFf} est plus rapide que \TT{Java} sur la machine \M2. La figure~\ref{WordCount-debits.fig}, machine \M2, montre cet aspect. Par rapport aux machines \M1 et \M3, \M2 dispose d'un plus grand nombre de processeurs. Cela a permis d'augmenter le nombre d'instances parall\`eles d'un \emph{farm} dans le programme \TT{PpFf} et en cons\'equence \TT{PpFf} est plus performant que \TT{Java}. 
 
 
-En comparant les temps d'ex\'ecution entre les programmes \TT{PpFf} et \TT{FastFlow}, on constate que, \TT{FastFlow} est l\'eg\`erement plus performant que \TT{PpFf}. On rappelle que \TT{PpFf} est impl\'ement\'e au–dessus de la biblioth\`eque \TT{FastFlow}. C'est-\`a-dire que \TT{PpFf} introduit un faible surco\^ut par rapport \`a \TT{FastFlow}. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --— c'est ce qui explique, surtout dans les figures~\ref{WordCount-temps.fig} et~\ref{WordCount-debits.fig}, que les lignes du graphe pour \TT{PfFf} et \TT{FastFlow}, tant pour le temp d'ex\'ecution que pour le d\'ebit, sont quasiment identiques. La plus grande diff\'erence entre les temps d'ex\'ecution de deux programmes peut \^etre constat\'ee sur le machin \M3 (voir la figure~\ref{WordCount-temps.fig}). Or, en prenant en consid\'eration le grand volume de traitement des deux applications, cette diff\'erence semble n\'egligeable.
+\GT{Je crois que ce que dit la première phrase n'est plus vrai!? À vérifier!}
 
-Afin de mieux comparer les deux programmes, \TT{PpFf} et \TT{Java}, nous avons aussi calculé, à partir des mêmes séries d'exp\'eriences, le d\'ebit, soit le nombre de mots trait\'e par seconde. Tel que montr\'e dans la figure~\ref{WordCount-debits.fig}, ces débits ont \'et\'e calculés pour les trois machines. L'axe des $x$ indique le nombre de mots trait\'es et l'axe des $y$ indique le nombre de milliers de mots par seconde (\TT{K-mots/s}). Un point int\'eressant, qui peut \^etre observ\'e dans les diagrammes de d\'ebits, est que le d\'ebit est relativement constant. En prenant comme exemple le diagramme pour \TT{PpFf-2} pour \M1 de la figure~\ref{WordCount-debits.fig}, on peut noter que le d\'ebit reste relativement stable peu importe la taille du fichier. Cela d\'emontre que \TT{PpFf} est efficace non seulement pour un petit volume de travail, mais aussi pour de grands traitements de donn\'ees.
+En comparant les temps d'ex\'ecution entre les programmes \TT{PpFf} et \TT{FastFlow}, on constate que \TT{FastFlow} est l\'eg\`erement plus performant que \TT{PpFf}. On rappelle que \TT{PpFf} est impl\'ement\'e au–dessus de la biblioth\`eque \TT{FastFlow}. C'est-\`a-dire que \TT{PpFf} introduit certains surco\^uts par rapport \`a \TT{FastFlow}. Pourtant, les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} restent faibles --- c'est ce qui explique, surtout dans les figures~\ref{WordCount-temps.fig} et~\ref{WordCount-debits.fig}, que les lignes du graphe pour \TT{PfFf} et \TT{FastFlow}, tant pour le temp d'ex\'ecution que pour le d\'ebit, sont quasiment identiques. La plus grande diff\'erence entre les temps d'ex\'ecution de deux programmes peut \^etre constat\'ee sur le machin \M3 (voir la figure~\ref{WordCount-temps.fig}). Or, en prenant en consid\'eration le grand volume de traitement des deux applications, cette diff\'erence semble n\'egligeable.
+
+Afin de mieux comparer les deux programmes, \TT{PpFf} et \TT{Java}, nous avons aussi calculé, à partir des mêmes séries d'exp\'eriences, le d\'ebit, soit le nombre de mots trait\'e par seconde. Tel que montr\'e dans la figure~\ref{WordCount-debits.fig}, ces débits ont \'et\'e calculés pour les trois machines. L'axe des $x$ indique le nombre de mots trait\'es et l'axe des $y$ indique le nombre de milliers de mots par seconde (\TT{K-mots/s}). Un point int\'eressant, qui peut \^etre observ\'e dans les diagrammes de d\'ebits, est que le d\'ebit est relativement constant. En prenant comme exemple le diagramme pour \TT{PpFf-4} pour \M1 de la figure~\ref{WordCount-debits.fig}, on peut noter que le d\'ebit reste relativement stable peu importe la taille du fichier. Cela d\'emontre que \TT{PpFf} est efficace non seulement pour un petit volume de travail, mais aussi pour de grands traitements de donn\'ees.
 
 
-La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a comparer les acc\'el\'erations. Illustr\'ees sur la figure~\ref{WordCount-accs.fig}, les acc\'el\'erations indiquent \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. En comparant les acc\'el\'erations du programme \TT{PpFf} avec celle de \TT{FastFlow}, on peut observer qu'elles sont presque identiques, et ce pour les trois machines. Cela montre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont n\'egligeables. Par contre, \TT{Java} a de meilleures acc\'el\'erations pour \M1 et \M3, mais pas pour \M2. Comme on peut le constater dans le tableau~\ref{machines.table}, la machine \M2 dispose d'un plus grand nombre de processeurs par rapport \`a \M1 et \M3. Cet avantage est exploit\'e par les instances de \emph{farm}, permettant \`a \TT{PpFf} d'obtenir une meilleure acc\'el\'eration que \TT{Java} sur cette machine.
+La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a comparer les acc\'el\'erations. Illustr\'ees sur la figure~\ref{WordCount-accs.fig}, les acc\'el\'erations indiquent \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. En comparant les acc\'el\'erations du programme \TT{PpFf} avec celles de \TT{FastFlow}, on peut observer qu'elles sont presque identiques, et ce pour les trois machines. Cela montre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont n\'egligeables. Par contre, \TT{Java} a de meilleures acc\'el\'erations pour \M1 et \M3, mais pas pour \M2. Comme on peut le constater dans le tableau~\ref{machines.table}, la machine \M2 dispose d'un plus grand nombre de processeurs par rapport \`a \M1 et \M3. Cet avantage est exploit\'e par les instances de \emph{farm}, permettant \`a \TT{PpFf} d'obtenir une meilleure acc\'el\'eration que \TT{Java} sur cette machine.
 
 
 \HIDDEN{
@@ -329,6 +343,9 @@ LENS 100.00 100.00 0.1000 0.00 0.25 0.10 C 0.00 3.65996266031
 
 \item Une op\'eration \TT{Flow::source} qui d\'efinit la source du flux de donn\'ees. Ici, la source est constitu\'ee par les lignes contenues dans un fichier. Le listing~\ref{exampleInfoActionFromFile} montre un exemple avec quelques enregistrements tir\'es d'un des fichiers de données. 
 
+
+\medskip
+
 Un enregistrement est identifi\'e par les informations suivantes : le nom de l'action, la valeur actuelle de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, le taux de dividende, la volatilit\'e du prix de l'action, le temps qu'il reste \`a l'option avant son \'ech\'eance (exprim\'e en ann\'ees), le type d'option (\TT{C=CALL}~: prix pour une option d'achat~; \TT{P=PUT}~: prix pour une option de vente), la valeur de dividende et la valeur de r\'ef\'erence \TT{DerivaGem}. 
 Les valeurs \TT{DerivaGem}, la valeur et le taux de dividende ne sont pas utilis\'es dans \TT{StockPrice} pour calculer le prix d'une action.
 
@@ -378,26 +395,28 @@ indique le nombre de transactions traitées. L'axe des $y$ indique le nombre de 
 \end{figure}
 
 
-Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution et le d\'edit sur les trois machines : \M1, \M2 et \M3. Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiqu\'ee dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Les meilleures versions choisies pour les deux programmes sont les versions utilisant quatre instances parall\`eles d'un \emph{farm} sur les machines \M1 et \M2 et deux sur la machine \M3. Le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqu\'e sur chaque graphe par \TT{Seq}. Chaque programme calcule le prix maximum pour plusieurs actions. Les temps d'ex\'ecution et les d\'ebit r\'esultants sont repr\'esent\'es sur l'axe des~$y$ de chaque graphe, alors que les nombres de transactions trait\'ees sont repr\'esent\'es sur l'axe des~$x$. Les r\'esultats de exp\'eriences finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit :
+Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution et le d\'ebit sur les trois machines : \M1, \M2 et \M3. 
+
+Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiqu\'ee dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Les meilleures versions choisies pour \TT{PpFf} (resp.\ \TT{FastFlow}) sont celles utilisant cinq et quatre (resp.\ quatre et quatre) instances parall\`eles d'un \emph{farm} sur les machines \M1 et \M2 et deux sur la machine \M3. Comme pour \TT{WordCount}, le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqu\'e sur chaque graphe par \TT{Seq}. Chaque programme calcule le prix maximum pour plusieurs actions. Les temps d'ex\'ecution et les d\'ebit r\'esultants sont repr\'esent\'es sur l'axe des~$y$ de chaque graphe, alors que les nombres de transactions trait\'ees sont repr\'esent\'es sur l'axe des~$x$. Les r\'esultats de exp\'eriences finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit :
 
 
 \begin{itemize}
 
-\item La figure~\ref{StockPrice-temps.fig} pr\'esente les temps d'ex\'ecution sur les machines \M1, \M2 et \M3.
+\item Figure~\ref{StockPrice-temps.fig}~: les temps d'ex\'ecution sur les machines \M1, \M2 et \M3.
 
-\item La figure~\ref{StockPrice-debits.fig} pr\'esente les d\'ebits sur les machines \M1, \M2 et \M3.
+\item Figure~\ref{StockPrice-debits.fig}~: les d\'ebits sur les machines \M1, \M2 et \M3.
 
 \end{itemize}
 
 
 En examinant les temps d'ex\'ecution sur les trois machines, on peut constater que \TT{Java} est plus rapide que \TT{PpFf}. On verra dans la section~\ref{limitesppff.sect} pourquoi \TT{Java} est plus performant. Par contre, si on compare \TT{PpFf} et \TT{FastFlow}, les diff\'erences des temps d'ex\'ecution sont faibles. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont négligeables.
 
-\`A partir des m\^emes s\'eries d'exp\'eriences, nous avons aussi calcul\'e les d\'ebits, soit le nombre de transactions trait\'ees par seconde. Dans la figure~\ref{StockPrice-debits.fig}, on trouve les d\'ebits moyens, indiqués par les valeurs qui composent la courbe sur le graphe, ainsi que des petites barres verticales qui indiquent la dispersion de débits mesurés~; comme pour \TT{WordCount}, cet intervalle indique la moyenne $\pm$ deux fois l'écart-type. Un point int\'eressant, qui peut \^etre observ\'e dans les graphes de d\'ebits, est que la dispersion du d\'ebit pour \TT{Java} est plus grande que celle de \TT{PpFf}. Cela d\'emontre que \TT{PpFf} semble plus stable que \TT{Java}. 
+\`A partir des m\^emes s\'eries d'exp\'eriences, nous avons aussi calcul\'e les d\'ebits, soit le nombre de transactions trait\'ees par seconde. Dans la figure~\ref{StockPrice-debits.fig}, on trouve les d\'ebits moyens, indiqués par les valeurs qui composent la courbe sur le graphe, ainsi que des petites barres verticales qui indiquent la dispersion de débits mesurés~; comme pour \TT{WordCount}, cet intervalle indique la moyenne $\pm$ deux fois l'écart-type. Un point int\'eressant, qui peut \^etre observ\'e dans les graphes de d\'ebits, est que la dispersion du d\'ebit pour \TT{Java} est plus grande que celle de \TT{PpFf}. 
 
 \section{Autres expériences avec l'application \TT{WordCount}~: Utilisation de \TT{parallel} et nombre de \emph{threads}} 
 \label{autres-experiences-wordcount.sect}
 
-On a vu dans la plupart des exp\'eriences effectu\'ees dans ce chapitre que notre biblioth\`eque \TT{PpFf} est moins performante que \TT{Java}. Cela est d\^u \`a la gestion de \emph{threads} qui diff\`ere entre les deux programmes. Dans cette section, nous montrerons que \TT{PpFf} reste une biblioth\`eque assez performante en expliquant le fonctionnement et la gestion de \emph{threads} de \TT{PpFf}. 
+On a vu dans la plupart des exp\'eriences présentées dans les sections précédentes que notre biblioth\`eque \TT{PpFf} est généralement moins performante que \TT{Java}. Cela est d\^u \`a la gestion de \emph{threads} qui diff\`ere entre les deux programmes. Dans cette section, nous analysons plus en détail le fonctionnement et la gestion de \emph{threads} de \TT{PpFf}. 
 
 La cr\'eation d'un \emph{thread} est une opération co\^uteuse. La surcharge varie selon les plates-formes, mais la cr\'eation d'un \emph{thread} requiert toujours l'exécution d'un grand nombre d'instructions additionnelles. Si le traitement effectué par un \emph{thread} est trop petit, il devient inutile d'avoir ce \emph{thread} puisque les surcoûts peuvent être aussi grands que le traitement lui-même. Donc, afin d'amortir les co\^uts li\'es \`a la cr\'eation d'un \emph{thread}, il faut avoir suffisamment de travail à faire faire par le \emph{thread} pour que cela en vaille la peine.
 
@@ -406,7 +425,7 @@ Les exp\'eriences présentées dans cette section vont d\'emontrer que la charge
 
 \subsection{Description de trois variantes de \TT{WordCount}}
 
-L'application choisie pour ces exp\'eriences est l'application \TT{WordCount}, d\'ecrite dans la section~\ref{descriptionWordCount.sect}. Afin de montrer les coûts associés à la gestion des \emph{threads}, trois versions de \TT{WordCount} ont \'et\'e cr\'e\'ees : \TT{WordCountSplitted} avec un pipeline comptant cinq op\'erations, \TT{WordCount} avec quatre opérations, et \TT{WordCountMerged} avec seulement trois op\'erations. On doit pr\'eciser que le r\'esultat obtenu en ex\'ecutant les trois versions de \TT{WordCount} est identique et que l'appel à \TT{parallel()} (voir ci-bas) n'est pas compté dans les opérations. Des extraits du code utilis\'e pour la construction de trois versions sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount-sf.ann}. 
+L'application choisie pour ces exp\'eriences est l'application \TT{WordCount}, d\'ecrite dans la section~\ref{descriptionWordCount.sect}. Afin de montrer les coûts associés à la gestion des \emph{threads}, trois versions de \TT{WordCount} vont être comparées : \TT{WordCountSplitted} avec un pipeline comptant cinq op\'erations, \TT{WordCount} avec quatre opérations, et \TT{WordCountMerged} avec seulement trois op\'erations. On doit pr\'eciser que le r\'esultat obtenu en ex\'ecutant les trois versions de \TT{WordCount} est identique et que l'appel à \TT{parallel()} (voir ci-bas) n'est pas compté dans les opérations. Des extraits du code utilis\'e pour la définition de trois versions sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount-sf.ann}. 
 
 \goodbreak
 Les cinq op\'erations du pipeline pour \TT{WordCountSplitted} sont les suivantes :
@@ -415,7 +434,7 @@ Les cinq op\'erations du pipeline pour \TT{WordCountSplitted} sont les suivantes
 
 Note~: Dans tous les cas, l'appel à \TT{source} est immédiatement suivi d'un appel à \TT{parallel}, la m\'ethode qui permet de r\'epartir les \'el\'ements du flux entre divers sous-flux et \emph{threads}.
 
-\item \TT{map}, pour d\'ecomposer chaque ligne en une collection de mots;
+\item \TT{map}, pour d\'ecomposer chaque ligne en une collection de mots.
 
 \item \TT{flatten}, pour d\'ecomposer une collection de mots en mots individuels.
 
@@ -424,7 +443,7 @@ Note~: Dans tous les cas, l'appel à \TT{source} est immédiatement suivi d'un a
 \item \TT{reduceByKey}, pour regrouper les mots similaires ensemble et compter le nombre d'occurrences de chaque mot.
 \end{enumerate}
 
-La version \TT{WordCount} est cr\'e\'ee \`a partir de la version \TT{WordCountSplitted} en fusionnant les appels aux m\'ethodes \TT{map} et \TT{flatten}, qui sont remplac\'es par un appel à \TT{flatMap}.
+La version \TT{WordCount} est cr\'e\'ee \`a partir de la version \TT{WordCountSplitted} en \emph{fusionnant} les appels aux m\'ethodes \TT{map} et \TT{flatten}, qui sont remplac\'es par un appel à \TT{flatMap}.
 
 Finalement, 
 la version \TT{WordCountMerged} est cr\'e\'ee \`a partir de \TT{WordCount} en fusionnant les appels aux m\'ethodes \TT{flatMap} et \TT{map}. Plus précisément, ces deux étapes sont fusionn\'ees en combinant en une seule fonction l'argument fourni à \TT{flatMap} et celui fourni à \TT{map}. Donc, comme on peut le noter dans l'annexe~\ref{appendice-code-wordcount-f.ann}, les fonctions \TT{splitInWords} et \TT{toLowercaseLetters} (pass\'ees en argument à \TT{flatMap} et \TT{map}) sont remplac\'ees par la fonction \TT{splitInLowerCaseWords} (passée en argument au \TT{flatMap} de \TT{WordCountMerged}).
@@ -460,15 +479,15 @@ indique le temps d'exécution, en millisecondes.}
 \label{WordCount-merged-splitted-temps.fig}
 \end{figure}
 
-Nous allons maintenant \'evaluer les trois versions de \TT{WordCount} en examinant les temps d'ex\'ecution sur la machine \M3. Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Dans la premi\`ere s\'erie, nous avons utilis\'e deux instances parall\`eles d'un \emph{farm} et dans la deuxi\`eme seulement une instance.  Les r\'esultats sont présentés dans la figure~\ref{WordCount-merged-splitted-temps.fig}. Les trois versions de \TT{WordCount} (\TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged}) sont identifiées sur les graphes par \ppffs, \ppff\ et \ppffm\ suivi d'un suffixe entier, qui repr\'esente le nombre d'instances parall\`eles d'un \emph{farm}. Par exemple, \ppffs\TT{-2} repr\'esente la version du programme \TT{WordCountSplitted} qui utilise deux instances parall\`eles d'un \emph{farm} (\TT{parallel(2)}).
+Nous allons maintenant \'evaluer les trois versions de \TT{WordCount} en examinant les temps d'ex\'ecution sur la machine \M3. Deux s\'eries d'exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Dans la premi\`ere s\'erie, nous avons utilis\'e deux instances parall\`eles d'un \emph{farm} et dans la deuxi\`eme seulement une instance.  Les r\'esultats sont présentés dans la figure~\ref{WordCount-merged-splitted-temps.fig}. Les trois versions \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged} sont identifiées sur les graphes par \ppffs, \ppff\ et \ppffm\ suivi d'un suffixe entier, qui repr\'esente le nombre d'instances parall\`eles d'un \emph{farm}. Par exemple, \ppffs\TT{-2} repr\'esente la version du programme \TT{WordCountSplitted} qui utilise deux instances parall\`eles d'un \emph{farm} (\TT{parallel(2)}).
 
-On rappelle que, dans \TT{PpFf}, chaque op\'eration ajout\'ee dans le pipeline de traitement d'un flux s'ex\'ecute sur un \emph{thread} diff\'erent (parallélisme de flux). Le traitement peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm} (parallélisme de données), instances qui sont cr\'e\'ees en encha\^inant la m\'ethode \TT{parallel}. La valeur enti\`ere pass\'ee en argument de cette m\'ethode sp\'ecifie le nombre d'instances parall\`eles d'un \emph{farm} entre lesquelles sont r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, si la valeur de l'argument est 1, les versions \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged} sont ex\'ecut\'ees en utilisant repsectivement cinq, quatre et trois \emph{threads}, correspondant aux op\'erations (étages) de leur pipeline de traitement. Par contre, si la valeur pass\'ee en argument \`a  \TT{parallel} est~2, le flux est divis\'e en deux sous-flux et chaque op\'eration du pipeline après la m\'ethode \TT{parallel} est ex\'ecut\'ee sur un \emph{thread} diff\'erent pour chaque sous-flux. Par exemple, \TT{WordCountSplitted} avec \TT{parallel(2)} est ex\'ecut\'ee en utilisant 9 \emph{threads}, un \emph{thread} correspondant \`a la m\'ethode \TT{source} et les autres 8 \emph{threads} correspondant aux 4 op\'erations qui suivent, qui sont toutes ex\'ecut\'ees sur deux instances parall\`eles d'un \emph{farm}.
+On rappelle que, dans \TT{PpFf}, chaque op\'eration ajout\'ee dans le pipeline de traitement d'un flux s'ex\'ecute sur un \emph{thread} diff\'erent (parallélisme de flux). Le traitement peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm} (parallélisme de données), instances qui sont cr\'e\'ees en encha\^inant la m\'ethode \TT{parallel}. La valeur enti\`ere pass\'ee en argument de cette m\'ethode sp\'ecifie le nombre d'instances parall\`eles d'un \emph{farm} entre lesquelles sont r\'epartis les \'el\'ements du flux \`a traiter. Par exemple, si la valeur de l'argument est 1, les versions \TT{WordCountSplitted}, \TT{WordCount} et \TT{WordCountMerged} sont ex\'ecut\'ees en utilisant repsectivement cinq, quatre et trois \emph{threads}, correspondant aux op\'erations (étages) de leur pipeline de traitement. Par contre, si la valeur pass\'ee en argument \`a  \TT{parallel} est~2, le flux est divis\'e en deux sous-flux et chaque op\'eration du pipeline après la m\'ethode \TT{parallel} est ex\'ecut\'ee sur un \emph{thread} diff\'erent pour chaque sous-flux. Par exemple, \TT{WordCountSplitted} avec \TT{parallel(2)} est ex\'ecut\'ee en utilisant~9~\emph{threads}, un \emph{thread} correspondant \`a la m\'ethode \TT{source} et les autres 8 \emph{threads} correspondant aux~4~op\'erations qui suivent, qui sont toutes ex\'ecut\'ees sur deux instances parall\`eles d'un \emph{farm}.
 
 En comparant les temps d'ex\'ecution pour les trois versions de \TT{WordCount} pour la premi\`ere s\'erie d'exp\'eriences, avec \TT{parallel(2)}, on constate que \TT{WordCountMerged} est plus performant que les deux autres. Pour le m\^eme travail \`a ex\'ecuter, \TT{WordCountMerged} utilise seulement trois op\'erations par rapport aux versions \TT{WordCount} et \TT{WordCountSplitted} qui utilisent quatre et cinq opérations. Comme chaque op\'eration est ex\'ecut\'ee sur un \emph{thread} diff\'erent \emph{pour chaque sous-flux cr\'e\'e}, \TT{WordCountMerged} utilise moins de \emph{threads} pour la m\^eme tache \`a accomplir, et donc les co\^uts introduits par la cr\'eation des \emph{threads} sont moins importants. Cela peut \^etre observ\'e sur le graphe o\`u, pour une valeur maximale de mots \`a traiter, \TT{WordCountMerged} obtient un meilleur temps d'ex\'ecution que \TT{WordCount} de 0.5s et de plus de 1s que \TT{WordCountSplitted}. 
 
-Un effet semblable peut \^etre observ\'e pour la deuxi\`eme s\'erie d'exp\'eriences, avec l'utilisation de \TT{parallel(1)}. Dans ce cas, les diff\'erences de temps d'ex\'ecution entre les trois versions de programmes sont beaucoup plus petites. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. Par exemple, la version \TT{WordCount} ex\'ecut\'ee en utilisant quatre \emph{threads} est légèrement plus rapide (4419.6 ms) que la version \TT{WordCountSplitted} qui utilise cinq \emph{threads} (4526.6 ms). 
+Dans la deuxi\`eme s\'erie d'exp\'eriences, avec l'utilisation de \TT{parallel(1)}, les diff\'erences de temps d'ex\'ecution entre les trois versions de programmes sont beaucoup plus petites. L'utilisation d'une seule instance parall\`ele d'un \emph{farm} entra\^ine l'utilisation d'un seul \emph{thread} suppl\'ementaire entre les versions de programmes. Par exemple, la version \TT{WordCount} ex\'ecut\'ee en utilisant quatre \emph{threads} est légèrement plus rapide (4419.6 ms) que la version \TT{WordCountSplitted} qui utilise cinq \emph{threads} (4526.6 ms). 
 
-Malgr\'e cette faiblesse, le parall\'elisme de données dans \TT{PpFf} est important. Cela peut \^etre constat\'e si on compare les temps moyens d'ex\'ecution pour la m\^eme s\'erie d'exp\'eriences, \TT{parallel(1)}, entre la version \TT{WordCountMerged} et les deux autres versions. En utilisant trois \emph{threads}, la version \TT{WordCountMerged} avec un temps d'ex\'ecution de 4569.6 ms est moins performante que les versions \TT{WordCount} (4 \emph{threads}) et \TT{WordCountSplitted} (5~\emph{threads}). Cet effet est plus \'evident si on compare les temps d'ex\'ecution entre les deux s\'eries d'exp\'eriences. Les versions avec \TT{parallel(2)} --- \ppffs\TT{-2} (3730.5 ms), \ppff\TT{-2} (3079.8 ms) et \ppffm\TT{-2} (2479.9 ms) --- sont plus rapides que les versions avec \TT{parallel(1)} --- \ppffs\TT{-1} (4526.6 ms), \ppff\TT{-1} (4419.6 ms) et \ppffm\TT{-1} (4569.6 ms).
+Malgr\'e les coûts qui lui sont associés, le parall\'elisme de données dans \TT{PpFf} reste important. Cela peut \^etre constat\'e si on compare les temps moyens d'ex\'ecution pour la m\^eme s\'erie d'exp\'eriences, \TT{parallel(1)}, entre la version \TT{WordCountMerged} et les deux autres versions. En utilisant trois \emph{threads}, la version \TT{WordCountMerged} avec un temps d'ex\'ecution de 4569.6 ms est moins performante que les versions \TT{WordCount} (4 \emph{threads}) et \TT{WordCountSplitted} (5~\emph{threads}). Cet effet est plus \'evident si on compare les temps d'ex\'ecution entre les deux s\'eries d'exp\'eriences. Les versions avec \TT{parallel(2)} --- \ppffs\TT{-2} (3730.5 ms), \ppff\TT{-2} (3079.8 ms) et \ppffm\TT{-2} (2479.9 ms) --- sont plus rapides que les versions avec \TT{parallel(1)} --- \ppffs\TT{-1} (4526.6 ms), \ppff\TT{-1} (4419.6 ms) et \ppffm\TT{-1} (4569.6 ms).
 
 
 
@@ -527,19 +546,21 @@ indique le debits, en millirs de mots traités par second.}
 \section{Discussion des résultats et limites de \ppff}
 \label{limitesppff.sect}
 
-Dans ce chapitre, plusieurs exp\'eriences ont \'et\'e présentées dans le but d'évaluer les performances de \TT{PpFf}. Dans la premi\`ere partie de ce chapitre, deux applications utilisant la bibliothèque \TT{PpFf} ont \'et\'e compar\'ees avec des programmes Java \'equivalents utilisant les \TT{Streams} introduits en Java 8. Diverses unit\'es de mesures --– temps d'ex\'ecution, d\'ebit et acc\'elération --- ont servi comme r\'ef\'erence pour comparer ces programmes. Les r\'esultats de la plupart des exp\'eriences ont montr\'e que \TT{Java} se comporte mieux que \TT{PpFf}. 
+Dans ce chapitre, plusieurs exp\'eriences ont \'et\'e présentées dans le but d'évaluer les performances de \TT{PpFf}.
+
+Tout d'abord, deux applications utilisant \TT{PpFf} ont \'et\'e compar\'ees avec des programmes \TT{Java} \'equivalents utilisant les \TT{Streams}. Diverses unit\'es de mesures --– temps d'ex\'ecution, d\'ebit et acc\'elération --- ont servi comme r\'ef\'erence pour comparer ces programmes. Les r\'esultats de ces exp\'eriences ont montr\'e que \TT{Java} se comporte généralement mieux, ais pas toujours, que \TT{PpFf}. 
 %
-D'autres exp\'eriences ont aussi \'et\'e faites pour comparer \TT{PpFf} avec \TT{FastFlow}. Les r\'esultats de ces exp\'eriences ont montr\'e que les surco\^uts introduits par \TT{PpFf} sont peu \'elev\'es.
+Ces mêmes exp\'eriences ont aussi permis de comparer \TT{PpFf} avec \TT{FastFlow}. Les r\'esultats ont montr\'e que les surco\^uts introduits par \TT{PpFf} sont peu \'elev\'es.
 
 
-Dans la derni\`ere section de ce chapitre (Sect.~\ref{autres-experiences-wordcount.sect}), d'autres exp\'eriences ont \'et\'e men\'ees pour comparer diff\'erentes versions du programme \TT{WordCount}, versions cr\'e\'ees enti\`erement \`a l'aide de la biblioth\`eque \TT{PpFf}.
+Ensuite, d'autres exp\'eriences ont \'et\'e men\'ees pour comparer diff\'erentes versions du programme \TT{WordCount}, versions cr\'e\'ees enti\`erement \`a l'aide de la biblioth\`eque \TT{PpFf}.
 %
 % Ces exp\'eriences ont montr\'e que \TT{PpFf} reste une biblioth\`eque assez efficace.
 %
 Ces expériences nous ont montré que lorsqu'un trop grand nombre de
 \emph{threads} sont créés, le programme devient moins efficace.
 
-Un programme cr\'e\'e en utilisant la biblioth\`eque \TT{PpFf} peut \^etre d\'ecompos\'e en diff\'erents \'etages (\'etapes), \'etages qui repr\'esentent les op\'erations à effectuer dans la cha\^ine de traitement d'un flux. Con\c{c}u dans un style fonctionnel, \TT{PpFf} permet de d\'ecomposer un programme en tr\`es fines t\^aches. Or, la taille d'une telle t\^ache --- sa granularit\'e --- qui repr\'esente le travail dans un \'etage, influence fortement les temps d'ex\'ecution du programme. Les r\'esultats des exp\'eriences de la section~\ref{autres-experiences-wordcount.sect} ont montr\'e que si la granularit\'e est trop fine et qu'il y a trop de \emph{threads}, le programme résultant sera moins performant. 
+Un programme cr\'e\'e en utilisant la biblioth\`eque \TT{PpFf} peut \^etre d\'ecompos\'e en diff\'erents \'etages (\'etapes), \'etages qui repr\'esentent les op\'erations à effectuer dans la cha\^ine de traitement d'un flux. Con\c{c}u dans un style fonctionnel, \TT{PpFf} permet de d\'ecomposer un programme en fines t\^aches. Or, la taille d'une telle t\^ache --- sa granularit\'e --- qui repr\'esente le travail dans un \'etage, influence fortement les temps d'ex\'ecution du programme. Les r\'esultats des exp\'eriences de la section~\ref{autres-experiences-wordcount.sect} ont montr\'e que si la granularit\'e est trop fine et qu'il y a trop de \emph{threads}, le programme résultant sera moins performant. 
 
 Donc, la d\'ecomposition en \'etages est importante et utile, mais il faut s'assurer que le travail fait par un \'etage soit assez gros, sinon les surco\^uts du parall\'elisme deviennent trop grands.
 %
