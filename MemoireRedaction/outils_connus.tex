@@ -20,10 +20,12 @@ Un \'el\'ement de donn\'ee doit donc parcourir plusieurs \'etapes de traitement,
 Un tel traitement en pipeline peut aussi \^etre utilis\'e pour des collections \emph{finies} de donn\'ees. Connu comme le mod\`ele de traitement par lots (\emph{batch processing}), le traitement de telles collections peut se faire en traitant chaque collection comme un tout, ou se faire \'el\'ement par \'el\'ement \`a travers un pipeline d'op\'erations et avec du parall\'elisme de flux de donn\'ees.
 
 
-Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisi de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}.
+Il existe de nombreux syst\`emes de traitement de flux de donn\'ees. La conception, le mod\`ele et l'architecture de ces syst\`emes diff\`erent, de sorte qu'ils poss\`edent des fonctionnalit\'es et des performances diff\'erentes. Ce chapitre pr\'esente un aper\c{c}u de trois syst\`emes de traitement de flux de donn\'ees~: \TT{Apache Spark} (Sect.~\ref{spark.sect}), les \TT{Stream}s de \TT{Java}~8 (Sect.~\ref{java8.sect}) et \TT{FastFlow} (Sect.~\ref{fastflow.sect}).  Ce sont trois parmi les nombreux syst\`emes actuellement disponibles, que nous avons choisi de pr\'esenter parce qu'ils ont servi d'inspiration et de base au syst\`eme que nous avons d\'evelopp\'e, \ppff, que nous pr\'esenterons aux chapitres~\ref{description.chap} et~\ref{implementation.chap}. Ce chapitre se termine par la pr\'esentation d'autres biblioth\`eques plus r\'ecentes pour traiter des flux de donn\'ees~: \TT{RaftLib} (Sect.~\ref{raftlib.sect}), \TT{StarPU} (Sect.~\ref{starpu.sect}) et \TT{SkePU} (Sect.~\ref{skepu.sect}
 %
 \GT{Il faut aussi mentionner les nouveaux éléments que tu as ajoutés
 sur d'autres bibliothèques en C++.}
+
+\IC{J'ai mentionné les nouveaux éléments ajoutés.}
 
 \section{Apache Spark}
 
@@ -525,6 +527,8 @@ Nous présentons ici quelques autres bibliothèque C++ de traitement de flux de 
 
 
 \subsection{RaftLib} 
+\label{raftlib.sect}
+
 \TT{RaftLib}~\citep{beard2017raftlib} est une plus r\'ecente biblioth\`eque \TT{C++} con\c{c}ue pour traiter des flux de donn\'ees. \'Ecrit \`a l'aide de templates, \TT{RaftLib} vise \`a parall\'eliser de mani\`ere transparente une application, tout en minimisant le réusinage du code h\'erit\'e. Comme \TT{FastFlow}, il fournit aux programmeurs un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees. Les programmes r\'esultants sont capables de fonctionner sur des plates-formes multi-cœurs avec m\'emoires partag\'ees ainsi que sur des plates-formes avec m\'emoires distribu\'ees.
 
 
@@ -562,6 +566,7 @@ M\^eme si les deux biblioth\`eques ont plusieurs caract\'eristiques en commun, l
 
 
 \subsection{StarPU} 
+\label{starpu.sect}
 
 \begin{figure}
 \centering
@@ -589,6 +594,7 @@ Dans \TT{PpFf}, ce processus de cr\'eation de la cha\^ine de traitement du flux 
 
 
 \subsection{SkePU} 
+\label{skepu.sect}
 
 \TT{SkePU}~\citep{skePuReferenceEnLigne} est une biblioth\`eque \TT{C++} con\c{c}ue pour les syst\`emes parall\`eles h\'et\'erog\`enes. Elle propose un ensemble de squelettes algorithmiques pour sp\'ecifier les t\^aches parall\`eles sur des syst\`emes \emph{multi-GPU} utilisant \TT{CUDA} ou \TT{OpenCL}.
 
