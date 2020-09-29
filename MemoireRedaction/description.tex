@@ -692,7 +692,7 @@ frame=single,
 float]
 	// Creation des instances de travailleurs d'un farm.
 	std::vector<ff_node*> workers;
-	for ( uint32_t i = 0; i < FARM_PAR_LEVEL; i++ ) {
+	for ( uint32_t i = 0; i < PAR_LEVEL; i++ ) {
 		workers.push_back( new ff_Pipe<>(new findStudentsAverage) );
 	}
 
@@ -711,13 +711,13 @@ float]
     Students_by_Dept result = 
         Flow
         ::source<Student>(students.begin(), students.end())
-        .parallel(FARM_PAR_LEVEL) // Ajout simple d'un appel a parallel
+        .parallel(PAR_LEVEL) // Ajout simple d'un appel a parallel
         .find<Student>( [](Student *s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
            [](Student* s) { return &(s->departement); } );
 \end{lstlisting}
 
-Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), mais réécrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{FARM\_PAR\_LEVEL} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de sous-flux \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplicit\'e d'utilisation de cette méthode de \TT{PpFf}.
+Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute dans un \emph{thread} diff\'erent. Le traitement d'un flux peut \^etre davantage parall\'elis\'e si on utilise aussi les instances parall\`eles d'un \emph{farm}. Dans un tel cas, le flux est divis\'e en sous-flux —-- i.e., chaque instance d'un \emph{farm} traite un sous-ensemble des \'el\'ements. Cette approche peut améliorer les performances, mais augmente aussi la complexit\'e. Dans \TT{FastFlow}, l'utilisateur doit cr\'eer explicitement le \TT{farm} et les travailleurs associés. Le listing~\ref{GroupByDepStudentsAverageParallelFF.c++} montre l'exemple du listing~\ref{GroupByDepStudentsAverageFF.c++}~b), mais réécrit en uililisant des instances parall\`eles d'un \emph{farm} --- où on utilise \TT{PAR\_LEVEL} travailleurs. Dans le cas de \TT{PpFf}, ce m\'ecanisme est plus simple pour l'utilisateur~: il suffit d'ajouter un appel à  la m\'ethode \TT{parallel} dans le flux, en sp\'ecifiant en argument le nombre de sous-flux \`a utiliser. Le listing~\ref{GroupByDepStudentsAverageParallel.c++} montre un exemple pour illustrer la simplicit\'e d'utilisation de cette méthode de \TT{PpFf}.
 
 
 
