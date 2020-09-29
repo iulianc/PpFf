@@ -258,34 +258,6 @@ Afin de mieux comparer les deux programmes, \TT{PpFf} et \TT{Java}, nous avons a
 La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a comparer les acc\'el\'erations. Illustr\'ees sur la figure~\ref{WordCount-accs.fig}, les acc\'el\'erations indiquent \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. En comparant les acc\'el\'erations du programme \TT{PpFf} avec celles de \TT{FastFlow}, on peut observer qu'elles sont presque identiques, et ce pour les trois machines. Cela montre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont n\'egligeables. Par contre, \TT{Java} a de meilleures acc\'el\'erations pour \M1 et \M3, mais pas pour \M2. Comme on peut le constater dans le tableau~\ref{machines.table}, la machine \M2 dispose d'un plus grand nombre de processeurs par rapport \`a \M1 et \M3. Cet avantage est exploit\'e par les instances de \emph{farm}, permettant \`a \TT{PpFf} d'obtenir une meilleure acc\'el\'eration que \TT{Java} sur cette machine.
 
 
-\HIDDEN{
-
-\begin{figure}
-\grapheH{WordCount-accsrel-java-3001-40-1234}
-
-\grapheH{WordCount-accsrel-japet-3002-40-1234}
-
-\grapheH{WordCount-accsrel-c34581-3003-40-1234}
-
-\caption[Les accélérations \emph{relatives} pour \TT{WordCount} sur les machines \M1,
-\M2 et \M3.]{Les accélérations relatives des programmes pour \TT{WordCount} sur
-les machines \M1, \M2 et \M3 par rapport à leur version séquentielle. L'axe des $x$ indique le nombre de mots
-traités. L'axe des $y$ indique l'accélération absolue par rapport à
-\TT{WordCountSeq.cpp} (\TT{Seq}). Les résultats pour la version
-\TT{FastFlow} ont été omis (semblables à ceux de la version \ppff).}
-\label{WordCount-accsrel.fig}
-\end{figure}
-
-
-\GT{J'ai ajouté la figure avec les accélérations relatives. Il faudra
-voir si ça vaut la peine de l'expliquer et d'en discuter! Mais je
-voulais voir ce dont elle aurait l'air. }
-
-\GT{Bon, je ne crois pas nécessaire d'inclure ces figures. Mais je les
-laisse ici, juste au cas.}
-
-} % END HIDDEN
-
 
 \section{Expériences avec l'application \TT{StockPrice}}
 \label{stockprice.sect}
@@ -296,6 +268,10 @@ Dans le monde informatique actuel, les institutions financi\`eres produisent d'\
 \subsection{Description de l'application}
 
 L'application \TT{StockPrice} calcule le prix d'une action en utilisant le modèle \emph{Black-Scholes}~\citep{macbeth1979empirical}. Ce mod\`ele d'\'evaluation est utilis\'e pour d\'eterminer le prix juste ou la valeur th\'eorique d'une option d'achat ou de vente, et ce en fonction de six variables telles que la valeur de l'action sous-jacente, le prix d'exercice, le taux d'int\'er\^et sans risque, la volatilit\'e du prix de l'action, la dur\'ee et le type d'option. 
+%
+Les calculs associés à cette évaluation sont assez simples en termes
+algorithmiques, puisqu'il s'agit essentiellement d'une séquence
+linéaire de calculs points-flottants.
 
 \begin{lstlisting}[float,label={StockPrice-code.listing},gobble=4,basicstyle=\ttfamily\footnotesize,language=c++,caption={Un extrait du code de \TT{StockPrice.cpp} (version \ppff).},frame=single]
     Reducer<StockAndPrice, double>
@@ -395,7 +371,32 @@ indique le nombre de transactions traitées. L'axe des $y$ indique le nombre de 
 \end{figure}
 
 
-Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution et le d\'ebit sur les trois machines : \M1, \M2 et \M3. 
+\begin{figure}
+\grapheH{StockPrice-accs-java-3001-40}
+
+\grapheH{StockPrice-accs-japet-3002-40}
+
+\grapheH{StockPrice-accs-c34581-3003-40}
+
+
+\caption[Les accélérations pour \TT{StockPrice} sur les machines \M1,
+\M2 et \M3.]{Les accélérations des programmes pour \TT{StockPrice} sur
+les machines \M1, \M2 et \M3. L'axe des $x$ indique le nombre de mots
+traités. L'axe des $y$ indique l'accélération absolue par rapport à
+\TT{StockPriceSeq.cpp} (\TT{Seq}).}
+\label{StockPrice-accs.fig}
+\end{figure}
+
+
+\GT{Je viens de réaliser que les accélérations ne sont pas présentées.
+Comme elles le sont pour WordCount, c'est certain que les évaluateurs
+vont <<tiquer>> si elles ne sont pas présentées aussi pour
+StockPrice. Donc, je les ai ajoutées, même si elles ne sont pas très
+bonnes~:(}
+
+
+
+Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution, le d\'ebit et l'accélération sur les trois machines : \M1, \M2 et \M3. 
 
 Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiqu\'ee dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Les meilleures versions choisies pour \TT{PpFf} (resp.\ \TT{FastFlow}) sont celles utilisant cinq et quatre (resp.\ quatre et quatre) instances parall\`eles d'un \emph{farm} sur les machines \M1 et \M2 et deux sur la machine \M3. Comme pour \TT{WordCount}, le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqu\'e sur chaque graphe par \TT{Seq}. Chaque programme calcule le prix maximum pour plusieurs actions. Les temps d'ex\'ecution et les d\'ebit r\'esultants sont repr\'esent\'es sur l'axe des~$y$ de chaque graphe, alors que les nombres de transactions trait\'ees sont repr\'esent\'es sur l'axe des~$x$. Les r\'esultats de exp\'eriences finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit :
 
@@ -406,12 +407,17 @@ Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\
 
 \item Figure~\ref{StockPrice-debits.fig}~: les d\'ebits sur les machines \M1, \M2 et \M3.
 
+\item Figure~\ref{StockPrice-accs.fig}~: les accélérations sur les machines \M1, \M2 et \M3.
+
 \end{itemize}
 
 
 En examinant les temps d'ex\'ecution sur les trois machines, on peut constater que \TT{Java} est plus rapide que \TT{PpFf}. On verra dans la section~\ref{limitesppff.sect} pourquoi \TT{Java} est plus performant. Par contre, si on compare \TT{PpFf} et \TT{FastFlow}, les diff\'erences des temps d'ex\'ecution sont faibles. Cela d\'emontre que les surco\^uts introduits par \TT{PpFf} par rapport \`a \TT{FastFlow} sont négligeables.
 
 \`A partir des m\^emes s\'eries d'exp\'eriences, nous avons aussi calcul\'e les d\'ebits, soit le nombre de transactions trait\'ees par seconde. Dans la figure~\ref{StockPrice-debits.fig}, on trouve les d\'ebits moyens, indiqués par les valeurs qui composent la courbe sur le graphe, ainsi que des petites barres verticales qui indiquent la dispersion de débits mesurés~; comme pour \TT{WordCount}, cet intervalle indique la moyenne $\pm$ deux fois l'écart-type. Un point int\'eressant, qui peut \^etre observ\'e dans les graphes de d\'ebits, est que la dispersion du d\'ebit pour \TT{Java} est plus grande que celle de \TT{PpFf}. 
+%
+Nous avons aussi calculé les accélérations, présentées dans la
+figure~\ref{StockPrice-accs.fig}~: on constate que les accélérations sur \M2 et \M3 ne sont pas très bonnes.
 
 \section{Autres expériences avec l'application \TT{WordCount}~: Utilisation de \TT{parallel} et nombre de \emph{threads}} 
 \label{autres-experiences-wordcount.sect}
@@ -489,57 +495,6 @@ Dans la deuxi\`eme s\'erie d'exp\'eriences, avec l'utilisation de \TT{parallel(1
 
 Malgr\'e les coûts qui lui sont associés, le parall\'elisme de données dans \TT{PpFf} reste important. Cela peut \^etre constat\'e si on compare les temps moyens d'ex\'ecution pour la m\^eme s\'erie d'exp\'eriences, \TT{parallel(1)}, entre la version \TT{WordCountMerged} et les deux autres versions. En utilisant trois \emph{threads}, la version \TT{WordCountMerged} avec un temps d'ex\'ecution de 4569.6 ms est moins performante que les versions \TT{WordCount} (4 \emph{threads}) et \TT{WordCountSplitted} (5~\emph{threads}). Cet effet est plus \'evident si on compare les temps d'ex\'ecution entre les deux s\'eries d'exp\'eriences. Les versions avec \TT{parallel(2)} --- \ppffs\TT{-2} (3730.5 ms), \ppff\TT{-2} (3079.8 ms) et \ppffm\TT{-2} (2479.9 ms) --- sont plus rapides que les versions avec \TT{parallel(1)} --- \ppffs\TT{-1} (4526.6 ms), \ppff\TT{-1} (4419.6 ms) et \ppffm\TT{-1} (4569.6 ms).
 
-
-
-\HIDDEN{
-
-\begin{figure}
-\grapheH{WordCount-temps-java-5001-40-15}
-
-\grapheH{WordCount-temps-c34581-5003-40-24}
-
-\caption[Les temps d'exécution des programmes pour \TT{WordCount}
-<<optimisé>> sur les machines \M1 et \M3.]{Les temps d'exécution des
-programmes pour \TT{WordCount} <<optimisé>> sur les machines \M1 et
-\M3. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
-indique le temps d'exécution, en millisecondes.}
-\label{WordCount-merged-temps.fig}
-\end{figure}
-
-
-\begin{figure}
-\grapheH{WordCount-debits-java-5001-40-15}
-
-\grapheH{WordCount-debits-c34581-5003-40-24}
-
-\caption[Les debits des programmes pour \TT{WordCount}
-<<optimisé>> sur les machines \M1 et \M3.]{Les debits des
-programmes pour \TT{WordCount} <<optimisé>> sur les machines \M1 et
-\M3. L'axe des $x$ indique le nombre de mots traités. L'axe des $y$
-indique le debits, en millirs de mots traités par second.}
-\label{WordCount-merged-debit.fig}
-\end{figure}
-
-
-\hrule
-\begin{figure}
-\grapheH{WordCount-temps-turing-3004-40}
-\grapheH{WordCount-debits-turing-3004-40}
-\grapheH{WordCount-accs-turing-3004-40}
-
-\caption{Graphiques pour turing WordCount}
-\label{graphes-turing-wc.fig}
-\end{figure}
-
-\begin{figure}
-
-\grapheH{StockPrice-temps-turing-3004-40}
-\grapheH{StockPrice-debits-turing-3004-40}
-
-\caption{Graphiques pour turing StockPrice}
-\label{graphes-turing-sp.fig}
-\end{figure}
-} % END HIDDEN
 
 
 
