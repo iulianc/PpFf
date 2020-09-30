@@ -23,14 +23,6 @@ alors que la section~\ref{stockprice.sect} pr\'esente une application permettant
 Chaque syst\`eme informatique a des caract\'eristiques propres. Quelques-uns des facteurs qui influencent les performances d'un tel syst\`eme sont le type de processeur, le nombre de processeurs ou de c\oe{}urs, et la vitesse des processeurs. 
 
 
-\GT{Pour la machine java (\M1, n'est-ce pas?), il faut mettre à jour
-les caractéristiques, car les résultats qui sont présentés sont pour
-les expériences réalisées après l'installation de la nouvelle version
-de java.labunix.uqam.ca, différente de l'ancienne.}
-
-\IC{J'ai mis à jour les caractéristiques de la machine M1.}
-
-
 \newcommand{\LARGEUR}{3cm}
 
 \begin{table}
@@ -243,22 +235,12 @@ sur \M1, \M2 et \M3.
 Il faut pr\'eciser que pour \TT{WordCount}, le r\'esultat n'est pas tri\'e. Du point de vue de la parall\'elisation, le tri est plut\^ot lie \'a l'algorithme de tri et non \`a la parall\'elisation. Pour toutes les versions, c'est un \emph{dictionnaire} qui est produit --- \TT{unordered\_map} en \TT{C++}, \TT{HashMap} en \TT{Java} --- et la mesure du temps d'exécution se termine une fois le \emph{dictionnaire} construit.
 
 
-\GT{Il faudrait vérifier à nouveau si le texte ci-bas, qui dit quand
-PpFF est plus/moins rapide que Java/FastFlow, est toujours correct par
-rapport aux nouveaux résultats.}
-
-\IC{Le texte est correct. PpFf est plus performant que Java sur la machine M2 et moi performant sur les deux autres machines.}
-
 En comparant les temps d'ex\'ecution entre \TT{PpFf} et \TT{Java}, on constate que, pour les machines \M1 et \M3, \TT{Java} est plus performant que \TT{PpFf}. La gestion de \emph{threads} entre les deux programmes diff\`ere. \TT{PpFf} ex\'ecute chaque op\'eration d'un \TT{pipeline} sur un \emph{thread} diff\'erent. Par exemple, les cinq op\'erations de \TT{WordCount} --- \TT{source}, \TT{flatMap}, \TT{map}, \TT{find} et \TT{reduceByKey} --- s'ex\'ecutent sur cinq \emph{threads} diff\'erents. Par contre, \TT{Java} g\`ere la cr\'eation de \emph{threads} par l'interm\'ediaire du \emph{framework} \TT{fork/join}. D\'ecrit dans le chapitre~\ref{outils_connus.chap}, le \emph{framework} divise une t\^ache en plus petites sous-t\^aches ind\'ependantes, et ce r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees, et ce de façon efficace grâce à une approche de \emph{work stealing}~\citep{FrigoLeiRan98}. Ce m\'ecanisme permet \`a \TT{Java} d'\^etre plus efficace que \TT{PpFf} sur les machines \M1 et \M3. \TT{PpFf} est plus rapide que \TT{Java} sur la machine \M2. La figure~\ref{WordCount-debits.fig}, machine \M2, montre cet aspect. Par rapport aux machines \M1 et \M3, \M2 dispose d'un plus grand nombre de processeurs. Cela a permis d'augmenter le nombre d'instances parall\`eles d'un \emph{farm} dans le programme \TT{PpFf} et en cons\'equence \TT{PpFf} est plus performant que \TT{Java}. 
 
 
-\GT{Je crois que ce que dit la première phrase n'est plus vrai!? À vérifier!}
+En comparant les temps d'ex\'ecution entre les programmes \TT{PpFf} et \TT{FastFlow}, on constate que \TT{PpFf} obtient presque le m\^eme temps d'ex\'ecution que \TT{FastFlow} sur la machine \M3 et qu'il performe mieux que \TT{FastFlow} sur les machines \M1 et \M2. On rappelle que \TT{PpFf} est impl\'ement\'e au–dessus de la biblioth\`eque \TT{FastFlow}, et donc il semble que \TT{PpFf} n'introduise pas de surco\^uts par rapport \`a \TT{FastFlow}. 
 
-\IC{J'ai modifié le texte en fonction des nouveaux résultats.}
-
-En comparant les temps d'ex\'ecution entre les programmes \TT{PpFf} et \TT{FastFlow}, on constate que \TT{PpFf} obtient presque le m\^eme temps d'ex\'ecution que \TT{FastFlow} sur la machine \M3 et qu'il performe mieux que \TT{FastFlow} sur les machines \M1 et \M2. On rappelle que \TT{PpFf} est impl\'ement\'e au–dessus de la biblioth\`eque \TT{FastFlow}. C'est-\`a-dire que \TT{PpFf} n'introduit pas des surco\^uts par rapport \`a \TT{FastFlow}. 
-
-Afin de mieux comparer les deux programmes, \TT{PpFf} et \TT{Java}, nous avons aussi calculé, à partir des mêmes séries d'exp\'eriences, le d\'ebit, soit le nombre de mots trait\'e par seconde. Tel que montr\'e dans la figure~\ref{WordCount-debits.fig}, ces débits ont \'et\'e calculés pour les trois machines. L'axe des $x$ indique le nombre de mots trait\'es et l'axe des $y$ indique le nombre de milliers de mots par seconde (\TT{K-mots/s}). Un point int\'eressant, qui peut \^etre observ\'e dans les diagrammes de d\'ebits, est que le d\'ebit est relativement constant. En prenant comme exemple le diagramme pour \TT{PpFf-4} pour \M1 de la figure~\ref{WordCount-debits.fig}, on peut noter que le d\'ebit reste relativement stable peu importe la taille du fichier. Cela d\'emontre que \TT{PpFf} est efficace non seulement pour un petit volume de travail, mais aussi pour de grands traitements de donn\'ees.
+Afin de mieux comparer les deux programmes, \TT{PpFf} et \TT{Java}, nous avons aussi calculé, à partir des mêmes séries d'exp\'eriences, le d\'ebit, soit le nombre de mots trait\'e par seconde. Tel qu'on peut le voir dans la figure~\ref{WordCount-debits.fig}, ces débits ont \'et\'e calculés pour les trois machines. L'axe des $x$ indique le nombre de mots trait\'es et l'axe des $y$ indique le nombre de milliers de mots par seconde (\TT{K-mots/s}). Un point int\'eressant, qui peut \^etre observ\'e dans les diagrammes de d\'ebits, est que le d\'ebit est relativement constant. En prenant comme exemple le diagramme pour \TT{PpFf-4} pour \M1 de la figure~\ref{WordCount-debits.fig}, on peut noter que le d\'ebit reste relativement stable peu importe la taille du fichier. Cela d\'emontre que \TT{PpFf} est efficace non seulement pour un petit volume de travail, mais aussi pour de grands traitements de donn\'ees.
 
 La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a comparer les acc\'el\'erations. Illustr\'ees sur la figure~\ref{WordCount-accs.fig}, les acc\'el\'erations indiquent \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. En comparant les acc\'el\'erations du programme \TT{PpFf} avec celles de \TT{FastFlow}, on peut observer que \TT{PpFf} a de meilleures acc\'elérations sur les machines \M1 et \M2 et une acc\'elération presque identique sur la machine \M3. Cela montre que \TT{PpFf} n'introduit pas des surco\^uts par rapport \`a \TT{FastFlow}. Par contre, \TT{Java} a de meilleures acc\'el\'erations pour \M1 et \M3, mais pas pour \M2. Comme on peut le constater dans le tableau~\ref{machines.table}, la machine \M2 dispose d'un plus grand nombre de processeurs par rapport \`a \M1 et \M3. Cet avantage est exploit\'e par les instances de \emph{farm}, permettant \`a \TT{PpFf} d'obtenir une meilleure acc\'el\'eration que \TT{Java} sur cette machine.
 
