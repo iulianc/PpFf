@@ -532,13 +532,20 @@ La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`el
 \section{Expressivit\'e de \TT{PpFf} par rapport à \TT{FastFlow} et
 \TT{Java}}
 
-\GT{Ajouter ici quelques mots d'introduction.}
-
-\IC{J'ai ajouté quelques mots.}
-
 \label{PpFfExpressivities.sect}
 
-\TT{PpFF} facilite le d\'eveloppement d'applications de traitement de donn\'ees gr\^ace \`a son expressivit\'e. Cette section pr\'esente l'expressivit\'e de \TT{PpFf} en la comparant \`a celles de \TT{FastFlow} et \TT{Java}. 
+
+\GT{J'ai supprimé la phrase suivante~: <<\TT{PpFF} facilite le
+d\'eveloppement d'applications de traitement de donn\'ees gr\^ace \`a
+son expressivit\'e.>> Parce que c'est une affirmation forte --- ça
+rend ça facile --- alors que oui, c'est vrai par rapport à FastFlow,
+mais pas nécessairement par rapport à Java.  Et le fait de faire des
+affirmations parfois fortes, sans qu'elles soient validées fortement
+ensuite, était quelque chose qui avait agacé les évaluateurs ---
+qu'ils avaient mentionné explicitement lors de la rencontre Zoom fait
+pour discuter du résultat de la première version!}
+
+Dans cette section, nous examinons, de façon \emph{informelle}, l'expressivit\'e de \TT{PpFf} en la comparant \`a celles de \TT{FastFlow} et \TT{Java} à l'aide d'exemples.
 
 
 \subsection{\texttt{PpFf} vs.\ \texttt{FastFlow}}
@@ -615,22 +622,22 @@ float]
 
 \TT{FastFlow} est une biblioth\`eque de bas niveau pour traiter des collections et flux de donn\'ees. Travailler avec des collections n'est pas toujours facile lorsque, comme en \TT{FastFlow}, le traitement doit être décrit en indiquant explicitement, pour chaque élément du flux,  soit le ou les nouveaux éléments à émettre sur le flux (\TT{ff\_send\_out(\ldots)} ou \TT{return task}), soit le fait que le traitement de l'élément ne produit aucun résultat (\TT{return GO\_ON})
 
-Par exemple, supposons que dans une universit\'e, on doit identifier les \'etudiants boursiers ayant une moyenne de \TT{A}, puis les regrouper par d\'epartement.
+Par exemple, supposons que dans une universit\'e, on doit identifier les \'etudiants boursiers ayant une moyenne de \TT{A}, puis les regrouper par d\'epartement --- pour simplifier l'exemple, on suppose que les seules notes littérales permises sont \TT{A}, \TT{B}, etc., donc sans \TT{+}/\TT{-}
 
 \goodbreak
-\begin{samepage}
+\begin{minipage}{\linewidth}
 Supposons aussi qu'on ait les types auxiliaires suivants~:
 \begin{lstlisting}[language=c++]
     // Nom d'un department.
     typedef std::string Dept;
-    
+
     // Conteneur pour les etudiants d'un meme department.
     typedef std::vector<Student> Students;
 
     // Conteneur pour regrouper les etudiants par department.
     typedef std::unordered_map<Dept, Students> Students_by_Dept; 
 \end{lstlisting}
-\end{samepage}
+\end{minipage}
 
 
 Les listings~\ref{FastFlowOperationsToGroupStudentsByDep.c++}~a) et \ref{GroupByDepStudentsAverageFF.c++}~b) montrent un exemple de solution avec un pipeline \TT{FastFlow} pour ce problème. Le listing~\ref{FastFlowOperationsToGroupStudentsByDep.c++}~a) contient les définitions des opérations requises pour créer le flux. La création du flux est illustrée dans le listing~\ref{GroupByDepStudentsAverageFF.c++}~b). On peut observer que pour chaque op\'eration dans le flux, on doit définir une nouvelle fonction qui traite chaque élément. De plus, il est difficile de comprendre d'un coup d'œil ce que fait le code: les op\'erations sont d'abord d\'efinies dans diff\'erents nœuds (\TT{struct} de type \TT{ff\_node} ou \TT{ff\_node\_t}) et sont ensuite utilis\'ees dans la cr\'eation du flux. 
@@ -711,10 +718,17 @@ language=c++,
 caption={[Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.]Un pipeline \ppff\ pour regrouper les \'etudiants boursiers par d\'epartement en utilisant les instances parall\`eles d'un \emph{farm}.\ExtraitTestUnitaire},
 frame=single,
 float]
+    // Rappel des types
+    typedef std::vector<Student> Students;
+    typedef std::unordered_map<Dept, Students> Students_by_Dept;
+
+    Students students;
+    // ...
+
     Students_by_Dept result = 
         Flow
         ::source<Student>(students.begin(), students.end())
-        .parallel(PAR_LEVEL) // Ajout d'un appel a parallel
+        .parallel(PAR_LEVEL) // Ajout
         .find<Student>(
            [](auto s) { return s->average == "A"; } )
         .groupByKey<Student, Dept, Student>(
@@ -728,21 +742,19 @@ Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute
 
 \subsection{\texttt{PpFf} vs.\ \texttt{Java}}
 
-\GT{Ajouter 1? 2? exemples pour comparer les versions Java et Ppff}
+\subsection*{Regroupement des étudiants boursiers par département}
 
-\GT{Exemple students\_by\_dept}
-
-\GT{Exemple WordCount?}
-
-
-L'interface fournie par \TT{PpFf} s'inspire de celle introduite pour les \TT{Streams de Java 8}. Bas\'e sur le cha\^inage de m\'ethodes, un programme utilisant la librarie \TT{PpFf} est assez semblable \`a celle des \TT{Streams de Java 8}. Dans ce qui suit, \`a l'aide de deux exemples, on pr\'esente les similitudes entre \TT{PpFf} et \TT{Java}.
+L'interface fournie par \TT{PpFf} s'inspire de celle introduite pour les \TT{Streams} de \TT{Java} 8. Bas\'e sur le cha\^inage de m\'ethodes, un programme utilisant la bibliothèque \TT{PpFf} est assez semblable \`a un programme utilisant des \TT{Streams}. Dans ce qui suit, \`a l'aide de deux exemples, nous pr\'esentons quelques similitudes et différences entre \TT{PpFf} et \TT{Java}.
 
 \begin{lstlisting}[
 label={GroupByDepStudentsAverageParallel.java},
 language=java,
-caption={Un pipeline \TT{Java} pour regrouper en parall\`el les \'etudiants boursiers par d\'epartement.\ExtraitTestUnitaire},
+caption={Un pipeline \TT{Java} pour regrouper en parall\`ele les \'etudiants boursiers par d\'epartement},
 frame=single,
 float]
+    List<Student> students;
+    // ...
+
 	Map<String, List<Student>> studentsByDept =
 		students
 		.stream()
@@ -751,65 +763,194 @@ float]
         .collect( Collectors.groupingBy( s -> s.department ) );
 \end{lstlisting}
 
-Le premier exemple pr\'esent\'e est le m\^eme exemple pr\'esent\'e dans la sous-section ant\'erieure, ou dans une universit\'e on veut regrouper par d\'epartement seulement les \'etudiants boursiers ayant une moyenne d'A. Les codes pour les deux versions de programme \'equivalentes sont pr\'esent\'es dans le listing~\ref{GroupByDepStudentsAverageParallel.c++} pour la version \TT{PpFf} et le listing~\ref{GroupByDepStudentsAverageParallel.java} pour la version \TT{Java}. 
+Le premier exemple est le m\^eme que celui pr\'esent\'e précédemment, où on veut regrouper, par d\'epartement, les \'etudiants boursiers ayant une moyenne de \TT{A}. Les codes pour les deux versions \'equivalentes sont pr\'esent\'es dans les listings~\ref{GroupByDepStudentsAverageParallel.c++} (\TT{PpFf}) et~\ref{GroupByDepStudentsAverageParallel.java} (\TT{Java}). 
 
 \goodbreak
-\begin{samepage}
-La premi\`ere m\'ethode utilis\'ee dans les deux programmes permet d'extraire les donn\'ees de la source, source qui est constitu\'e d'une collection d'objets du type \TT{Student}.
+\begin{minipage}{\linewidth}
+La premi\`ere m\'ethode utilis\'ee dans les deux programmes permet d'extraire les donn\'ees de la source, source qui est constitu\'ee d'une collection d'objets du type \TT{Student}:
 \begin{lstlisting}[language=c++]
-	
-	// Methode statique PpFf 
+	// PpFf 
 	Flow::source<Student>(students.begin(), students.end())
-	
-	// Methode Java
+
+	// Java
 	students.stream()
-
 \end{lstlisting}
-Dans \TT{PpFf} cette m\'ethode est une m\'ethode statique. Sans une telle m\'ethode le flux ne peut pas exister. Par contre, \TT{Java} cr\'ee le flux via la m\'ethode \TT{sream()} de \TT{Collection}. L'avantage de la m\'ethode \TT{source} de \TT{PpFf} par rapport \`a la m\'ethode \TT{stream} de \TT{Java} est que pour la m\'ethode \TT{source} de \TT{PpFf}, l'\'el\'ement de d\'ebut et l'\'elément de fin de la collection sont sp\'ecifiés dans l'argument de la m\'ethode. Par exemple, on peut traiter seulement certains \'el\'ements de cette collection et pas tous les \'el\'ements comme dans le cas de \TT{Java}.
-\end{samepage}
+Dans \TT{PpFf}, cette m\'ethode est une m\'ethode statique de la classe \TT{Flow}. Par contre, en \TT{Java}, on cr\'ee le flux via la m\'ethode d'instance \TT{stream()} de la classe \TT{Collection}.
 
-\goodbreak
-\begin{samepage}
-La deuxi\`eme m\'ethode encha\^in\'ee dans notre exemple, la m\'ethode avec le m\^eme nom pour les deux versions de programme est la m\'ethode \TT{parallel} qui permet de parall\'eliser le traitement de donn\'ees pour les deux programmes. 
+% L'avantage de la m\'ethode \TT{source} de \TT{PpFf} par rapport \`a
+% la m\'ethode \TT{stream} de \TT{Java} est que pour la m\'ethode
+% \TT{source} de \TT{PpFf}, l'\'el\'ement de d\'ebut et l'\'elément de
+% fin de la collection sont sp\'ecifiés dans l'argument de la
+% m\'ethode. Par exemple, on peut traiter seulement certains
+% \'el\'ements de cette collection et pas tous les \'el\'ements comme
+% dans le cas de \TT{Java}.
+%
+
+\end{minipage}
+
+\GT{Ci-haut~: J'ai supprime la dernière phrase, car on pourrait
+facilement avoir la meme chose en Java avec
+students.subList(...).stream();}
+
+\GT{Remarque générale: Ne cherche pas trop à trouver des <<avantages>>
+à PpFf, car les évaluateurs seront aussi très bons trouver des
+<<points faibles>> s'il y en a. Il vaut mieux être <<honnête>> et
+direct quand aux désavantages de PpFf. Exemple~: voir l'ajout que j'ai
+fait concernant find vs. filter!}
+
+
+\GT{Je ne crois pas que tu doives donner chaque instruction cote à
+cote.  Tu peux simplement écrire une phrase qui explique, sans prendre
+4 lignes (+ lignes blanches) de code qui répète ce qu'on trouve dans
+le listing, sauf si c'est important de bien distinguer.}
+
+
+La deuxi\`eme m\'ethode, qui a le m\^eme nom pour les deux versions, est la m\'ethode \TT{parallel}.
+%
+Comme expliqué précédemment, la parall\'elisation se fait de façon diff\'erente dans les deux programmes. \TT{PpFf} ex\'ecute chaque op\'eration d'un pipeline sur un \emph{thread} diff\'erent, donc avec du parallélisme de flux. Lorsque la m\'ethode \TT{parallel} est encha\^in\'ee, le traitement du flux est davantage parall\'elis\'e, en utilisant en plus du parallélisme de données. La constante pass\'ee en argument \`a \TT{parallel()} permet de sp\'ecifier le nombre d'instances d'un \TT{farm} à utiliser. Par contre, \TT{Java} g\`ere la cr\'eation de \emph{threads} par l'interm\'ediaire du \emph{framework} \TT{ork/join} (cf.~section~\ref{forkjoin.sect}).
+%
+Nous verrons, à la section~\ref{limitesppff.sect}, sous quelles conditions l'approche de
+\ppff\ est préférable\ldots\ ou pas.
+
+
+\GT{Ci-bas: il faut éviter de répéter des choses que tu as déjà dites
+ailleurs... sinon les évaluateurs vont trouver cela redondant.}
+
+\GT{Ci-haut et ci-bas: j'ai remplacé les samepage par des
+minipage. J'avais déjà constaté que les samepage ne fonctionnaient pas
+toujours, mais ce n'est ce matin --- malgré que j'écris du \LaTeX\
+depuis plus de 25 ans -- que j'ai enfin compris qu'on pouvait utiliser
+minipage à la place, pour être certain que ça ne brise pas en plein
+milieu! Jamais trop tard pour apprendre~;)} 
+
+\begin{minipage}{\linewidth}
+Comme \TT{Java}, \TT{PpFf} permet l'utilisation d'expressions \emph{lambdas}, qui rendent le code plus concis. Dans notre exemple, les expressions \emph{lambda} sont utilis\'ees pour filtrer les \'etudiants ayant une moyenne de \TT{A}~:
 \begin{lstlisting}[language=c++]
-
-	// Methode PpFf 
-	.parallel(PAR_LEVEL)
-	
-	// Methode Java
-	.parallel()
-	
-\end{lstlisting}
-La parall\'elisation se fait diff\'erente entre les deux programmes. Par d\'efaut, \TT{PpFf} ex\'ecute chaque op\'eration d'un pipeline sur un \emph{thread} diff\'erent. Lorsque la m\'ethode \TT{parallel} est encha\^in\'ee, le traitement du flux est davantage parall\'elis\'e en utilisant les instances parall\`eles d'un \TT{farm}. La constant \TT{PAR\_LEVEL} pass\'e en argument \`a la m\'ethode permette de sp\'ecifier le nombre d'instances d'un \TT{farm}. Par contre, \TT{Java} g\`ere la cr\'eation de \emph{threads} par l'interm\'ediaire du \TT{framework fork/join} qui divise une t\^ache en plusieurs petites sous-t\^aches ind\'ependantes, et ce r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees. 
-\end{samepage}
-
-\goodbreak
-\begin{samepage}
-Comme dans \TT{Java}, \TT{PpFf} permet l'utilisation des expressions \emph{lambda}. Appel\'ee aussi des \emph{fonctions anonymes}, les expressions \emph{lambda} rendent le code plus concis. Dans notre exemple, les expressions \emph{lambda} sont utilis\'ees pour filtrer les \'etudiants ayant une moyenne d'A. 
-\begin{lstlisting}[language=c++]
-	
-	// Methode PpFf 
+	// PpFf 
 	.find<Student>( [](auto s) { return s->average == "A"; } )
 	
-	// Methode Java
+	// Java
 	.filter( s -> s.average == "A" )
 
 \end{lstlisting}
-Les deux m\'ethodes, \TT{find} de \TT{PpFf} et \TT{filter} de \TT{Java} ont les m\^emes fonctionnalit\'es.
-\end{samepage}
+Les deux m\'ethodes, \TT{find} de \TT{PpFf} et \TT{filter} de \TT{Java}, ont les m\^emes fonctionnalit\'es.
+%
+Par contre, en \ppff, à cause de la façon dont nous avons mis en
+\oe{}uvre la bibliothèque avec des \emph{templates} génériques,
+certaines informations additionnelles de type doivent être fournies
+--- <<\TT{find<Student>}~>> vs.\ simplement <<\TT{filter}>>.
+\end{minipage}
 
 \goodbreak
-\begin{samepage}
-Tant \TT{PpFf} que \TT{Java} adopte un m\'ecanisme d'\'evaluation paresseuse. L'\'evaluation paresseuse est une m\'ethode d'optimisation du traitement qui retarde l'\'etape du calcul jusqu'\`a ce que le r\'esultat soit n\'ecessaire. Le traitement sur les \'el\'ements du flux pour les deux programmes n'est r\'ealis\'e qu'apr\`es l'encha\^inement d'une m\'ethode finale.
+\begin{minipage}{\linewidth}
+Tant \TT{PpFf} que \TT{Java} adopte un m\'ecanisme d'\'evaluation paresseuse, qui retarde l'\'etape du calcul jusqu'\`a ce que le r\'esultat soit n\'ecessaire. Dans les deux cas, le traitement sur les \'el\'ements du flux ne démarre qu'apr\`es l'encha\^inement d'une m\'ethode finale de collecte (agrégation) des éléments:
 \begin{lstlisting}[language=c++]
-	
-	// Methode PpFf 
+	// PpFf 
 	.groupByKey<Student, Dept, Student>( 
 		[](auto s) { return &(s->department); } );
 	
-	// Methode Java
+	// Java
 	.collect( Collectors.groupingBy( s -> s.department ) );
-
 \end{lstlisting}
-La m\'ethode \TT{groupByKey} de \TT{PpFf} et \TT{collect} de \TT{Java} sont toutes deux des m\'ethodes finales. Elles regroupent les \'etudiants par d\'epartement. 
-\end{samepage}
+Alors que \ppff\ possède une méthode explicite pour regrouper les
+éléments par clé, \TT{Java} définit plutôt, par l'intermédiaire de la
+classe \TT{Collectors}. diverses méthodes de regroupement --- plus
+d'une quarantaine. L'approche \ppff\ semble plus simple. Par contre,
+là aussi des informations additionnelles de type doivent être fournies
+pour les \emph{templates}.
+\end{minipage}
+
+\subsubsection*{\TT{WordCount}}
+
+
+\GT{Ici, pas besoin d'aller autant dans les détails que pour l'exemple
+précédent. Présente la version Java et souligne \emph{quelques points
+nouveaux}.}
+
+\GT{J'ai mis les listings, parce que je voulais m'assurer que les deux
+<<fittaient>> sur la même page. C'est le cas uniquement si on met dans
+un listing à part la classe ReduceByKey.  Il faut donc expliquer tout
+d'abord cette classe, en expliquant qu'elle a été définie pour faire
+en sorte que les deux versions soient aussi semblables que
+possible. Ensuite, tu peux présenter les deux définitions de
+Stream/Flow.}
+
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[
+label={reduce-by-key.java},
+language=java,
+caption={La classe \TT{ReduceByKey} utilisée par l'application \TT{WordCount} en Java.},
+frame=single]
+class ReduceByKey implements Consumer<String> {
+    @SuppressWarnings("unchecked")
+    private Map<String,Integer> map = (Map) new HashMap();
+    
+    public void accept( String s ) {
+        map.put(s, map.getOrDefault(s, 0) + 1);
+    }
+    
+    public void combine( ReduceByKey other ) {
+        for ( Map.Entry<String,Integer> entry : other.map.entrySet() ) {
+            Integer value = map.getOrDefault(entry.getKey(), 0);
+            map.put( entry.getKey(), value + entry.getValue() );
+        } 
+    }
+
+    public Map<String,Integer> toMap() {
+        return map;
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[
+label={reducer.c++},
+language=c++,
+gobble=4,
+caption={L'objet \TT{Reducer} utilisé par l'application \TT{WordCount} en \ppff.},
+frame=single]
+    Reducer<std::string, int> reducer(
+             0, 
+             [](int count, std::string _) { return count + 1; },
+             std::plus<int>{}
+           );
+\end{lstlisting}
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+
+\begin{lstlisting}[
+label={wordcount-bis.c++},
+language=c++,
+gobble=4,
+caption={Des extraits du code source de l'application \TT{WordCount} en \ppff.},
+frame=single]
+    typedef std::vector<std::string> Words;
+
+    std::unordered_map<std::string, int> currentResult = 
+        Flow
+        ::source(inputFile)
+        .parallel(4)
+        .flatMap<std::string, Words, std::string>(splitInWords)			
+        .map<std::string, std::string>(toLowercaseLetters)			
+        .reduceByKey<std::string, std::string, int>(reducer); 
+\end{lstlisting}
+
+\begin{lstlisting}[
+label={wordcount.java},
+gobble=8,
+language=java,
+caption={Des extraits du code source de l'application \TT{WordCount} en Java.},
+frame=single]
+        Map<String,Integer> wordsCount = 
+                Files.lines( Paths.get(inputFile) )
+                .parallel()
+                .flatMap( WordCount::splitInWords )
+                .map( WordCount::toLowerCaseLetters )
+                .collect( ReduceByKey::new,
+                          ReduceByKey::accept,
+                          ReduceByKey::combine )
+                .toMap();
+\end{lstlisting}
+\end{minipage}
