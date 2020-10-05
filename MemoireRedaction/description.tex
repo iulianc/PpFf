@@ -534,7 +534,7 @@ La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`el
 
 \label{PpFfExpressivities.sect}
 
-Dans cette section, nous examinons, de façon \emph{informelle}, l'expressivit\'e de \TT{PpFf} en la comparant \`a celles de \TT{FastFlow} et \TT{Java} à l'aide d'exemples.
+Dans cette section, nous examinons, de façon \emph{informelle}, l'expressivit\'e de \TT{PpFf} en la comparant \`a celles de \TT{FastFlow} et \TT{Java} à l'aide de quelques exemples.
 
 
 \subsection{\texttt{PpFf} vs.\ \texttt{FastFlow}}
@@ -768,24 +768,6 @@ Dans \TT{PpFf}, cette m\'ethode est une m\'ethode statique de la classe \TT{Flow
 
 \end{minipage}
 
-\GT{Ci-haut~: J'ai supprime la dernière phrase, car on pourrait
-facilement avoir la meme chose en Java avec
-students.subList(...).stream();}
-
-\IC{Ma faute. Je n'ai pas vérifié que Java pouvait soustraire une partie d'une collection.}
-
-\GT{Remarque générale: Ne cherche pas trop à trouver des <<avantages>>
-à PpFf, car les évaluateurs seront aussi très bons trouver des
-<<points faibles>> s'il y en a. Il vaut mieux être <<honnête>> et
-direct quand aux désavantages de PpFf. Exemple~: voir l'ajout que j'ai
-fait concernant find vs. filter!}
-
-
-\GT{Je ne crois pas que tu doives donner chaque instruction cote à
-cote.  Tu peux simplement écrire une phrase qui explique, sans prendre
-4 lignes (+ lignes blanches) de code qui répète ce qu'on trouve dans
-le listing, sauf si c'est important de bien distinguer.}
-
 
 La deuxi\`eme m\'ethode, qui a le m\^eme nom pour les deux versions, est la m\'ethode \TT{parallel}.
 %
@@ -795,17 +777,6 @@ Nous verrons, à la section~\ref{limitesppff.sect}, sous quelles conditions l'ap
 \ppff\ est préférable\ldots\ ou pas.
 
 
-\GT{Ci-bas: il faut éviter de répéter des choses que tu as déjà dites
-ailleurs... sinon les évaluateurs vont trouver cela redondant.}
-
-\GT{Ci-haut et ci-bas: j'ai remplacé les samepage par des
-minipage. J'avais déjà constaté que les samepage ne fonctionnaient pas
-toujours, mais ce n'est ce matin --- malgré que j'écris du \LaTeX\
-depuis plus de 25 ans -- que j'ai enfin compris qu'on pouvait utiliser
-minipage à la place, pour être certain que ça ne brise pas en plein
-milieu! Jamais trop tard pour apprendre~;)} 
-
-\IC{Vous avez ajouté des instructions LaTex utiles qui sont difficiles à trouver sur internet et vous continuez à en ajouter des nouvelles.}
 
 \begin{minipage}{\linewidth}
 Comme \TT{Java}, \TT{PpFf} permet l'utilisation d'expressions \emph{lambdas}, qui rendent le code plus concis. Dans notre exemple, les expressions \emph{lambda} sont utilis\'ees pour filtrer les \'etudiants ayant une moyenne de \TT{A}~:
@@ -844,25 +815,23 @@ là aussi des informations additionnelles de type doivent être fournies
 pour les \emph{templates}.
 \end{minipage}
 
-\subsection*{\TT{WordCount}}
-
-
-\GT{Ici, pas besoin d'aller autant dans les détails que pour l'exemple
-précédent. Présente la version Java et souligne \emph{quelques points
-nouveaux}.}
-
-\GT{J'ai mis les listings, parce que je voulais m'assurer que les deux
-<<fittaient>> sur la même page. C'est le cas uniquement si on met dans
-un listing à part la classe ReduceByKey.  Il faut donc expliquer tout
-d'abord cette classe, en expliquant qu'elle a été définie pour faire
-en sorte que les deux versions soient aussi semblables que
-possible. Ensuite, tu peux présenter les deux définitions de
-Stream/Flow.}
-
-\IC{J'ai comparé les deux programmes en essayant de suivre vos conseils.}
+\subsection*{L'application \TT{WordCount}}
 
 
 \begin{minipage}{\linewidth}
+\begin{lstlisting}[
+label={reducer.c++},
+language=c++,
+gobble=4,
+caption={L'objet \TT{Reducer} utilisé par l'application \TT{WordCount} en \ppff.},
+frame=single]
+    Reducer<std::string, int> reducer(
+             0, 
+             [](int count, std::string _) { return count + 1; },
+             std::plus<int>{}
+           );
+\end{lstlisting}
+
 \begin{lstlisting}[
 label={reduce-by-key.java},
 language=java,
@@ -889,18 +858,6 @@ class ReduceByKey implements Consumer<String> {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[
-label={reducer.c++},
-language=c++,
-gobble=4,
-caption={L'objet \TT{Reducer} utilisé par l'application \TT{WordCount} en \ppff.},
-frame=single]
-    Reducer<std::string, int> reducer(
-             0, 
-             [](int count, std::string _) { return count + 1; },
-             std::plus<int>{}
-           );
-\end{lstlisting}
 \end{minipage}
 
 
@@ -942,13 +899,32 @@ frame=single]
 \end{minipage}
 
 
-Le deuxi\`eme exemple pr\'esent\'e est l'application \TT{WordCount}, la m\^eme application qui a servi de r\'ef\'erence pour nos exp\'eriences. Ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. Les codes pour les deux versions \'equivalentes sont pr\'esent\'es dans les listings~\ref{wordcount-bis.c++} (\TT{PpFf}) et~\ref{wordcount.java} (\TT{Java}).
+Le deuxi\`eme exemple que nous pr\'esentons est pour l'application \TT{WordCount}, application qui a servi aussi dans nos exp\'eriences (cf.~Sect.~\ref{wordcount.sect}). Ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. Les codes pour les deux versions \'equivalentes sont pr\'esent\'es dans les listings~\ref{wordcount-bis.c++} (\TT{PpFf}) et~\ref{wordcount.java} (\TT{Java}), lesquels utilisent des éléments présentés dans les listings~\ref{reducer.c++} (\ppff), et~\ref{reduce-by-key.java} (\TT{Java}).
 
-La premi\`ere m\'ethode utilis\'ee permet d'extraire les lignes \`a partir d'un fichier. Le nom du fichier est pass\'e en param\`etre aux m\'ethodes statiques \TT{source} dans le cas de \TT{PpFf} et \TT{Files.lines} dans le cas de \TT{Java}.
+\begin{itemize}
+\item La premi\`ere m\'ethode utilis\'ee permet d'extraire les lignes \`a partir d'un fichier. Le nom du fichier est pass\'e en param\`etre aux m\'ethodes statiques \TT{source} dans le cas de \TT{PpFf} et \TT{Files.lines} dans le cas de \TT{Java}.
 
-Pr\'esent\'ee dans l'exemple pr\'ec\`edent, la deuxi\`eme m\'ethode encha\^in\'ee, la m\'ethode \TT{parallel}, permet de parall\'eliser le traitement de donn\'ees.
+\item Pr\'esent\'ee dans l'exemple pr\'ec\`edent, la deuxi\`eme m\'ethode, \TT{parallel}, permet dans les deux cas de parall\'eliser le traitement de donn\'ees.
  
-Les deux suivantes m\'ethodes utilis\'ees dans notre exemple, \TT{flatMap} est \TT{map} sont des m\'ethodes avec le m\^eme nom pour les deux programmes. Tant pour \TT{PpFf} que pour \TT{Java}, les m\'ethodes prennent comme argument une fonction qui s'applique sur chaque \'el\'ement du flux. La m\'ethode \TT{flatMap} d\'ecompose chaque ligne en mots individuels et la m\'ethode \TT{map} transforme les lettres majuscules du mot en minuscules.
+\item  Les deux m\'ethodes suivantes, \TT{flatMap} est \TT{map}, ont les m\^emes noms. Tant pour \TT{PpFf} que pour \TT{Java}, les m\'ethodes prennent comme argument une fonction qui s'applique sur chaque \'el\'ement du flux. La m\'ethode \TT{flatMap} avec son argument d\'ecompose chaque ligne en mots individuels alors que la m\'ethode \TT{map} avec son argument transforme les lettres majuscules en minuscules.
 
-La derni\`ere m\'ethode encha\^in\'ee regroupe les mots similaires ensemble et compte le nombre d'occurrences de chaque mot. Alors que \TT{PpFf} r\'ealise ces op\'erations \`a l'aide de l'objet \TT{reducer} (le listing~\ref{reducer.c++}) pass\'e en argument \`a la m\'ethode \TT{reduceByKey}, \TT{Java} utilise la classe \TT{ReduceByKey}. Illustr\'ee dans le listing~\ref{reduce-by-key.java}, cette classe a \'et\'e d\'efinie pour faire en sorte que les deux versions soient aussi semblables que possibles.
+\item La derni\`ere m\'ethode regroupe les mots similaires ensemble et compte le nombre d'occurrences de chaque mot. Alors que \TT{PpFf} r\'ealise ces op\'erations \`a l'aide d'un objet \TT{Reducer} (cf.~listing~\ref{reducer.c++}) pass\'e en argument \`a la m\'ethode \TT{reduceByKey}, notre version \TT{Java} utilise un objet de classe \TT{ReduceByKey} (cf.~listing~\ref{reduce-by-key.java}), classe d\'efinie pour faire en sorte que les deux versions soient aussi semblables que possible.
 
+Ici, la classe \TT{ReduceByKey} met en \oe{}uvre l'interface
+\TT{Consumer<String>}, donc définit une méthode \TT{accept} ---
+équivalente à la méthode \TT{accumulator} de \TT{Reducer} --- utilisée
+comme deuxième argument de \TT{collect}.  Elle définit aussi une
+méthode \TT{combine} --- équivalente à la méthode \TT{combiner} de
+\TT{Reducer} --- utilisée comme troisième argumentde \TT{collect},
+pour combiner les résultats intermédiaires.
+%
+Finalement, pour obtenir le \TT{Map} encapsulé par l'objet \TT{ReduceByKey}, un \emph{getter} simple est aussi défini.
+
+\end{itemize}
+
+Comme on le constate, les deux versions sont très semblables. Les
+principales différences sont qu'en \ppff, il faut spécifier certains
+types additionnels pour les \emph{templates} génériques et spécifier
+de façon explicite le niveau de parallélisation désiré. Par contre,
+l'appel à la méthode \TT{reduceByKey} avec un \TT{Reducer} semble plus
+simple que la spécification d'une nouvelle classe.
