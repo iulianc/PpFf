@@ -375,14 +375,6 @@ traités. L'axe des $y$ indique l'accélération absolue par rapport à
 \end{figure}
 
 
-\GT{Je viens de réaliser que les accélérations ne sont pas présentées.
-Comme elles le sont pour WordCount, c'est certain que les évaluateurs
-vont <<tiquer>> si elles ne sont pas présentées aussi pour
-StockPrice. Donc, je les ai ajoutées, même si elles ne sont pas très
-bonnes~:(}
-
-
-
 Dans cette section, nous \'evaluons l'application \TT{StockPrice} en examinant le temps d'ex\'ecution, le d\'ebit et l'accélération sur les trois machines : \M1, \M2 et \M3. 
 
 Comme dans le cas de \TT{WordCount}, des exp\'eriences pr\'eliminaires ont \'et\'e effectu\'ees afin de choisir les meilleures versions. Dans le cas de \TT{Java}, la meilleure version choisie est celle avec \emph{warmup} et \emph{JIT}. Elle est indiqu\'ee dans chaque graphe avec la notation \TT{Java*}. Dans le cas de \TT{PpFf} et \TT{FastFlow}, les exp\'eriences ont \'et\'e men\'ees en variant les nombres d'instances parall\`eles d'un \emph{farm}. Les meilleures versions choisies pour \TT{PpFf} (resp.\ \TT{FastFlow}) sont celles utilisant cinq et quatre (resp.\ quatre et quatre) instances parall\`eles d'un \emph{farm} sur les machines \M1 et \M2 et deux sur la machine \M3. Comme pour \TT{WordCount}, le suffixe entier dans les indicateurs pour \TT{PpFf} et \TT{FastFlow} dans chaque graphe repr\'esente donc ce nombre d'instances parall\`eles d'un \emph{farm}. Chaque exp\'erience inclut aussi le programme s\'equentiel, indiqu\'e sur chaque graphe par \TT{Seq}. Chaque programme calcule le prix maximum pour plusieurs actions. Les temps d'ex\'ecution et les d\'ebit r\'esultants sont repr\'esent\'es sur l'axe des~$y$ de chaque graphe, alors que les nombres de transactions trait\'ees sont repr\'esent\'es sur l'axe des~$x$. Les r\'esultats de exp\'eriences finaux sont des moyennes pour 40 r\'ep\'etitions. Ils sont pr\'esent\'es comme suit :
