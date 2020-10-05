@@ -820,7 +820,7 @@ pour les \emph{templates}.
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[
-label={reducer.c++},
+label={reducer-wordcount.c++},
 language=c++,
 gobble=4,
 caption={L'objet \TT{Reducer} utilisé par l'application \TT{WordCount} en \ppff.},
@@ -899,7 +899,7 @@ frame=single]
 \end{minipage}
 
 
-Le deuxi\`eme exemple que nous pr\'esentons est pour l'application \TT{WordCount}, application qui a servi aussi dans nos exp\'eriences (cf.~Sect.~\ref{wordcount.sect}). Ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. Les codes pour les deux versions \'equivalentes sont pr\'esent\'es dans les listings~\ref{wordcount-bis.c++} (\TT{PpFf}) et~\ref{wordcount.java} (\TT{Java}), lesquels utilisent des éléments présentés dans les listings~\ref{reducer.c++} (\ppff), et~\ref{reduce-by-key.java} (\TT{Java}).
+Le deuxi\`eme exemple que nous pr\'esentons est pour l'application \TT{WordCount}, application qui a servi aussi dans nos exp\'eriences (cf.~Sect.~\ref{wordcount.sect}). Ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. Les codes pour les deux versions \'equivalentes sont pr\'esent\'es dans les listings~\ref{wordcount-bis.c++} (\TT{PpFf}) et~\ref{wordcount.java} (\TT{Java}), lesquels utilisent des éléments présentés dans les listings~\ref{reducer-wordcount.c++} (\ppff), et~\ref{reduce-by-key.java} (\TT{Java}).
 
 \begin{itemize}
 \item La premi\`ere m\'ethode utilis\'ee permet d'extraire les lignes \`a partir d'un fichier. Le nom du fichier est pass\'e en param\`etre aux m\'ethodes statiques \TT{source} dans le cas de \TT{PpFf} et \TT{Files.lines} dans le cas de \TT{Java}.
@@ -908,7 +908,7 @@ Le deuxi\`eme exemple que nous pr\'esentons est pour l'application \TT{WordCount
  
 \item  Les deux m\'ethodes suivantes, \TT{flatMap} est \TT{map}, ont les m\^emes noms. Tant pour \TT{PpFf} que pour \TT{Java}, les m\'ethodes prennent comme argument une fonction qui s'applique sur chaque \'el\'ement du flux. La m\'ethode \TT{flatMap} avec son argument d\'ecompose chaque ligne en mots individuels alors que la m\'ethode \TT{map} avec son argument transforme les lettres majuscules en minuscules.
 
-\item La derni\`ere m\'ethode regroupe les mots similaires ensemble et compte le nombre d'occurrences de chaque mot. Alors que \TT{PpFf} r\'ealise ces op\'erations \`a l'aide d'un objet \TT{Reducer} (cf.~listing~\ref{reducer.c++}) pass\'e en argument \`a la m\'ethode \TT{reduceByKey}, notre version \TT{Java} utilise un objet de classe \TT{ReduceByKey} (cf.~listing~\ref{reduce-by-key.java}), classe d\'efinie pour faire en sorte que les deux versions soient aussi semblables que possible.
+\item La derni\`ere m\'ethode regroupe les mots similaires ensemble et compte le nombre d'occurrences de chaque mot. Alors que \TT{PpFf} r\'ealise ces op\'erations \`a l'aide d'un objet \TT{Reducer} (cf.~listing~\ref{reducer-wordcount.c++}) pass\'e en argument \`a la m\'ethode \TT{reduceByKey}, notre version \TT{Java} utilise un objet de classe \TT{ReduceByKey} (cf.~listing~\ref{reduce-by-key.java}), classe d\'efinie pour faire en sorte que les deux versions soient aussi semblables que possible.
 
 Ici, la classe \TT{ReduceByKey} met en \oe{}uvre l'interface
 \TT{Consumer<String>}, donc définit une méthode \TT{accept} ---
