@@ -534,17 +534,6 @@ La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`el
 
 \label{PpFfExpressivities.sect}
 
-
-\GT{J'ai supprimé la phrase suivante~: <<\TT{PpFF} facilite le
-d\'eveloppement d'applications de traitement de donn\'ees gr\^ace \`a
-son expressivit\'e.>> Parce que c'est une affirmation forte --- ça
-rend ça facile --- alors que oui, c'est vrai par rapport à FastFlow,
-mais pas nécessairement par rapport à Java.  Et le fait de faire des
-affirmations parfois fortes, sans qu'elles soient validées fortement
-ensuite, était quelque chose qui avait agacé les évaluateurs ---
-qu'ils avaient mentionné explicitement lors de la rencontre Zoom fait
-pour discuter du résultat de la première version!}
-
 Dans cette section, nous examinons, de façon \emph{informelle}, l'expressivit\'e de \TT{PpFf} en la comparant \`a celles de \TT{FastFlow} et \TT{Java} à l'aide d'exemples.
 
 
@@ -777,20 +766,13 @@ La premi\`ere m\'ethode utilis\'ee dans les deux programmes permet d'extraire le
 \end{lstlisting}
 Dans \TT{PpFf}, cette m\'ethode est une m\'ethode statique de la classe \TT{Flow}. Par contre, en \TT{Java}, on cr\'ee le flux via la m\'ethode d'instance \TT{stream()} de la classe \TT{Collection}.
 
-% L'avantage de la m\'ethode \TT{source} de \TT{PpFf} par rapport \`a
-% la m\'ethode \TT{stream} de \TT{Java} est que pour la m\'ethode
-% \TT{source} de \TT{PpFf}, l'\'el\'ement de d\'ebut et l'\'elément de
-% fin de la collection sont sp\'ecifiés dans l'argument de la
-% m\'ethode. Par exemple, on peut traiter seulement certains
-% \'el\'ements de cette collection et pas tous les \'el\'ements comme
-% dans le cas de \TT{Java}.
-%
-
 \end{minipage}
 
 \GT{Ci-haut~: J'ai supprime la dernière phrase, car on pourrait
 facilement avoir la meme chose en Java avec
 students.subList(...).stream();}
+
+\IC{Ma faute. Je n'ai pas vérifié que Java pouvait soustraire une partie d'une collection.}
 
 \GT{Remarque générale: Ne cherche pas trop à trouver des <<avantages>>
 à PpFf, car les évaluateurs seront aussi très bons trouver des
@@ -822,6 +804,8 @@ toujours, mais ce n'est ce matin --- malgré que j'écris du \LaTeX\
 depuis plus de 25 ans -- que j'ai enfin compris qu'on pouvait utiliser
 minipage à la place, pour être certain que ça ne brise pas en plein
 milieu! Jamais trop tard pour apprendre~;)} 
+
+\IC{Vous avez ajouté des instructions LaTex utiles qui sont difficiles à trouver sur internet et vous continuez à en ajouter des nouvelles.}
 
 \begin{minipage}{\linewidth}
 Comme \TT{Java}, \TT{PpFf} permet l'utilisation d'expressions \emph{lambdas}, qui rendent le code plus concis. Dans notre exemple, les expressions \emph{lambda} sont utilis\'ees pour filtrer les \'etudiants ayant une moyenne de \TT{A}~:
@@ -860,7 +844,7 @@ là aussi des informations additionnelles de type doivent être fournies
 pour les \emph{templates}.
 \end{minipage}
 
-\subsubsection*{\TT{WordCount}}
+\subsection*{\TT{WordCount}}
 
 
 \GT{Ici, pas besoin d'aller autant dans les détails que pour l'exemple
@@ -874,6 +858,8 @@ d'abord cette classe, en expliquant qu'elle a été définie pour faire
 en sorte que les deux versions soient aussi semblables que
 possible. Ensuite, tu peux présenter les deux définitions de
 Stream/Flow.}
+
+\IC{J'ai comparé les deux programmes en essayant de suivre vos conseils.}
 
 
 \begin{minipage}{\linewidth}
@@ -954,3 +940,15 @@ frame=single]
                 .toMap();
 \end{lstlisting}
 \end{minipage}
+
+
+Le deuxi\`eme exemple pr\'esent\'e est l'application \TT{WordCount}, la m\^eme application qui a servi de r\'ef\'erence pour nos exp\'eriences. Ce programme compte le nombre d'occurrences des divers mots dans un fichier texte. Les codes pour les deux versions \'equivalentes sont pr\'esent\'es dans les listings~\ref{wordcount-bis.c++} (\TT{PpFf}) et~\ref{wordcount.java} (\TT{Java}).
+
+La premi\`ere m\'ethode utilis\'ee permet d'extraire les lignes \`a partir d'un fichier. Le nom du fichier est pass\'e en param\`etre aux m\'ethodes statiques \TT{source} dans le cas de \TT{PpFf} et \TT{Files.lines} dans le cas de \TT{Java}.
+
+Pr\'esent\'ee dans l'exemple pr\'ec\`edent, la deuxi\`eme m\'ethode encha\^in\'ee, la m\'ethode \TT{parallel}, permet de parall\'eliser le traitement de donn\'ees.
+ 
+Les deux suivantes m\'ethodes utilis\'ees dans notre exemple, \TT{flatMap} est \TT{map} sont des m\'ethodes avec le m\^eme nom pour les deux programmes. Tant pour \TT{PpFf} que pour \TT{Java}, les m\'ethodes prennent comme argument une fonction qui s'applique sur chaque \'el\'ement du flux. La m\'ethode \TT{flatMap} d\'ecompose chaque ligne en mots individuels et la m\'ethode \TT{map} transforme les lettres majuscules du mot en minuscules.
+
+La derni\`ere m\'ethode encha\^in\'ee regroupe les mots similaires ensemble et compte le nombre d'occurrences de chaque mot. Alors que \TT{PpFf} r\'ealise ces op\'erations \`a l'aide de l'objet \TT{reducer} (le listing~\ref{reducer.c++}) pass\'e en argument \`a la m\'ethode \TT{reduceByKey}, \TT{Java} utilise la classe \TT{ReduceByKey}. Illustr\'ee dans le listing~\ref{reduce-by-key.java}, cette classe a \'et\'e d\'efinie pour faire en sorte que les deux versions soient aussi semblables que possibles.
+
