@@ -1,5 +1,5 @@
 
-\chapter{Évaluation des performances~: Comparaisons de \ppff\ avec \TT{Java} et \TT{FastFlow}}
+\chapter{Évaluation des performances~: Comparaisons de \ppff\ avec {Java} et {FastFlow}}
 \label{experiences.chap}
 
 Ce chapitre pr\'esente une \'evaluation exp\'erimentale de la biblioth\`eque \TT{PpFf} afin de comparer ses performances avec d'autres approches d'ex\'ecution parall\`ele, plus sp\'ecifiquement avec \TT{Java} et \TT{FastFlow}.
@@ -148,12 +148,12 @@ Afin d'illustrer aussi la dispersion des acc\'el\'erations, l'accélération moy
 \item acc. max = temps max séq. / temps min par.
 \end{itemize}
 
-\section{Expériences avec l'application \TT{WordCount}}
+\section{Expériences avec l'application {WordCount}}
 \label{wordcount.sect}
 
 
 
-\subsection{Description de l'application \TT{WordCount}}
+\subsection{Description de l'application}
 
 Dans la section~\ref{descriptionWordCount.sect}, nous avons pr\'esent\'e \TT{WordCount}, une application qui compte le nombre d'occurrences des divers mots dans un fichier texte. L'application prend en entr\'ee un fichier texte et produit un conteneur de type \TT{map<string, int>} où la cl\'e repr\'esente un mot dans le fichier et la valeur  type \TT{int}  associ\'ee repr\'esente le nombre d'occurrences du mot dans le fichier. Des extraits des programmes utilis\'es pour les exp\'eriences pour \TT{WordCount} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount.ann}.
 
@@ -246,7 +246,7 @@ La derni\`ere s\'erie de résultats tirée de nos exp\'eriences vise \`a compare
 
 
 
-\section{Expériences avec l'application \TT{StockPrice}}
+\section{Expériences avec l'application {StockPrice}}
 \label{stockprice.sect}
 
 Dans le monde informatique actuel, les institutions financi\`eres produisent d'\'enormes quantit\'es d'informations, par ex., des informations sur les march\'es boursiers. Un probl\`eme important qu'elles rencontrent consiste \`a trouver des moyens efficaces pour r\'esumer et visualiser les donn\'ees afin de produire des informations utiles sur le comportement du march\'e, notamment pour prendre des d\'ecisions d'investissement. Cette section pr\'esente une application qui calcule le prix maximum pour diverses actions d'un marché boursier. Des extraits des programmes utilis\'es pour les exp\'eriences pour \TT{StockPrice} en~\TT{Java}, \TT{C++} version \TT{Seq}uentielle, \TT{PpFf} et \TT{FastFlow} sont pr\'esent\'es dans l'annexe~\ref{appendice-code-stockprice.ann}.
@@ -398,7 +398,7 @@ En examinant les temps d'ex\'ecution sur les trois machines, on peut constater q
 Nous avons aussi calculé les accélérations, présentées dans la
 figure~\ref{StockPrice-accs.fig}~: on constate que les accélérations sur \M2 et \M3 ne sont pas très bonnes.
 
-\section{Autres expériences avec l'application \TT{WordCount}~: Utilisation de \TT{parallel} et nombre de \emph{threads}} 
+\section{Autres expériences avec l'application {WordCount}~: Utilisation de \TT{parallel} et nombre de \emph{threads}} 
 \label{autres-experiences-wordcount.sect}
 
 On a vu dans la plupart des exp\'eriences présentées dans les sections précédentes que notre biblioth\`eque \TT{PpFf} est généralement moins performante que \TT{Java}. Cela est d\^u \`a la gestion de \emph{threads} qui diff\`ere entre les deux programmes. Dans cette section, nous analysons plus en détail le fonctionnement et la gestion de \emph{threads} de \TT{PpFf}. 
@@ -408,7 +408,7 @@ La cr\'eation d'un \emph{thread} est une opération co\^uteuse. La surcharge var
 Les exp\'eriences présentées dans cette section vont d\'emontrer que la charge de travail associée à un opérateur influence fortement le temps d'ex\'ecution, et que s'il est trop petit, les performances parallèles diminuent.
 
 
-\subsection{Description de trois variantes de \TT{WordCount}}
+\subsection{Description de trois variantes de {WordCount}}
 
 L'application choisie pour ces exp\'eriences est l'application \TT{WordCount}, d\'ecrite dans la section~\ref{descriptionWordCount.sect}. Afin de montrer les coûts associés à la gestion des \emph{threads}, trois versions de \TT{WordCount} vont être comparées : \TT{WordCountSplitted} avec un pipeline comptant cinq op\'erations, \TT{WordCount} avec quatre opérations, et \TT{WordCountMerged} avec seulement trois op\'erations. On doit pr\'eciser que le r\'esultat obtenu en ex\'ecutant les trois versions de \TT{WordCount} est identique et que l'appel à \TT{parallel()} (voir ci-bas) n'est pas compté dans les opérations. Des extraits du code utilis\'e pour la définition de trois versions sont pr\'esent\'es dans l'annexe~\ref{appendice-code-wordcount-sf.ann}. 
 
@@ -477,7 +477,7 @@ Malgr\'e les coûts qui lui sont associés, le parall\'elisme de données dans \
 
 
 
-\section{Discussion des résultats et limites de \ppff}
+\section{Discussion des résultats et limites de PpFf}
 \label{limitesppff.sect}
 
 Dans ce chapitre, plusieurs exp\'eriences ont \'et\'e présentées dans le but d'évaluer les performances de \TT{PpFf}.

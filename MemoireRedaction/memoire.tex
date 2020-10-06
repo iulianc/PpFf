@@ -1,5 +1,5 @@
-%\documentclass[12pt,twoside]{latex/memoireuqam1.3} % Pour version papier recto-verso
-\documentclass[12pt]{latex/memoireuqam1.3}          % Pour version PDF
+\documentclass[12pt,twoside]{latex/memoireuqam1.3} % Pour version papier recto-verso
+%\documentclass[12pt]{latex/memoireuqam1.3}          % Pour version PDF
 
 
 \usepackage[T1]{fontenc}
@@ -122,6 +122,22 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Appendices %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+\include{appendice-methodes-api}
+\include{appendice-specification-reducer}
+
+\include{appendice-experiences-preliminaires}
+\include{appendice-java}
+
+
+\include{appendice-code-wordcount}
+\include{appendice-code-stockprice}
+\include{appendice-code-wordcount-sf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Bibliographie   %%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -133,21 +149,5 @@
 \addtocontents{toc}{\protect\enlargethispage{1.5ex}}
 \addcontentsline{toc}{chapter}{\UpperRef{BIBLIOGRAPHIE}}
 \bibliography{biblio-locale}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%% Appendices %%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\appendix
-\include{appendice-methodes-api}
-\include{appendice-specification-reducer}
-
-\include{appendice-experiences-preliminaires}
-\include{appendice-java}
-
-\include{appendice-code-wordcount}
-\include{appendice-code-stockprice}
-\include{appendice-code-wordcount-sf}
 
 \end{document}

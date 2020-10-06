@@ -1,5 +1,5 @@
 
-\chapter{Description de l'API de \PpFf}
+\chapter{Description de l'API de PpFf}
 \label{description.chap}
 
 
@@ -33,7 +33,7 @@ La biblioth\`eque \PpFf{} est mise en \oe{}uvre au-dessus de la biblioth\`eque \
 
 
 
-\section{Exemple~: l'application \TT{WordCount}}
+\section{Exemple~: l'application {WordCount}}
 \label{descriptionWordCount.sect}
 
 
@@ -87,7 +87,7 @@ flux avec les lignes du fichier. Le fichier est sp\'ecifi\'e par un nom de fichi
 \end{itemize}
 
 
-\section{Flux de donn\'ees: type \TT{Flow}}
+\section{Flux de donn\'ees: type {Flow}}
 \label{flow.sect}
 
 L'interface de programmation propos\'ee par la bibliothèque \TT{PpFf} consiste en un ensemble de m\'ethodes qui permettent \`a l'utilisateur de manipuler des flux de donn\'ees de mani\`ere simple et efficace. L'interface s'inspire de celle introduite pour les \TT{Stream}s de \TT{Java} 8. L'annexe~\ref{methodes-api.ann} présente et d\'ecrit bri\`evement les m\'ethodes export\'ees par l'API, regroup\'ees selon leur fonctionnalit\'e, puis en ordre alphab\'etique \`a l'int\'erieur d'une cat\'egorie.
@@ -100,7 +100,7 @@ Comme on peut le voir dans le tableau de l'annexe~\ref{methodes-api.ann}, la d\'
 Un autre point cl\'e dans cette interface est son expressivit\'e. M\^eme avant sa conception d\'etaill\'ee, nous nous \'etions donn\'e comme objectif de fournir un syst\`eme suffisamment intuitif et expressif pour le traitement de flux de donn\'ees. Le cha\^inage de m\'ethodes et l'application d'expressions \emph{lambda} sont deux caract\'eristiques de \TT{PpFf} qui simplifient l'utilisation et facilitent la compr\'ehension du code.
 
 
-\section{Cat\'egorie \TT{Source} : m\'ethodes \TT{source}}
+\section{Cat\'egorie {Source} : m\'ethodes \TT{source}}
 
 \label{source.sect}
 
@@ -125,7 +125,7 @@ std::vector<int> currentResult =
 Les deux m\'ethodes pour sp\'ecifier la source d'un flux sont illustr\'ees, respectivement, dans les exemples des listings~\ref{wordcount.c++} et~\ref{mapExample.c++}. La m\'ethode \TT{source} du listing~\ref{wordcount.c++} envoie dans le flux chaque ligne du fichier. Le param\`etre \TT{inputFile} de la m\'ethode sp\'ecifie le chemin o\`u se trouve le fichier. Dans le deuxième exemple, celui du listing~\ref{mapExample.c++}, les donn\'ees sont consomm\'ees \`a partir de \TT{elems}, un \TT{vector}. La m\'ethode \TT{source} envoie dans le flux les donn\'ees de type \TT{int} du \TT{vector elems} en utilisant ses it\'erateurs de d\'ebut et fin.
 
 
-\section{Cat\'egorie \TT{Transformation}}
+\section{Cat\'egorie {Transformation}}
 
 \label{transformation.sect}
 
@@ -172,7 +172,7 @@ Une op\'eration courante consiste \`a s\'electionner les \'el\'ements d'un ensem
 Un exemple qui illustre l'utilisation de la m\'ethode \TT{find} est pr\'esent\'e dans le listing~\ref{mapExample2.c++}~: l'appel \`a la m\'ethode \TT{find}  s\'electionne uniquement les employ\'es du flux dont le salaire est sup\'erieur \`a 1~000 \$.
 
 
-\section{Cat\'egorie \TT{Agrégation}}
+\section{Cat\'egorie {Agrégation}}
 
 \label{agregation.sect}
 
@@ -516,7 +516,7 @@ La m\'ethode \TT{reduceByKey} est une op\'eration avec une mise en \oe{}uvre com
 Lorsque le flux est trait\'e en parall\`ele, il est divis\`e en sous-flux. Chaque instance cr\'ee et manipule son propre \emph{container}, son propre \emph{map}, donc sans interf\'erence avec les \emph{threads} qui traitent les autres sous-flux. Puis, lors de la combinaison des r\'esultats des sous-flux, ces divers \emph{containers/maps} sont fusionn\'es les uns avec les autres dans le \emph{thread} principal.
 
 
-\section{Cat\'egorie \TT{Execution}}
+\section{Cat\'egorie {Execution}}
 
 \label{execution.sect}
 
@@ -529,15 +529,15 @@ La valeur de cet argument permet de sp\'ecifier le nombre d'instances parall\`el
 
 
 
-\section{Expressivit\'e de \TT{PpFf} par rapport à \TT{FastFlow} et
-\TT{Java}}
+\section{Expressivit\'e de {PpFf} par rapport à {FastFlow} et
+{Java}}
 
 \label{PpFfExpressivities.sect}
 
 Dans cette section, nous examinons, de façon \emph{informelle}, l'expressivit\'e de \TT{PpFf} en la comparant \`a celles de \TT{FastFlow} et \TT{Java} à l'aide de quelques exemples.
 
 
-\subsection{\texttt{PpFf} vs.\ \texttt{FastFlow}}
+\subsection{{PpFf} vs.\ {FastFlow}}
 
 
 \'Ecrit au-dessus de la biblioth\`eque \TT{FastFlow}, \TT{PpFf} essaie de simplifier le traitement des collections de donn\'ees par rapport à \TT{FastFlow}. Dans ce qui suit, à l'aide d'exemples simples, nous pr\'esenterons ce qui distingue \ppff\ de \TT{FastFlow}.
@@ -729,7 +729,7 @@ Par d\'efaut, chaque nœud d'un flux dans \TT{FastFlow} et \TT{PpFf} s'ex\'ecute
 
 
 
-\subsection{\texttt{PpFf} vs.\ \texttt{Java}}
+\subsection{{PpFf} vs.\ {Java}}
 
 \subsection*{Regroupement des étudiants boursiers par département}
 
@@ -815,7 +815,7 @@ là aussi des informations additionnelles de type doivent être fournies
 pour les \emph{templates}.
 \end{minipage}
 
-\subsection*{L'application \TT{WordCount}}
+\subsection*{L'application {WordCount}}
 
 
 \begin{minipage}{\linewidth}

@@ -344,22 +344,13 @@
 \def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
                          \refstepcounter{chapter}%
                          \typeout{\@chapapp\space\thechapter.}%
+                       % Chapitre et titre sur la meme ligne G.L. 23/11/2018
                          \addtocontents{toc}{\protect\vspace{1.5ex}}
-%                         \addcontentsline{toc}{specialchapitre}
-%% Utilisation du \UpperRef plutot que \MakeUppercase
-%                    {\UpperRef{\@chapapp\protect\hskip 0.5em \numerochap}
-%                    \vskip 0ex
-%                    \UpperRef{#1}
-%                            }%
-                    \addtocontents{toc}{\noindent\UpperRef{\@chapapp\protect\hskip 0.5em \numerochap}\vskip 0ex}
-                    \addcontentsline{toc}{chapter}{\UpperRef{#1}}
+                         \addcontentsline{toc}{chapter}{\UpperRef{\@chapapp\protect\hskip 0.5em \numerochap} \protect\hskip 0.5em \UpperRef{#1}} 
                      \else
                       \addcontentsline{toc}{chapter}{#1}
                     \fi
-%                    \newcommand\numerochap{\Roman{chapter}}
                     \chaptermark{#1}%
- %                   \addtocontents{lof}{\protect\addvspace{10\p@}}%
- %                   \addtocontents{lot}{\protect\addvspace{10\p@}}%
                     \if@twocolumn
                       \@topnewpage[\@makechapterhead{#2}]%
                     \else

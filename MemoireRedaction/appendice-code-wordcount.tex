@@ -1,8 +1,8 @@
-\chapter{Extraits des programmes utilisés pour les expériences avec \TT{WordCount}}
+\chapter{Extraits des programmes utilisés pour les expériences avec {WordCount}}
 \label{appendice-code-wordcount.ann}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Programme \TT{WordCount.java}}
+\section{Programme {WordCount.java}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=java]
@@ -46,7 +46,9 @@ public class WordCount {
             .parallel()
             .flatMap( WordCount::splitInWords )
             .map( WordCount::toLowerCaseLetters )
-            .collect( ReduceByKey::new, ReduceByKey::accept, ReduceByKey::combine )
+            .collect( ReduceByKey::new,
+                      ReduceByKey::accept,
+                      ReduceByKey::combine )
             .toMap();
         
         long duration = (System.nanoTime() - startTime);
@@ -59,8 +61,8 @@ public class WordCount {
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Fonctions auxiliaires communes aux programmes \TT{WordCountSeq.cpp},
-\TT{WordCount.cpp} et \TT{WordCountFastFlow.cpp}}
+\section{Fonctions auxiliaires communes aux programmes {WordCountSeq.cpp},
+{WordCount.cpp} et {WordCountFastFlow.cpp}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
@@ -95,7 +97,7 @@ std::string* toLowercaseLetters(std::string* data) {
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Programme \TT{WordCountSeq.cpp} (version séquentielle)}
+\section{Programme {WordCountSeq.cpp} (version séquentielle)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
 	// ...
@@ -116,13 +118,13 @@ std::string* toLowercaseLetters(std::string* data) {
 
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = 
-        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
+       std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count();
 	// ...
 \end{lstlisting}
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Programme \TT{WordCount.cpp} (version \ppff)}
+\section{Programme {WordCount.cpp} (version \ppff)}
 \label{appendice-code-wordcount-ppff.ann}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=c++]
@@ -151,7 +153,7 @@ std::string* toLowercaseLetters(std::string* data) {
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Programme \TT{WordCountFastFlow.cpp}}
+\section{Programme {WordCountFastFlow.cpp}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,language=c++]
 struct linesFromFileStage : ff_node {
@@ -226,7 +228,7 @@ int main(int argc, char *argv[]) {
 
     auto end = std::chrono::high_resolution_clock::now();
     long duration_ms = 
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+      std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
     // ...
 }
 \end{lstlisting}

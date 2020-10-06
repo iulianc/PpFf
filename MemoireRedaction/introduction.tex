@@ -2,7 +2,7 @@
 
 Le traitement de flux de donn\'ees devient de plus en plus important en raison de la grande quantit\'e de donn\'ees continuellement g\'en\'er\'ees, provenant de diverses sources telles que des capteurs, des indicateurs boursiers, des dispositifs de r\'eseau, etc. Afin de traiter rapidement une grande quantit\'e de donn\'ees, notamment en exploitant les capacit\'es des processeurs multicœurs modernes, une application doit \^etre con\c{c}ue en parall\`ele. La conception et la mise en œuvre d'applications parall\`eles efficientes pour traiter des flux de donn\'ees posent des d\'efis aux d\'eveloppeurs. Les co\^uts de communications~\citep{amarasinghe2011ascr}, les conditions de course (\emph{data race})~\citep{wu2015detecting}, les interblocages~\citep{haque2006concurrent} et les d\'es\'equilibres de charge de travail entre les fils d'ex\'ecution~\citep{amarasinghe2011ascr} sont quelques exemples de probl\`emes qui demandent des efforts suppl\'ementaires aux programmeurs. De plus, la complexit\'e du code peut diminuer la productivit\'e et, par cons\'equent, augmenter les co\^uts de d\'eveloppement. Ce m\'emoire vise \`a proposer une bibliothèque, en C++, qui permet traiter de fa\c{c}on simple les flux de donn\'ees en tentant de dissimuler cette complexit\'e.
 
-\section*{D\'efinition du probl\`eme}
+\section{D\'efinition du probl\`eme}
 
 Une application qui traite un flux de données peut \^etre consid\'er\'ee comme un pipeline \`a travers lequel les donn\'ees du flux sont produites, trait\'ees et consomm\'ees en continu. Le parall\'elisme dans le traitement d'un tel flux consiste \`a traiter des \'el\'ements distinct du flux de fa\c{c}on concurrente --- \emph{parall\'elisme de flux} (\emph{flow parallelism} ou \emph{stream parallelism}) --- et \`a r\'epliquer un m\^eme op\'erateur sur des sous-groupes d'\'el\'ements du flux --- \emph{parall\'elisme de donn\'ees} (\emph{data parallelism}). La transformation, le tri ou la r\'eduction par un op\'erateur binaire sont des exemples d'op\'erations pour lesquelles du parall\'elisme de donn\'ees peut \^etre exploit\'e. 
 
@@ -20,7 +20,7 @@ Des outils qui supportent le traitement de flux de donn\'ees sont disponibles au
 
 
 
-\section*{Objectifs}
+\section{Objectifs}
 
 
 Dans le contexte du langage de programmation \TT{C++}, il existe plusieurs biblioth\`eques qui offrent des algorithmes de traitement de flux de donn\'ees. Cependant, plusieurs des constructions pour exprimer des algorithmes parall\`eles se limitent \`a des op\'erations de transformation et et de r\'eduction. Ce m\'emoire a comme objectif d'enrichir ces op\'erations avec de nouvelles op\'erations, et ce dans une interface simple \`a utiliser. Ceci, associ\'e \`a de nouvelles fonctionnalit\'es telles que les expressions lambda~\citep{josuttis2012c++}, aide un programmeur \`a \'ecrire des op\'erations complexes pour un flux de donn\'ees. Cette nouvelle bibliothèque en \TT{C++}, appel\'ee \TT{PpFF},  est mise en \oe{}uvre avec la biblioth\`eque \TT{FastFlow}.
@@ -35,7 +35,7 @@ Nous comparerons aussi les performances de \ppff\ avec celles de
 En plus de mesurer les performances de notre bibliothèque, nous illustrerons \'egalement son expressivit\'e en impl\'ementant certains cas d'utilisation typiques rencontr\'es dans les applications de traitement de flux de donn\'ees.
 
 
-\section*{Organisation du m\'emoire}
+\section{Organisation du m\'emoire}
 
 Les chapitres qui forment le c\oe{}ur du m\'emoire sont organis\'es
 comme suit.

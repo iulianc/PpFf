@@ -27,6 +27,7 @@ COLORED_LINKS=true
 
 $(MAIN): colored_links
 	pdflatex $(MAIN)
+	pdflatex $(MAIN)
 
 bib:
 	pdflatex $(MAIN)

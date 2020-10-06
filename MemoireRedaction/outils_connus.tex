@@ -1,5 +1,5 @@
 
-\chapter{Logiciels et bibliothèques de traitement de flux de donn\'ees~: \TT{Spark}, \TT{Java}, \TT{FastFlow} et autres bibliothèques \TT{C++}}
+\chapter{Logiciels et bibliothèques de traitement de flux de donn\'ees~: {Spark}, {Java}, {FastFlow} et autres bibliothèques {C++}}
 \label{outils_connus}
 \label{outils_connus.chap}
 
@@ -39,7 +39,7 @@ Alors que le traitement en m\'emoire contribue consid\'erablement \`a obtenir de
 Nous expliquons ces deux mod\`eles dans les sous-sections qui suivent.
 
 
-\subsection{\emph{Resilient Distributed Dataset} (\TT{RDD})}
+\subsection{\emph{Resilient Distributed Dataset} ({RDD})}
 
 Un \TT{RDD} est une abstraction de donn\'ees en m\'emoire qui \'evite la r\'eplication de donn\'ees et minimise les acc\`es au disque. L'utilisation de \TT{RDD}s permet aux applications de mettre en cache des donn\'ees \`a travers diff\'erentes \'etapes de traitement, ce qui acc\'el\`ere consid\'erablement la r\'eutilisation pour les traitements futurs. De plus, les \TT{RDD}s m\'emorisent les op\'erations utilis\'ees pour les construire et utilisent un m\'ecanisme de \emph{checkpoint}. Lorsqu'une panne survient, les \TT{RDD}s requis peuvent \^etre reconstruits, et ce sans devoir tout refaire les calculs.
 
@@ -60,7 +60,7 @@ Ce mod\`ele est une autre abstraction introduite en \TT{Spark}.
 \TT{Spark} d\'ecompose un flux de donn\'ees en une s\'erie de lots, en fonction de courts intervalles de temps, lots appel\'es \emph{micro-batches}. Chaque \emph{micro-batch} stocke ses donn\'ees dans un \TT{RDD}. Ensuite, la \emph{micro-batch} est trait\'ee et ses r\'esultats sont stock\'es dans des \TT{RDD}s interm\'ediaires.
 
 
-\subsection{Exemple~: \TT{wordCount}}
+\subsection{Exemple~: {wordCount}}
 
 
 \begin{lstlisting}[
@@ -106,13 +106,13 @@ Plus pr\'ecis\'ement, ce segment de code compte le nombre d'occurrences des dive
 
 
 
-\section{\TT{Stream}s de \TT{Java} 8}
+\section{{Stream}s de {Java} 8}
 \label{java8.sect}
 
 La version 8 de \TT{Java}, qui a introduit les \TT{Stream}s, a chang\'e la façon dont les d\'eveloppeurs peuvent traiter, tant de fa\c{c}on s\'equentielle que parall\`ele, les collections de donn\'ees. La manipulation de collections de donn\'ees \`a l'aide de \TT{Stream}s ressemble \`a un langage de requ\^etes de base de donn\'ees. Au lieu de parcourir explicitement les donn\'ees \`a l'aide de boucles (\TT{for}), un d\'eveloppeur sp\'ecifie simplement une suite d'op\'erations \emph{fonctionnelles} \`a effectuer sur les \'el\'ements d'une collection. \cite{urma2014java} fournissent une description d\'etaill\'ee des nouveaux concepts introduits dans \TT{Java~8}. Les \TT{Stream}s et les \emph{expressions lambdas} sont les fonctionnalit\'es les plus remarquables ajout\'ees dans l'API~\citep{javaStreamAPI}. Ils sont con\c{c}us pour traiter les collections de donn\'ees de mani\`ere simple et efficace. Les sous-sections qui suivent d\'ecrivent quelques-uns des concepts de \TT{Java~8}.
 
 
-\subsection{Expressions lambda}
+\subsection{Expressions lambdas}
 
 
 
@@ -247,14 +247,14 @@ Par exemple, dans le listing~\ref{findFirst}, l'opérateur \TT{findFirst} retour
 L'un des principaux avantages des flux est qu'ils peuvent \^etre \'evalu\'es soit de fa\c{c}on s\'equentielle, soit en parall\`ele. L'\'evaluation s\'equentielle est r\'ealis\'ee en ex\'ecutant toutes les op\'erations en \TT{pipeline} sur chaque \'el\'ement du flux. Lorsqu'un flux est \'evalu\'e en parall\`ele, il utilise un type sp\'ecial d'it\'erateur appel\'e \TT{Spliterator}. Ce dernier partitionne le flux de mani\`ere r\'ecursive en se divisant lui-m\^eme pour cr\'eer des flux enfants. Ce m\'ecanisme permet aux \emph{threads} de traverser plusieurs flux en parall\`ele. Les \emph{threads} sont g\'er\'es par un groupe de \emph{threads} de type \TT{fork/join}.
 
 
-\subsection{\emph{Threads} de type \TT{fork/join}}
+\subsection{\emph{Threads} de type \emph{fork/join}}
 \label{forkjoin.sect}
 
 Introduit en \TT{Java~7}, le \emph{framework} \TT{fork/join} permet aux d\'eveloppeurs de sp\'ecifier des t\^aches pouvant \^etre subdivis\'ees et ex\'ecut\'ees en parall\`ele sur des machines multicœurs. Il est bas\'e sur deux op\'erations : \TT{fork} et \TT{join}. L'op\'eration \TT{fork} a pour r\^ole de diviser une t\^ache en plus petites sous-t\^aches ind\'ependantes, et ce  r\'ecursivement jusqu'\`a ce qu'elles soient assez simples pour \^etre ex\'ecut\'ees de mani\`ere ind\'ependante et asynchrone. L'op\'eration \TT{join} a pour r\^ole de fusionner les r\'esultats de toutes les sous-t\^aches de mani\`ere r\'ecursive en un seul r\'esultat.
 Les sous-t\^aches obtenues par l'op\'eration \TT{fork} sont soumises \`a un \TT{ForkJoinPool}. Ce dernier est composé d'un ensemble de travailleurs. Le nombre de travailleurs dans un \TT{ForkJoinPool} est g\'en\'eralement limit\'e par le nombre de cœurs de la machine. Chaque travailleur peut ex\'ecuter une t\^ache \`a la fois. Les t\^aches en attente d'ex\'ecution sont stock\'ees dans une file appartenant \`a un travailleur. Une t\^ache en cours d'ex\'ecution peut g\'en\'erer de nouvelles t\^aches, qui sont ensuite mises en file  pour une ex\'ecution ult\'erieure. Lorsqu'un travailleur a termin\'e l'ex\'ecution d'une t\^ache et qu'il n'a plus aucune t\^ache dans sa propre file, il essaie de prendre une t\^ache d'un file d'un autre travailleur \`a l'aide d'un algorithme de vol de travail (\emph{work stealing algorithm}~\citep{FrigoLeiRan98}). Cet algorithme permet un \'equilibrage efficace de la charge de travail entre les divers travailleurs.
 
 
-\subsection{Exemple~: \TT{wordCount}}
+\subsection{Exemple~: {wordCount}}
 
 
 \begin{lstlisting}[
@@ -334,7 +334,7 @@ Afin d'illustrer le mod\`ele de programmation avec les \TT{Stream}s de \TT{Java~
 \end{itemize}
 
 
-\section{\TT{FastFlow}}
+\section{{FastFlow}}
 \label{fastflow.sect}
 
 \TT{FastFlow} est une biblioth\`eque \TT{C++} qui, \`a la base, offre un ensemble de m\'ecanismes de bas niveau pour traiter les flux de donn\'ees et s'ex\'ecutant sur des machines multicœurs avec m\'emoire partag\'ee. La facilit\'e de d\'eveloppement avec \TT{FastFlow} est rendue possible en utilisant un ensemble de \emph{squelettes algorithmiques} offerts par la biblioth\`eque~\citep{AldinucciEtAl14}. Son efficacit\'e provient principalement de la mise en œuvre optimis\'ee de m\'ecanismes de communication de bas niveau et de sa conception en couches. Les squelettes algorithmiques offerts par \TT{FastFlow} peuvent \^etre utilis\'es pour exprimer les mod\`eles les plus courants de parall\'elisme. Ces squelettes algorithmiques peuvent \^etre imbriqu\'es pour cr\'eer des mod\`eles hi\'erarchiques de parall\'elisme plus complexes.
@@ -413,7 +413,7 @@ Un \emph{pipeline} est utilis\'e pour mod\'eliser les traitements exprim\'es par
 Un \emph{farm} est bas\'e sur la r\'eplication d'une fonction. Dans \TT{FastFlow}, un \emph{farm} est repr\'esent\'e par un objet de la classe \TT{ff\_farm}. Comme le montre la figure~\ref{FastFlowFarm.fig}, un \emph{farm} est compos\'e de trois parties distinctes: un \TT{Emitter}, un  \emph{pool} de \TT{workers} et un \TT{Collector}. L'\TT{Emitter} est responsable de la r\'epartition des \'el\'ements du flux au \emph{pool} de \TT{workers}, lesquels traitent et produisent les donn\'ees de sortie; l'\TT{Emitter} distribue les \'el\'ements d'entr\'ee aux travailleurs selon une certaine politique d'ordonnancement afin d'\'equilibrer la charge des travailleurs. Les r\'esultats sont ensuite rassembl\'es par le \TT{Collector} dans un seul flux de sortie. Les communications entre \TT{Emitter} et \TT{Collector} se font via des canaux de communication sans barri\`eres de m\'emoire, tel que d\'ecrit pr\'ec\'edemment.
 
 
-\subsection{Exemple~: \TT{WordCount}}
+\subsection{Exemple~: {WordCount}}
 
 
 \begin{lstlisting}[language=c++, 
@@ -519,7 +519,7 @@ Un {pipeline} de \TT{n} \TT{stages} distincts est cr\'e\'e en instanciant les \T
     
 \end{itemize}
 
-\section{Autres biblioth\`eques \TT{C++}}
+\section{Autres biblioth\`eques {C++}}
 
 Nous présentons ici quelques autres bibliothèque C++ de traitement de flux de données.
 
