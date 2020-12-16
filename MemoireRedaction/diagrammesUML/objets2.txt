@@ -14,94 +14,73 @@ skinparam classAttributeIconSize 0
 'title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.parallel(2)\l\t.max<int>();
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-object currentResult {
-  class = Flow
+object "currentResult: Flow" as currentResult {
 }
 
-object node {
- class = Node
- ......
+object "node: Node" as node {
  operatorType = SOURCE_OP
 }
 
 
-object sourceOp #Wheat {
-  class = SourceOperator<T, Iterator>
-  superclass = Operator < ff_node
-  ......
+object "sourceOp: SourceOperator<T, Iterator>" as sourceOp #Wheat {
   begin = ...
   end = ...
 }
 
-object collector {
-  class = Collector<MaxOperator>
+object "collector: Collector<MaxOperator>" as collector {
 }
 
-object maxOp1 #Wheat {
-  class = MaxOperator<int>
-  superclass = Operator < ff_node
+object "maxOp1: MaxOperator<int>" as maxOp1 #Wheat {
 }
 
-object maxOp0 #Wheat {
-  class = MaxOperator<int>
-  superclass = Operator < ff_node
+object "maxOp0: MaxOperator<int>" as maxOp0 #Wheat {
 }
 
 node --> sourceOp
+
+together {
+object "worker0: Worker" as worker0 {
+}
+
+object "worker1: Worker" as worker1 {
+}
+}
 
 worker0 --> "workers[0]" maxOp0
 worker1 --> "workers[1]" maxOp1
 
 
-object pipe {
-  class = Pipeline
-  ..
+object "pipe: Pipeline" as pipe {
   no_workers = 2
   sourceExists = true
 }
 
 currentResult --> pipe : implemented by >
 
+object "farm: Farm" as farm {
+  operatorType = COLLECTOR_OP
+  no_workers = 2
+}
+
 pipe --> "nodes[0]" node
 pipe --> "nodes[1]" farm
 pipe --> collector
 
 
-together {
-object worker0 {
-  class = Worker
-  superclass = Node
-}
-
-object worker1 {
-  class = Worker
-  superclass = Node
-}
-}
-
 farm --> "workers[0]" worker0
 farm --> "workers[1]" worker1
 
 
-object farm {
-  class = Farm
-  superclass = Node
-  ......
-  operatorType = COLLECTOR_OP
-  no_workers = 2
-}
-
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Les objets FastFlow associes
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-object ff_pipeline0 #Wheat {
-  class = ff_pipeline
+object "ff_pipeline0: ff_pipeline" as ff_pipeline0 #Wheat {
 }
+
 pipe ..> ff_pipeline0
 note on link #Tan: "pipe.build_ff_node()"
 
-object ff_farm0 #Wheat {
-  class = ff_farm
+object "ff_farm0: ff_farm" as ff_farm0 #Wheat {
 }
 
 ff_pipeline0 --> "nodes_list[0]" sourceOp

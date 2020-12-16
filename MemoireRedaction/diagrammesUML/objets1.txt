@@ -13,37 +13,27 @@ skinparam classAttributeIconSize 0
 'title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.max<int>();
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-object currentResult {
-  class = Flow
+object "currentResult: Flow" as currentResult {
 }
 
-object node0 {
- class = Node
- .......
+
+object "node0: Node" as node0 {
  operatorType = SOURCE_OP
 }
 
-object node1 {
-  class = Node
-  .......
+object "node1: Node" as node1 {
   operatorType = COLLECTOR_OP
 }
 
-object collector {
-  class = Collector<MaxOperator>
+object "collector: Collector<MaxOperator>" as collector {
 }
 
-object sourceOp #Wheat {
-  class = SourceOperator<T, Iterator>
-  superclass = Operator < ff_node
-  .......
+object "sourceOp: SourceOperator<T, Iterator>" as sourceOp #Wheat {
   begin = ...
   end = ...
 }
 
-object maxOp #Wheat {
-  class = MaxOperator<int>
-  superclass = Operator < ff_node
+object "maxOp: MaxOperator<int>" as maxOp #Wheat {
 }
 
 node0 --> sourceOp
@@ -51,9 +41,7 @@ node1 --> maxOp
 collector --> maxOp
 
 
-object pipe {
-  class = Pipeline
-  ..
+object "pipe: Pipeline" as pipe {
   no_workers = 1
   sourceExists = true
 }
@@ -69,8 +57,7 @@ pipe --> collector
 ' Les objets FastFlow associes
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-object ff_pipeline0 #Wheat {
-  class = ff_pipeline
+object "ff_pipeline0: ff_pipeline" as ff_pipeline0 #Wheat {
 }
 
 pipe ..> ff_pipeline0
