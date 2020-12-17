@@ -13,77 +13,103 @@ skinparam classAttributeIconSize 0
 'title currentResult =\l\tFlow::source<int>(elems.begin(), elems.end())\l\t.parallel(2)\l\t.map<int, int>(([](int *in){ *in *= 3; return in; }))\l\t.parallel(4)\l\t.max<int>();
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-object currentResult {
-  class = Flow
+object "currentResult: Flow" as currentResult {
 }
 
-object source {
- class = Node
- ......
+object "source: Node" as source {
  operatorType = SOURCE_OP
 }
 
-object sourceOp #Wheat {
-  class = SourceOperator<T, Iterator>
-  superclass = Operator < ff_node
-  ......
+object "farm0: Farm" as farm0 {
+  operatorType = INTERMEDIATE_OP
+  no_workers = 2
+}
+
+object "farm1: Farm" as farm1 {
+  operatorType = COLLECTOR_OP
+  no_workers = 4
+}
+
+object "sourceOp: SourceOperator<T, Iterator>" as sourceOp #Wheat {
   begin = ...
   end = ...
 }
 
-object maxOp0 #Wheat {
-  class = MaxOperator<int>
-  superclass = Operator < ff_node
+source ---> sourceOp
+
+
+object "maxOp2: aMaxOperator<int>" as maxOp1 #Wheat {
 }
 
-object maxOp1 #Wheat {
-  class = MaxOperator<int>
-  superclass = Operator < ff_node
+object "maxOp0: MaxOperator<int>" as maxOp2 #Wheat {
 }
 
-object maxOp2 #Wheat {
-  class = MaxOperator<int>
-  superclass = Operator < ff_node
+object "maxOp3: MaxOperator<int>" as maxOp3 #Wheat {
 }
 
-object maxOp3 #Wheat {
-  class = MaxOperator<int>
-  superclass = Operator < ff_node
+object "maxOp1: MaxOperator<int>" as maxOp0 #Wheat {
 }
 
-object mapOp0 #Wheat {
-  class = MapOperator<int>
-  superclass = Operator < ff_node
+object "mapOp0: MapOperator<int>" as mapOp0 #Wheat {
 }
 
-object mapOp1 #Wheat {
-  class = MapOperator<int>
-  superclass = Operator < ff_node
+object "mapOp1: MapOperator<int>" as mapOp1 #Wheat {
 }
 
-source --> sourceOp
+together {
 
-object collector {
-  class = Collector<MaxOperator>
+object "farm0_worker0: Worker" as farm0_worker0 {
 }
 
-collector -[hidden] farm1_worker0
 
-farm0 -[hidden] collector
+object "farm0_worker1: Worker" as farm0_worker1 {
+}
+}
 
-farm1_worker0 --> "[0]" maxOp0
-farm1_worker1 --> "[1]" maxOp1
-farm1_worker2 --> "[2]" maxOp2
-farm1_worker3 --> "[3]" maxOp3
-
-farm0_worker0 --> "[0]" mapOp0
-farm0_worker1 --> "[1]" mapOp1
 
 farm0_worker0 -[hidden] farm0_worker1
 
-object pipe {
-  class = Pipeline
-  ..
+together {
+
+object "farm1_worker0: Worker" as farm1_worker2 {
+}
+
+object "farm1_worker1: Worker" as farm1_worker0 {
+}
+
+object "farm1_worker3: Worker" as farm1_worker3 {
+}
+
+object "farm1_worker2: Worker" as farm1_worker1 {
+}
+
+object "collector: Collector<MaxOperator>" as collector {
+}
+
+farm1_worker0 -[hidden] farm1_worker1
+farm1_worker1 -[hidden] farm1_worker2
+farm1_worker2 -[hidden] farm1_worker3
+
+}
+
+'collector -[hidden] farm1_worker0
+
+farm0 -[hidden] farm1
+
+'farm0 -[hidden] collector
+
+farm1_worker0 --> maxOp0
+farm1_worker1 --> maxOp1
+farm1_worker2 -->  maxOp2
+farm1_worker3 --> maxOp3
+
+
+farm0_worker0 --> mapOp0
+farm0_worker1 --> mapOp1
+
+farm0_worker0 -[hidden] farm0_worker1
+
+object "pipe: Pipeline" as pipe {
   no_workers = 2
   sourceExists = true
 }
@@ -95,92 +121,35 @@ pipe --> "[1]" farm0
 pipe --> "[2]" farm1
 pipe --> collector
 
-together {
-object farm0_worker0 {
-  class = Worker
-  superclass = Node
-}
-
-object farm0_worker1 {
-  class = Worker
-  superclass = Node
-}
-}
-
 source -[hidden] farm0
 farm0 -[hidden] farm1
 
-sourceOp -[hidden] farm0_worker0
-
-
-together {
-object farm1_worker0 {
-  class = Worker
-  superclass = Node
-}
-
-object farm1_worker1 {
-  class = Worker
-  superclass = Node
-}
-
-object farm1_worker2 {
-  class = Worker
-  superclass = Node
-}
-
-object farm1_worker3 {
-  class = Worker
-  superclass = Node
-}
-}
-
-farm1_worker0 -[hidden] farm1_worker1
-farm1_worker1 -[hidden] farm1_worker2
-farm1_worker2 -[hidden] farm1_worker3
 
 farm0 --> "[0]" farm0_worker0
 farm0 --> "[1]" farm0_worker1
 
-farm1 --> "[0]" farm1_worker0
-farm1 --> "[1]" farm1_worker1
-farm1 --> "[2]" farm1_worker2
+farm1 --> "[1]" farm1_worker0
+farm1 --> "[2]" farm1_worker1
+farm1 --> "[0]" farm1_worker2
 farm1 --> "[3]" farm1_worker3
 
 
-object farm1 {
-  class = Farm
-  superclass = Node
-  ......
-  operatorType = COLLECTOR_OP
-  no_workers = 4
-}
-
-object farm0 {
-  class = Farm
-  superclass = Node
-  ......
-  operatorType = INTERMEDIATE_OP
-  no_workers = 2
-}
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Les objets FastFlow associes
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-object ff_pipeline0 #Wheat {
-  class = ff_pipeline
+object "ff_pipeline0: ff_pipeline" as ff_pipeline0 #Wheat {
 }
+
 pipe ..> ff_pipeline0
 note on link #Tan: "pipe.build_ff_node()"
 
-object ff_farm1 #Wheat {
-  class = ff_farm
+object "ff_farm1: ff_farm" as ff_farm1 #Wheat {
 }
 
-object ff_farm0 #Wheat {
-  class = ff_farm
+object "ff_farm0: ff_farm" as ff_farm0 #Wheat {
 }
 
 ff_pipeline0 --> "[0]" sourceOp
@@ -190,15 +159,15 @@ ff_pipeline0 --> "[2]" ff_farm1
 ff_farm0 --> "[0]" mapOp0
 ff_farm0 --> "[1]" mapOp1
 
-ff_farm1 --> "[0]" maxOp0
-ff_farm1 --> "[1]" maxOp1
-ff_farm1 --> "[2]" maxOp2
+ff_farm1 --> "[1]" maxOp0
+ff_farm1 --> "[2]" maxOp1
+ff_farm1 --> "[0]" maxOp2
 ff_farm1 --> "[3]" maxOp3
 ff_farm1 -[hidden] farm1_worker0
 
-collector --> maxOp1
 collector --> maxOp0
 collector --> maxOp2
+collector --> maxOp1
 collector --> maxOp3
 
 !if ($avecFastFlow == 0)
@@ -206,5 +175,6 @@ hide ff_pipeline0
 hide ff_farm0
 hide ff_farm1
 !endif
+
 
 @enduml
