@@ -435,15 +435,17 @@ Le dernier exemple illustre le fonctionnement du parallélisme de données en ut
 
 \begin{figure}
 \centering
-         \includegraphics[width=1.0\textwidth]{Figures/objets3-ppff.png}
+         \includegraphics[angle=90,width=0.4\textwidth]{Figures/objets3-ppff.png}
       \caption[La structure interm\'ediaire \TT{PpFf} pour l'exemple~3.]{La structure interm\'ediaire \TT{PpFf} pour 
          l'exemple~3~:\newline{\footnotesize\texttt{Flow::source<int>(\ldots).parallel(2).map<int,int>(\ldots).parallel(4).max<int>();}}.}
        \label{objets3-ppff.fig}
+\end{figure}       
 
-\bigskip
+%\bigskip
 
+\begin{figure}
 \centering
-         \includegraphics[width=1.0\textwidth]{Figures/objets3-ff.png}
+         \includegraphics[angle=90,width=0.4\textwidth]{Figures/objets3-ff.png}
       \caption{La structure interm\'ediaire \TT{PpFf} et le graphe \TT{FastFlow} associ\'e pour l'exemple~3.}
        \label{objets3-ff.fig}
 \end{figure}
