@@ -16,7 +16,7 @@ La premi\`ere section d\'ecrit les diff\'erents éléments composant la biblioth
 
 \begin{figure}
 \centering
-         \includegraphics[width=1.0\textwidth]{Figures/vueEnsemble.png}
+         \includegraphics[width=1.0\textwidth]{Figures/vueEnsemble.pdf}
       \caption{Les principaux éléments (classes et paquetages) de \TT{PpFf}.}
        \label{All.fig}
 \end{figure}
@@ -41,7 +41,7 @@ La biblioth\`eque \TT{PpFf} est compos\'ee de plusieurs éléments qui permetten
 
 \begin{figure}
 \centering
-     \includegraphics[width=0.5\textwidth]{Figures/flow-details.png}
+     \includegraphics[width=0.5\textwidth]{Figures/flow-details.pdf}
       \caption[Les m\'ethodes export\'ees par l'API de \TT{PpFf}.]{Les m\'ethodes export\'ees par l'API de \TT{PpFf}. Cette figure reprend la figure du chapitre pr\'ec\'edent (Fig.~\ref{MethodesAPI.fig}) comme rappel et pour faciliter l'acc\'es \`a la figure.}
        \label{Flow.fig}
 \end{figure}
@@ -136,7 +136,7 @@ valeur qui indique le nombre d'\'el\'ements du flux. Plus exactement, cette vale
 
 \begin{figure}
 \centering
-         \includegraphics[width=0.95\textwidth]{Figures/pipeline.png}
+         \includegraphics[width=0.95\textwidth]{Figures/pipeline.pdf}
       \caption{Un diagramme UML des éléments pour un \TT{Pipeline} de \ppff.}
        \label{pipeline.fig}
 \end{figure}
@@ -155,7 +155,7 @@ Le r\'esultat du traitement est retourn\'e au \TT{Pipeline} par l'intermédiare 
 
 \begin{figure}
 \centering
-         \includegraphics[width=1.0\textwidth]{Figures/operators-details.png}
+         \includegraphics[width=1.0\textwidth]{Figures/operators-details.pdf}
       \caption{Un diagramme UML des \TT{Operators} de \ppff.}
        \label{operators.fig}
 \end{figure}
@@ -306,13 +306,13 @@ Illustr\'e dans le listing~\ref{objets1.c++}, le premier exemple analys\'e ne co
 
 \begin{figure}
 \centering
-         \includegraphics[width=0.95\textwidth]{Figures/objets1-ppff.png}
+         \includegraphics[width=1.0\textwidth]{Figures/objets1-ppff.pdf}
       \caption[La structure interm\'ediaire \TT{PpFf} pour l'exemple~1.]{La structure interm\'ediaire \TT{PpFf} pour
          l'exemple~1~:\newline{\small\texttt{Flow currentResult = Flow::source<int>(...).max<int>();}}.}
        \label{objets1-ppff.fig}
 
 \centering
-         \includegraphics[width=0.95\textwidth]{Figures/objets1-ff.png}
+         \includegraphics[width=1.0\textwidth]{Figures/objets1-ff.pdf}
       \caption{La structure interm\'ediaire \TT{PpFf} et le graphe \TT{FastFlow} associé pour l'exemple~1.}
        \label{objets1-ff.fig}
 \end{figure}
@@ -355,13 +355,13 @@ Le deuxi\`eme exemple illustre le fonctionnement d'un flux avec parallélisme de
 
 \begin{figure}
 \centering
-         \includegraphics[width=0.85\textwidth]{Figures/objets2-ppff.png}
+         \includegraphics[width=1.0\textwidth]{Figures/objets2-ppff.pdf}
       \caption[La structure interm\'ediaire \TT{PpFf} pour l'exemple~2.]{La structure interm\'ediaire \TT{PpFf} pour 
          l'exemple~2~:\newline{\small\texttt{Flow currentResult = Flow::source<int>(...).parallel(2).max<int>();}}.}
        \label{objets2-ppff.fig}
 
 \centering
-         \includegraphics[width=0.85\textwidth]{Figures/objets2-ff.png}
+         \includegraphics[width=1.0\textwidth]{Figures/objets2-ff.pdf}
       \caption{La structure interm\'ediaire \TT{PpFf} et le graphe \TT{FastFlow} associ\'e pour l'exemple~2.}
        \label{objets2-ff.fig}
 
@@ -435,7 +435,7 @@ Le dernier exemple illustre le fonctionnement du parallélisme de données en ut
 
 \begin{figure}
 \centering
-         \includegraphics[angle=90,width=0.4\textwidth]{Figures/objets3-ppff.png}
+         \includegraphics[angle=90,width=0.45\textwidth]{Figures/objets3-ppff.pdf}
       \caption[La structure interm\'ediaire \TT{PpFf} pour l'exemple~3.]{La structure interm\'ediaire \TT{PpFf} pour 
          l'exemple~3~:\newline{\footnotesize\texttt{Flow::source<int>(\ldots).parallel(2).map<int,int>(\ldots).parallel(4).max<int>();}}.}
        \label{objets3-ppff.fig}
@@ -445,7 +445,7 @@ Le dernier exemple illustre le fonctionnement du parallélisme de données en ut
 
 \begin{figure}
 \centering
-         \includegraphics[angle=90,width=0.4\textwidth]{Figures/objets3-ff.png}
+         \includegraphics[angle=90,width=0.45\textwidth]{Figures/objets3-ff.pdf}
       \caption{La structure interm\'ediaire \TT{PpFf} et le graphe \TT{FastFlow} associ\'e pour l'exemple~3.}
        \label{objets3-ff.fig}
 \end{figure}
