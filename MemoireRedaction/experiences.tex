@@ -135,8 +135,10 @@ Pour la machine \M1, \TT{PpFf-2} est donc la version qui sera compar\'ee aux aut
 Le nombre de r\'ep\'etitions indique combien de fois chaque programme est exécuté et son temps mesuré.
 %
 On calcule ensuite la moyenne et l'écart-type. Dans un graphe comme celui de la figure~\grapheref{WordCount-temps-java-11-20}, les moyennes sont repr\'esent\'ees par les valeurs qui composent la courbe sur le graphe et les dispersions par des petits barres verticales (par ex., voir les valeurs pour \TT{Java+}
-de la figure~\grapheref{WordCount-temps-java-11-20}). Plus précisément, la barre verticale indique un intervalle de deux (2) écart-types, donc un intervalle qui contient approximativement \emph{95~\% des temps mesurés}.
-
+de la figure~\grapheref{WordCount-temps-java-11-20}). Plus précisément, la barre verticale indique un intervalle de deux (2) écart-types, donc un intervalle qui contient approximativement \emph{95~\% des temps mesurés}.%
+%
+\footnote{En supposant une distribution normale des temps d'ex\'ecution.}
+%
 
 Chaque s\'erie d'exp\'eriences finales inclut les versions s\'equentielles pour les programmes compar\'es des deux biblioth\`eques. Identifi\'ees sur les graphes par \TT{Seq} pour la version s\'equentielle de \TT{PpFf} et par \TT{Java} pour la version s\'equentielle avec \emph{warm-up} de \TT{Java}, ces versions utilisent les m\^emes fonctions auxiliaires que les versions parall\`eles, mais s'ex\'ecutent de fa\c{c}on strictement s\'equentielle. Ces programmes s\'equentiels ont aussi \'et\'e utilis\'e pour d\'eterminer les acc\'el\'erations. Le concept d'acc\'el\'eration d\'etermine \`a quel point un programme parall\`ele est plus rapide qu'un programme s\'equentiel \'equivalent. On distingue deux types d'acc\'elérations : relative ou absolue. Dans nos mesures, nous avons utilis\'e l'acc\'el\'eration \emph{absolue}. L'acc\'el\'eration absolue compare le programme ex\'ecut\'e sur une machine multiprocesseurs avec un programme s\'equentiel, performant, qui r\'esout le m\^eme probl\`eme. 
 
