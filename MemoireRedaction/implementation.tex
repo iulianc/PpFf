@@ -216,7 +216,7 @@ Un flux compos\'e de $n$ {étapes}, o\`u la $i^{\grave e}$ étape ex\'ecute une 
 \begin{figure}
 
 \centering
-     \includegraphics[width=0.9\textwidth]{Figures/ParallelismeDuFlux.png}
+     \includegraphics[width=0.9\textwidth]{Figures/ParallelismeDuFlux.pdf}
       \caption[Une repr\'esentation graphique du parall\'elisme de flux en \ppff.]{Une repr\'esentation graphique du parall\'elisme de flux pour une d\'ecomposition en $n$. Les op\'erations $O_1, O_2, \ldots, O_n$ sont ex\'ecut\'ees de fa\c{c}on parall\`ele dans diff\'erents fils d'ex\'ecution représentés par $W_1, W_2, \ldots, W_n$ ($W$ pour \emph{$W$orker}).}
        \label{ParallelismeDuFlux.fig}
 \end{figure}
@@ -246,7 +246,7 @@ Dans \TT{PpFf}, les \'el\'ements du flux sont trait\'es dans l'ordre d'arriv\'ee
 \begin{figure}
 
 \centering
-     \includegraphics[width=0.9\textwidth]{Figures/DataParallelisme.png}
+     \includegraphics[width=0.9\textwidth]{Figures/DataParallelisme.pdf}
       \caption[Une repr\'esentation graphique du parall\'elisme de donn\'ees en \ppff.]{Une repr\'esentation graphique du parall\'elisme de donn\'ees. La m\^eme op\'eration~$O$ est ex\'ecut\'ee par les $n$ travailleurs $W_1, W_2,\ldots, W_n$ ($W$ pour \emph{$W$orker}). Les \'el\'ements de donn\'ees sont r\'epartis entre les travailleurs par l'\'emetteur $E$ ($E$\emph{mitter}) puis les divers r\'esultats sont combin\'es par le collecteur $C$ ($C$\emph{ollector}).}
        \label{DataParallelisme.fig}
 \end{figure}
